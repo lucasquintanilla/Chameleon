@@ -63,10 +63,10 @@ namespace Voxed.WebApp.Controllers
         }
 
         // GET: Vox/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
+        //public IActionResult Create()
+        //{
+        //    return View();
+        //}
 
         //// POST: Vox/Create
         //// To protect from overposting attacks, enable the specific properties you want to bind to, for 
@@ -241,12 +241,22 @@ namespace Voxed.WebApp.Controllers
         //}
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> List(dynamic hola)
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> List(ListRequest request)
         {
-            Console.WriteLine(hola);
+            Console.WriteLine(request);
+
 
             return Ok();
         }
+    }
+
+    public class ListRequest
+    {
+        public string Page { get; set; }
+        public int LoadMore { get; set; }
+        public string Suscriptions { get; set; }
+        public string[] Ignore { get; set; }
+
     }
 }
