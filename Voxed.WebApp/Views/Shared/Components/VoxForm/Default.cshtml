@@ -1,0 +1,77 @@
+﻿@model Voxed.WebApp.Models.VoxFormViewModel
+
+
+    <form class="modalBox createVox" id="NewVox" asp-controller="Vox" asp-action="Create" enctype="multipart/form-data">
+
+        @*<select asp-for="CategoryID" asp-items="Model.Categories"></select>*@
+
+        @await Component.InvokeAsync("CategoriesDropdown")
+        <span asp-validation-for="CategoryID" class="text-danger"></span>
+
+        <input asp-for="Title" placeholder="Titulo" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+
+        <div class="selectAttach" id="voxAttachs">
+            <div class="uploadFromLocal tooltip-bottom" data-tooltip="Subir archivo"
+                 data-upload="{ &quot;type&quot;: &quot;local&quot;, &quot;container&quot;: &quot;voxAttachs&quot; }">
+                <i class="fas fa-upload"></i>
+            </div>
+
+            @*<input asp-for="File" accept="image/gif, image/jpeg, image/jpg, image/png, video/webm, video/mp4"
+            class="hiddeFileInput" data-preview="previewInputVox"/>*@
+
+            <input asp-for="File" accept="image/*"
+                   class="hiddeFileInput" data-preview="previewInputVox" />
+
+            @*UPLOAD FROM LINK*@
+            @*<div class="uploadFromLink tooltip-bottom" data-tooltip="Subir via link"
+                 data-upload="{ &quot;type&quot;: &quot;link&quot;, &quot;container&quot;: &quot;voxAttachs&quot;, &quot;preview&quot; : &quot;previewInputVox&quot; }">
+                <i class="fas fa-link"></i>
+            </div>*@
+        </div>
+
+        <span asp-validation-for="File" class="text-danger"></span>
+
+        <div class="preview" id="previewInputVox">
+            <div class="closePreview" data-closepreview="previewInputVox">
+                <i class="fas fa-times"></i>
+            </div>
+            <img src="https://www.voxed.net/" alt="">
+        </div>
+
+        @*<textarea name="content" class="newVoxContent" id="voxTextarea" maxlength="5000"
+        placeholder="Escribe el contenido del vox o pega una imagen..."></textarea>*@
+
+        <textarea asp-for="Content" class="newVoxContent" id="voxTextarea" maxlength="5000"
+                  placeholder="Escribe el contenido del vox o pega una imagen..."></textarea>
+        <span asp-validation-for="Content" class="text-danger"></span>
+
+        @*<div class="subtitle pointer" data-toggle="polls">
+            <span class="subtitleText">
+                <i class="fas fa-poll"></i>Encuesta
+            </span>
+            <span class="subtitleToggle">
+                <i class="fas fa-plus"></i>
+            </span>
+        </div>*@
+
+        @*ENCUENTAS*@
+
+        @*<div class="polls hide" id="polls">
+            <input type="text" asp-for="Poll.OptionADescription" maxlength="50" placeholder="Opcion 1">
+            <span asp-validation-for="Poll.OptionADescription" class="text-danger"></span>
+
+            <input type="text" asp-for="Poll.OptionBDescription" maxlength="50" placeholder="Opcion 2">
+            <span asp-validation-for="Poll.OptionBDescription" class="text-danger"></span>
+        </div>*@
+
+
+        @*<div id="voxCaptchaResponse"></div>
+        <div class="g-recaptcha" data-sitekey="52e1cb08-4dd4-4587-add7-60137b2a6a5a" data-callback="verifyVox"></div>
+        <a class="noCaptcha" target="_BLANK" data-event="click,button,CREATE_VOX_NO_MORE_CAPTCHAS"
+           href="/web/20200816001928/https://www.voxed.net/registro">No llenes mas captchas</a>*@
+        <button class="buttonPress" id="newVox" type="submit">
+            <i class="fas fa-circle-notch fa-spin"></i>
+            <span>Iniciar vox</span>
+        </button>
+    </form>

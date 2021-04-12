@@ -1,0 +1,144 @@
+﻿@model IEnumerable<Core.Entities.Vox>
+
+@{
+    ViewData["Title"] = Model.Select(x => x.Category.Name).FirstOrDefault();
+}
+
+@*<h1>Details</h1>
+
+    <div>
+        <h4>Category</h4>
+        <hr />
+        <dl class="row">
+            <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+            <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.ShortName)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.ShortName)
+            </dd>
+            <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.Media)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.Media.ID)
+            </dd>
+        </dl>
+    </div>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
+        <a asp-action="Index">Back to List</a>
+    </div>*@
+
+
+<main>
+    <div class="loadNewVox disabled unselect" data-voxs="0" id="voxLoadMore"></div>
+    <div class="voxList" id="voxList">
+
+        @*<a href="/home/info" class="vox newInVoxed"
+               style="background: url(/img/home/version4.png);">
+                <div class="voxHeader">
+                    <div class="tagList">
+                        <div class="tag sticky">Info y Reglas</div>
+                    </div>
+                </div>
+                <h4 class="title textShadon">¿Nuevo en Voxed?</h4>
+                <div class="over"></div>
+            </a>*@
+
+        <a href="https://brave.com/vox812" data-event="click,button,AD_HOME_1"
+           class="vox" id="voxad"
+           style="background: url(https://content.voxed.net/brave1.gif);">
+            <div class="voxHeader">
+                <div class="tagList">
+                    <div class="tag sticky">Ads</div>
+                </div>
+            </div>
+            <h4 class="title textShadon">¡Ganá dinero mientras navegas!</h4>
+            <div class="over"></div>
+        </a>
+
+        @foreach (var item in Model)
+        {
+            <a class="vox    " data-vox id="270262" data-hash="8V4XHRrdXGrWaOtVhWnY"
+               href="/vox/Details/@item.ID"
+               style="background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)), url(@item?.Media?.Url);">
+                <div class="voxHeader">
+                    <div class="tagList">
+                        <div class="tag categoryTag">@item.Category.ShortName.ToUpper()</div>
+                        @*<div class="tag sticky">Info y Reglas</div>*@
+                        @*<div class="tag sticky">Ads</div>*@
+
+                        @if (item.CreatedOn.Date == DateTime.Now.Date)
+                        {
+                            <div class="tag new">Nuevo</div>
+                        }
+
+
+                        @*<div class="tagInvisible pollTag">
+                                <div class="tagWrapper"></div>
+                                <i class="fas fa-poll"></i>
+                            </div>*@
+
+                        @if (item.Media.MediaType == Core.Entities.MediaType.YouTube)
+                        {
+                            <div class="tagInvisible videoWebmYtb">
+                                <div class="tagWrapper"></div>
+                                <i class="fab fa-youtube"></i>
+                            </div>
+                        }
+
+                        @if (item.Media.MediaType == Core.Entities.MediaType.Video)
+                        {
+                            <div class="tagInvisible videoWebm">
+                                <div class="tagWrapper"></div>
+                                <i class="fab fa-youtube"></i>
+                            </div>
+                        }
+
+                    </div>
+                    <div class="voxComments textShadon">
+                        <i class="fas fa-comment"></i>
+                        <span class="countComments">@item.Comments.Count()</span>
+                    </div>
+                    <div class="voxAction textShadon">
+                        <div class="actionBotton" data-voxaction="270262">
+                            <i class="fas fa-ellipsis-v" data-voxaction="270262"></i>
+                        </div>
+                    </div>
+                </div>
+                <h4 class="title textShadon">@item.Title</h4>
+                <div class="over"></div>
+                <div class="voxActions unselect">
+                    <div class="voxActionBotton">
+                        <div class="actionText" data-meta="hide" data-contenttype="1" data-contentid="270262">Ocultar</div>
+                    </div>
+                    <div class="voxActionBotton">
+                        <div class="actionText" data-meta="favorite" data-contenttype="1" data-contentid="270262">Favorito</div>
+                    </div>
+                    <div class="voxActionBotton">
+                        <div class="actionText" data-report="vox" data-contentid="270262" data-contenttype="1">Reportar</div>
+                    </div>
+                    <div class="voxActionBotton">
+                        <div class="actionText" data-action="close"><i class="fas fa-times" data-action="close"></i></div>
+                    </div>
+                </div>
+            </a>
+        }
+
+    </div>
+    <div class="loadingSpinner hide" id="homeLoadingSpinner"><i class="fas fa-spinner fa-spin"></i></div>
+</main>
+<script>
+    var ACTUAL_PAGE = "home";
+    var TITLE = "Voxed ";
+</script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
