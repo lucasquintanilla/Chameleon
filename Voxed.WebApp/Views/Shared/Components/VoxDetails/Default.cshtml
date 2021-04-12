@@ -1,0 +1,73 @@
+﻿@model IEnumerable<Core.Entities.Vox>
+
+
+@foreach (var item in Model)
+{
+<a class="vox    "
+   data-vox id="270262"
+   data-hash="@item.Hash"
+   href="/Vox/Details/@item.ID"
+   @*data-bgset="@item?.Media?.ThumbnailUrl"*@
+   style="background: url(@item?.Media?.ThumbnailUrl);">
+
+    <div class="voxHeader">
+        <div class="tagList">
+            <div class="tag categoryTag">@item.Category.ShortName.ToUpper()</div>
+            @*<div class="tag sticky">Info y Reglas</div>*@
+            @*<div class="tag sticky">Ads</div>*@
+
+            @if (item.CreatedOn.Date == DateTime.Now.Date)
+            {
+                <div class="tag new">Nuevo</div>
+            }
+
+            @*<div class="tagInvisible pollTag">
+                    <div class="tagWrapper"></div>
+                    <i class="fas fa-poll"></i>
+                </div>*@
+
+            @*@if (item.Media.MediaType == MediaType.YouTube)
+                {
+                    <div class="tagInvisible videoWebmYtb">
+                        <div class="tagWrapper"></div>
+                        <i class="fab fa-youtube"></i>
+                    </div>
+                }
+
+                @if (item.Media.MediaType == MediaType.Video)
+                {
+                    <div class="tagInvisible videoWebm">
+                        <div class="tagWrapper"></div>
+                        <i class="fab fa-youtube"></i>
+                    </div>
+                }*@
+
+        </div>
+        <div class="voxComments textShadon">
+            <i class="fas fa-comment"></i>
+            <span class="countComments">@item.Comments.Count()</span>
+        </div>
+        <div class="voxAction textShadon">
+            <div class="actionBotton" data-voxaction="270262">
+                <i class="fas fa-ellipsis-v" data-voxaction="270262"></i>
+            </div>
+        </div>
+    </div>
+    <h4 class="title textShadon">@item.Title</h4>
+    <div class="over"></div>
+    <div class="voxActions unselect">
+        <div class="voxActionBotton">
+            <div class="actionText" data-meta="hide" data-contenttype="1" data-contentid="270262">Ocultar</div>
+        </div>
+        <div class="voxActionBotton">
+            <div class="actionText" data-meta="favorite" data-contenttype="1" data-contentid="270262">Favorito</div>
+        </div>
+        <div class="voxActionBotton">
+            <div class="actionText" data-report="vox" data-contentid="270262" data-contenttype="1">Reportar</div>
+        </div>
+        <div class="voxActionBotton">
+            <div class="actionText" data-action="close"><i class="fas fa-times" data-action="close"></i></div>
+        </div>
+    </div>
+</a>
+}
