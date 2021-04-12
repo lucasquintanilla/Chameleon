@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Data.EF", "Core.Data.E
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebUI", "WebUI\WebUI.csproj", "{CFCFD58B-93B1-4538-96A4-B404BBA24C14}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{4AD5892E-CE4A-4366-B1DA-774556648EDF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\UnitTests.csproj", "{4AD5892E-CE4A-4366-B1DA-774556648EDF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RozBot", "RozBot\RozBot.csproj", "{5D74AE9A-ADA0-41DE-B53D-F3C652434285}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{4AD5892E-CE4A-4366-B1DA-774556648EDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4AD5892E-CE4A-4366-B1DA-774556648EDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4AD5892E-CE4A-4366-B1DA-774556648EDF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D74AE9A-ADA0-41DE-B53D-F3C652434285}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D74AE9A-ADA0-41DE-B53D-F3C652434285}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D74AE9A-ADA0-41DE-B53D-F3C652434285}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D74AE9A-ADA0-41DE-B53D-F3C652434285}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
