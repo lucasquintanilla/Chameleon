@@ -31,7 +31,6 @@ namespace Core.Shared
 
         private int maxFileSize = 10 * 1024 * 1024;
 
-
         const string ffmpegPath = @"C:\ffmpeg\bin\ffmpeg.exe";
 
         public FileStoreService(IWebHostEnvironment env)
@@ -39,6 +38,11 @@ namespace Core.Shared
             _env = env;
             _dir = env.WebRootPath;
             FFmpeg.SetExecutablesPath(@"C:\FFmpeg");
+
+            string folderPath = Path.Combine(_dir, folderName);
+           
+            Directory.CreateDirectory(folderPath);
+            
         }
 
         public async Task<bool> IsValidFile(IFormFile file)
