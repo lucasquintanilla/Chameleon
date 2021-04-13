@@ -92,11 +92,20 @@
                 <div class="metadata">
                     <div class="authorVox">
 
-                        <span class="name ">@Model.User?.UserName</span>
+                        @if (@Model.User.UserType == Core.Entities.UserType.Admin)
+                        {
+                            <span class="name adminTag ">@Model.User?.UserName</span>
+                        }
+
+                        @if (@Model.User.UserType == Core.Entities.UserType.Anon)
+                        {
+                            <span class="name ">@Model.User?.UserName</span>
+                        }
+
                         @*<span class="name ">Anonimo</span>*@
 
-                        
-                    <span class="commentTag ">@Model.User?.UserType.ToString().ToLower()</span>
+
+                        <span class="commentTag ">@Model.User?.UserType.ToString().ToLower()</span>
                         @*<span class="commentTag ">anon</span>*@
                     </div>
                     <div class="voxCreatedAt">@Core.Shared.TimeAgo.ConvertToTimeAgo(Model.CreatedOn.DateTime)</div>
@@ -376,14 +385,26 @@
                             <div class="commentBody">
                                 <div class="commentMetadata">
                                     <div class="commentsTag unselect">
-                                        @if (comment.UserID == Model.UserID && comment.User.UserType == Core.Entities.UserType.Admin )
+                                        @if (comment.UserID == Model.UserID && comment.User.UserType == Core.Entities.UserType.Admin)
                                         {
                                             <span class="commentTagBg op">OP</span>
-                                        }        
+                                        }
 
-                                        <span class="author   " style="">@comment.User?.UserName</span>
+                                        @if (comment.User.UserType == Core.Entities.UserType.Admin)
+                                        {
+                                            <span class="author adminTag" style="">@comment.User?.UserName</span>
+                                            <span class="commentTag adminTag">@comment.User?.UserType.ToString().ToLower() </span>
+                                        }
+
+                                        @if (comment.User.UserType == Core.Entities.UserType.Anon)
+                                        {
+                                            <span class="author   " style="">@comment.User?.UserName</span>
+                                            <span class="commentTag ">@comment.User?.UserType.ToString().ToLower() </span>
+                                        }
+
+                                        @*<span class="author   " style="">@comment.User?.UserName</span>*@
                                         @*<span class="author   " style="">Anonimo</span>*@
-                                    <span class="commentTag ">@comment.User?.UserType.ToString().ToLower() </span>
+                                        @*<span class="commentTag ">@comment.User?.UserType.ToString().ToLower() </span>*@
 
                                         <span class="commentTag pointer" data-tag="@comment.Hash">@comment.Hash</span>
                                     </div>
