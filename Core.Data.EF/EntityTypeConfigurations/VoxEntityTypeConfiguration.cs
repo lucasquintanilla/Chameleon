@@ -48,7 +48,7 @@ namespace Core.Data.EF.EntityTypeConfigurations
             builder.HasOne(x => x.User)
               .WithMany()
               //.OnDelete(DeleteBehavior.Restrict)
-              .HasForeignKey(x => x.UserID);
+              .HasForeignKey(x => x.UserID);           
 
             builder.HasOne(x => x.Category)
               .WithMany()

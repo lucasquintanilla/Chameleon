@@ -91,9 +91,13 @@
                 </div>
                 <div class="metadata">
                     <div class="authorVox">
-                        @*<span class="name ">@Model.User.Username</span>*@
-                        <span class="name ">Anonimo</span>
-                        <span class="commentTag ">anon</span>
+
+                        <span class="name ">@Model.User?.UserName</span>
+                        @*<span class="name ">Anonimo</span>*@
+
+                        
+                    <span class="commentTag ">@Model.User?.UserType.ToString().ToLower()</span>
+                        @*<span class="commentTag ">anon</span>*@
                     </div>
                     <div class="voxCreatedAt">@Core.Shared.TimeAgo.ConvertToTimeAgo(Model.CreatedOn.DateTime)</div>
                 </div>
@@ -362,30 +366,22 @@
                         <div class="comment   " id="@comment.Hash" data-id="11375022">
                             <div class="commentAvatar">
                                 <div class="unselect avatarColor   @Core.Shared.ColorService.GetColor()">
-                                    @*@if (Model.User.UserType == Core.Entities.UserType.Anon)
-        {
-            <span class="avatarText">ANON</span>
-        }*@
-
-                                    <span class="avatarText">ANON</span>
+                                   
+                                    <span class="avatarText">@comment.User?.UserType.ToString().ToUpper()</span>
+                                    @*<span class="avatarText">ANON</span>*@
                                 </div>
                             </div>
                             <div class="commentBody">
                                 <div class="commentMetadata">
                                     <div class="commentsTag unselect">
-                                        @*@if (comment.UserID == Model.UserID)
-        {
-            <span class="commentTagBg op">OP</span>
-        }
-        @if (Model.User.UserType == Core.Entities.UserType.Anon)
-        {
-            <span class="author   " style="">Anonimo</span>
-            <span class="commentTag ">anon </span>
-        }*@
+                                        @if (comment.UserID == Model.UserID)
+                                        {
+                                            <span class="commentTagBg op">OP</span>
+                                        }        
 
-                                        @*<span class="author   " style="">@comment.User?.Username</span>*@
-                                        <span class="author   " style="">Anonimo</span>
-                                        <span class="commentTag ">anon </span>
+                                        <span class="author   " style="">@comment.User?.UserName</span>
+                                        @*<span class="author   " style="">Anonimo</span>*@
+                                    <span class="commentTag ">@comment.User?.UserType.ToString().ToLower() </span>
 
                                         <span class="commentTag pointer" data-tag="@comment.Hash">@comment.Hash</span>
                                     </div>

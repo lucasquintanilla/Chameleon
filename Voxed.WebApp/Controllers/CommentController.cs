@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 //using Voxed.WebApp.Models;
 using Core.Entities;
 using Core.Data.Repositories;
+using Microsoft.AspNetCore.Identity;
 
 namespace Voxed.WebApp.Controllers
 {
@@ -21,17 +22,20 @@ namespace Voxed.WebApp.Controllers
         private FormateadorService formateadorService;        
         private FileStoreService fileStoreService;
         private readonly IVoxedRepository voxedRepository;
+        private readonly UserManager<User> _userManager;
 
         public CommentController(
             //VoxedContext context, 
-            FormateadorService formateadorService,             
-            FileStoreService fileStoreService, 
-            IVoxedRepository voxedRepository)
+            FormateadorService formateadorService,
+            FileStoreService fileStoreService,
+            IVoxedRepository voxedRepository, 
+            UserManager<User> userManager)
         {
             //_context = context;
-            this.formateadorService = formateadorService;            
+            this.formateadorService = formateadorService;
             this.fileStoreService = fileStoreService;
             this.voxedRepository = voxedRepository;
+            _userManager = userManager;
         }
 
         //// GET: Comment
@@ -104,11 +108,14 @@ namespace Voxed.WebApp.Controllers
         {
             if (ModelState.IsValid)
             {
+                var user = await _userManager.GetUserAsync(HttpContext.User);
+
                 var comment = new Comment();
                 comment.ID = Guid.NewGuid();
                 comment.Content = commentForm.Content;
                 comment.VoxID = commentForm.VoxID;
-                comment.UserID = commentForm.UserID;
+                //comment.UserID = commentForm.UserID;
+                comment.User = user ?? new User() { UserName = "Anonimo" };
 
                 var contentFormarted = formateadorService.Parsear(comment.Content);
                 comment.Content = contentFormarted;

@@ -26,7 +26,10 @@ namespace Core.Data.EF.Repositories
                 .Include(x => x.Category.Media)
                 .Include(x => x.Comments)
                     .ThenInclude(c => c.Media)
+                .Include(c => c.Comments)
+                    .ThenInclude(c => c.User)
                 .Include(x => x.Poll)
+                .Include(x => x.User)
                 .FirstOrDefaultAsync(m => m.ID == id);
         
 
@@ -35,10 +38,11 @@ namespace Core.Data.EF.Repositories
                 .Include(x => x.Media)
                 .Include(x => x.Category)
                 .Include(x => x.Comments)
-                .OrderByDescending(x => x.Bump)
+                //.OrderByDescending(x => x.Bump).ThenByDescending(x => x.Type)
+                .OrderByDescending(x => x.Type).ThenByDescending(x => x.Bump)
                 .Skip(0)
                 .Take(50)
-                .Where(x => x.State == VoxState.Normal)
+                .Where(x => x.State == VoxState.Normal || x.Type == VoxType.Sticky)
                 .AsNoTracking()
                 .ToListAsync();
 

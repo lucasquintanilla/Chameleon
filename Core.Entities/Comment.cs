@@ -17,6 +17,7 @@ namespace Core.Entities
         public DateTimeOffset CreatedOn { get; set; } = DateTimeOffset.Now;
         public DateTimeOffset Bump { get; set; } = DateTimeOffset.Now;
         public CommentState State { get; set; }
+        public CommentType Type { get; set; }
         public Media Media { get; set; }
         //public Vox Vox { get; set; }
         public User User { get; set; }
@@ -24,4 +25,5 @@ namespace Core.Entities
     }
 
     public enum CommentState { Normal, Eliminado }
+    public enum CommentType { Normal, Sticky }
 }

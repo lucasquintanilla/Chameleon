@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Voxed.WebApp.Models
 {
     public enum VoxState { Normal, Deleted }
-    public enum VoxType { Normal, Sticky }
+    
 
     public class Vox
     {

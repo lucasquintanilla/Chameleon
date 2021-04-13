@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 //using Voxed.WebApp.Models;
 using Core.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace Voxed.WebApp.Controllers
 {
@@ -22,20 +23,22 @@ namespace Voxed.WebApp.Controllers
         private IWebHostEnvironment _env;
         private FileStoreService fileStoreService;
         private string _dir;
-
         private IVoxedRepository voxedRepository;
+        private readonly UserManager<User> _userManager;
 
         public VoxController(
             //VoxedContext context, 
             IWebHostEnvironment env,
-            FileStoreService fileStoreService, 
-            IVoxedRepository voxedRepository)
+            FileStoreService fileStoreService,
+            IVoxedRepository voxedRepository, 
+            UserManager<User> userManager)
         {
             //_context = context;
             _env = env;
             _dir = env.WebRootPath;
             this.fileStoreService = fileStoreService;
             this.voxedRepository = voxedRepository;
+            _userManager = userManager;
         }
 
         // GET: Vox
@@ -107,16 +110,15 @@ namespace Voxed.WebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,Title,Content,CategoryID,File,Poll")] Models.VoxFormViewModel voxRequest)
         {
-            var vox = new Vox();           
+            var vox = new Vox();
+
+            var user = await _userManager.GetUserAsync(HttpContext.User);
 
             if (ModelState.IsValid)
             {                
                 vox.ID = Guid.NewGuid();
                 vox.State = VoxState.Normal;
-                vox.User = new User()
-                {                    
-                    UserName = "Anonimo"
-                };
+                vox.User = user ?? new User(){ UserName = "Anonimo" };
 
                 vox.Title = voxRequest.Title;
                 vox.Content = voxRequest.Content;

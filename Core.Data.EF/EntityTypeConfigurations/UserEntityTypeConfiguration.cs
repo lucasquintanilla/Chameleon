@@ -12,7 +12,7 @@ namespace Core.Data.EF.EntityTypeConfigurations
         public void Configure(EntityTypeBuilder<User> builder)
         {
             builder.Property(x => x.CreatedOn)
-                .IsRequired(true);
+                .IsRequired(true);            
         }
     }
 }

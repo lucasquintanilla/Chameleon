@@ -12,6 +12,11 @@
 
     <div class="voxHeader">
         <div class="tagList">
+            @if (item.Type == Core.Entities.VoxType.Sticky)
+            {
+                <div class="tag sticky">Sticky</div>
+            }
+
             <div class="tag categoryTag">@item.Category.ShortName.ToUpper()</div>
             @*<div class="tag sticky">Info y Reglas</div>*@
             @*<div class="tag sticky">Ads</div>*@
@@ -22,25 +27,25 @@
             }
 
             @*<div class="tagInvisible pollTag">
-                    <div class="tagWrapper"></div>
-                    <i class="fas fa-poll"></i>
-                </div>*@
+            <div class="tagWrapper"></div>
+            <i class="fas fa-poll"></i>
+        </div>*@
 
             @*@if (item.Media.MediaType == MediaType.YouTube)
-                {
-                    <div class="tagInvisible videoWebmYtb">
-                        <div class="tagWrapper"></div>
-                        <i class="fab fa-youtube"></i>
-                    </div>
-                }
+        {
+            <div class="tagInvisible videoWebmYtb">
+                <div class="tagWrapper"></div>
+                <i class="fab fa-youtube"></i>
+            </div>
+        }
 
-                @if (item.Media.MediaType == MediaType.Video)
-                {
-                    <div class="tagInvisible videoWebm">
-                        <div class="tagWrapper"></div>
-                        <i class="fab fa-youtube"></i>
-                    </div>
-                }*@
+        @if (item.Media.MediaType == MediaType.Video)
+        {
+            <div class="tagInvisible videoWebm">
+                <div class="tagWrapper"></div>
+                <i class="fab fa-youtube"></i>
+            </div>
+        }*@
 
         </div>
         <div class="voxComments textShadon">
