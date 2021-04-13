@@ -25,13 +25,15 @@ namespace Voxed.WebApp.Controllers
         private string _dir;
         private IVoxedRepository voxedRepository;
         private readonly UserManager<User> _userManager;
+        private FormateadorService formateadorService;
 
         public VoxController(
             //VoxedContext context, 
             IWebHostEnvironment env,
             FileStoreService fileStoreService,
-            IVoxedRepository voxedRepository, 
-            UserManager<User> userManager)
+            IVoxedRepository voxedRepository,
+            UserManager<User> userManager, 
+            FormateadorService formateadorService)
         {
             //_context = context;
             _env = env;
@@ -39,6 +41,7 @@ namespace Voxed.WebApp.Controllers
             this.fileStoreService = fileStoreService;
             this.voxedRepository = voxedRepository;
             _userManager = userManager;
+            this.formateadorService = formateadorService;
         }
 
         // GET: Vox
@@ -58,6 +61,11 @@ namespace Voxed.WebApp.Controllers
             var vox = await voxedRepository.Voxs.GetById(id.Value);
 
             if (vox == null)
+            {
+                return NotFound();
+            }
+
+            if (vox.State == VoxState.Deleted)
             {
                 return NotFound();
             }
@@ -121,7 +129,8 @@ namespace Voxed.WebApp.Controllers
                 vox.User = user ?? new User(){ UserName = "Anonimo" };
 
                 vox.Title = voxRequest.Title;
-                vox.Content = voxRequest.Content;
+                vox.Content = formateadorService.Parsear(voxRequest.Content);
+                //vox.Content = voxRequest.Content;
                 vox.CategoryID = voxRequest.CategoryID;
 
                 if (voxRequest.Poll != null)
@@ -131,7 +140,6 @@ namespace Voxed.WebApp.Controllers
                         OptionADescription = voxRequest.Poll.OptionADescription,
                         OptionBDescription = voxRequest.Poll.OptionBDescription,
                     };
-
                 }
 
                 if (voxRequest.File != null)

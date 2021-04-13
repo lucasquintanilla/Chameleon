@@ -170,10 +170,12 @@
                     }
                 }
 
-                <header class="voxBody">
-                    <h1 itemprop="name" id="voxTitle">@Model.Title</h1>
-                    <div class="voxDescription" itemprop="articleBody" id="voxContent">@Model.Content</div>
-                </header>
+            <header class="voxBody">
+                <h1 itemprop="name" id="voxTitle">@Model.Title</h1>
+                @*<div class="voxDescription" itemprop="articleBody" id="voxContent">@Model.Content</div>*@
+            <div class="voxDescription" itemprop="articleBody" id="voxContent">@Html.Raw(Model.Content)</div>
+                @*@Html.Raw(comment.Content)*@
+            </header>
             </article>
         </section>
         <section class="voxCommentList">
@@ -374,7 +376,7 @@
                             <div class="commentBody">
                                 <div class="commentMetadata">
                                     <div class="commentsTag unselect">
-                                        @if (comment.UserID == Model.UserID)
+                                        @if (comment.UserID == Model.UserID && comment.User.UserType == Core.Entities.UserType.Admin )
                                         {
                                             <span class="commentTagBg op">OP</span>
                                         }        
