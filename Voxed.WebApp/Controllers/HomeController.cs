@@ -47,11 +47,5 @@ namespace Voxed.WebApp.Controllers
         {
             return View(new Models.ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-
-        public IActionResult Search(string search)
-        {
-            Console.WriteLine(search);
-            return View();
-        }
     }
 }

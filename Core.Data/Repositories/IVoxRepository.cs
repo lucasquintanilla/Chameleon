@@ -9,7 +9,7 @@ namespace Core.Data.Repositories
     public interface IVoxRepository : IGenericRepository<Vox>
     {
         Task<IEnumerable<Vox>> GetLastestAsync();
-
         Task<IEnumerable<Vox>> GetByCategoryIdAsync(int id);
+        Task<IEnumerable<Vox>> SearchAsync(string search);
     }
 }

@@ -63,5 +63,25 @@ namespace Core.Data.EF.Repositories
                         .Skip(0)
                         .Take(100)
                         .ToListAsync();
+
+        public async Task<IEnumerable<Vox>> SearchAsync(string search)
+        {
+            return await _context.Voxs
+                .Include(x => x.Media)
+                .Include(x => x.Category)
+                .OrderByDescending(x => x.Bump)
+                .Skip(0)
+                .Take(50)
+                .Where(x => x.State == VoxState.Normal)
+                .Where(q =>  q.Title.Contains(search))
+                .Where(q => q.Content.Contains(search))
+                .AsNoTracking()
+                .ToListAsync();
+
+            //var p = db.Posts.Where(q => keywords.Any(k => q.Title.Contains(k)));
+        }
+
+
+
     }
 }

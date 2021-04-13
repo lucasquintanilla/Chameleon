@@ -110,15 +110,14 @@ namespace Voxed.WebApp.Controllers
             {
                 var user = await _userManager.GetUserAsync(HttpContext.User);
 
-                var comment = new Comment();
-                comment.ID = Guid.NewGuid();
-                comment.Content = commentForm.Content;
-                comment.VoxID = commentForm.VoxID;
-                //comment.UserID = commentForm.UserID;
-                comment.User = user ?? new User() { UserName = "Anonimo" };
-
-                var contentFormarted = formateadorService.Parsear(comment.Content);
-                comment.Content = contentFormarted;
+                var comment = new Comment() {
+                    ID = Guid.NewGuid(),
+                    Hash = new Hash().NewHash(7),
+                    VoxID = commentForm.VoxID,
+                    User = user ?? new User() { UserName = "Anonimo" },
+                    Content = formateadorService.Parsear(commentForm.Content)
+                };
+                          
 
                 if (commentForm.File != null)
                 {
@@ -130,8 +129,15 @@ namespace Voxed.WebApp.Controllers
                     }
 
                     ModelState.AddModelError("File", "El archivo no es válido.");
-                    
-                }                
+                }
+
+                //Detectar Tag >HIDE
+                //if (!comentario.Contenido.ToLower().Contains("gt;hide"))
+                //{
+                //    await db.Query("Hilos")
+                //        .Where("Id", comentario.HiloId)
+                //        .UpdateAsync(new { Bump = DateTimeOffset.Now });
+                //}
 
                 await voxedRepository.Comments.Add(comment);
                 var vox = await voxedRepository.Voxs.GetById(comment.VoxID);

@@ -73,6 +73,20 @@ namespace Voxed.WebApp.Controllers
             return View(vox);
         }
 
+        public async Task<IActionResult> Index(string search)
+        {
+            if (string.IsNullOrWhiteSpace(search))
+            {
+                BadRequest();
+            }
+
+            //var words = search.Split(" ");
+
+            var voxs = await voxedRepository.Voxs.SearchAsync(search);
+
+            return View(voxs);
+        }
+
         // GET: Vox/Create
         //public IActionResult Create()
         //{
@@ -118,20 +132,20 @@ namespace Voxed.WebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,Title,Content,CategoryID,File,Poll")] Models.VoxFormViewModel voxRequest)
         {
-            var vox = new Vox();
-
-            var user = await _userManager.GetUserAsync(HttpContext.User);
-
             if (ModelState.IsValid)
-            {                
-                vox.ID = Guid.NewGuid();
-                vox.State = VoxState.Normal;
-                vox.User = user ?? new User(){ UserName = "Anonimo" };
+            {
+                var user = await _userManager.GetUserAsync(HttpContext.User);
 
-                vox.Title = voxRequest.Title;
-                vox.Content = formateadorService.Parsear(voxRequest.Content);
-                //vox.Content = voxRequest.Content;
-                vox.CategoryID = voxRequest.CategoryID;
+                var vox = new Vox() 
+                {
+                    ID = Guid.NewGuid(),
+                    State = VoxState.Normal,
+                    User = user ?? new User() { UserName = "Anonimo" },
+                    Hash = new Hash().NewHash(),
+                    Title = voxRequest.Title,
+                    Content = formateadorService.Parsear(voxRequest.Content),
+                    CategoryID = voxRequest.CategoryID,
+                };  
 
                 if (voxRequest.Poll != null)
                 {
@@ -147,8 +161,7 @@ namespace Voxed.WebApp.Controllers
                     var isValidFile = await fileStoreService.IsValidFile(voxRequest.File);
 
                     if (!isValidFile)
-                    {
-                        
+                    {                        
                         ModelState.AddModelError("File", "El archivo no es válido.");
                         return RedirectToAction("Index", "Home");
                     }

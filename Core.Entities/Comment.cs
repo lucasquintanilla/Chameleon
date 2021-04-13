@@ -6,10 +6,13 @@ using System.Threading.Tasks;
 
 namespace Core.Entities
 {
+    public enum CommentState { Normal, Eliminado }
+    public enum CommentType { Normal, Sticky }
+
     public class Comment
     {
         public Guid ID { get; set; }
-        public string Hash { get; set; } = new Hash().NewHash(7);
+        public string Hash { get; set; }
         public Guid VoxID { get; set; }
         public Guid UserID { get; set; }
         public Guid? MediaID { get; set; }
@@ -19,11 +22,7 @@ namespace Core.Entities
         public CommentState State { get; set; }
         public CommentType Type { get; set; }
         public Media Media { get; set; }
-        //public Vox Vox { get; set; }
         public User User { get; set; }
         //public ICollection<Comment> Replies { get; set; }
     }
-
-    public enum CommentState { Normal, Eliminado }
-    public enum CommentType { Normal, Sticky }
 }

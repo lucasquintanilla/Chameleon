@@ -16043,7 +16043,7 @@
                 })
             }), document.getElementById("searchInput").addEventListener("keypress", e => {
                 let t = e.target.value;
-                13 === (e.which || e.keyCode) && t && (window.location.href = "/buscar/" + t)
+                13 === (e.which || e.keyCode) && t && (window.location.href = "/vox?search=" + t)
             }), document.getElementById("hiddenWordsSubmit").addEventListener("click", () => {
                 let e = new c.CookieService,
                     t = new a.ModalService,

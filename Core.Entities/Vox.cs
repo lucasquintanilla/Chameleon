@@ -13,7 +13,7 @@ namespace Core.Entities
     public class Vox
     {
         public Guid ID { get; set; }
-        public string Hash { get; set; } = new Hash().NewHash();
+        public string Hash { get; set; }
         public string Title { get; set; }
         public string Content { get; set; }
         public int CategoryID { get; set; }        
