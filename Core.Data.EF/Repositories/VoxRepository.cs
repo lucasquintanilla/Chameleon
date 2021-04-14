@@ -73,8 +73,8 @@ namespace Core.Data.EF.Repositories
                 .Skip(0)
                 .Take(50)
                 .Where(x => x.State == VoxState.Normal)
-                .Where(q =>  q.Title.Contains(search))
-                .Where(q => q.Content.Contains(search))
+                .Where(q =>  q.Title.ToLower().Contains(search.ToLower()))
+                .Where(q => q.Content.ToLower().Contains(search.ToLower()))
                 .AsNoTracking()
                 .ToListAsync();
 
