@@ -5,17 +5,8 @@ using System.Text;
 
 namespace Core.Shared
 {
-    public class ColorService
+    public class StyleService
     {
-       
-        public static string GetColor()
-        {
-            Random random = new Random();
-            var list = new List<string> { "red", "blue", "green", "yellow", "multi" };
-            int index = random.Next(list.Count);
-            return list[index];
-        }
-
         public static CommentStyle GetRandomCommentStyle()
         {
             Array styles = Enum.GetValues(typeof(CommentStyle));

@@ -116,7 +116,7 @@ namespace Voxed.WebApp.Controllers
                     VoxID = commentForm.VoxID,
                     User = user ?? new User() { UserName = "Anonimo" },
                     Content = formateadorService.Parsear(commentForm.Content),
-                    Style = ColorService.GetRandomCommentStyle()
+                    Style = StyleService.GetRandomCommentStyle()
                 };
                           
 

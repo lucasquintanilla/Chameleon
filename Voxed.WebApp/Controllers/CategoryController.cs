@@ -329,7 +329,7 @@ namespace Voxed.WebApp.Controllers
             {
                 try
                 {
-                    comment.Style = ColorService.GetRandomCommentStyle();                    
+                    comment.Style = StyleService.GetRandomCommentStyle();                    
                 }
                 catch (Exception e)
                 {
