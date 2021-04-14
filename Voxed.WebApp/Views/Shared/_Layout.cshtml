@@ -30,6 +30,7 @@
             @await Component.InvokeAsync("CategoriesMenuList")
 
         </div>
+        
         <ul class="menu unselect" id="navbarMenu">
             <li class="menuIcon tooltip-bottom mobile" data-tooltip="Buscar" data-togglesearch>
                 <i class="fas fa-search"></i>
@@ -40,12 +41,11 @@
             <li class="search">
                 <input type="text" id="searchInput" placeholder="Buscar...">
             </li>
-            <li class="menuIcon tooltip-bottom mobile" data-tooltip="Notificaciones">
-
-
-                <i class="fas fa-bell"></i>
-                <i class="menuIconCount">+99</i>
-            </li>
+            @*<li class="menuIcon tooltip-bottom mobile" data-tooltip="Notificaciones">
+            <i class="fas fa-bell"></i>
+            <i class="menuIconCount">+99</i>
+        </li>*@
+            <partial name="_LoginPartial" />
             <li class="menuIcon tooltip-bottom mobile" data-event="click,button,NAVBAR_LOGIN" data-function="registerModal" data-tooltip="Membresia">
                 <i class="fas fa-user"></i>
             </li>
@@ -80,15 +80,15 @@
         </div>
         <div class="alertBox">
             @*<a class="alert" href="#">
-                    <div class="image">
-                        <img src="/img/home/version4.png" alt="">
-                    </div>
-                    <div class="content">Bienvenido a Voxed</div>
+                <div class="image">
+                    <img src="/img/home/version4.png" alt="">
+                </div>
+                <div class="content">Bienvenido a Voxed</div>
 
-                    <div class="close">
-                        <i data-closealert class="fas fa-times"></i>
-                    </div>
-                </a>*@
+                <div class="close">
+                    <i data-closealert class="fas fa-times"></i>
+                </div>
+            </a>*@
         </div>
     </nav>
     <div class="bottonContextual" data-function="createVox"><i class="fas fa-plus"></i></div>
