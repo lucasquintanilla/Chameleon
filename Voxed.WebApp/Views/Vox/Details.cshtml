@@ -376,11 +376,11 @@
                     {
                         <div class="comment   " id="@comment.Hash" data-id="11375022">
                             <div class="commentAvatar">
-                                <div class="unselect avatarColor   @Core.Shared.ColorService.GetColor()">
-                                   
-                                    <span class="avatarText">@comment.User?.UserType.ToString().ToUpper()</span>
-                                    @*<span class="avatarText">ANON</span>*@
-                                </div>
+                                @*<div class="unselect avatarColor   @Core.Shared.ColorService.GetColor()">*@
+                                    <div class="unselect avatarColor  @comment.Style.ToString().ToLower()">
+                                        <span class="avatarText">@comment.User?.UserType.ToString().ToUpper()</span>
+                                        @*<span class="avatarText">ANON</span>*@
+                                    </div>
                             </div>
                             <div class="commentBody">
                                 <div class="commentMetadata">

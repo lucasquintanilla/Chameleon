@@ -1,5 +1,4 @@
-﻿using Core.Shared;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,6 +7,7 @@ namespace Core.Entities
 {
     public enum CommentState { Normal, Eliminado }
     public enum CommentType { Normal, Sticky }
+    public enum CommentStyle { Black, Blue, Green, Multi, Red, White, Yellow }
 
     public class Comment
     {
@@ -21,6 +21,7 @@ namespace Core.Entities
         public DateTimeOffset Bump { get; set; } = DateTimeOffset.Now;
         public CommentState State { get; set; }
         public CommentType Type { get; set; }
+        public CommentStyle Style { get; set; }
         public Media Media { get; set; }
         public User User { get; set; }
         //public ICollection<Comment> Replies { get; set; }

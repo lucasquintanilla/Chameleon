@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Core.Data.Repositories;
+using Core.Shared;
 using GroupDocs.Metadata;
 using ImageProcessor;
 using ImageProcessor.Plugins.WebP.Imaging.Formats;
@@ -162,11 +163,11 @@ namespace Voxed.WebApp.Controllers
 
             //await MassiveConvertGifToWebP();
 
-            await ConvertGifToThumbnail();
+            //await ConvertGifToThumbnail();
+
+            await AddStylesToComments();
 
             return RedirectToAction("Index", "Home");
-            //return View();
-
         }
 
         //// GET: Category/Details/5
@@ -319,6 +320,25 @@ namespace Voxed.WebApp.Controllers
         //{
         //    return _context.Categories.Any(e => e.ID == id);
         //}
+
+        private async Task AddStylesToComments()
+        {
+            var comments = await voxedRepository.Comments.GetAll();
+
+            foreach (var comment in comments)
+            {
+                try
+                {
+                    comment.Style = ColorService.GetRandomCommentStyle();                    
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+            }
+
+            await voxedRepository.CompleteAsync();
+        }
 
         private async Task ConvertGifToThumbnail()
         {
