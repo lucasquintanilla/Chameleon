@@ -12,11 +12,11 @@ namespace Core.Data.EF.Repositories
 {
     public class VoxRepository : GenericRepository<Vox>, IVoxRepository
     {
-        private readonly VoxedContext _context;
+        //private readonly VoxedContext _context;
 
         public VoxRepository(VoxedContext context) : base(context)
         {
-            _context = context;
+            //_context = context;
         }
 
         public override async Task<Vox> GetById(Guid id)
@@ -69,6 +69,7 @@ namespace Core.Data.EF.Repositories
             return await _context.Voxs
                 .Include(x => x.Media)
                 .Include(x => x.Category)
+                .Include(x => x.Comments)
                 .OrderByDescending(x => x.Bump)
                 .Skip(0)
                 .Take(50)

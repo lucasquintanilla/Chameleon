@@ -21,6 +21,7 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
 using Serilog.Extensions.Logging;
+using Voxed.WebApp.Hubs;
 
 namespace Voxed.WebApp
 {
@@ -87,6 +88,8 @@ namespace Voxed.WebApp
                 options.AccessDeniedPath = "/Identity/Account/AccessDenied";
                 options.SlidingExpiration = true;
             });
+
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -119,6 +122,8 @@ namespace Voxed.WebApp
                     pattern: "{controller=Home}/{action=Index}/{id?}");
 
                 endpoints.MapRazorPages();
+
+                endpoints.MapHub<VoxedHub>("/hubs/notifications");
             });
         }
     }

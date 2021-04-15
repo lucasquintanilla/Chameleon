@@ -13,6 +13,9 @@ using Microsoft.EntityFrameworkCore;
 using Core.Entities;
 using Core.Data.Repositories;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
+using Voxed.WebApp.Hubs;
+//using Voxed.WebApp.Models;
 
 namespace Voxed.WebApp.Controllers
 {
@@ -23,19 +26,22 @@ namespace Voxed.WebApp.Controllers
         private FileStoreService fileStoreService;
         private readonly IVoxedRepository voxedRepository;
         private readonly UserManager<User> _userManager;
+        public IHubContext<VoxedHub, INotificationHub> _notificationHub { get; }
 
         public CommentController(
             //VoxedContext context, 
             FormateadorService formateadorService,
             FileStoreService fileStoreService,
-            IVoxedRepository voxedRepository, 
-            UserManager<User> userManager)
+            IVoxedRepository voxedRepository,
+            UserManager<User> userManager,
+            IHubContext<VoxedHub, INotificationHub> notificationHub)
         {
             //_context = context;
             this.formateadorService = formateadorService;
             this.fileStoreService = fileStoreService;
             this.voxedRepository = voxedRepository;
             _userManager = userManager;
+            _notificationHub = notificationHub;
         }
 
         //// GET: Comment
@@ -144,6 +150,14 @@ namespace Voxed.WebApp.Controllers
                 var vox = await voxedRepository.Voxs.GetById(comment.VoxID);
                 vox.Bump = DateTimeOffset.Now;
                 await voxedRepository.CompleteAsync();
+
+
+                var notification = new Models.Notification();
+                notification.Message = "Buenass";
+
+                //await _notificationHub.Clients.All.ReceiveNotification(notification);
+
+                await _notificationHub.Clients.User(vox.UserID.ToString()).ReceiveNotification(notification);
 
                 return RedirectToAction("Details", "Vox", new { ID = comment.VoxID });
             }

@@ -13,7 +13,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Voxed.WebApp.Hubs;
 //using Voxed.WebApp.Data;
 using Voxed.WebApp.Models;
 using Xabe.FFmpeg;
@@ -25,13 +27,16 @@ namespace Voxed.WebApp.Controllers
         //private readonly VoxedContext _context;
         private IVoxedRepository voxedRepository;
         private IWebHostEnvironment _env;
+        private readonly IHubContext<VoxedHub> notifyHub;
+
         public CategoryController(
             //VoxedContext context, 
-            IVoxedRepository voxedRepository, IWebHostEnvironment env)
+            IVoxedRepository voxedRepository, IWebHostEnvironment env, IHubContext<VoxedHub> notifyHub)
         {
             //_context = context;
             this.voxedRepository = voxedRepository;
             _env = env;
+            this.notifyHub = notifyHub;
         }
 
         // GET: Category
@@ -165,7 +170,12 @@ namespace Voxed.WebApp.Controllers
 
             //await ConvertGifToThumbnail();
 
-            await AddStylesToComments();
+            //await AddStylesToComments();
+
+            var notification = new Notification();
+            notification.Message = "Buenass";
+
+            await notifyHub.Clients.All.SendAsync("ReceiveNotification", notification);
 
             return RedirectToAction("Index", "Home");
         }

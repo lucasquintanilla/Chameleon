@@ -30,7 +30,7 @@
             @await Component.InvokeAsync("CategoriesMenuList")
 
         </div>
-        
+
         <ul class="menu unselect" id="navbarMenu">
             <li class="menuIcon tooltip-bottom mobile" data-tooltip="Buscar" data-togglesearch>
                 <i class="fas fa-search"></i>
@@ -42,9 +42,9 @@
                 <input type="text" id="searchInput" placeholder="Buscar...">
             </li>
             @*<li class="menuIcon tooltip-bottom mobile" data-tooltip="Notificaciones">
-            <i class="fas fa-bell"></i>
-            <i class="menuIconCount">+99</i>
-        </li>*@
+                    <i class="fas fa-bell"></i>
+                    <i class="menuIconCount">+99</i>
+                </li>*@
             <partial name="_LoginPartial" />
             <li class="menuIcon tooltip-bottom mobile" data-event="click,button,NAVBAR_LOGIN" data-function="registerModal" data-tooltip="Membresia">
                 <i class="fas fa-user"></i>
@@ -80,15 +80,15 @@
         </div>
         <div class="alertBox">
             @*<a class="alert" href="#">
-                <div class="image">
-                    <img src="/img/home/version4.png" alt="">
-                </div>
-                <div class="content">Bienvenido a Voxed</div>
+                    <div class="image">
+                        <img src="/img/home/version4.png" alt="">
+                    </div>
+                    <div class="content">Bienvenido a Voxed</div>
 
-                <div class="close">
-                    <i data-closealert class="fas fa-times"></i>
-                </div>
-            </a>*@
+                    <div class="close">
+                        <i data-closealert class="fas fa-times"></i>
+                    </div>
+                </a>*@
         </div>
     </nav>
     <div class="bottonContextual" data-function="createVox"><i class="fas fa-plus"></i></div>
@@ -785,10 +785,12 @@
     <script src="~/js/ls.unveilhooks.min.js"></script>
     <script src="~/js/ls.unload.min.js"></script>
 
-    
+
     <script src="~/js/bundle.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
 
     @RenderSection("Scripts", required: false)
 
@@ -809,6 +811,24 @@
         gtag('js', new Date());
 
         gtag('config', 'G-EVXRV5V095');
+    </script>
+
+
+    <script>
+        var connection = new signalR.HubConnectionBuilder()
+            .withUrl("/hubs/notifications")
+            .withAutomaticReconnect()
+            .build();
+
+        connection.on("ReceiveNotification", function (notification) {
+            console.log(notification.message);
+            document.getElementById("notificationsCount").innerText = "1";
+
+        })
+
+        connection.start().then(function () {
+            console.log("conectado");
+        })
     </script>
 </body>
 </html>
