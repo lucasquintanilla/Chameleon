@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using Voxed.WebApp.Hubs;
 //using Voxed.WebApp.Models;
+//using Voxed.WebApp.Models;
 
 namespace Voxed.WebApp.Controllers
 {
@@ -50,6 +51,73 @@ namespace Voxed.WebApp.Controllers
         //    var voxedContext = _context.Comments.Include(c => c.Media).Include(c => c.User);
         //    return View(await voxedContext.ToListAsync());
         //}
+
+        
+        [HttpPost]
+        public async Task<Models.CommentResponse> Nuevo([FromForm] Models.CommentRequest request, [FromRoute] string id)
+        {
+            Console.WriteLine(request);
+            //Console.WriteLine(id);
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            var comment = new Comment()
+            {
+                ID = Guid.NewGuid(),
+                Hash = new Hash().NewHash(7),
+                VoxID = new Guid(id),
+                User = user ?? new User() { UserName = "Anonimo" },
+                Content = formateadorService.Parsear(request.Content),
+                Style = StyleService.GetRandomCommentStyle()
+            };
+
+
+            if (request.File != null)
+            {
+                var isValidFile = await fileStoreService.IsValidFile(request.File);
+
+                if (isValidFile)
+                {
+                    comment.Media = await fileStoreService.Save(request.File, comment.Hash);
+                }
+
+                //ModelState.AddModelError("File", "El archivo no es válido.");
+            }
+
+            //Detectar Tag >HIDE
+            //if (!comentario.Contenido.ToLower().Contains("gt;hide"))
+            //{
+            //    await db.Query("Hilos")
+            //        .Where("Id", comentario.HiloId)
+            //        .UpdateAsync(new { Bump = DateTimeOffset.Now });
+            //}
+
+            await voxedRepository.Comments.Add(comment);
+            var vox = await voxedRepository.Voxs.GetById(comment.VoxID);
+            vox.Bump = DateTimeOffset.Now;
+            await voxedRepository.CompleteAsync();
+
+
+            //var notification = new Models.Notification();
+            //notification.Message = "Buenass";
+
+            var notification = new CommentNotification();
+            notification.Hash = vox.Hash;
+
+            //await _notificationHub.Clients.All.ReceiveNotification(notification);                
+            //await _notificationHub.Clients.All.Comment(vox.Hash);
+            await _notificationHub.Clients.All.Comment(notification);
+
+            //await _notificationHub.Clients.User(vox.UserID.ToString()).ReceiveNotification(notification);
+
+            //return RedirectToAction("Details", "Vox", new { ID = comment.VoxID });
+
+            var response = new Models.CommentResponse() {
+                Hash = id,
+                Status = true            
+            };
+
+            return response;
+        }
 
         //// GET: Comment/Details/5
         //public async Task<IActionResult> Details(Guid? id)
@@ -152,12 +220,17 @@ namespace Voxed.WebApp.Controllers
                 await voxedRepository.CompleteAsync();
 
 
-                var notification = new Models.Notification();
-                notification.Message = "Buenass";
+                //var notification = new Models.Notification();
+                //notification.Message = "Buenass";
 
-                //await _notificationHub.Clients.All.ReceiveNotification(notification);
+                var notification = new CommentNotification();
+                notification.Hash = vox.Hash;
 
-                await _notificationHub.Clients.User(vox.UserID.ToString()).ReceiveNotification(notification);
+                //await _notificationHub.Clients.All.ReceiveNotification(notification);                
+                //await _notificationHub.Clients.All.Comment(vox.Hash);
+                await _notificationHub.Clients.All.Comment(notification);
+
+                //await _notificationHub.Clients.User(vox.UserID.ToString()).ReceiveNotification(notification);
 
                 return RedirectToAction("Details", "Vox", new { ID = comment.VoxID });
             }

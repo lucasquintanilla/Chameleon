@@ -4,9 +4,9 @@
 @foreach (var item in Model)
 {
 <a class="vox    "
-   data-vox id="270262"
+   data-vox id="@item.Hash"
    data-hash="@item.Hash"
-   href="/Vox/Details/@item.ID"
+   href="/vox/details/@item.ID"
    @*data-bgset="@item?.Media?.ThumbnailUrl"*@
    style="background: url(@item?.Media?.ThumbnailUrl);">
 
@@ -53,8 +53,8 @@
             <span class="countComments">@item.Comments.Count()</span>
         </div>
         <div class="voxAction textShadon">
-            <div class="actionBotton" data-voxaction="270262">
-                <i class="fas fa-ellipsis-v" data-voxaction="270262"></i>
+            <div class="actionBotton" data-voxaction="@item.Hash">
+                <i class="fas fa-ellipsis-v" data-voxaction="@item.Hash"></i>
             </div>
         </div>
     </div>
@@ -62,13 +62,13 @@
     <div class="over"></div>
     <div class="voxActions unselect">
         <div class="voxActionBotton">
-            <div class="actionText" data-meta="hide" data-contenttype="1" data-contentid="270262">Ocultar</div>
+            <div class="actionText" data-meta="hide" data-contenttype="1" data-contentid="@item.Hash">Ocultar</div>
         </div>
         <div class="voxActionBotton">
-            <div class="actionText" data-meta="favorite" data-contenttype="1" data-contentid="270262">Favorito</div>
+            <div class="actionText" data-meta="favorite" data-contenttype="1" data-contentid="@item.Hash">Favorito</div>
         </div>
         <div class="voxActionBotton">
-            <div class="actionText" data-report="vox" data-contentid="270262" data-contenttype="1">Reportar</div>
+            <div class="actionText" data-report="vox" data-contentid="@item.Hash" data-contenttype="1">Reportar</div>
         </div>
         <div class="voxActionBotton">
             <div class="actionText" data-action="close"><i class="fas fa-times" data-action="close"></i></div>

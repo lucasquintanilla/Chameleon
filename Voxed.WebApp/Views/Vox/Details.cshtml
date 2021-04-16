@@ -189,7 +189,7 @@
         </section>
         <section class="voxCommentList">
 
-            @await Component.InvokeAsync("CommentForm", new { voxID = Model.ID, userID = Model.UserID })
+            @*@await Component.InvokeAsync("CommentForm", new { voxID = Model.ID, userID = Model.UserID })*@
 
 
             @*<form asp-controller="Comment" asp-action="Create">
@@ -253,7 +253,7 @@
 
 
 
-            @*<form class="commentBox" id="createComment" enctype="multipart/form-data">
+            <form class="commentBox" id="createComment" enctype="multipart/form-data">
                     <div class="pollOption voted hide" id="commentPoll">
                         <div class="pollOptionText"></div>
                         <div class="pollOptionPercent" id="cancelVoteComment">X</div>
@@ -286,7 +286,7 @@
                             <span>Comentar</span>
                         </button>
                     </div>
-                </form>*@
+                </form>
 
 
             <div class="commentsVoxCount">

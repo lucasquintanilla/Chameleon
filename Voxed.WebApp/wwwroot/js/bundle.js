@@ -3901,14 +3901,15 @@
             n = new o.UploadService,
             d = (new u, new s.AnalyticsService),
             c = new a.ModalService;
-        if (!(new r.SessionService).isActive()) return c.openModal("verify"), !1;
+        //if (!(new r.SessionService).isActive()) return c.openModal("verify"), !1;
         if (window.loading.comment) return !1;
         window.loading.comment = !0, document.getElementById("newComment").classList.add("loading");
         let h = new FormData(this),
             m = document.getElementById("commentPoll"),
             f = m.classList.contains("hide");
         f || h.append("poll", "true"), h.append("uploadData", JSON.stringify(window.uploadData[0])), l.ajax({
-            url: "/comment/" + window.VOX_HASH,
+            //url: "/comment/" + window.VOX_HASH,
+            url: "/comment/nuevo/" + window.VOX_HASH,
             type: "POST",
             data: h,
             cache: !1,
@@ -3916,7 +3917,14 @@
             processData: !1,
             dataType: "json",
             success: e => {
-                window.loading.comment = !1, document.getElementById("newComment").classList.remove("loading"), e.status ? (f || m.classList.add("hide"), n.removePreview("previewInputComment"), document.getElementById("commentTextarea").value = "", d.event("nuevo", "comentario", window.VOX_HASH), window.ownSocketComment.push(e.hash)) : (t.swal(!1, e.swal), "TOKEN" == e.error && c.openModal("verify"))
+                window.loading.comment = !1,
+                document.getElementById("newComment").classList.remove("loading"),
+                e.status ? (f || m.classList.add("hide"),
+                n.removePreview("previewInputComment"),
+                document.getElementById("commentTextarea").value = "",
+                d.event("nuevo", "comentario", window.VOX_HASH),
+                    window.ownSocketComment.push(e.hash)) : (t.swal(!1, e.swal),
+                "TOKEN" == e.error && c.openModal("verify"))
             }
         })
     })), l("[data-poll]").on("click", (function () {
