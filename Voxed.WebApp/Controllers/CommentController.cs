@@ -274,15 +274,9 @@ namespace Voxed.WebApp.Controllers
                 await voxedRepository.CompleteAsync();
 
 
-                //var notification = new Models.Notification();
-                //notification.Message = "Buenass";
-
-                var notification = new CommentNotification();
-                notification.Hash = vox.Hash;
-
-                //await _notificationHub.Clients.All.ReceiveNotification(notification);                
-                //await _notificationHub.Clients.All.Comment(vox.Hash);
-                await _notificationHub.Clients.All.Comment(notification);
+                //var notification = new CommentNotification();
+                //notification.Hash = vox.Hash;
+                //await _notificationHub.Clients.All.Comment(notification);
 
                 //await _notificationHub.Clients.User(vox.UserID.ToString()).ReceiveNotification(notification);
 
