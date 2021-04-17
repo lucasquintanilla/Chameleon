@@ -3476,7 +3476,8 @@
             return `\n        <a class="vox ${t ? "loadHide" : ""}" id="${e.voxId}" data-hash="${e.hash}" href="/vox/${e.hash}" style="background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)), url(${this.uploadFiles}/thumb_${e.hash}.jpg );">\n            <div class="voxHeader">\n                <div class="tagList">\n                    ${this.userData.role > 1 ? `<div class="tag" data-select="${e.voxId}">MOD</div>` : ""}\n                    <div class="tag categoryTag">${e.slug.toUpperCase()}</div>\n                    ${e.new ? '<div class="tag new">Nuevo</div>' : ""}\n                    ${"webm" == e.extension ? '\n                        <div class="tagInvisible videoWebm">\n                            <div class="tagWrapper"></div>\n                            <i class="fab fa-youtube"></i>\n                        </div>\n                    ' : ""}\n                    ${"ytb" == e.extension ? '\n                        <div class="tagInvisible videoWebmYtb">\n                            <div class="tagWrapper"></div>\n                            <i class="fab fa-youtube"></i>\n                        </div>\n                    ' : ""}\n                </div> \n                <div class="voxComments textShadon">\n                    <i class="fas fa-comment"></i>\n                    <span class="countComments">${e.comments}</span>\n                </div>\n                <div class="voxAction textShadon">\n                    <div class="actionBotton" data-voxaction="${e.voxId}">\n                        <i class="fas fa-ellipsis-v" data-voxaction="${e.voxId}"></i>\n                    </div>\n                </div>\n            </div>\n            <h4 class="title textShadon">${e.title}</h4>\n            <div class="over"></div>\n            <div class="voxActions unselect">\n                <div class="voxActionBotton">\n                    <div class="actionText"  data-meta="hide" data-contenttype="1" data-contentid="${e.voxId}">Ocultar</div>\n                </div>\n                <div class="voxActionBotton">\n                    <div class="actionText"  data-meta="favorite" data-contenttype="1" data-contentid="${e.voxId}">Favorito</div>\n                </div>\n                <div class="voxActionBotton">\n                    <div class="actionText" data-report="vox" data-contentid="${e.voxId}" data-contenttype="1">Reportar</div>\n                </div>\n                <div class="voxActionBotton"> \n                    <div class="actionText" data-action="close"><i class="fas fa-times" data-action="close"></i></div>\n                </div>\n                </div>\n        </a>\n        `
         }
         comment(e) {
-            return `\n        <div class="comment loadHide ${window.uniqueIdSelected == e.uniqueId ? "jumpUnique" : ""}" data-id="${e.id}" id="${e.hash}">\n            <div class="commentAvatar">\n                <div class="unselect avatarColor ${e.avatarColor}">\n                    <span class="avatarText">ANON</span>\n                </div>\n            </div>\n            <div class="commentBody">\n                <div class="commentMetadata">\n                    <div class="commentsTag">\n                        ${this.userData.role > 2 ? `<span class="checkComment"><input class="selectComment" type="checkbox" data-checkcomment="${e.id}"></span>` : ""}\n                        ${this.userData.role > 2 ? `<span class="commentTag hide adminTag" data-reactive data-contenttype="0" data-contentid="${e.id}">Reactivar</span>` : ""}\n                        ${e.isOp ? '<span class="commentTagBg">OP</span>' : ""}\n                        <span class="author ${"admin" == e.tag || "dev" == e.tag ? "adminTag" : ""} ${e.uniqueId ? "uniqueId" : ""}" ${e.uniqueId ? `data-uniqueid="${e.uniqueId}"` : ""} style="${e.uniqueId ? `background: #${e.uniqueColor};color:#${"0" == e.uniqueColorContrast ? "000000" : "FFFFFF"};` : ""}" >${e.name}</span>\n                        <span class="commentTag ${"admin" == e.tag || "dev" == e.tag ? "adminTag" : ""}">${e.tag ? e.tag : "anon"}</span>\n                        <span class="commentTag pointer" data-tag="${e.hash}">${e.hash}</span>\n                        ${this.userData.role > 2 ? `<span class="commentTag pointer" data-ban  data-contenttype="0" data-contentid="${e.id}"><i class="fas fa-gavel" data-parent ></i></span> ` : ""}\n                        ${this.userData.role > 2 ? `<a href="/admin/panel/userdata/0/${e.id}/contentType"><span class="commentTag pointer"><i class="fas fa-id-badge"></i></span></a>` : ""}\n                        ${this.userData.role > 1 ? `<span class="commentTag pointer" data-delete  data-contenttype="0" data-contentid="${e.id}"><i class="fas fa-times" data-parent ></i></span> ` : ""}\n                    </div>\n                    <div class="commentMetaRight">\n                        <div class="commentCreatedAt">${e.createdAt}</div>\n                        <div class="commentAction" data-commentaction="${e.id}"><i data-parent class="fas fa-ellipsis-v"></i></div>\n                    </div>\n                </div> \n                <div class="commentReply"></div>\n                \n                ${e.poll ? `<div class="pollOption voted"><div class="pollOptionText">${e.poll}</div></div>` : ""}\n                <div class="commentData">\n                    ${e.extension ? `\n                    <figure class="commentAttach">\n                        <div class="commentAttachContainer">\n                            ${["png", "jpg", "jpeg"].includes(e.extension) ? `\n                                <a target="_BLANK" href="${this.uploadFiles}/${e.hash}.${e.extension}">\n                                    <img src="${this.uploadFiles}/thumb_${e.hash}_r.jpg">\n                                </a>\n                            ` : ""}\n                            ${["gif"].includes(e.extension) ? `\n                                <a target="_BLANK" href="${this.uploadFiles}/${e.hash}.${e.extension}">\n                                    <img src="${this.uploadFiles}/${e.hash}.gif">\n                                </a>\n                            ` : ""}\n                            ${["webm", "ytb"].includes(e.extension) ? `\n                                <div data-videopreview data-extension="${e.extension}" data-extensiondata="${e.extensionData}" data-hash="${e.hash}"  class="videoPreview" style="background: url('${this.uploadFiles}/thumb_${e.hash}.jpg')">\n                                    <img data-parent src="/assets/images/play.png" alt="">\n                                </div>\n                            ` : ""}\n                        </div>\n                        ${e.via ? `<div class="via"><a target="_BLANK" href="${e.via}">${e.via}</a></div>` : ""}\n                        \n                    </figure> \n                    ` : ""}\n                    <div class="commentContent">${e.content}</div>\n                </div>\n            </div>\n        </div>\n        `
+            //return `\n        <div class="comment loadHide ${window.uniqueIdSelected == e.uniqueId ? "jumpUnique" : ""}" data-id="${e.id}" id="${e.hash}">\n            <div class="commentAvatar">\n                <div class="unselect avatarColor ${e.avatarColor}">\n                    <span class="avatarText">ANON</span>\n                </div>\n            </div>\n            <div class="commentBody">\n                <div class="commentMetadata">\n                    <div class="commentsTag">\n                        ${this.userData.role > 2 ? `<span class="checkComment"><input class="selectComment" type="checkbox" data-checkcomment="${e.id}"></span>` : ""}\n                        ${this.userData.role > 2 ? `<span class="commentTag hide adminTag" data-reactive data-contenttype="0" data-contentid="${e.id}">Reactivar</span>` : ""}\n                        ${e.isOp ? '<span class="commentTagBg">OP</span>' : ""}\n                        <span class="author ${"admin" == e.tag || "dev" == e.tag ? "adminTag" : ""} ${e.uniqueId ? "uniqueId" : ""}" ${e.uniqueId ? `data-uniqueid="${e.uniqueId}"` : ""} style="${e.uniqueId ? `background: #${e.uniqueColor};color:#${"0" == e.uniqueColorContrast ? "000000" : "FFFFFF"};` : ""}" >${e.name}</span>\n                        <span class="commentTag ${"admin" == e.tag || "dev" == e.tag ? "adminTag" : ""}">${e.tag ? e.tag : "anon"}</span>\n                        <span class="commentTag pointer" data-tag="${e.hash}">${e.hash}</span>\n                        ${this.userData.role > 2 ? `<span class="commentTag pointer" data-ban  data-contenttype="0" data-contentid="${e.id}"><i class="fas fa-gavel" data-parent ></i></span> ` : ""}\n                        ${this.userData.role > 2 ? `<a href="/admin/panel/userdata/0/${e.id}/contentType"><span class="commentTag pointer"><i class="fas fa-id-badge"></i></span></a>` : ""}\n                        ${this.userData.role > 1 ? `<span class="commentTag pointer" data-delete  data-contenttype="0" data-contentid="${e.id}"><i class="fas fa-times" data-parent ></i></span> ` : ""}\n                    </div>\n                    <div class="commentMetaRight">\n                        <div class="commentCreatedAt">${e.createdAt}</div>\n                        <div class="commentAction" data-commentaction="${e.id}"><i data-parent class="fas fa-ellipsis-v"></i></div>\n                    </div>\n                </div> \n                <div class="commentReply"></div>\n                \n                ${e.poll ? `<div class="pollOption voted"><div class="pollOptionText">${e.poll}</div></div>` : ""}\n                <div class="commentData">\n                    ${e.extension ? `\n                    <figure class="commentAttach">\n                        <div class="commentAttachContainer">\n                            ${["png", "jpg", "jpeg"].includes(e.extension) ? `\n                                <a target="_BLANK" href="${this.uploadFiles}/${e.hash}.${e.extension}">\n                                    <img src="${this.uploadFiles}/thumb_${e.hash}_r.jpg">\n                                </a>\n                            ` : ""}\n                            ${["gif"].includes(e.extension) ? `\n                                <a target="_BLANK" href="${this.uploadFiles}/${e.hash}.${e.extension}">\n                                    <img src="${this.uploadFiles}/${e.hash}.gif">\n                                </a>\n                            ` : ""}\n                            ${["webm", "ytb"].includes(e.extension) ? `\n                                <div data-videopreview data-extension="${e.extension}" data-extensiondata="${e.extensionData}" data-hash="${e.hash}"  class="videoPreview" style="background: url('${this.uploadFiles}/thumb_${e.hash}.jpg')">\n                                    <img data-parent src="/assets/images/play.png" alt="">\n                                </div>\n                            ` : ""}\n                        </div>\n                        ${e.via ? `<div class="via"><a target="_BLANK" href="${e.via}">${e.via}</a></div>` : ""}\n                        \n                    </figure> \n                    ` : ""}\n                    <div class="commentContent">${e.content}</div>\n                </div>\n            </div>\n        </div>\n        `
+            return `\n        <div class="comment loadHide ${window.uniqueIdSelected == e.uniqueId ? "jumpUnique" : ""}" data-id="${e.id}" id="${e.hash}">\n            <div class="commentAvatar">\n                <div class="unselect avatarColor ${e.avatarColor}">\n                    <span class="avatarText">ANON</span>\n                </div>\n            </div>\n            <div class="commentBody">\n                <div class="commentMetadata">\n                    <div class="commentsTag">\n                        ${this.userData.role > 2 ? `<span class="checkComment"><input class="selectComment" type="checkbox" data-checkcomment="${e.id}"></span>` : ""}\n                        ${this.userData.role > 2 ? `<span class="commentTag hide adminTag" data-reactive data-contenttype="0" data-contentid="${e.id}">Reactivar</span>` : ""}\n                        ${e.isOp ? '<span class="commentTagBg">OP</span>' : ""}\n                        <span class="author ${"admin" == e.tag || "dev" == e.tag ? "adminTag" : ""} ${e.uniqueId ? "uniqueId" : ""}" ${e.uniqueId ? `data-uniqueid="${e.uniqueId}"` : ""} style="${e.uniqueId ? `background: #${e.uniqueColor};color:#${"0" == e.uniqueColorContrast ? "000000" : "FFFFFF"};` : ""}" >${e.name}</span>\n                        <span class="commentTag ${"admin" == e.tag || "dev" == e.tag ? "adminTag" : ""}">${e.tag ? e.tag : "anon"}</span>\n                        <span class="commentTag pointer" data-tag="${e.hash}">${e.hash}</span>\n                        ${this.userData.role > 2 ? `<span class="commentTag pointer" data-ban  data-contenttype="0" data-contentid="${e.id}"><i class="fas fa-gavel" data-parent ></i></span> ` : ""}\n                        ${this.userData.role > 2 ? `<a href="/admin/panel/userdata/0/${e.id}/contentType"><span class="commentTag pointer"><i class="fas fa-id-badge"></i></span></a>` : ""}\n                        ${this.userData.role > 1 ? `<span class="commentTag pointer" data-delete  data-contenttype="0" data-contentid="${e.id}"><i class="fas fa-times" data-parent ></i></span> ` : ""}\n                    </div>\n                    <div class="commentMetaRight">\n                        <div class="commentCreatedAt">${e.createdAt}</div>\n                        <div class="commentAction" data-commentaction="${e.id}"><i data-parent class="fas fa-ellipsis-v"></i></div>\n                    </div>\n                </div> \n                <div class="commentReply"></div>\n                \n                ${e.poll ? `<div class="pollOption voted"><div class="pollOptionText">${e.poll}</div></div>` : ""}\n                <div class="commentData">\n                    ${e.extension ? `\n                    <figure class="commentAttach">\n                        <div class="commentAttachContainer">\n                            ${["png", "jpg", "jpeg"].includes(e.extension) ? `\n                                <a target="_BLANK" href="${e.mediaUrl}">\n                                    <img src="${e.mediaUrl}">\n                                </a>\n                            ` : ""}\n                            ${["gif"].includes(e.extension) ? `\n                                <a target="_BLANK" href="${e.mediaUrl}">\n                                    <img src="${e.mediaUrl}">\n                                </a>\n                            ` : ""}\n                            ${["webm", "ytb"].includes(e.extension) ? `\n                                <div data-videopreview data-extension="${e.extension}" data-extensiondata="${e.extensionData}" data-hash="${e.hash}"  class="videoPreview" style="background: url('${this.uploadFiles}/thumb_${e.hash}.jpg')">\n                                    <img data-parent src="/assets/images/play.png" alt="">\n                                </div>\n                            ` : ""}\n                        </div>\n                        ${e.via ? `<div class="via"><a target="_BLANK" href="${e.via}">${e.via}</a></div>` : ""}\n                        \n                    </figure> \n                    ` : ""}\n                    <div class="commentContent">${e.content}</div>\n                </div>\n            </div>\n        </div>\n        `
         }
         notification(e) {
             return `\n            <a href="/notification/${e.id}#${e.contentHash}">\n                <li id="notification-${e.id}">\n                    <div class="avatar">\n                        <img src="${this.uploadFiles}/thumb_${e.voxHash}.jpg" alt="">\n                        <div class="countNotifications">${e.count}</div>\n                    </div>\n                    <div class="notification">\n                        ${e.notificationBold ? `<b>${e.notificationBold}</b>` : ""} ${e.notificationText}\n                    </div>\n                </li>\n            </a>\n        `
@@ -3651,14 +3652,23 @@
             switch (window.loading = {
                 vox: !1,
                 comment: !1
-            }, window.uniqueIdSelected = !1, window.ownSocketComment = [], [].slice.call(document.querySelectorAll(".comment"), 0).reverse().forEach(e => {
+            },
+            window.uniqueIdSelected = !1,
+            window.ownSocketComment = [],
+            [].slice.call(document.querySelectorAll(".comment"), 0).reverse().forEach(e => {
                 this.commentQuotes(e)
-            }), !0) {
+            }), !0)
+            {
                 case "vox" == window.ACTUAL_PAGE:
                     if (document.querySelector("#commentLoadMore").addEventListener("click", () => {
+                        console.log("hola");
                         document.querySelectorAll(".loadHide").forEach(e => {
-                            e.classList.remove("loadHide"), this.commentQuotes(e), document.querySelector("#commentLoadMore").dataset.comments = "0", document.querySelector("#commentLoadMore").classList.add("disabled")
-                        }), document.querySelectorAll(".attach.hide").forEach(e => {
+                            e.classList.remove("loadHide"),
+                            //this.commentQuotes(e),
+                            document.querySelector("#commentLoadMore").dataset.comments = "0",
+                            document.querySelector("#commentLoadMore").classList.add("disabled")
+                        }),
+                            document.querySelectorAll(".attach.hide").forEach(e => {
                             e.classList.remove("hide")
                         })
                     }), window.location.hash) {
@@ -3681,8 +3691,12 @@
                         window.scroll({
                             top: 0,
                             behavior: "smooth"
-                        }), document.querySelectorAll(".loadHide").forEach(e => {
-                            e.classList.remove("loadHide"), document.querySelector("#voxLoadMore").dataset.voxs = "0", document.querySelector("#voxLoadMore").classList.add("disabled"), l("#voxList").children().last().remove()
+                        }),
+                        document.querySelectorAll(".loadHide").forEach(e => {
+                            e.classList.remove("loadHide"),
+                            document.querySelector("#voxLoadMore").dataset.voxs = "0",
+                            document.querySelector("#voxLoadMore").classList.add("disabled"),
+                            l("#voxList").children().last().remove()
                         })
                     })
             }
@@ -3923,7 +3937,7 @@
                 n.removePreview("previewInputComment"),
                 document.getElementById("commentTextarea").value = "",
                 d.event("nuevo", "comentario", window.VOX_HASH),
-                    window.ownSocketComment.push(e.hash)) : (t.swal(!1, e.swal),
+                window.ownSocketComment.push(e.hash)) : (t.swal(!1, e.swal),
                 "TOKEN" == e.error && c.openModal("verify"))
             }
         })
@@ -26712,6 +26726,21 @@
             let e = new r.TemplateService,
                 t = new i.NicheService,
                 n = new d.VoxService;
+
+            //NUEVOOO
+
+            var connection = new signalR.HubConnectionBuilder()
+                .withUrl("/hubs/notifications")
+                .withAutomaticReconnect()
+                .build();
+
+
+            connection.start().then(function () {
+                console.log("conectado");
+            })
+
+
+
             u.on("send", e => {
                 let t = e.type,
                     a = e.data;
@@ -26719,10 +26748,12 @@
                     case "vox:tokens":
                         n.addTokens(a)
                 }
-            }), u.on("comment", t => {
+            }), connection.on("comment", t => {
                 switch (window.ACTUAL_PAGE) {
                     case "home":
-                        let a = document.getElementById(t);
+                        console.log("home");
+                        //let a = document.getElementById(t);
+                        let a = document.getElementById(t.voxHash);
                         if (!a) return !1;
                         let r = a.querySelector(".over"),
                             i = a.querySelector(".countComments");
@@ -26734,10 +26765,12 @@
                         let o = document.querySelector("#commentLoadMore"),
                             s = o.dataset.comments,
                             l = "0" == s ? "Cargar 1 nuevo comentario" : `Cargar ${Number(s) + 1} nuevos comentarios`;
-                        o.innerHTML = `<span class="commentsVoxText">${l}</span>`, o.dataset.comments = "" + (Number(o.dataset.comments) + 1), o.classList.remove("disabled");
+                            o.innerHTML = `<span class="commentsVoxText">${l}</span>`,
+                            o.dataset.comments = "" + (Number(o.dataset.comments) + 1),
+                            o.classList.remove("disabled");
                         let d = document.getElementById("voxComments"),
                             u = Number(d.innerText);
-                        d.innerText = "" + (u + 1);
+                            d.innerText = "" + (u + 1);
                         let h = document.querySelectorAll(".COMMENT_STICKY").length;
                         if (0 != h ? c(e.comment(t)).insertAfter(`.commentContainer .comment:nth-child(${h})`) : c(".commentContainer").prepend(e.comment(t)), t.extension && c("#attachList").prepend(e.attach(t)), n.setAttachTitle(), window.ownSocketComment.includes(t.hash)) {
                             let e = window.ownSocketComment.indexOf(t.hash); - 1 !== e && window.ownSocketComment.splice(e, 1), document.getElementById(t.hash).querySelector(".author").classList.add("ownComment")

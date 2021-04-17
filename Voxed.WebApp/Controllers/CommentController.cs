@@ -56,8 +56,15 @@ namespace Voxed.WebApp.Controllers
         [HttpPost]
         public async Task<Models.CommentResponse> Nuevo([FromForm] Models.CommentRequest request, [FromRoute] string id)
         {
-            Console.WriteLine(request);
-            //Console.WriteLine(id);
+            //if (!ModelState.IsValid)
+            //    return new Models.CommentResponse()
+            //    {
+            //        Hash = id,
+            //        Status = true,
+            //        Error = "Erorrrrr",
+            //        Swal = "JEJEJEJJEEJ",
+            //    };
+
             var user = await _userManager.GetUserAsync(HttpContext.User);
 
             var comment = new Comment()
@@ -66,7 +73,7 @@ namespace Voxed.WebApp.Controllers
                 Hash = new Hash().NewHash(7),
                 VoxID = new Guid(id),
                 User = user ?? new User() { UserName = "Anonimo" },
-                Content = formateadorService.Parsear(request.Content),
+                Content = request.Content == null ? null : formateadorService.Parsear(request.Content),
                 Style = StyleService.GetRandomCommentStyle()
             };
 
@@ -100,8 +107,53 @@ namespace Voxed.WebApp.Controllers
             //var notification = new Models.Notification();
             //notification.Message = "Buenass";
 
-            var notification = new CommentNotification();
-            notification.Hash = vox.Hash;
+            string extension = null;
+
+            if (comment.Media != null)
+            {
+                var array = comment.Media?.Url.Split('.');
+                extension = array[array.Length - 1];
+            }
+
+            var notification = new CommentNotification() {
+
+                UniqueId = null, //si es unique id puede tener colores unicos
+                UniqueColor = null,
+                UniqueColorContrast = null,
+
+                Id = comment.ID.ToString(),
+                Hash = comment.Hash,
+                VoxHash = vox.Hash,
+                AvatarColor = comment.Style.ToString().ToLower(),
+                IsOp = vox.UserID == comment.UserID,
+                Tag = comment.User.UserType.ToString().ToLower(), //admin o dev               
+                Content = comment.Content ?? "",
+                Name = comment.User.UserName,
+                CreatedAt = TimeAgo.ConvertToTimeAgo(comment.CreatedOn.DateTime),
+                Poll = null, //aca va una opcion respondida
+
+                //Media
+                MediaUrl = comment.Media?.Url,
+                MediaThumbnailUrl = comment.Media?.ThumbnailUrl,                
+                Extension = extension,
+
+                //"png", "jpg", "jpeg"
+                // <a target="_BLANK" href="${this.uploadFiles}/${e.hash}.${e.extension}">\n   
+                //<img src="${this.uploadFiles}/thumb_${e.hash}_r.jpg">\n 
+
+                //["gif"]
+                //<a target="_BLANK" href="${this.uploadFiles}/${e.hash}.${e.extension}">\n
+                ////<img src="${this.uploadFiles}/${e.hash}.gif">\n
+                ///
+
+                //["webm", "ytb"]
+                //<div data-videopreview data-extension="${e.extension}" data-extensiondata="${e.extensionData}" data-hash="${e.hash}"  class="videoPreview" style="background: url('${this.uploadFiles}/thumb_${e.hash}.jpg')">\n
+
+
+
+                Via = "", // ${e.via ? `<div class="via"><a target="_BLANK" href="${e.via}">${e.via}</a></div>` : ""}\n 
+
+            };
 
             //await _notificationHub.Clients.All.ReceiveNotification(notification);                
             //await _notificationHub.Clients.All.Comment(vox.Hash);
@@ -113,7 +165,9 @@ namespace Voxed.WebApp.Controllers
 
             var response = new Models.CommentResponse() {
                 Hash = id,
-                Status = true            
+                Status = true,
+                Error = "",
+                Swal = "",
             };
 
             return response;

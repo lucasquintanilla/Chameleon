@@ -785,6 +785,7 @@
     <script src="~/js/ls.unveilhooks.min.js"></script>
     <script src="~/js/ls.unload.min.js"></script>
 
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
 
     <script src="~/js/bundle.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -814,13 +815,12 @@
     </script>
 
 
-    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
 
     <script>
-        var connection = new signalR.HubConnectionBuilder()
-            .withUrl("/hubs/notifications")
-            .withAutomaticReconnect()
-            .build();
+        //var connection = new signalR.HubConnectionBuilder()
+        //    .withUrl("/hubs/notifications")
+        //    .withAutomaticReconnect()
+        //    .build();
 
         //connection.on("ReceiveNotification", function (notification) {
         //    console.log(notification.message);
@@ -831,32 +831,35 @@
 
         //})
 
-        connection.on("comment", t => {
-            switch (window.ACTUAL_PAGE) {
-                case "home":
-                    //let a = document.getElementById(t);
-                    let a = document.getElementById(t.hash);
-                    if (!a) return !1;
-                    let r = a.querySelector(".over"),
-                        i = a.querySelector(".countComments");
-                    r.classList.add("action"), i.textContent = "" + (Number(i.textContent) + 1), setTimeout(() => {
-                        r.classList.remove("action")
-                    }, 2e3);
-                    break;
-                case "vox":
-                    let o = document.querySelector("#commentLoadMore"),
-                        s = o.dataset.comments,
-                        l = "0" == s ? "Cargar 1 nuevo comentario" : `Cargar ${Number(s) + 1} nuevos comentarios`;
-                    o.innerHTML = `<span class="commentsVoxText">${l}</span>`, o.dataset.comments = "" + (Number(o.dataset.comments) + 1), o.classList.remove("disabled");
-                    let d = document.getElementById("voxComments"),
-                        u = Number(d.innerText);
-                    d.innerText = "" + (u + 1);
-                    let h = document.querySelectorAll(".COMMENT_STICKY").length;
-                    if (0 != h ? c(e.comment(t)).insertAfter(`.commentContainer .comment:nth-child(${h})`) : c(".commentContainer").prepend(e.comment(t)), t.extension && c("#attachList").prepend(e.attach(t)), n.setAttachTitle(), window.ownSocketComment.includes(t.hash)) {
-                        let e = window.ownSocketComment.indexOf(t.hash); - 1 !== e && window.ownSocketComment.splice(e, 1), document.getElementById(t.hash).querySelector(".author").classList.add("ownComment")
-                    }
-            }
-        }),
+
+
+        //connection.on("comment", t => {
+        //    switch (window.ACTUAL_PAGE) {
+        //        case "home":
+        //            //let a = document.getElementById(t);
+        //            let a = document.getElementById(t.hash);
+        //            if (!a) return !1;
+        //            let r = a.querySelector(".over"),
+        //                i = a.querySelector(".countComments");
+        //            r.classList.add("action"), i.textContent = "" + (Number(i.textContent) + 1), setTimeout(() => {
+        //                r.classList.remove("action")
+        //            }, 2e3);
+        //            break;
+        //        case "vox":
+        //            let o = document.querySelector("#commentLoadMore"),
+        //                s = o.dataset.comments,
+        //                l = "0" == s ? "Cargar 1 nuevo comentario" : `Cargar ${Number(s) + 1} nuevos comentarios`;
+        //            o.innerHTML = `<span class="commentsVoxText">${l}</span>`, o.dataset.comments = "" + (Number(o.dataset.comments) + 1), o.classList.remove("disabled");
+        //            let d = document.getElementById("voxComments"),
+        //                u = Number(d.innerText);
+        //            d.innerText = "" + (u + 1);
+
+        //            let h = document.querySelectorAll(".COMMENT_STICKY").length;
+        //            if (0 != h ? c(e.comment(t)).insertAfter(`.commentContainer .comment:nth-child(${h})`) : c(".commentContainer").prepend(e.comment(t)), t.extension && c("#attachList").prepend(e.attach(t)), n.setAttachTitle(), window.ownSocketComment.includes(t.hash)) {
+        //                let e = window.ownSocketComment.indexOf(t.hash); - 1 !== e && window.ownSocketComment.splice(e, 1), document.getElementById(t.hash).querySelector(".author").classList.add("ownComment")
+        //            }
+        //    }
+        //}),
 
         //connection.on("ReceiveNotification", n => {
         //    //if (!t.suscriptions().includes(n.niche)) return !1;
@@ -870,9 +873,9 @@
         //    c(e.vox(n)).insertAfter(`#voxList .vox:nth-child(${o})`)
         //})
 
-        connection.start().then(function () {
-            console.log("conectado");
-        })
+        //connection.start().then(function () {
+        //    console.log("conectado");
+        //})
     </script>
 </body>
 </html>

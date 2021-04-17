@@ -7,7 +7,7 @@ namespace Core.Entities
 {
     public enum CommentState { Normal, Eliminado }
     public enum CommentType { Normal, Sticky }
-    public enum CommentStyle { Black, Blue, Green, Multi, Red, White, Yellow }
+    public enum CommentStyle { Black, Blue, Green, Multi, Red, White, Yellow } //invested
 
     public class Comment
     {

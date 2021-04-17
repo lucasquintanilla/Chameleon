@@ -265,7 +265,7 @@ namespace Voxed.WebApp.Controllers
 
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> List(ListRequest request)
+        public async Task<IActionResult> List([FromForm]ListRequest request)
         {
             Console.WriteLine(request);
 
