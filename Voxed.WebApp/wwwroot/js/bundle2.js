@@ -26735,9 +26735,9 @@
                 .build();
 
 
-            //connection.start().then(function () {
-            //    console.log("conectado");
-            //})
+            connection.start().then(function () {
+                console.log("conectado");
+            })
 
             //NUEVOOO
 
