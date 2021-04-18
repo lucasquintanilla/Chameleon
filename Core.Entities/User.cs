@@ -9,8 +9,8 @@ namespace Core.Entities
     public enum UserType { Anon, Admin, Mod }
 
     public class User : IdentityUser<Guid>
-    {        
-        public DateTimeOffset CreatedOn { get; set; }
+    {
+        public DateTimeOffset CreatedOn { get; set; } = DateTimeOffset.Now;
         public UserType UserType { get; set; }
     }
 }

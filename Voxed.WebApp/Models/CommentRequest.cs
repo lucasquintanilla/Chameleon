@@ -19,6 +19,14 @@ namespace Voxed.WebApp.Models
         [AllowedExtensions(new string[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" }, ErrorMessage = "Formato de archivo no soportado.")]
         public IFormFile File { get; set; }
 
-        public string UploadData { get; set; }
+        public Data UploadData { get; set; }
+        //{"preview":"previewInputComment","extension":null,"extensionData":null}
+    }
+
+    public class Data 
+    { 
+        public string Preview { get; set; }
+        public string Extension { get; set; }
+        public string ExtensionData { get; set; }
     }
 }
