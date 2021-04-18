@@ -3923,7 +3923,7 @@
             f = m.classList.contains("hide");
         f || h.append("poll", "true"), h.append("uploadData", JSON.stringify(window.uploadData[0])), l.ajax({
             //url: "/comment/" + window.VOX_HASH,
-            url: "/comment/nuevo/" + window.VOX_HASH,
+            url: "/comment/nuevo/" + window.VOX_ID,
             type: "POST",
             data: h,
             cache: !1,
@@ -26752,7 +26752,7 @@
             }), connection.on("comment", t => {
                 switch (window.ACTUAL_PAGE) {
                     case "home":
-                        console.log("home");
+                        /*console.log("home");*/
                         //let a = document.getElementById(t);
                         let a = document.getElementById(t.voxHash);
                         if (!a) return !1;
@@ -26763,6 +26763,7 @@
                         }, 2e3);
                         break;
                     case "vox":
+                        if (t.voxHash != window.VOX_HASH) return !1; //nuevoooo
                         let o = document.querySelector("#commentLoadMore"),
                             s = o.dataset.comments,
                             l = "0" == s ? "Cargar 1 nuevo comentario" : `Cargar ${Number(s) + 1} nuevos comentarios`;

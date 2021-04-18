@@ -164,7 +164,7 @@ namespace Voxed.WebApp.Controllers
             //return RedirectToAction("Details", "Vox", new { ID = comment.VoxID });
 
             var response = new Models.CommentResponse() {
-                Hash = id,
+                Hash = comment.Hash,
                 Status = true,
                 Error = "",
                 Swal = "",
