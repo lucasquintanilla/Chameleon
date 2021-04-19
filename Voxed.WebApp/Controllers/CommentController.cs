@@ -8,15 +8,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-//using Voxed.WebApp.Data;
-//using Voxed.WebApp.Models;
 using Core.Entities;
 using Core.Data.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using Voxed.WebApp.Hubs;
-//using Voxed.WebApp.Models;
-//using Voxed.WebApp.Models;
+using Newtonsoft.Json;
 
 namespace Voxed.WebApp.Controllers
 {
@@ -65,6 +62,9 @@ namespace Voxed.WebApp.Controllers
             //        Swal = "JEJEJEJJEEJ",
             //    };
 
+            
+
+
             var user = await _userManager.GetUserAsync(HttpContext.User);
 
             var comment = new Comment()
@@ -77,8 +77,27 @@ namespace Voxed.WebApp.Controllers
                 Style = StyleService.GetRandomCommentStyle()
             };
 
+            Models.UploadData data = null;
 
-            if (request.File != null)
+            if (request.UploadData != null)
+            {
+                data = JsonConvert.DeserializeObject<Models.UploadData>(request.UploadData);
+            }
+
+            if (data != null)
+            {
+                if (data.Extension == "ytb")
+                {
+                    comment.Media = new Media()
+                    {
+                        ID = Guid.NewGuid(),
+                        Url = $"https://www.youtube.com/watch?v={data.ExtensionData}",                        
+                        ThumbnailUrl = "/media/" + await fileStoreService.GenerateYoutubeThumbnail(data.ExtensionData, comment.Hash),
+                        MediaType = MediaType.YouTube,
+                    };
+                }
+            }
+            else if (request.File != null)
             {
                 var isValidFile = await fileStoreService.IsValidFile(request.File);
 
@@ -151,7 +170,7 @@ namespace Voxed.WebApp.Controllers
 
 
 
-                Via = "", // ${e.via ? `<div class="via"><a target="_BLANK" href="${e.via}">${e.via}</a></div>` : ""}\n 
+                Via = comment.Media?.Url, // ${e.via ? `<div class="via"><a target="_BLANK" href="${e.via}">${e.via}</a></div>` : ""}\n 
 
             };
 

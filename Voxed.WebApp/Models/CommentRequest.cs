@@ -1,5 +1,6 @@
 ﻿using Core.Validations;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -10,6 +11,8 @@ namespace Voxed.WebApp.Models
 {
     public class CommentRequest
     {
+        private UploadData uploadData;
+
         [Required(ErrorMessage = "Debe ingresar un comentario")]
         [StringLength(3000, ErrorMessage = "El comentario no puede superar los {1} caracteres.")]
         public string Content { get; set; }
@@ -18,12 +21,12 @@ namespace Voxed.WebApp.Models
         //[AllowedExtensions(new string[] { ".jpg", ".jpeg", ".png", ".gif", ".mp4", ".webm" }, ErrorMessage = "Formato de archivo no soportado.")]
         [AllowedExtensions(new string[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" }, ErrorMessage = "Formato de archivo no soportado.")]
         public IFormFile File { get; set; }
+        public string UploadData { get; set; }
 
-        public Data UploadData { get; set; }
         //{"preview":"previewInputComment","extension":null,"extensionData":null}
     }
 
-    public class Data 
+    public class UploadData
     { 
         public string Preview { get; set; }
         public string Extension { get; set; }

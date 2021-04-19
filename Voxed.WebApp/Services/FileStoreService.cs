@@ -13,6 +13,7 @@ using ImageMagick;
 using System.Net.Mime;
 using System.Diagnostics;
 using Xabe.FFmpeg;
+using System.Net.Http;
 
 namespace Core.Shared
 {
@@ -215,6 +216,31 @@ namespace Core.Shared
                 Console.WriteLine("An error occurred: '{0}'", ex);
             }
             return tempPath;
+        }
+
+        private readonly HttpClient client = new HttpClient();
+
+        public async Task<string> GenerateYoutubeThumbnail(string id, string hash)
+        {
+            var response = await client.GetAsync($"https://img.youtube.com/vi/{id}/maxresdefault.jpg");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                response = await client.GetAsync($"https://img.youtube.com/vi/{id}/hqdefault.jpg");
+            }
+
+            if (!response.IsSuccessStatusCode) return null;
+
+            using var stream = await response.Content.ReadAsStreamAsync();
+
+            var thumbnailFilename = $"{DateTime.Now:yyyyMMdd}-{hash}.jpg";
+            var thumbnailFilePath = Path.Combine(_dir, folderName, thumbnailFilename);
+
+            using var fileStream = File.Create(thumbnailFilePath);
+            stream.Seek(0, SeekOrigin.Begin);
+            await stream.CopyToAsync(fileStream);
+
+            return thumbnailFilename;
         }
 
     }
