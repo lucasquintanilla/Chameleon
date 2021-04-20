@@ -25,6 +25,7 @@ namespace Voxed.WebApp.Controllers
         private readonly IVoxedRepository voxedRepository;
         private readonly UserManager<User> _userManager;
         public IHubContext<VoxedHub, INotificationHub> _notificationHub { get; }
+        private User anonUser;
 
         public CommentController(
             //VoxedContext context, 
@@ -62,9 +63,6 @@ namespace Voxed.WebApp.Controllers
             //        Swal = "JEJEJEJJEEJ",
             //    };
 
-            
-
-
             var user = await _userManager.GetUserAsync(HttpContext.User);
 
             var comment = new Comment()
@@ -72,7 +70,7 @@ namespace Voxed.WebApp.Controllers
                 ID = Guid.NewGuid(),
                 Hash = new Hash().NewHash(7),
                 VoxID = new Guid(id),
-                User = user ?? new User() { UserName = "Anonimo" },
+                User = user ?? GetAnonUser(),
                 Content = request.Content == null ? null : formateadorService.Parsear(request.Content),
                 Style = StyleService.GetRandomCommentStyle()
             };
@@ -84,17 +82,16 @@ namespace Voxed.WebApp.Controllers
                 data = JsonConvert.DeserializeObject<Models.UploadData>(request.UploadData);
             }
 
+            string extension = null;
+
             if (data != null)
             {
                 if (data.Extension == "ytb")
                 {
-                    comment.Media = new Media()
-                    {
-                        ID = Guid.NewGuid(),
-                        Url = $"https://www.youtube.com/watch?v={data.ExtensionData}",                        
-                        ThumbnailUrl = "/media/" + await fileStoreService.GenerateYoutubeThumbnail(data.ExtensionData, comment.Hash),
-                        MediaType = MediaType.YouTube,
-                    };
+                    comment.Media = await fileStoreService.SaveExternal(data, comment.Hash);
+
+                    extension = "ytb";
+                    
                 }
             }
             else if (request.File != null)
@@ -104,6 +101,12 @@ namespace Voxed.WebApp.Controllers
                 if (isValidFile)
                 {
                     comment.Media = await fileStoreService.Save(request.File, comment.Hash);
+                }
+
+                if (comment.Media != null)
+                {
+                    var array = comment.Media?.Url.Split('.');
+                    extension = array[array.Length - 1];
                 }
 
                 //ModelState.AddModelError("File", "El archivo no es válido.");
@@ -122,18 +125,6 @@ namespace Voxed.WebApp.Controllers
             vox.Bump = DateTimeOffset.Now;
             await voxedRepository.CompleteAsync();
 
-
-            //var notification = new Models.Notification();
-            //notification.Message = "Buenass";
-
-            string extension = null;
-
-            if (comment.Media != null)
-            {
-                var array = comment.Media?.Url.Split('.');
-                extension = array[array.Length - 1];
-            }
-
             var notification = new CommentNotification() {
 
                 UniqueId = null, //si es unique id puede tener colores unicos
@@ -144,7 +135,7 @@ namespace Voxed.WebApp.Controllers
                 Hash = comment.Hash,
                 VoxHash = vox.Hash,
                 AvatarColor = comment.Style.ToString().ToLower(),
-                IsOp = vox.UserID == comment.UserID,
+                IsOp = vox.UserID == comment.UserID && vox.User.UserType != UserType.Anon, //probar cambiarlo cuando solo pruedan craer los usuarios.
                 Tag = comment.User.UserType.ToString().ToLower(), //admin o dev               
                 Content = comment.Content ?? "",
                 Name = comment.User.UserName,
@@ -155,32 +146,11 @@ namespace Voxed.WebApp.Controllers
                 MediaUrl = comment.Media?.Url,
                 MediaThumbnailUrl = comment.Media?.ThumbnailUrl,                
                 Extension = extension,
-
-                //"png", "jpg", "jpeg"
-                // <a target="_BLANK" href="${this.uploadFiles}/${e.hash}.${e.extension}">\n   
-                //<img src="${this.uploadFiles}/thumb_${e.hash}_r.jpg">\n 
-
-                //["gif"]
-                //<a target="_BLANK" href="${this.uploadFiles}/${e.hash}.${e.extension}">\n
-                ////<img src="${this.uploadFiles}/${e.hash}.gif">\n
-                ///
-
-                //["webm", "ytb"]
-                //<div data-videopreview data-extension="${e.extension}" data-extensiondata="${e.extensionData}" data-hash="${e.hash}"  class="videoPreview" style="background: url('${this.uploadFiles}/thumb_${e.hash}.jpg')">\n
-
-
-
-                Via = comment.Media?.Url, // ${e.via ? `<div class="via"><a target="_BLANK" href="${e.via}">${e.via}</a></div>` : ""}\n 
-
+                ExtensionData = data?.ExtensionData,  
+                Via = comment.Media?.Url,
             };
 
-            //await _notificationHub.Clients.All.ReceiveNotification(notification);                
-            //await _notificationHub.Clients.All.Comment(vox.Hash);
             await _notificationHub.Clients.All.Comment(notification);
-
-            //await _notificationHub.Clients.User(vox.UserID.ToString()).ReceiveNotification(notification);
-
-            //return RedirectToAction("Details", "Vox", new { ID = comment.VoxID });
 
             var response = new Models.CommentResponse() {
                 Hash = comment.Hash,
@@ -190,6 +160,16 @@ namespace Voxed.WebApp.Controllers
             };
 
             return response;
+        }
+
+        private User GetAnonUser()
+        {
+            if (anonUser == null)
+            {
+                anonUser = _userManager.Users.Where(x => x.UserType == UserType.Anon).FirstOrDefault();
+            }
+
+            return anonUser;
         }
 
         //// GET: Comment/Details/5

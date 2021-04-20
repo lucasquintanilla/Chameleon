@@ -14,6 +14,7 @@ using System.Net.Mime;
 using System.Diagnostics;
 using Xabe.FFmpeg;
 using System.Net.Http;
+//using Voxed.WebApp.Models;
 
 namespace Core.Shared
 {
@@ -104,6 +105,23 @@ namespace Core.Shared
                 ThumbnailUrl = $"/{folderName}/{thumbnailFilename}",
                 MediaType = MediaType.Image
             };
+        }
+
+        public async Task<Media> SaveExternal(Voxed.WebApp.Models.UploadData data, string hash)
+        {
+            if (data.Extension == "ytb")
+            {
+                return new Media()
+                {
+                    ID = Guid.NewGuid(),
+                    Url = $"https://www.youtube.com/watch?v={data.ExtensionData}",
+                    ThumbnailUrl = await GenerateYoutubeThumbnail(data.ExtensionData, hash),
+                    MediaType = MediaType.YouTube,
+                };
+
+            }
+
+            return null;
         }
 
         private async Task SaveOriginalFormat(IFormFile file, string filePath)
@@ -240,7 +258,7 @@ namespace Core.Shared
             stream.Seek(0, SeekOrigin.Begin);
             await stream.CopyToAsync(fileStream);
 
-            return thumbnailFilename;
+            return $"/{folderName}/" + thumbnailFilename;
         }
 
     }

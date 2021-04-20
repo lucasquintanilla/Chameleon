@@ -50,7 +50,8 @@ namespace Core.Data.EF.Repositories
             => await _context.Voxs
                    .Include(x => x.Media)
                    .Include(x => x.Category)
-                   .Include(x => x.Comments)                   
+                   .Include(x => x.Comments)
+                   .Include(x => x.User)
                    .ToListAsync();
 
         public async Task<IEnumerable<Vox>> GetByCategoryIdAsync(int id)

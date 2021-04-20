@@ -21,7 +21,8 @@ namespace Core.Data.EF.Repositories
 
         public override async Task<IEnumerable<Comment>> GetAll()
             => await _context.Comments
-                   .Include(x => x.Media)                   
+                   .Include(x => x.Media)
+                    .Include(x => x.User)
                    .ToListAsync();
     }
 }

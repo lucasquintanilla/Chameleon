@@ -11,6 +11,7 @@ using ImageProcessor;
 using ImageProcessor.Plugins.WebP.Imaging.Formats;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.SignalR;
@@ -29,14 +30,20 @@ namespace Voxed.WebApp.Controllers
         private IWebHostEnvironment _env;
         private readonly IHubContext<VoxedHub> notifyHub;
 
+        private readonly UserManager<Core.Entities.User> _userManager;
+
         public CategoryController(
             //VoxedContext context, 
-            IVoxedRepository voxedRepository, IWebHostEnvironment env, IHubContext<VoxedHub> notifyHub)
+            IVoxedRepository voxedRepository, 
+            IWebHostEnvironment env, 
+            IHubContext<VoxedHub> notifyHub, 
+            UserManager<Core.Entities.User> userManager)
         {
             //_context = context;
             this.voxedRepository = voxedRepository;
             _env = env;
             this.notifyHub = notifyHub;
+            _userManager = userManager;
         }
 
         // GET: Category
@@ -172,10 +179,12 @@ namespace Voxed.WebApp.Controllers
 
             //await AddStylesToComments();
 
-            var notification = new Notification();
-            notification.Message = "Buenass";
+            //var notification = new Notification();
+            //notification.Message = "Buenass";
 
-            await notifyHub.Clients.All.SendAsync("ReceiveNotification", notification);
+            //await notifyHub.Clients.All.SendAsync("ReceiveNotification", notification);
+
+            //await UnificarAnons();
 
             return RedirectToAction("Index", "Home");
         }
@@ -381,6 +390,55 @@ namespace Voxed.WebApp.Controllers
 
                 }
             }
+        }
+
+        private async Task UnificarAnons()
+        {
+            var comments = await voxedRepository.Comments.GetAll();
+
+            var anonUser = new Core.Entities.User() { UserName = "Anonimo", UserType = Core.Entities.UserType.Anon };
+
+            foreach (var comment in comments.Where(x => x.User.UserType == Core.Entities.UserType.Anon))
+            {
+                try
+                {
+                    comment.User = anonUser;
+
+                    //await voxedRepository.CompleteAsync();
+                }
+                catch (Exception e)
+                {
+
+
+                }
+            }
+
+            var voxs = await voxedRepository.Voxs.GetAll();           
+
+            foreach (var vox in voxs.Where(x => x.User.UserType == Core.Entities.UserType.Anon))
+            {
+                try
+                {
+                    vox.User = anonUser;
+
+                   
+                }
+                catch (Exception e)
+                {
+
+
+                }
+            }
+
+             await voxedRepository.CompleteAsync();
+
+            var usersToDelete = _userManager.Users.Where(x => x.Id != anonUser.Id && x.UserType == Core.Entities.UserType.Anon);
+
+            foreach (var user in usersToDelete)
+            {
+                await _userManager.DeleteAsync(user);
+            }
+            
         }
 
         private async Task MassiveConvertGifToWebP()

@@ -26,6 +26,7 @@ namespace Voxed.WebApp.Controllers
         private IVoxedRepository voxedRepository;
         private readonly UserManager<User> _userManager;
         private FormateadorService formateadorService;
+        private User anonUser;
 
         public VoxController(
             //VoxedContext context, 
@@ -140,7 +141,7 @@ namespace Voxed.WebApp.Controllers
                 {
                     ID = Guid.NewGuid(),
                     State = VoxState.Normal,
-                    User = user ?? new User() { UserName = "Anonimo" },
+                    User = user ?? GetAnonUser(),
                     Hash = new Hash().NewHash(),
                     Title = voxRequest.Title,
                     Content = formateadorService.Parsear(voxRequest.Content),
@@ -176,6 +177,16 @@ namespace Voxed.WebApp.Controllers
             }
 
             return RedirectToAction("Index", "Home");
+        }
+
+        private User GetAnonUser()
+        {
+            if (anonUser == null)
+            {
+                anonUser = _userManager.Users.Where(x => x.UserType == UserType.Anon).FirstOrDefault();
+            }
+
+            return anonUser;
         }
 
         // GET: Vox/Edit/5
