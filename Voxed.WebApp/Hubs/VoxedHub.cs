@@ -9,14 +9,35 @@ namespace Voxed.WebApp.Hubs
 {
     public class VoxedHub : Hub<INotificationHub>
     {
-        //public async Task SendMessage(Notification notification)
-        //{
-        //    await Clients.All.ReceiveNotification(notification);
-        //}
+        private static HashSet<string> usersOnline = new HashSet<string>();
+
+        public int TotalUsersOnline => VoxedHub.usersOnline.Count;
 
         public async Task SendMessage(CommentNotification comment)
         {
             await Clients.All.Comment(comment);
+        }
+
+        public async Task SendOPCommentNotification(Core.Entities.User user, CommentNotification comment)
+        {
+            await Clients.Users(user.Id.ToString()).Notification(comment);
+        }
+
+        public async Task SuscribeToVox(string voxId)
+        {
+            await Groups.AddToGroupAsync(Context.ConnectionId, voxId);
+        }
+
+        public override async Task OnConnectedAsync()
+        {
+            usersOnline.Add(Context.GetHttpContext().Connection.RemoteIpAddress.MapToIPv4().ToString());
+            await base.OnConnectedAsync();
+        }
+
+        public override async Task OnDisconnectedAsync(Exception exception)
+        {
+            usersOnline.Remove(Context.GetHttpContext().Connection.RemoteIpAddress.MapToIPv4().ToString());
+            await base.OnDisconnectedAsync(exception);
         }
     }
 

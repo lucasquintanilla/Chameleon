@@ -26740,6 +26740,11 @@
                 console.log("conectado");
             })
 
+
+            connection.on("OPComment", t => {
+                console.log("TE COMENTARON OPPPPPP");
+            })
+
             //NUEVOOO
 
 
@@ -26817,7 +26822,7 @@
                         let r = document.getElementById("accountActivate");
                         r && r.remove()
                 }
-            }), u.on("notification", t => {
+            }), connection.on("notification", t => {
                 let n = new s.AlertService,
                     a = new l.UtilService,
                     r = document.querySelector("#notificationsCount"),

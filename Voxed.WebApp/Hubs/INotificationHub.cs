@@ -10,5 +10,7 @@ namespace Voxed.WebApp.Hubs
     {
         //Task ReceiveNotification(Notification notification);
         Task Comment(CommentNotification comment);
+        Task Notification(CommentNotification comment);
     }
 }
+

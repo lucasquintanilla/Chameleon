@@ -152,6 +152,11 @@ namespace Voxed.WebApp.Controllers
 
             await _notificationHub.Clients.All.Comment(notification);
 
+            if (comment.UserID != vox.User.Id)
+            {
+                await _notificationHub.Clients.User(vox.User.Id.ToString()).Notification(notification);
+            }            
+
             var response = new Models.CommentResponse() {
                 Hash = comment.Hash,
                 Status = true,

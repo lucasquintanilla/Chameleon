@@ -26,21 +26,9 @@
     </ul>*@
 @if (SignInManager.IsSignedIn(User))
 {
-    @*<li class="menuIcon tooltip-bottom mobile" data-tooltip="Notificaciones">
-            <i class="fas fa-bell"></i>
-            <i class="menuIconCount">+99</i>
-        </li>*@
-
     <li class="menuIcon tooltip-bottom mobile" data-tooltip="Notificaciones">
-            <i class="fas fa-bell"></i>
-            <i class="menuIconCount" id="notificationsCount">+99</i>
-        </li>
-
-
-
-}
-else
-{
-
+        <i class="fas fa-bell"></i>
+        <i class="menuIconCount hide" id="notificationsCount">0</i>
+    </li>
 }
 
