@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Newtonsoft.Json;
 
 namespace Voxed.WebApp.Controllers
 {
@@ -52,14 +53,63 @@ namespace Voxed.WebApp.Controllers
         //}
 
         // GET: Vox/Details/5
-        public async Task<IActionResult> Details(Guid? id)
+
+        //public async Task<IActionResult> Details(Guid? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var vox = await voxedRepository.Voxs.GetById(id.Value);
+
+        //    if (vox == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    if (vox.State == VoxState.Deleted)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return View(vox);
+        //}
+
+        //[HttpGet("vox/{hash}")]
+        //public async Task<IActionResult> Details(string hash)
+        //{
+        //    if (hash == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var vox = await voxedRepository.Voxs.GetByHash(hash);
+
+        //    if (vox == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    if (vox.State == VoxState.Deleted)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return View(vox);
+        //}
+
+        [HttpGet("vox/{hash}")]
+        public async Task<IActionResult> Details(string hash)
         {
-            if (id == null)
+            if (hash == null)
             {
                 return NotFound();
             }
 
-            var vox = await voxedRepository.Voxs.GetById(id.Value);
+            var voxId = GuidConverter.FromShortString(hash);
+
+            var vox = await voxedRepository.Voxs.GetById(voxId);
 
             if (vox == null)
             {
@@ -74,19 +124,34 @@ namespace Voxed.WebApp.Controllers
             return View(vox);
         }
 
-        public async Task<IActionResult> Index(string search)
+        [HttpGet("search/{value}")]
+        public async Task<IActionResult> Index(string value)
         {
-            if (string.IsNullOrWhiteSpace(search))
+            if (string.IsNullOrWhiteSpace(value))
             {
                 BadRequest();
             }
 
             //var words = search.Split(" ");
 
-            var voxs = await voxedRepository.Voxs.SearchAsync(search);
+            var voxs = await voxedRepository.Voxs.SearchAsync(value);
 
             return View(voxs);
         }
+
+        //public async Task<IActionResult> Index(string search)
+        //{
+        //    if (string.IsNullOrWhiteSpace(search))
+        //    {
+        //        BadRequest();
+        //    }
+
+        //    //var words = search.Split(" ");
+
+        //    var voxs = await voxedRepository.Voxs.SearchAsync(search);
+
+        //    return View(voxs);
+        //}
 
         // GET: Vox/Create
         //public IActionResult Create()
@@ -173,7 +238,7 @@ namespace Voxed.WebApp.Controllers
                 await voxedRepository.Voxs.Add(vox);
                 await voxedRepository.CompleteAsync();
 
-                return RedirectToAction(nameof(Details), new { ID = vox.ID });
+                return RedirectToAction(nameof(Details), new { Hash = GuidConverter.ToShortString(vox.ID) });
             }
 
             return RedirectToAction("Index", "Home");
@@ -183,7 +248,7 @@ namespace Voxed.WebApp.Controllers
         {
             if (anonUser == null)
             {
-                anonUser = _userManager.Users.Where(x => x.UserType == UserType.Anon).FirstOrDefault();
+                anonUser = _userManager.Users.Where(x => x.UserType == UserType.Anon).FirstOrDefault();                
             }
 
             return anonUser;
@@ -276,21 +341,99 @@ namespace Voxed.WebApp.Controllers
 
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> List([FromForm]ListRequest request)
+        public async Task<ListResponse> List([FromForm]ListRequest request)
         {
-            Console.WriteLine(request);
+            var skipList = JsonConvert.DeserializeObject<List<string>>(request?.Ignore);
 
+            var lastVox = await voxedRepository.Voxs.GetLastVoxBump(skipList);
 
-            return Ok();
+            var voxs = await voxedRepository.Voxs.GetLastestAsync(skipList, lastVox.Bump);
+
+            var voxsList = voxs.Select(x => new VoxResponse() {
+                Hash = GuidConverter.ToShortString(x.ID),
+                Status = "1",
+                Niche = "20",
+                Title = x.Title,                
+                Comments = x.Comments.Count().ToString(),
+                Extension = "",
+                Sticky = x.Type == VoxType.Sticky ? "1" : "0",
+                CreatedAt = x.CreatedOn.ToString(),
+                PollOne = "",
+                PollTwo = "",
+                Id = "20",
+                Slug = x.Category.ShortName.ToUpper(),
+                VoxId = x.ID.ToString(),
+                New = false,
+            });
+            
+            //Devuelve 36 voxs
+           
+            return new ListResponse()
+            {
+                Status = true,
+                List = new List()
+                {
+                    Page = "category-sld",
+                    Voxs = voxsList
+                },
+        };
         }
     }
 
+        //{
+        //        "hash": "LVsFqy15CYaRdNXsv5jR",
+        //        "status": "1",
+        //        "niche": "20",
+        //        "title": "Es verdad que las concha de tanto cojer se oscurecen? ",
+        //        "comments": "101",
+        //        "extension": "jpg",
+        //        "sticky": "0",
+        //        "createdAt": "2020-10-30 10:20:34",
+        //        "pollOne": " Es por tanto cojer, mir\u00e1 te cuento ",
+        //        "pollTwo": "Es por esto",
+        //        "id": "20",
+        //        "slug": "sld",
+        //        "voxId": "405371",
+        //        "new": false
+        //},
+
     public class ListRequest
     {
-        public string Page { get; set; }
+        public string Page { get; set; } //category-anm o home
         public int LoadMore { get; set; }
         public string Suscriptions { get; set; }
-        public string[] Ignore { get; set; }
+        public string Ignore { get; set; }
 
     }
+    public class VoxResponse
+    {
+        public string Hash { get; set; }
+        public string Status { get; set; }
+        public string Niche { get; set; }
+        public string Title { get; set; }
+        public string Comments { get; set; }
+        public string Extension { get; set; }
+        public string Sticky { get; set; }
+        public string CreatedAt { get; set; }
+        public string PollOne { get; set; }
+        public string PollTwo { get; set; }
+        public string Id { get; set; }
+        public string Slug { get; set; }
+        public string VoxId { get; set; }
+        public bool New { get; set; }
+    }
+
+    public class List
+    {
+        public IEnumerable<VoxResponse> Voxs { get; set; } = new List<VoxResponse>();
+        public string Page { get; set; }
+    }
+
+    public class ListResponse
+    {
+        public bool Status { get; set; }
+        public List List { get; set; }
+    }
+
+
 }

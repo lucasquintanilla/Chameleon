@@ -23,6 +23,11 @@ namespace Core.Data.EF.Repositories
             return await _context.Categories.AnyAsync(c => c.ID == id);
         }
 
+        public async Task<bool> Exists(string shortName)
+        {
+            return await _context.Categories.AnyAsync(c => c.ShortName == shortName);
+        }
+
         public override async Task<IEnumerable<Category>> GetAll() 
         {
             return await context.Categories

@@ -53,7 +53,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="wwwroot\js\bundle3.js">
+    <Content Update="wwwroot\js\bundle.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

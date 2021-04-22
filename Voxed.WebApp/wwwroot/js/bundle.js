@@ -3462,7 +3462,8 @@
     t.TemplateService = class {
         constructor() {
             let e = new a.JWTService;
-            this.userData = e.decode(), this.uploadFiles = r.CONFIG[r.CONFIG.mode].uploadFiles
+            this.userData = e.decode(),
+            this.uploadFiles = r.CONFIG[r.CONFIG.mode].uploadFiles
         }
         attach(e) {
             return `\n      <div class="attach hide">\n            
@@ -15030,7 +15031,11 @@
                 o = e.suscriptions();
             document.getElementById("homeLoadingSpinner").classList.remove("hide");
             let s = new FormData;
-            s.append("ignore", "" + JSON.stringify(n)), s.append("loadMore", "1"), s.append("suscriptions", "" + JSON.stringify(o)), s.append("page", window.ACTUAL_PAGE), i.ajax({
+            s.append("ignore", "" + JSON.stringify(n)),
+            s.append("loadMore", "1"),
+            s.append("suscriptions", "" + JSON.stringify(o)),
+                s.append("page", window.ACTUAL_PAGE),
+                i.ajax({
                 url: "/vox/list",
                 type: "POST",
                 data: s,
@@ -16066,7 +16071,7 @@
                 })
             }), document.getElementById("searchInput").addEventListener("keypress", e => {
                 let t = e.target.value;
-                13 === (e.which || e.keyCode) && t && (window.location.href = "/vox?search=" + t)
+                13 === (e.which || e.keyCode) && t && (window.location.href = "/search/" + t)
             }), document.getElementById("hiddenWordsSubmit").addEventListener("click", () => {
                 let e = new c.CookieService,
                     t = new a.ModalService,
@@ -26584,7 +26589,8 @@
                 processData: !1,
                 dataType: "json",
                 success: e => {
-                    e.status ? (r.create("token", e.token, e.maxAge), t && location.reload()) : e.swal && n.swal(e.status, e.swal)
+                    e.status ? (r.create("token", e.token, e.maxAge),
+                        t && location.reload()) : e.swal && n.swal(e.status, e.swal)
                 }
             })
         }

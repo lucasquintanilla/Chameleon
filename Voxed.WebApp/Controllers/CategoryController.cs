@@ -228,6 +228,26 @@ namespace Voxed.WebApp.Controllers
             return View(voxs);
         }
 
+        [Route("/{shortName}")]
+        public async Task<IActionResult> Details(string shortName)
+        {
+            if (shortName == null)
+            {
+                return NotFound();
+            }
+
+            var exists = await voxedRepository.Categories.Exists(shortName);
+
+            if (!exists)
+            {
+                return NotFound();
+            }
+
+            var voxs = await voxedRepository.Voxs.GetByCategoryShortNameAsync(shortName);
+
+            return View(voxs);
+        }
+
         // GET: Category/Create
         //public IActionResult Create()
         //{

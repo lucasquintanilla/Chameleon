@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -37,12 +38,38 @@ namespace Core.Data.EF
 
         private async Task InitializeUsers()
         {
-            //var user = new User { UserName = "admin", Email = "admin@voxed.net", EmailConfirmed = true };
-            //var result = await _userManager.CreateAsync(user, "Alsina911");
-            //if (result.Succeeded)
-            //{
+            if (_userManager.Users.Any())
+            {
+                return;
+            }
 
-            //}
+            var defaultUser = new DefaultUser() { Password = "Alsina911" };
+
+            var admin = new User { 
+                UserName = "admin@voxed.club", 
+                Email = "admin@voxed.club", 
+                EmailConfirmed = true, 
+                UserType = UserType.Admin 
+            };
+
+            var result = await _userManager.CreateAsync(admin, defaultUser.Password);
+            if (result.Succeeded)
+            {
+
+            }
+
+            var anon = new User { 
+                UserName = "anon@voxed.club", 
+                Email = "anon@voxed.club", 
+                EmailConfirmed = true, 
+                UserType = UserType.Anon 
+            };
+
+            result = await _userManager.CreateAsync(anon, defaultUser.Password);
+            if (result.Succeeded)
+            {
+
+            }
         }
 
         private void InitializeComments()
@@ -404,5 +431,13 @@ namespace Core.Data.EF
 
             context.SaveChanges();
         }
+    }
+
+    public class DefaultUser
+    {
+        public string UserName { get; set; }
+
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
     }
 }

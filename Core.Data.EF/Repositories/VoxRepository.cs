@@ -41,7 +41,7 @@ namespace Core.Data.EF.Repositories
                 //.OrderByDescending(x => x.Bump).ThenByDescending(x => x.Type)
                 .OrderByDescending(x => x.Type).ThenByDescending(x => x.Bump)
                 .Skip(0)
-                .Take(50)
+                .Take(36)
                 .Where(x => x.State == VoxState.Normal || x.Type == VoxType.Sticky)
                 .AsNoTracking()
                 .ToListAsync();
@@ -73,7 +73,7 @@ namespace Core.Data.EF.Repositories
                 .Include(x => x.Comments)
                 .OrderByDescending(x => x.Bump)
                 .Skip(0)
-                .Take(50)
+                .Take(36)
                 .Where(x => x.State == VoxState.Normal)
                 .Where(q =>  q.Title.ToLower().Contains(search.ToLower()))
                 .Where(q => q.Content.ToLower().Contains(search.ToLower()))
@@ -83,7 +83,60 @@ namespace Core.Data.EF.Repositories
             //var p = db.Posts.Where(q => keywords.Any(k => q.Title.Contains(k)));
         }
 
+        public async Task<IEnumerable<Vox>> GetLastestAsync(IEnumerable<string> hashSkipList) =>        
+            await _context.Voxs
+                    .Include(x => x.Media)
+                    .Include(x => x.Category)
+                    .Include(x => x.Comments)
+                    .OrderByDescending(x => x.Type).ThenByDescending(x => x.Bump)                    
+                    .Where(x => x.State == VoxState.Normal)
+                    .Where(x => !hashSkipList.Contains(x.Hash))
+                    .Skip(0)
+                    .Take(36)
+                    .AsNoTracking()
+                    .ToListAsync();
 
+        public async Task<IEnumerable<Vox>> GetLastestAsync(IEnumerable<string> hashSkipList, DateTimeOffset LastBump) =>
+            await _context.Voxs
+                    .Where(x => x.State == VoxState.Normal)
+                    .Where(x => !hashSkipList.Contains(x.Hash) && x.Bump < LastBump)
+                    .OrderByDescending(x => x.Type).ThenByDescending(x => x.Bump)
+                    .Include(x => x.Media)
+                    .Include(x => x.Category)
+                    .Include(x => x.Comments)                                    
+                    .Skip(hashSkipList.Count())
+                    .Take(36)
+                    .AsNoTracking()
+                    .ToListAsync();
 
+        public async Task<Vox> GetByHash(string hash)
+         => await _context.Voxs
+                .Include(x => x.Media)
+                .Include(x => x.Category)
+                .Include(x => x.Category.Media)
+                .Include(x => x.Comments)
+                    .ThenInclude(c => c.Media)
+                .Include(c => c.Comments)
+                    .ThenInclude(c => c.User)
+                .Include(x => x.Poll)
+                .Include(x => x.User)
+                .FirstOrDefaultAsync(m => m.Hash == hash);
+
+        public async Task<IEnumerable<Vox>> GetByCategoryShortNameAsync(string shortName)
+            => await _context.Voxs
+                        .Where(x => x.Category.ShortName == shortName)
+                        .Include(x => x.Media)
+                        .Include(x => x.Category)
+                        .Include(x => x.Comments)
+                        .OrderByDescending(x => x.Bump)
+                        .Skip(0)
+                        .Take(100)
+                        .ToListAsync();
+
+        public async Task<Vox> GetLastVoxBump(IEnumerable<string> hash)
+         => await _context.Voxs
+            .Where(x => hash.Contains(x.Hash))
+            .OrderBy(x => x.Bump)
+            .FirstAsync();
     }
 }
