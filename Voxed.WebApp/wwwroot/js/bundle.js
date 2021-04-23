@@ -3937,11 +3937,10 @@
                 window.loading.comment = !1,
                 document.getElementById("newComment").classList.remove("loading"),
                 e.status ? (f || m.classList.add("hide"),
-                n.removePreview("previewInputComment"),
-                document.getElementById("commentTextarea").value = "",
-                d.event("nuevo", "comentario", window.VOX_HASH),
-                window.ownSocketComment.push(e.hash)) : (t.swal(!1, e.swal),
-                "TOKEN" == e.error && c.openModal("verify"))
+                            n.removePreview("previewInputComment"),
+                            document.getElementById("commentTextarea").value = "",
+                            d.event("nuevo", "comentario", window.VOX_HASH),
+                            window.ownSocketComment.push(e.hash)) : (t.swal(!1, e.swal), "TOKEN" == e.error && c.openModal("verify"))
             }
         })
     })), l("[data-poll]").on("click", (function () {

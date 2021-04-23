@@ -13,7 +13,7 @@ namespace Voxed.WebApp.Models
     {
         private UploadData uploadData;
 
-        [Required(ErrorMessage = "Debe ingresar un comentario")]
+        //[Required(ErrorMessage = "Debe ingresar un comentario")]
         [StringLength(3000, ErrorMessage = "El comentario no puede superar los {1} caracteres.")]
         public string Content { get; set; }
 
@@ -22,6 +22,11 @@ namespace Voxed.WebApp.Models
         [AllowedExtensions(new string[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" }, ErrorMessage = "Formato de archivo no soportado.")]
         public IFormFile File { get; set; }
         public string UploadData { get; set; }
+        
+        public UploadData GetUploadData()
+        {
+            return JsonConvert.DeserializeObject<Models.UploadData>(UploadData);
+        }
 
         //{"preview":"previewInputComment","extension":null,"extensionData":null}
     }
@@ -31,5 +36,13 @@ namespace Voxed.WebApp.Models
         public string Preview { get; set; }
         public string Extension { get; set; }
         public string ExtensionData { get; set; }
+    }
+
+    public static class UploadDataExtension
+    {
+        public static string Youtube { get; set; } = "ytb";
+        public static string Png { get; set; } = "png";
+        public static string Jpg { get; set; } = "jpg";
+        public static string Base64 { get; set; } = "base64";
     }
 }
