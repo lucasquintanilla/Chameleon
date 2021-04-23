@@ -98,13 +98,15 @@ namespace Core.Data.EF.Repositories
 
         public async Task<IEnumerable<Vox>> GetLastestAsync(IEnumerable<string> hashSkipList, DateTimeOffset LastBump) =>
             await _context.Voxs
-                    .Where(x => x.State == VoxState.Normal)
-                    .Where(x => !hashSkipList.Contains(x.Hash) && x.Bump < LastBump)
-                    .OrderByDescending(x => x.Type).ThenByDescending(x => x.Bump)
+                    .Where(x => x.State == VoxState.Normal 
+                                && x.Type == VoxType.Normal 
+                                && !hashSkipList.Contains(x.Hash) 
+                                && x.Bump < LastBump)
+                    .OrderByDescending(x => x.Bump)
                     .Include(x => x.Media)
                     .Include(x => x.Category)
                     .Include(x => x.Comments)                                    
-                    .Skip(hashSkipList.Count())
+                    .Skip(0)
                     .Take(36)
                     .AsNoTracking()
                     .ToListAsync();

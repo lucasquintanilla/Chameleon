@@ -1878,7 +1878,9 @@
         i = n(1);
     t.AlertService = class {
         swal(e, t) {
-            r.fire(e ? "Â¡Bien!" : "Ha ocurrido un error", t, e ? "success" : "error")
+            r.fire(e ? "¡Bien!" : "Ha ocurrido un error",
+                t,
+                e ? "success" : "error")
         }
         newAlert(e, t, n) {
             let r = new a.TemplateService;
@@ -26589,8 +26591,7 @@
                 processData: !1,
                 dataType: "json",
                 success: e => {
-                    e.status ? (r.create("token", e.token, e.maxAge),
-                        t && location.reload()) : e.swal && n.swal(e.status, e.swal)
+                    e.status ? (r.create("token", e.token, e.maxAge), t && location.reload()) : e.swal && n.swal(e.status, e.swal)
                 }
             })
         }
