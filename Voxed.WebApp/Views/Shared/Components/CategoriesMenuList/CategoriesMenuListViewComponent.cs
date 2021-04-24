@@ -21,9 +21,9 @@ namespace Voxed.WebApp.Views.Shared.Components.CategoriesMenuList
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            //var categories = await voxedRepository.Categories.GetAll();
-            //return View(categories);
-            return View();
+            var categories = await voxedRepository.Categories.GetAll();
+            return View(categories);
+            //return View();
         }
     }
 }

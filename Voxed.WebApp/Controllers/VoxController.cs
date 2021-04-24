@@ -15,6 +15,8 @@ using Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http;
+using System.Text.Json.Serialization;
 
 namespace Voxed.WebApp.Controllers
 {
@@ -254,6 +256,124 @@ namespace Voxed.WebApp.Controllers
             return anonUser;
         }
 
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        [Route("anon/vox")]
+        public async Task<CreateVoxResponse> Create(CreateVoxRequest request)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var user = await _userManager.GetUserAsync(HttpContext.User);
+
+                    var vox = new Vox()
+                    {
+                        ID = Guid.NewGuid(),
+                        State = VoxState.Normal,
+                        User = user ?? GetAnonUser(),
+                        Hash = new Hash().NewHash(),
+                        Title = request.Title,
+                        Content = formateadorService.Parsear(request.Content),
+                        CategoryID = request.Niche,
+                    };
+
+                    if (request.PollOne != null && request.PollTwo != null)
+                    {
+                        vox.Poll = new Poll()
+                        {
+                            OptionADescription = request.PollOne,
+                            OptionBDescription = request.PollTwo,
+                        };
+                    }
+
+                    //if (request.File != null)
+                    //{
+                    //    var isValidFile = await fileStoreService.IsValidFile(request.File);
+
+                    //    if (!isValidFile)
+                    //    {
+                    //        ModelState.AddModelError("File", "El archivo no es válido.");
+                    //    }
+
+                    //    vox.Media = await fileStoreService.Save(request.File, vox.Hash);
+                    //}
+
+                    await ProcessMedia(request, vox);
+
+                    await voxedRepository.Voxs.Add(vox);
+                    await voxedRepository.CompleteAsync();
+
+                    return new CreateVoxResponse()
+                    {
+                        VoxHash = GuidConverter.ToShortString(vox.ID),
+                        Status = true,
+                        Error = "",
+                        Swal = "",
+                    };
+                }
+                catch (NotImplementedException e)
+                {
+                    return new CreateVoxResponse()
+                    {
+                        VoxHash = "",
+                        Status = false,
+                        Error = "",
+                        Swal = e.Message,
+                    };
+                }
+                catch (Exception e)
+                {
+                    return new CreateVoxResponse()
+                    {
+                        VoxHash = "",
+                        Status = false,
+                        Error = "",
+                        Swal = "Error",
+                    };
+                }
+                
+            }
+
+            return new CreateVoxResponse()
+            {
+                VoxHash = "",
+                Status = false,
+                Error = "",
+                Swal = "Error",
+            };
+        }
+
+        private async Task ProcessMedia(CreateVoxRequest request, Vox vox)
+        {
+            var data = request.GetUploadData();
+
+            if (data != null && request.File == null)
+            {
+                if (data.Extension == Models.UploadDataExtension.Youtube)
+                {
+                    vox.Media = await fileStoreService.SaveExternal(data, vox.Hash);
+                }
+                else if (data.Extension == Models.UploadDataExtension.Base64)
+                {
+                    throw new NotImplementedException("Opcion no implementada");
+                }
+            }
+            else if (request.File != null)
+            {
+                var isValidFile = await fileStoreService.IsValidFile(request.File);
+
+                if (!isValidFile)
+                {
+                    throw new NotImplementedException("Archivo invalido");
+                }
+
+                vox.Media = await fileStoreService.Save(request.File, vox.Hash);
+            }
+        }
+
+
+
         // GET: Vox/Edit/5
         //public async Task<IActionResult> Edit(Guid? id)
         //{
@@ -396,6 +516,38 @@ namespace Voxed.WebApp.Controllers
         //        "voxId": "405371",
         //        "new": false
         //},
+
+    public class CreateVoxRequest
+    {
+        public string Title { get; set; }
+        public string Content { get; set; }
+        public int Niche { get; set; }
+        public IFormFile File { get; set; }
+        public string PollOne { get; set; }
+        public string PollTwo { get; set; }
+        public string UploadData { get; set; }
+
+        //g-recaptcha-response
+        [JsonPropertyName("g-recaptcha-response")]
+        public string GReCaptcha { get; set; }
+        //h-captcha-response
+        [JsonPropertyName("h-captcha-response")]
+        public string HCaptcha { get; set; }
+
+        public Models.UploadData GetUploadData()
+        {
+            return JsonConvert.DeserializeObject<Models.UploadData>(UploadData);
+        }
+
+    }
+
+    public class CreateVoxResponse
+    {
+        public bool Status { get; set; }
+        public string VoxHash { get; set; }
+        public string Swal { get; set; }
+        public string Error { get; set; }
+    }
 
     public class ListRequest
     {

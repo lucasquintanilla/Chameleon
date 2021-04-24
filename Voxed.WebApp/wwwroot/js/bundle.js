@@ -3484,7 +3484,7 @@
         }
         notification(e) {
             //return `\n            <a href="/notification/${e.id}#${e.contentHash}">\n                <li id="notification-${e.id}">\n                    <div class="avatar">\n                        <img src="${this.uploadFiles}/thumb_${e.voxHash}.jpg" alt="">\n                        <div class="countNotifications">${e.count}</div>\n                    </div>\n                    <div class="notification">\n                        ${e.notificationBold ? `<b>${e.notificationBold}</b>` : ""} ${e.notificationText}\n                    </div>\n                </li>\n            </a>\n        `
-            return `\n            <a href="/vox/${e.id}#${e.contentHash}">\n                <li id="notification-${e.id}">\n                    <div class="avatar">\n                        <img src="${this.uploadFiles}/thumb_${e.voxHash}.jpg" alt="">\n                        <div class="countNotifications">${e.count}</div>\n                    </div>\n                    <div class="notification">\n                        ${e.notificationBold ? `<b>${e.notificationBold}</b>` : ""} ${e.notificationText}\n                    </div>\n                </li>\n            </a>\n        `
+            return `\n            <a href="/vox/${e.id}#${e.contentHash}">\n                <li id="notification-${e.id}">\n                    <div class="avatar">\n                        <img src="${e.thumbnailUrl}" alt="">\n                        <div class="countNotifications">${e.count}</div>\n                    </div>\n                    <div class="notification">\n                        ${e.notificationBold ? `<b>${e.notificationBold}</b>` : ""} ${e.notificationText}\n                    </div>\n                </li>\n            </a>\n        `
         }
         report(e) {
             return `\n            <a href="/admin/report/${e.id}#${e.contentHash}">\n                <li id="${e.id}">\n                    <div class="avatar">\n                        <img src="${this.uploadFiles}/thumb_${e.voxHash}.jpg" alt="">\n                    </div>\n                    <div class="notification">\n                        <div class="voxTitle"><b>${e.voxTitle}</b></div>\n                        <div class="reportReason">${e.reason}</div>\n                    </div>\n                </li>\n            </a>\n        `
@@ -3887,17 +3887,17 @@
     }
     t.VoxService = u, window.createVox = () => {
         let e = new a.ModalService;
-        if (!(new r.SessionService).isActive()) return e.openModal("verify"), !1;
+        //if (!(new r.SessionService).isActive()) return e.openModal("verify"), !1;
         e.openModal("createVox")
     }, window.createComment = () => {
         let e = new a.ModalService;
-        if (!(new r.SessionService).isActive()) return e.openModal("verify"), !1
+        //if (!(new r.SessionService).isActive()) return e.openModal("verify"), !1
     }, l("#createVox").on("submit", (function (e) {
         e.preventDefault();
         let t = new i.AlertService,
             n = new s.AnalyticsService,
             o = new a.ModalService;
-        if (!(new r.SessionService).isActive()) return o.openModal("verify"), !1;
+        //if (!(new r.SessionService).isActive()) return o.openModal("verify"), !1;
         if (window.loading.vox) return !1;
         window.loading.vox = !0, document.getElementById("newVox").classList.add("loading");
         let d = 1 == window.userdata.userType ? "account" : "anon",
@@ -26746,11 +26746,6 @@
 
             connection.start().then(function () {
                 console.log("conectado");
-            })
-
-
-            connection.on("OPComment", t => {
-                console.log("TE COMENTARON OPPPPPP");
             })
 
             //NUEVOOO

@@ -63,6 +63,9 @@ namespace Voxed.WebApp.Controllers
                     Swal = "Formato de comentario invalido",
                 };
 
+
+            
+
             try
             {
                 var user = await _userManager.GetUserAsync(HttpContext.User);
@@ -94,7 +97,6 @@ namespace Voxed.WebApp.Controllers
 
                 var commentNotification = new CommentNotification()
                 {
-
                     UniqueId = null, //si es unique id puede tener colores unicos
                     UniqueColor = null,
                     UniqueColorContrast = null,
@@ -124,7 +126,7 @@ namespace Voxed.WebApp.Controllers
                 {
                     var notification = new Notification()
                     {
-                        Type = "typeee",
+                        Type = "new",
                         Content = new Content()
                         {
                             VoxHash = vox.Hash,
@@ -134,8 +136,6 @@ namespace Voxed.WebApp.Controllers
                             ContentHash = comment.Hash,
                             Id = GuidConverter.ToShortString(vox.ID),
                             ThumbnailUrl = vox.Media?.ThumbnailUrl
-
-
                         }
                     };
 
@@ -184,7 +184,6 @@ namespace Voxed.WebApp.Controllers
 
         private async Task ProcessMedia(Models.CommentRequest request, Comment comment)
         {
-
             var data = request.GetUploadData();
 
             if (data != null && request.File == null)
@@ -195,7 +194,7 @@ namespace Voxed.WebApp.Controllers
                 }
                 else if (data.Extension == Models.UploadDataExtension.Base64)
                 {
-                    throw new NotImplementedException();
+                    throw new NotImplementedException("Opcion no implementada");
                 }
             }
             else if (request.File != null)

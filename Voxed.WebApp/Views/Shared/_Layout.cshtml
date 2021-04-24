@@ -41,55 +41,18 @@
             <li class="search">
                 <input type="text" id="searchInput" placeholder="Buscar...">
             </li>
-            @*<li class="menuIcon tooltip-bottom mobile" data-tooltip="Notificaciones">
-                    <i class="fas fa-bell"></i>
-                    <i class="menuIconCount">+99</i>
-                </li>*@
             <partial name="_LoginPartial" />
-            @*<li class="menuIcon tooltip-bottom mobile" data-event="click,button,NAVBAR_LOGIN" data-function="registerModal" data-tooltip="Membresia">
-                <i class="fas fa-user"></i>
-            </li>*@
             <li class="menuIcon tooltip-bottom mobile" data-toggle="slideMenu" data-tooltip="Menu">
                 <i class="fas fa-bars"></i>
             </li>
-            @*<li class="newVox" data-function="createVox">INICIAR VOX</li>*@
-            @*<partial name="_LoginPartial" />*@
             <li class="newVox" data-function="createVox">INICIAR VOX</li>
         </ul>
-        <div class="menuModal notifications hide" id="notificationsList">
+        <div class="menuModal notifications hide" id="notificationsList" >
             <ul>
-                @*<li class="noNotification ">No hay notificaciones</li>*@
-
-
-                <a href="/notification/ACA_VA_EL_ID#ACA_VA_EL_HASH">
-                    <li id="notification-ACA_VA_EL_ID">
-                        <div class="avatar">
-                            <img src="#" alt="">
-                            <div class="countNotifications">+99</div>
-                        </div>
-                        <div class="notification">
-                            <b>notificationBold</b>
-                            notificationText
-                        </div>
-                    </li>
-                </a>
-
-
-
+                <li class="noNotification ">No hay notificaciones</li>
             </ul>
         </div>
-        <div class="alertBox">
-            @*<a class="alert" href="#">
-                    <div class="image">
-                        <img src="/img/home/version4.png" alt="">
-                    </div>
-                    <div class="content">Bienvenido a Voxed</div>
-
-                    <div class="close">
-                        <i data-closealert class="fas fa-times"></i>
-                    </div>
-                </a>*@
-        </div>
+        <div class="alertBox"></div>
     </nav>
     <div class="bottonContextual" data-function="createVox"><i class="fas fa-plus"></i></div>
     @*<header>
@@ -797,9 +760,13 @@
 
     <script src="https://hcaptcha.com/1/api.js" async defer></script>
     <script>
-        window.createVox = () => {
-            document.getElementById("modalBg").classList.add("openModal");
-            document.getElementById("NewVox").classList.add("openModal");
+        //window.createVox = () => {
+        //    document.getElementById("modalBg").classList.add("openModal");
+        //    document.getElementById("NewVox").classList.add("openModal");
+        //}
+
+        window.openNotifications = () => {
+            document.getElementById("notificationsList").classList.remove("hide");
         }
     </script>
 
