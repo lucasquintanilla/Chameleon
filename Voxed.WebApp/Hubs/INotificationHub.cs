@@ -8,9 +8,8 @@ namespace Voxed.WebApp.Hubs
 {
     public interface INotificationHub
     {
-        //Task ReceiveNotification(Notification notification);
         Task Comment(CommentNotification comment);
-        Task Notification(CommentNotification comment);
+        Task Notification(Notification notification);
     }
 }
 

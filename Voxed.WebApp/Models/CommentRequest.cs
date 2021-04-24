@@ -11,8 +11,6 @@ namespace Voxed.WebApp.Models
 {
     public class CommentRequest
     {
-        private UploadData uploadData;
-
         //[Required(ErrorMessage = "Debe ingresar un comentario")]
         [StringLength(3000, ErrorMessage = "El comentario no puede superar los {1} caracteres.")]
         public string Content { get; set; }
@@ -27,8 +25,6 @@ namespace Voxed.WebApp.Models
         {
             return JsonConvert.DeserializeObject<Models.UploadData>(UploadData);
         }
-
-        //{"preview":"previewInputComment","extension":null,"extensionData":null}
     }
 
     public class UploadData

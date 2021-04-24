@@ -18,9 +18,9 @@ namespace Voxed.WebApp.Hubs
             await Clients.All.Comment(comment);
         }
 
-        public async Task SendOPCommentNotification(Core.Entities.User user, CommentNotification comment)
+        public async Task SendOPCommentNotification(Core.Entities.User user, Notification notification)
         {
-            await Clients.Users(user.Id.ToString()).Notification(comment);
+            await Clients.Users(user.Id.ToString()).Notification(notification);
         }
 
         public async Task SuscribeToVox(string voxId)
@@ -41,6 +41,22 @@ namespace Voxed.WebApp.Hubs
         }
     }
 
+    public class Notification
+    {
+        public string Type { get; set; }
+        public Content Content { get; set; }
+    }
+
+    public class Content
+    {
+        public string Id { get; set; }
+        public string VoxHash { get; set; }
+        public string NotificationBold { get; set; }
+        public string NotificationText { get; set; }
+        public string ContentHash { get; set; }
+        public string Count { get; set; }
+        public string ThumbnailUrl { get; set; }
+    }
     public class CommentNotification 
     {
         public string Id { get; set; }

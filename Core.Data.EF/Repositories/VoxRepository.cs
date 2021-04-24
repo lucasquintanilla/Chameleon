@@ -35,6 +35,7 @@ namespace Core.Data.EF.Repositories
 
         public async Task<IEnumerable<Vox>> GetLastestAsync() =>
             await _context.Voxs
+                .Where(x => x.State == VoxState.Normal || x.Type == VoxType.Sticky)
                 .Include(x => x.Media)
                 .Include(x => x.Category)
                 .Include(x => x.Comments)
@@ -42,7 +43,6 @@ namespace Core.Data.EF.Repositories
                 .OrderByDescending(x => x.Type).ThenByDescending(x => x.Bump)
                 .Skip(0)
                 .Take(36)
-                .Where(x => x.State == VoxState.Normal || x.Type == VoxType.Sticky)
                 .AsNoTracking()
                 .ToListAsync();
 
@@ -68,15 +68,15 @@ namespace Core.Data.EF.Repositories
         public async Task<IEnumerable<Vox>> SearchAsync(string search)
         {
             return await _context.Voxs
+                .Where(x => x.State == VoxState.Normal)
+                .Where(q => q.Title.ToLower().Contains(search.ToLower()))
+                .Where(q => q.Content.ToLower().Contains(search.ToLower()))
                 .Include(x => x.Media)
                 .Include(x => x.Category)
                 .Include(x => x.Comments)
-                .OrderByDescending(x => x.Bump)
+                .OrderByDescending(x => x.Bump)                
                 .Skip(0)
                 .Take(36)
-                .Where(x => x.State == VoxState.Normal)
-                .Where(q =>  q.Title.ToLower().Contains(search.ToLower()))
-                .Where(q => q.Content.ToLower().Contains(search.ToLower()))
                 .AsNoTracking()
                 .ToListAsync();
 
@@ -106,7 +106,7 @@ namespace Core.Data.EF.Repositories
                     .Include(x => x.Media)
                     .Include(x => x.Category)
                     .Include(x => x.Comments)                                    
-                    .Skip(0)
+                    .Skip(hashSkipList.Count())
                     .Take(36)
                     .AsNoTracking()
                     .ToListAsync();

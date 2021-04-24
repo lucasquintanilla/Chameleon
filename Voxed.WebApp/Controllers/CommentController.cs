@@ -92,7 +92,7 @@ namespace Voxed.WebApp.Controllers
                 vox.Bump = DateTimeOffset.Now;
                 await voxedRepository.CompleteAsync();
 
-                var notification = new CommentNotification()
+                var commentNotification = new CommentNotification()
                 {
 
                     UniqueId = null, //si es unique id puede tener colores unicos
@@ -115,13 +115,30 @@ namespace Voxed.WebApp.Controllers
                     MediaThumbnailUrl = comment.Media?.ThumbnailUrl,
                     Extension = request.GetUploadData()?.Extension,
                     ExtensionData = request.GetUploadData()?.ExtensionData,
-                    Via = request.GetUploadData()?.Extension == "ytb" ? comment.Media?.Url : null,
+                    Via = request.GetUploadData()?.Extension == Models.UploadDataExtension.Youtube ? comment.Media?.Url : null,
                 };
 
-                await _notificationHub.Clients.All.Comment(notification);
+                await _notificationHub.Clients.All.Comment(commentNotification);
 
                 if (comment.UserID != vox.User.Id)
                 {
+                    var notification = new Notification()
+                    {
+                        Type = "typeee",
+                        Content = new Content()
+                        {
+                            VoxHash = vox.Hash,
+                            NotificationBold = "Nuevo Comentario",
+                            NotificationText = vox.Title,
+                            Count = "14",
+                            ContentHash = comment.Hash,
+                            Id = GuidConverter.ToShortString(vox.ID),
+                            ThumbnailUrl = vox.Media?.ThumbnailUrl
+
+
+                        }
+                    };
+
                     await _notificationHub.Clients.User(vox.User.Id.ToString()).Notification(notification);
                 }
 
@@ -171,7 +188,7 @@ namespace Voxed.WebApp.Controllers
             var data = request.GetUploadData();
 
             if (data != null && request.File == null)
-            {
+            {                
                 if (data.Extension == Models.UploadDataExtension.Youtube)
                 {
                     comment.Media = await fileStoreService.SaveExternal(data, comment.Hash);
