@@ -484,19 +484,34 @@ namespace Voxed.WebApp.Controllers
                 Slug = x.Category.ShortName.ToUpper(),
                 VoxId = x.ID.ToString(),
                 New = false,
+                ThumbnailUrl = x.Media?.ThumbnailUrl
             });
-            
+
             //Devuelve 36 voxs
+
+            if (voxsList.Count() > 0)
+            {
+                return new ListResponse()
+                {
+                    Status = true,
+                    List = new List()
+                    {
+                        //Page = "",
+                        Page = "category-sld",
+                        Voxs = voxsList
+                    },
+                };
+            }
            
             return new ListResponse()
             {
-                Status = true,
+                Status = false,
                 List = new List()
                 {
                     Page = "category-sld",
                     Voxs = voxsList
                 },
-        };
+            };
         }
     }
 
@@ -573,6 +588,10 @@ namespace Voxed.WebApp.Controllers
         public string Slug { get; set; }
         public string VoxId { get; set; }
         public bool New { get; set; }
+
+
+        //Agregado extras
+        public string ThumbnailUrl { get; set; }
     }
 
     public class List
