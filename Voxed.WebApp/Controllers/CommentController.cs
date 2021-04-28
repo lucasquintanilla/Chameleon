@@ -17,7 +17,7 @@ using Newtonsoft.Json;
 
 namespace Voxed.WebApp.Controllers
 {
-    public class CommentController : Controller
+    public class CommentController : BaseController
     {
         //private readonly VoxedContext _context;
         private FormateadorService formateadorService;        
@@ -63,14 +63,28 @@ namespace Voxed.WebApp.Controllers
                     Swal = "Formato de comentario invalido",
                 };
 
-
-            
-
             try
             {
+                if (request.Content == null && request.File == null && request.GetUploadData().Extension == null)
+                {
+                    return new Models.CommentResponse()
+                    {
+                        Hash = id,
+                        Status = false,
+                        Error = "",
+                        Swal = "Debes ingresar un contenido",
+                    };
+
+                }
                 var user = await _userManager.GetUserAsync(HttpContext.User);
 
-                var comment = new Comment()
+                var ipAddress = HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
+
+                //protected string UserAgent => Request.Headers.ContainsKey("User-Agent") ? Request.Headers["User-Agent"].ToString() : "";
+
+                //protected IPAddress UserIpAddress => Request.HttpContext.Connection.RemoteIpAddress;
+
+        var comment = new Comment()
                 {
                     ID = Guid.NewGuid(),
                     Hash = new Hash().NewHash(7),

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Voxed.WebApp.Controllers
 {
-    public class AccountController : Controller
+    public class AccountController : BaseController
     {
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;

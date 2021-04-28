@@ -23,7 +23,7 @@ using Voxed.WebApp.Hubs;
 
 namespace Voxed.WebApp.Controllers
 {
-    public class VoxController : Controller
+    public class VoxController : BaseController
     {
         //private readonly VoxedContext _context;
         private IWebHostEnvironment _env;
