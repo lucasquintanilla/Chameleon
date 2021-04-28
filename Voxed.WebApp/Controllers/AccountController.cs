@@ -54,7 +54,7 @@ namespace Voxed.WebApp.Controllers
 
             return new LoginResponse() { 
                 Status = false,
-                Swal = "Usuario o contraseña incorrecta"
+                Swal = "Hubo un error"
             };
         }
 
@@ -65,7 +65,13 @@ namespace Voxed.WebApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new User { UserName = request.UserName};
+                var user = new User 
+                { 
+                    UserName = request.UserName,  
+                    EmailConfirmed = true, 
+                    UserType = UserType.Admin 
+                };
+
                 var result = await _userManager.CreateAsync(user, request.Password);
                 if (result.Succeeded)
                 {
@@ -122,7 +128,7 @@ namespace Voxed.WebApp.Controllers
     public class RegisterRequest
     {
         [Required]
-        //[EmailAddress]
+        [DataType(DataType.Text)]
         [Display(Name = "UserName")]
         public string UserName { get; set; }
 

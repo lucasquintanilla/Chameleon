@@ -48,15 +48,15 @@ namespace Voxed.WebApp.Areas.Identity.Pages.Account
             //public string Email { get; set; }
 
             [Required]
-            [EmailAddress]
+            //[EmailAddress]
             public string UserName { get; set; }
 
             [Required]
             [DataType(DataType.Password)]
             public string Password { get; set; }
 
-            //[Display(Name = "Remember me?")]
-            //public bool RememberMe { get; set; }
+            [Display(Name = "Remember me?")]
+            public bool RememberMe { get; set; }
         }
 
         public async Task OnGetAsync(string returnUrl = null)
