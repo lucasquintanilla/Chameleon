@@ -34,7 +34,7 @@ namespace Core.Data.EF.EntityTypeConfigurations
 
             builder.Property(x => x.Content)
                 .IsUnicode(true)
-                .HasMaxLength(1000);
+                .HasMaxLength(2000);
 
             builder.Property(x => x.Title)
                 .IsUnicode(true)

@@ -3,14 +3,16 @@ using System;
 using Core.Data.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Core.Data.EF.Migrations
 {
     [DbContext(typeof(VoxedContext))]
-    partial class VoxedContextModelSnapshot : ModelSnapshot
+    [Migration("20210428023146_mod_content_comment_vox")]
+    partial class mod_content_comment_vox
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

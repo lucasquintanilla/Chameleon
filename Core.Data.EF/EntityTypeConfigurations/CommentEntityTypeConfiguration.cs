@@ -30,7 +30,7 @@ namespace Core.Data.EF.EntityTypeConfigurations
 
             builder.Property(x => x.Content)
                 .IsUnicode(true)
-                .HasMaxLength(500);
+                .HasMaxLength(1000);
 
             //builder.HasOne(x => x.Vox)
             //  .WithMany()
