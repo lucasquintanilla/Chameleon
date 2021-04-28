@@ -47,7 +47,7 @@
             </li>
             <li class="newVox" data-function="createVox">INICIAR VOX</li>
         </ul>
-        <div class="menuModal notifications hide" id="notificationsList" >
+        <div class="menuModal notifications hide" id="notificationsList">
             <ul>
                 <li class="noNotification ">No hay notificaciones</li>
             </ul>
@@ -236,15 +236,11 @@
             </button>
         </form>*@
 
-
-
-
-
     <div class="modalBox accountModal" id="accountModal">
         <div class="modalSelector">
             <div class="selectorOption selectedOption unselect" data-selector="login">Iniciar Sesion</div>
             <div class="selectorOption unselect" data-selector="register">
-                <i class="fas fa-address-card"></i>Obtener Membresia
+                <i class="fas fa-address-card"></i>Registrarse
             </div>
         </div>
         <form class="modalSection login" id="login">
@@ -254,6 +250,50 @@
                     <div class="g-recaptcha" data-sitekey="52e1cb08-4dd4-4587-add7-60137b2a6a5a"></div>
                 </div>*@
             <button type="submit" class="buttonPress">Entrar</button>
+        </form>
+        <form class="modalSection register hideSelector" id="register">
+            <input type="text" name="username" placeholder="Nombre de usuario">
+            <input type="password" name="password" placeholder="Contraseña">
+            <input type="password" name="confirmPassword" placeholder="Confirmar contraseña">
+            @*<select name="days">
+                    <option value="30">[1000 tokens] Membresia por 30 dias (U$D 2)</option>
+                    <option value="90" selected>[4000 tokens] Membresia por 90 dias (U$D 5)</option>
+                    <option value="180">[8000 tokens] Membresia por 180 dias (U$D 8)</option>
+                    <option value="360">[20000 tokens] Membresia por 360 dias (U$D 12)</option>
+                    <option value="360">[100000 tokens] Membresia por 360 dias (U$D 30)</option>
+                </select>*@
+            @*<div class="paymentInfo">
+                    <a href="#"
+                       data-event="click,button,REGISTER_FORM_MORE_DATA">¿Que beneficios tengo con mi membresia?</a>
+                </div>*@
+            <button data-event="click,button,REGISTER" type="submit" class="buttonPress" id="registerSubmit">
+                <i class="fas fa-circle-notch fa-spin loadingIcon"></i>Registrarme
+            </button>
+            @*<div class="paymentInfo">
+                    El pago se efectua por MercadoPago, estan disponibles todos los medios de pagos con tarjeta de debito, credito,
+                    rapipago, y saldo de MercadoPago.
+                    <br><br>
+                    Una vez efectuado el pago la membresia se activa en el instante.
+                </div>*@
+        </form>
+    </div>
+
+
+
+    <!--<div class="modalBox accountModal" id="accountModal">
+        <div class="modalSelector">
+            <div class="selectorOption selectedOption unselect" data-selector="login">Iniciar Sesion</div>
+            <div class="selectorOption unselect" data-selector="register">
+                <i class="fas fa-address-card"></i>Obtener Membresia
+            </div>
+        </div>
+        <form class="modalSection login" id="login">
+            <input type="text" name="username" placeholder="Nombre de usuario">
+            <input type="password" name="password" placeholder="Contraseña">-->
+    @*<div class="loginCaptcha">
+            <div class="g-recaptcha" data-sitekey="52e1cb08-4dd4-4587-add7-60137b2a6a5a"></div>
+        </div>*@
+    <!--<button type="submit" class="buttonPress">Entrar</button>
         </form>
         <form class="modalSection register hideSelector" id="register">
             <input type="text" name="username" placeholder="Nombre de usuario">
@@ -280,7 +320,7 @@
                 Una vez efectuado el pago la membresia se activa en el instante.
             </div>
         </form>
-    </div>
+    </div>-->
     <div class="modalBox niches" id="niches">
         <div class="modalHeader">
             <div class="modalTitle">Categorias</div>
@@ -760,10 +800,6 @@
 
     <script src="https://hcaptcha.com/1/api.js" async defer></script>
     <script>
-        //window.createVox = () => {
-        //    document.getElementById("modalBg").classList.add("openModal");
-        //    document.getElementById("NewVox").classList.add("openModal");
-        //}
 
         window.openNotifications = () => {
             document.getElementById("notificationsList").classList.remove("hide");
@@ -778,70 +814,6 @@
         gtag('js', new Date());
 
         gtag('config', 'G-EVXRV5V095');
-    </script>
-
-
-
-    <script>
-        //var connection = new signalR.HubConnectionBuilder()
-        //    .withUrl("/hubs/notifications")
-        //    .withAutomaticReconnect()
-        //    .build();
-
-        //connection.on("ReceiveNotification", function (notification) {
-        //    console.log(notification.message);
-        //    var element = document.getElementById("voxLoadMore");
-        //    element.innerText = "Cargar 1 nuevo vox";
-        //    element.classList.remove("disabled");
-        //    //<div class="loadNewVox unselect" data-voxs="0" id="voxLoadMore">Cargar 1 nuevo vox</div>
-
-        //})
-
-
-
-        //connection.on("comment", t => {
-        //    switch (window.ACTUAL_PAGE) {
-        //        case "home":
-        //            //let a = document.getElementById(t);
-        //            let a = document.getElementById(t.hash);
-        //            if (!a) return !1;
-        //            let r = a.querySelector(".over"),
-        //                i = a.querySelector(".countComments");
-        //            r.classList.add("action"), i.textContent = "" + (Number(i.textContent) + 1), setTimeout(() => {
-        //                r.classList.remove("action")
-        //            }, 2e3);
-        //            break;
-        //        case "vox":
-        //            let o = document.querySelector("#commentLoadMore"),
-        //                s = o.dataset.comments,
-        //                l = "0" == s ? "Cargar 1 nuevo comentario" : `Cargar ${Number(s) + 1} nuevos comentarios`;
-        //            o.innerHTML = `<span class="commentsVoxText">${l}</span>`, o.dataset.comments = "" + (Number(o.dataset.comments) + 1), o.classList.remove("disabled");
-        //            let d = document.getElementById("voxComments"),
-        //                u = Number(d.innerText);
-        //            d.innerText = "" + (u + 1);
-
-        //            let h = document.querySelectorAll(".COMMENT_STICKY").length;
-        //            if (0 != h ? c(e.comment(t)).insertAfter(`.commentContainer .comment:nth-child(${h})`) : c(".commentContainer").prepend(e.comment(t)), t.extension && c("#attachList").prepend(e.attach(t)), n.setAttachTitle(), window.ownSocketComment.includes(t.hash)) {
-        //                let e = window.ownSocketComment.indexOf(t.hash); - 1 !== e && window.ownSocketComment.splice(e, 1), document.getElementById(t.hash).querySelector(".author").classList.add("ownComment")
-        //            }
-        //    }
-        //}),
-
-        //connection.on("ReceiveNotification", n => {
-        //    //if (!t.suscriptions().includes(n.niche)) return !1;
-        //    let a = document.querySelector("#voxLoadMore"),
-        //        r = a.dataset.voxs,
-        //        i = "0" == r ? "Cargar 1 nuevo vox" : `Cargar ${Number(r) + 1} nuevos voxs`;
-        //    a.innerHTML = i,
-        //        a.dataset.voxs = "" + (Number(a.dataset.voxs) + 1),
-        //        a.classList.remove("disabled");
-        //    let o = document.querySelectorAll("[data-sticky]").length + 1;
-        //    c(e.vox(n)).insertAfter(`#voxList .vox:nth-child(${o})`)
-        //})
-
-        //connection.start().then(function () {
-        //    console.log("conectado");
-        //})
     </script>
 </body>
 </html>

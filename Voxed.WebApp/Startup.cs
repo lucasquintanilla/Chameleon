@@ -8,6 +8,7 @@ using Core.Data.Repositories;
 using Core.Entities;
 using Core.Shared;
 using Elastic.Apm.NetCoreAll;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -51,8 +52,11 @@ namespace Voxed.WebApp
             services.AddDbContext<VoxedContext>(options =>
                     options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<VoxedContext>();
+            services.AddDefaultIdentity<User>(options => 
+                    options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<Role>()
+                .AddEntityFrameworkStores<VoxedContext>()
+                .AddErrorDescriber<SpanishIdentityErrorDescriber>();
 
             services.AddSingleton<FormateadorService>();
             services.AddSingleton<FileStoreService>();
@@ -88,6 +92,14 @@ namespace Voxed.WebApp
                 options.AccessDeniedPath = "/Identity/Account/AccessDenied";
                 options.SlidingExpiration = true;
             });
+
+            //Por default necesita que estes autenticado para entrar a los controllers 
+            //services.AddAuthorization(options =>
+            //{
+            //    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+            //        .RequireAuthenticatedUser()
+            //        .Build();
+            //});
 
             services.AddSignalR();
         }

@@ -17,6 +17,9 @@ using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
 using System.Text.Json.Serialization;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.SignalR;
+using Voxed.WebApp.Hubs;
 
 namespace Voxed.WebApp.Controllers
 {
@@ -31,13 +34,16 @@ namespace Voxed.WebApp.Controllers
         private FormateadorService formateadorService;
         private User anonUser;
 
+        private IHubContext<VoxedHub, INotificationHub> _notificationHub;
+
         public VoxController(
             //VoxedContext context, 
             IWebHostEnvironment env,
             FileStoreService fileStoreService,
             IVoxedRepository voxedRepository,
-            UserManager<User> userManager, 
-            FormateadorService formateadorService)
+            UserManager<User> userManager,
+            FormateadorService formateadorService, 
+            IHubContext<VoxedHub, INotificationHub> notificationHub)
         {
             //_context = context;
             _env = env;
@@ -46,6 +52,7 @@ namespace Voxed.WebApp.Controllers
             this.voxedRepository = voxedRepository;
             _userManager = userManager;
             this.formateadorService = formateadorService;
+            _notificationHub = notificationHub;
         }
 
         // GET: Vox
@@ -304,6 +311,12 @@ namespace Voxed.WebApp.Controllers
                     await voxedRepository.Voxs.Add(vox);
                     await voxedRepository.CompleteAsync();
 
+                    //disparo notificacion del vox
+                    vox = await voxedRepository.Voxs.GetById(vox.ID);
+                    var voxToHub = ConvertoToVoxResponse(vox);
+
+                    await _notificationHub.Clients.All.Vox(voxToHub);
+
                     return new CreateVoxResponse()
                     {
                         VoxHash = GuidConverter.ToShortString(vox.ID),
@@ -513,6 +526,28 @@ namespace Voxed.WebApp.Controllers
                 },
             };
         }
+
+        private VoxResponse ConvertoToVoxResponse(Vox vox)
+        {
+            return new VoxResponse()
+            {
+                Hash = GuidConverter.ToShortString(vox.ID),
+                Status = "1",
+                Niche = "20",
+                Title = vox.Title,
+                Comments = vox.Comments.Count().ToString(),
+                Extension = "",
+                Sticky = vox.Type == VoxType.Sticky ? "1" : "0",
+                CreatedAt = vox.CreatedOn.ToString(),
+                PollOne = "",
+                PollTwo = "",
+                Id = "20",
+                Slug = vox.Category.ShortName.ToUpper(),
+                VoxId = vox.ID.ToString(),
+                New = false,
+                ThumbnailUrl = vox.Media?.ThumbnailUrl
+            };
+        }
     }
 
         //{
@@ -534,8 +569,15 @@ namespace Voxed.WebApp.Controllers
 
     public class CreateVoxRequest
     {
+        [Required(ErrorMessage = "Debe ingresar un titulo")]
+        [StringLength(120, ErrorMessage = "El titulo no puede superar los {1} caracteres.")]
         public string Title { get; set; }
+
+        [Required(ErrorMessage = "Debe ingresar un contenido")]
+        [StringLength(5000, ErrorMessage = "El contenido no puede superar los {1} caracteres.")]
         public string Content { get; set; }
+
+        [Required(ErrorMessage = "Debe seleccionar una categoria.")]
         public int Niche { get; set; }
         public IFormFile File { get; set; }
         public string PollOne { get; set; }

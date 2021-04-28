@@ -1,6 +1,10 @@
 ﻿@*@model Voxed.WebApp.Models.Vox*@
 @model Core.Entities.Vox
 
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<Core.Entities.User> SignInManager
+@inject UserManager<Core.Entities.User> UserManager
+
 @{
     ViewData["Title"] = Model.Title;
 }
@@ -115,20 +119,20 @@
             @if (Model.Poll != null)
             {
                 <div class="voxBar pollBar">
-                <div class="pollOptions">
-                    <div class="pollOption " data-poll="1">
-                        <div class="pollOptionText">@Model.Poll.OptionADescription</div>
-                        <div class="pollOptionPerent" id="pollOnePorcen">
+                    <div class="pollOptions">
+                        <div class="pollOption " data-poll="1">
+                            <div class="pollOptionText">@Model.Poll.OptionADescription</div>
+                            <div class="pollOptionPerent" id="pollOnePorcen">
+                            </div>
                         </div>
-                    </div>
-                    <div class="pollOption " data-poll="2">
-                        <div class="pollOptionText">@Model.Poll.OptionBDescription</div>
-                        <div class="pollOptionPercent" id="pollTwoPorcen">
+                        <div class="pollOption " data-poll="2">
+                            <div class="pollOptionText">@Model.Poll.OptionBDescription</div>
+                            <div class="pollOptionPercent" id="pollTwoPorcen">
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            }           
+            }
 
             <article class="voxContent" itemscope="itemscope" itemtype="http://schema.org/NewsArticle">
 
@@ -152,10 +156,10 @@
 
                             <figure class="voxAttach">
                                 <div class="voxAttachContainer">
-                                    <div class="videoPreview" 
-                                         data-videopreview 
+                                    <div class="videoPreview"
+                                         data-videopreview
                                          data-extension="ytb"
-                                         data-extensiondata="@Model.Media?.Url.Split('=')[(Model.Media?.Url.Split('=').Length-1).Value]" 
+                                         data-extensiondata="@Model.Media?.Url.Split('=')[(Model.Media?.Url.Split('=').Length-1).Value]"
                                          data-hash="@Model.Hash"
                                          style="background: url('@Model.Media.ThumbnailUrl')">
                                         <img class="lazyload" data-parent
@@ -182,12 +186,12 @@
                     }
                 }
 
-            <header class="voxBody">
-                <h1 itemprop="name" id="voxTitle">@Model.Title</h1>
-                @*<div class="voxDescription" itemprop="articleBody" id="voxContent">@Model.Content</div>*@
-            <div class="voxDescription" itemprop="articleBody" id="voxContent">@Html.Raw(Model.Content)</div>
-                @*@Html.Raw(comment.Content)*@
-            </header>
+                <header class="voxBody">
+                    <h1 itemprop="name" id="voxTitle">@Model.Title</h1>
+                    @*<div class="voxDescription" itemprop="articleBody" id="voxContent">@Model.Content</div>*@
+                    <div class="voxDescription" itemprop="articleBody" id="voxContent">@Html.Raw(Model.Content)</div>
+                    @*@Html.Raw(comment.Content)*@
+                </header>
             </article>
         </section>
         <section class="voxCommentList">
@@ -381,10 +385,10 @@
                         <div class="comment   " id="@comment.Hash" data-id="11375022">
                             <div class="commentAvatar">
                                 @*<div class="unselect avatarColor   @Core.Shared.ColorService.GetColor()">*@
-                                    <div class="unselect avatarColor  @comment.Style.ToString().ToLower()">
-                                        <span class="avatarText">@comment.User?.UserType.ToString().ToUpper()</span>
-                                        @*<span class="avatarText">ANON</span>*@
-                                    </div>
+                                <div class="unselect avatarColor  @comment.Style.ToString().ToLower()">
+                                    <span class="avatarText">@comment.User?.UserType.ToString().ToUpper()</span>
+                                    @*<span class="avatarText">ANON</span>*@
+                                </div>
                             </div>
                             <div class="commentBody">
                                 <div class="commentMetadata">
@@ -398,6 +402,14 @@
                                         {
                                             <span class="author adminTag" style="">@comment.User?.UserName</span>
                                             <span class="commentTag adminTag">@comment.User?.UserType.ToString().ToLower() </span>
+
+
+                                        }
+
+                                        @if (User.IsInRole(nameof(Core.Data.EF.RoleType.Administrator)))
+                                        {
+                                            <span class="checkComment"><input class="selectComment" type="checkbox" data-checkcomment="@comment.ID"></span>
+                                            <span class="commentTag hide adminTag" data-reactive data-contenttype="0" data-contentid="@comment.ID">Reactivar</span>
                                         }
 
                                         @if (comment.User.UserType == Core.Entities.UserType.Anon)
@@ -405,6 +417,18 @@
                                             <span class="author   " style="">@comment.User?.UserName</span>
                                             <span class="commentTag ">@comment.User?.UserType.ToString().ToLower() </span>
                                         }
+
+                                        @if (User.Identity.IsAuthenticated)
+                                        {
+                                            var userId = Guid.Parse(UserManager.GetUserId(User));
+
+                                            @if (userId == Model.UserID || User.IsInRole(nameof(Core.Data.EF.RoleType.Administrator)))
+                                            {
+                                                <span class="commentTag pointer" data-delete data-contenttype="0" data-contentid="@comment.ID"><i class="fas fa-times" data-parent></i></span>
+                                            }
+                                        }
+
+
 
                                         @*<span class="author   " style="">@comment.User?.UserName</span>*@
                                         @*<span class="author   " style="">Anonimo</span>*@
@@ -437,7 +461,7 @@
                                                     <div class="commentAttachContainer">
                                                         <a class="voxImage" target="_BLANK"
                                                            href="@comment.Media.Url">
-                                                            <img class="lazyload" 
+                                                            <img class="lazyload"
                                                                  data-src="@comment.Media.ThumbnailUrl">
                                                         </a>
                                                     </div>
@@ -468,12 +492,12 @@
                                             case Core.Entities.MediaType.Video:
 
                                                 @*<figure class="commentAttach">
-                        <div class="commentAttachContainer">
-                            <div data-videopreview="" data-extension="webm" data-extensiondata="" data-hash="JOEDVO8" class="videoPreview" style="background: url('https://web.archive.org/web/20200816221810im_/https://upload.voxed.net/thumb_JOEDVO8.jpg')">
-                                <img data-parent="" src="/web/20200816221810im_/https://www.voxed.net/assets/images/play.png" alt="">
-                            </div>
-                        </div>
-                    </figure>*@
+                                                        <div class="commentAttachContainer">
+                                                            <div data-videopreview="" data-extension="webm" data-extensiondata="" data-hash="JOEDVO8" class="videoPreview" style="background: url('https://web.archive.org/web/20200816221810im_/https://upload.voxed.net/thumb_JOEDVO8.jpg')">
+                                                                <img data-parent="" src="/web/20200816221810im_/https://www.voxed.net/assets/images/play.png" alt="">
+                                                            </div>
+                                                        </div>
+                                                    </figure>*@
 
                                                 <video controls="" autoplay="" muted="" class="attach_video" width="100%" height="auto" preload="metadata" loop="">
                                                     <source src="@comment.Media.Url" type="video/webm">Tu navegador no soporta etiquetas de video.
@@ -487,9 +511,9 @@
                                         }
                                     }
 
-                                <div class="commentContent">
-                                    @Html.Raw(comment.Content)
-                                </div>
+                                    <div class="commentContent">
+                                        @Html.Raw(comment.Content)
+                                    </div>
                                 </div>
                             </div>
                         </div>

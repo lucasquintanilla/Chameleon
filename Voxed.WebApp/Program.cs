@@ -54,7 +54,9 @@ namespace Voxed.WebApp
                 {
                     var context = services.GetRequiredService<VoxedContext>();
                     var userManager = services.GetRequiredService<UserManager<User>>();
-                    await new DbInitializer(context, userManager).Initialize();
+                    var roleManager = services.GetRequiredService<RoleManager<Role>>();
+
+                    await new DbInitializer(context, userManager, roleManager).Initialize();
                 }
                 catch (Exception ex)
                 {

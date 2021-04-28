@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Voxed.WebApp.Controllers;
 using Voxed.WebApp.Models;
 
 namespace Voxed.WebApp.Hubs
@@ -10,6 +11,7 @@ namespace Voxed.WebApp.Hubs
     {
         Task Comment(CommentNotification comment);
         Task Notification(Notification notification);
+        Task Vox(VoxResponse notification);
     }
 }
 

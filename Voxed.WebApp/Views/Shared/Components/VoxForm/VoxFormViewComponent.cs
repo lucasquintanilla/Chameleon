@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Voxed.WebApp.Controllers;
 //using Voxed.WebApp.Data;
 using Voxed.WebApp.Models;
 
@@ -24,7 +25,8 @@ namespace Voxed.WebApp.Views.Shared.Components.VoxForm
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var form = new VoxFormViewModel();
+            //var form = new VoxFormViewModel();
+            var form = new CreateVoxRequest();
 
             //var categories = await voxedRepository.Categories.GetAll();
 

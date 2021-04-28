@@ -3691,8 +3691,22 @@
                     }
                     c.setAttachTitle();
                     break;
-                case "home" == window.ACTUAL_PAGE:
+                //case "home" == window.ACTUAL_PAGE:
                 case window.ACTUAL_PAGE.includes("category-"):
+                    document.querySelector("#voxLoadMore").addEventListener("click", () => {
+                        window.scroll({
+                            top: 0,
+                            behavior: "smooth"
+                        }),
+                            document.querySelectorAll(".loadHide").forEach(e => {
+                                e.classList.remove("loadHide"),
+                                    document.querySelector("#voxLoadMore").dataset.voxs = "0",
+                                    document.querySelector("#voxLoadMore").classList.add("disabled"),
+                                    l("#voxList").children().last().remove()
+                            })
+                    })
+                    break;
+                case "home" == window.ACTUAL_PAGE:
                     document.querySelector("#voxLoadMore").addEventListener("click", () => {
                         window.scroll({
                             top: 0,
@@ -15828,7 +15842,7 @@
                     let e = t.commentsSelected;
                     p.fire({
                         title: "Eliminar",
-                        text: `Â¿Seguro que queres eliminar ${e.size} comentarios?`,
+                        text: `¿Seguro que queres eliminar ${e.size} comentarios?`,
                         type: "warning",
                         showCancelButton: !0,
                         cancelButtonText: "Cancelar",
@@ -16008,7 +16022,7 @@
                     if (!e.value) return t.swal(!1, "Debes seleccionar una categoria primero"), !1;
                     p.fire({
                         title: "Cambiar categoria",
-                        text: `Â¿Seguro que queres recategorizar ${r.size} voxs a la categoria ${a}?`,
+                        text: `¿Seguro que queres recategorizar ${r.size} voxs a la categoria ${a}?`,
                         type: "warning",
                         showCancelButton: !0,
                         cancelButtonText: "Cancelar",
@@ -16024,7 +16038,7 @@
                     let e = n.voxsSelected;
                     p.fire({
                         title: "Eliminar",
-                        text: `Â¿Seguro que queres eliminar ${e.size} voxs?`,
+                        text: `¿Seguro que queres eliminar ${e.size} voxs?`,
                         type: "warning",
                         showCancelButton: !0,
                         cancelButtonText: "Cancelar",
@@ -26676,6 +26690,7 @@
             dataType: "json",
             success: e => {
                 e.status ? (n.login(this, !1), window.location.href = "https://www.mercadopago.com.ar/checkout/v1/redirect?pref_id=" + e.transferId) : (r.disabled = !1, r.classList.remove("loading"), t.swal(e.status, e.swal))
+                //e.status ? n.login(this, !1) : (r.disabled = !1, r.classList.remove("loading"), t.swal(e.status, e.swal))
             }
         })
     })), o("[data-logout]").on("click", (function (e) {
@@ -26788,8 +26803,8 @@
                             let e = window.ownSocketComment.indexOf(t.hash); - 1 !== e && window.ownSocketComment.splice(e, 1), document.getElementById(t.hash).querySelector(".author").classList.add("ownComment")
                         }
                 }
-            }), u.on("vox", n => {
-                if (!t.suscriptions().includes(n.niche)) return !1;
+            }), connection.on("vox", n => {
+                //if (!t.suscriptions().includes(n.niche)) return !1;
                 let a = document.querySelector("#voxLoadMore"),
                     r = a.dataset.voxs,
                     i = "0" == r ? "Cargar 1 nuevo vox" : `Cargar ${Number(r) + 1} nuevos voxs`;

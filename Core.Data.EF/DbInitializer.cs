@@ -11,61 +11,94 @@ namespace Core.Data.EF
 {
     public class DbInitializer : IDbInitializer
     {
-        private VoxedContext context;
+        private VoxedContext _context;
         private readonly UserManager<User> _userManager;
-        public DbInitializer(VoxedContext context, UserManager<User> userManager)
+        private readonly RoleManager<Role> _roleManager;
+        public DbInitializer(VoxedContext context,
+            UserManager<User> userManager, 
+            RoleManager<Role> roleManager)
         {
-            this.context = context;
+            this._context = context;
             _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         public async Task Initialize()
         {
             //context.Database.EnsureCreated();
 
-            var pendingMigrations = context.Database.GetPendingMigrations();
+            var pendingMigrations = _context.Database.GetPendingMigrations();
 
-            context.Database.Migrate();
+            _context.Database.Migrate();
 
-            InitializeCategories();
+            await InitializeCategories();
 
-            InitializeVoxs();
-
-            InitializeComments();
+            await InitilizateRoles();
 
             await InitializeUsers();
+
+            //InitializeVoxs();
+
+            //InitializeComments();
+
+            
         }
 
+        private async Task InitilizateRoles()
+        {
+            if (await _roleManager.Roles.AnyAsync())
+            {
+                return;
+            }
+
+            var roles = Enum.GetValues(typeof(RoleType)).Cast<RoleType>();
+
+            foreach (var role in roles)
+            {
+                var newRole = await _roleManager.FindByNameAsync(Enum.GetName(typeof(RoleType), role));
+                if (newRole == null)
+                {
+                    newRole = new Role { Name = Enum.GetName(typeof(RoleType), role) };
+                    var result = await _roleManager.CreateAsync(newRole);
+                    if (!result.Succeeded)
+                    {
+                        throw new Exception($"Can't create role {Enum.GetName(typeof(RoleType), role)}: {string.Join(", ", result.Errors.Select(e => $"{e.Code}:{e.Description}"))}");
+                    }
+                }
+            }
+        }
+        
         private async Task InitializeUsers()
         {
-            if (_userManager.Users.Any())
+            if (await _userManager.Users.AnyAsync())
             {
                 return;
             }
 
             var defaultUser = new DefaultUser() { Password = "Alsina911" };
 
-            var admin = new User { 
+            var administrator = new User { 
                 UserName = "admin@voxed.club", 
                 Email = "admin@voxed.club", 
                 EmailConfirmed = true, 
                 UserType = UserType.Admin 
             };
 
-            var result = await _userManager.CreateAsync(admin, defaultUser.Password);
+            var result = await _userManager.CreateAsync(administrator, defaultUser.Password);
             if (result.Succeeded)
             {
-
+                var adminUserToRole = await _context.Roles.FirstOrDefaultAsync(x => x.Name == nameof(RoleType.Administrator));
+                await _userManager.AddToRoleAsync(administrator, nameof(RoleType.Administrator));
             }
 
-            var anon = new User { 
+            var anonymus = new User { 
                 UserName = "anon@voxed.club", 
                 Email = "anon@voxed.club", 
                 EmailConfirmed = true, 
                 UserType = UserType.Anon 
             };
 
-            result = await _userManager.CreateAsync(anon, defaultUser.Password);
+            result = await _userManager.CreateAsync(anonymus, defaultUser.Password);
             if (result.Succeeded)
             {
 
@@ -74,35 +107,36 @@ namespace Core.Data.EF
 
         private void InitializeComments()
         {
-            if (context.Comments.Any())
-            {
-                return;   // DB has been seeded
-            }
+            //if (context.Comments.Any())
+            //{
+            //    return;   // DB has been seeded
+            //}
 
-            var voxs = context.Voxs.ToList();
+            //var voxs = context.Voxs.ToList();
 
-            foreach (var vox in voxs)
-            {
-                vox.Comments.Add(new Comment
-                {
-                    Content = "Esto es un comentario a ver que onda",
-                    Bump = DateTimeOffset.Now,
-                    Media = new Media
-                    {
-                        Url = "http://web.archive.org/web/20200816001928im_/https://upload.voxed.net/thumb_8V4XHRrdXGrWaOtVhWnY.jpg",
-                        ThumbnailUrl = "http://web.archive.org/web/20200816001928im_/https://upload.voxed.net/thumb_8V4XHRrdXGrWaOtVhWnY.jpg",
-                        MediaType = MediaType.Image
-                    },
-                    UserID = vox.UserID
-                });
-            }
+            //foreach (var vox in voxs)
+            //{
+            //    vox.Comments.Add(new Comment
+            //    {
+            //        //Hash = 
+            //        Content = "Esto es un comentario a ver que onda",
+            //        Bump = DateTimeOffset.Now,
+            //        Media = new Media
+            //        {
+            //            Url = "http://web.archive.org/web/20200816001928im_/https://upload.voxed.net/thumb_8V4XHRrdXGrWaOtVhWnY.jpg",
+            //            ThumbnailUrl = "http://web.archive.org/web/20200816001928im_/https://upload.voxed.net/thumb_8V4XHRrdXGrWaOtVhWnY.jpg",
+            //            MediaType = MediaType.Image
+            //        },
+            //        UserID = vox.UserID
+            //    });
+            //}
 
-            context.SaveChanges();
+            //context.SaveChanges();
         }
 
         private void InitializeVoxs()
         {
-            if (context.Voxs.Any())
+            if (_context.Voxs.Any())
             {
                 return;   // DB has been seeded
             }
@@ -134,9 +168,9 @@ namespace Core.Data.EF
             //context.SaveChanges();
         }
 
-        private void InitializeCategories()
+        private async Task InitializeCategories()
         {
-            if (context.Categories.Any())
+            if (await _context.Categories.AnyAsync())
             {
                 return;   // DB has been seeded
             }
@@ -424,12 +458,10 @@ namespace Core.Data.EF
                 },
             };
 
-            foreach (var c in categories)
-            {
-                context.Categories.Add(c);
-            }
+            
+            await _context.Categories.AddRangeAsync(categories);            
 
-            context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 

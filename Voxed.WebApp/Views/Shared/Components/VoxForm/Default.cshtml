@@ -1,7 +1,7 @@
-﻿@model Voxed.WebApp.Models.VoxFormViewModel
+﻿@*@model Voxed.WebApp.Models.VoxFormViewModel*@
+@model Voxed.WebApp.Controllers.CreateVoxRequest
 
-
-    @*<form class="modalBox createVox" id="createVox" asp-controller="Vox" asp-action="Create" enctype="multipart/form-data">
+@*<form class="modalBox createVox" id="createVox" asp-controller="Vox" asp-action="Create" enctype="multipart/form-data">
 
         @await Component.InvokeAsync("CategoriesDropdown")
         <span asp-validation-for="CategoryID" class="text-danger"></span>
@@ -41,10 +41,14 @@
 
 
 <form class="modalBox createVox" id="createVox" enctype="multipart/form-data">
-    
+
 
     @await Component.InvokeAsync("CategoriesDropdown")
-    <input name="title" type="text" placeholder="Titulo" maxlength="120">
+    <span asp-validation-for="Niche" class="text-danger"></span>
+    @*<input name="title" type="text" placeholder="Titulo" maxlength="120">*@
+    <input asp-for="Title" placeholder="Titulo" />
+    <span asp-validation-for="Title" class="text-danger"></span>
+
     <div class="selectAttach" id="voxAttachs">
         <div class="uploadFromLocal tooltip-bottom" data-tooltip="Subir archivo" data-upload='{ "type": "local", "container": "voxAttachs" }'>
             <i class="fas fa-upload"></i>
@@ -60,19 +64,24 @@
         </div>
         <img src="" alt="">
     </div>
-<textarea name="content" class="newVoxContent" id="voxTextarea" maxlength="5000" placeholder="Escribe el contenido del vox o pega una imagen..."></textarea>
-    <div class="subtitle pointer" data-toggle="polls">
-        <span class="subtitleText">
-            <i class="fas fa-poll"></i>Encuesta
-        </span>
-        <span class="subtitleToggle">
-            <i class="fas fa-plus"></i>
-        </span>
-    </div>
-    <div class="polls hide" id="polls">
-        <input type="text" name="pollOne" maxlength="50" placeholder="Opcion 1">
-        <input type="text" name="pollTwo" maxlength="50" placeholder="Opcion 2">
-    </div>
+    <textarea asp-for="Content" class="newVoxContent" id="voxTextarea" maxlength="5000"
+              placeholder="Escribe el contenido del vox o pega una imagen..."></textarea>
+    <span asp-validation-for="Content" class="text-danger"></span>
+
+
+    @*<textarea name="content" class="newVoxContent" id="voxTextarea" maxlength="5000" placeholder="Escribe el contenido del vox o pega una imagen..."></textarea>*@
+    @*<div class="subtitle pointer" data-toggle="polls">
+            <span class="subtitleText">
+                <i class="fas fa-poll"></i>Encuesta
+            </span>
+            <span class="subtitleToggle">
+                <i class="fas fa-plus"></i>
+            </span>
+        </div>
+        <div class="polls hide" id="polls">
+            <input type="text" name="pollOne" maxlength="50" placeholder="Opcion 1">
+            <input type="text" name="pollTwo" maxlength="50" placeholder="Opcion 2">
+        </div>*@
     @*<div id="voxCaptchaResponse"></div>*@
     @*<div class="g-recaptcha" data-sitekey="4869d416-1b7e-4e58-a819-c7aa6ec2e4d4" data-callback="verifyVox"></div>*@
     @*<a class="noCaptcha" target="_BLANK" data-event="click,button,CREATE_VOX_NO_MORE_CAPTCHAS" href="/registro">No llenes mas captchas</a>*@

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Voxed.WebApp.Controllers;
 using Voxed.WebApp.Models;
 
 namespace Voxed.WebApp.Hubs
@@ -21,6 +22,11 @@ namespace Voxed.WebApp.Hubs
         public async Task SendOPCommentNotification(Core.Entities.User user, Notification notification)
         {
             await Clients.Users(user.Id.ToString()).Notification(notification);
+        }
+
+        public async Task HomeNewVoxEvent(VoxResponse notification)
+        {
+            await Clients.All.Vox(notification);
         }
 
         public async Task SuscribeToVox(string voxId)
@@ -45,6 +51,12 @@ namespace Voxed.WebApp.Hubs
     {
         public string Type { get; set; }
         public Content Content { get; set; }
+    }
+
+    public class VoxNotification
+    {
+        public string Niche { get; set; }
+       
     }
 
     public class Content

@@ -10,9 +10,11 @@ using Microsoft.Extensions.Logging;
 //using Voxed.WebApp.Data;
 //using Voxed.WebApp.Models;
 using Core.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Voxed.WebApp.Controllers
 {
+    [AllowAnonymous]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
