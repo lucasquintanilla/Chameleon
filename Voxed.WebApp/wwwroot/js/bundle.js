@@ -3833,7 +3833,7 @@
             let a = new i.AlertService;
             d.fire({
                 title: "Bloquear",
-                html: "Â¿Seguro que queres bloquear a este usuario? <br><br> Se eliminaran todos sus comentarios de tu vox y no podra volver a comentar.",
+                html: "¿Seguro que queres bloquear a este usuario? <br><br> Se eliminaran todos sus comentarios de tu vox y no podra volver a comentar.",
                 type: "warning",
                 showCancelButton: !0,
                 cancelButtonText: "Cancelar",
@@ -5354,7 +5354,7 @@
         delete(e, t) {
             s.fire({
                 title: "Eliminar",
-                text: "Â¿Seguro que queres eliminar esto?",
+                text: "¿Seguro que queres eliminar esto?",
                 type: "warning",
                 showCancelButton: !0,
                 cancelButtonText: "Cancelar",
@@ -5385,7 +5385,7 @@
         sticky(e, t) {
             s.fire({
                 title: "Dar sticky",
-                text: "Â¿Seguro que queres darle sticky?",
+                text: "¿Seguro que queres darle sticky?",
                 type: "warning",
                 showCancelButton: !0,
                 cancelButtonText: "Cancelar",
@@ -5417,7 +5417,7 @@
             s.fire({
                 title: "Desbanear",
                 inputPlaceholder: "Indica una direccion IP:",
-                text: "Â¿A quien vamos a perdonar?",
+                text: "¿A quien vamos a perdonar?",
                 input: "text",
                 showCancelButton: !0,
                 cancelButtonText: "Cancelar",
@@ -5496,7 +5496,7 @@
             let t = new r.AlertService;
             s.fire({
                 title: "Limpiar reportes",
-                text: "Â¿Seguro que queres limpiar los reportes de este vox?",
+                text: "¿Seguro que queres limpiar los reportes de este vox?",
                 type: "warning",
                 showCancelButton: !0,
                 cancelButtonText: "Cancelar",
@@ -26680,6 +26680,7 @@
         let t = new a.AlertService,
             n = new s,
             r = document.querySelector("#registerSubmit");
+
         r.classList.add("loading"), r.disabled = !0, o.ajax({
             url: "/account/register",
             type: "POST",
@@ -26689,8 +26690,9 @@
             processData: !1,
             dataType: "json",
             success: e => {
-                e.status ? (n.login(this, !1), window.location.href = "https://www.mercadopago.com.ar/checkout/v1/redirect?pref_id=" + e.transferId) : (r.disabled = !1, r.classList.remove("loading"), t.swal(e.status, e.swal))
-                //e.status ? n.login(this, !1) : (r.disabled = !1, r.classList.remove("loading"), t.swal(e.status, e.swal))
+                //e.status ? (n.login(this, !1), window.location.href = "https://www.mercadopago.com.ar/checkout/v1/redirect?pref_id=" + e.transferId) : (r.disabled = !1, r.classList.remove("loading"), t.swal(e.status, e.swal))
+                e.status ? window.location.href = "/" : (r.disabled = !1, r.classList.remove("loading"), t.swal(e.status, e.swal))
+                
             }
         })
     })), o("[data-logout]").on("click", (function (e) {

@@ -98,7 +98,6 @@ namespace Voxed.WebApp.Controllers
                     return new RegisterResponse()
                     {
                         Status = true,
-                        Swal = ""
                     };
                 }
                 foreach (var error in result.Errors)
