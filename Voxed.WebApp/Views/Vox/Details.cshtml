@@ -96,21 +96,30 @@
                 <div class="metadata">
                     <div class="authorVox">
 
+
                         @if (@Model.User.UserType == Core.Entities.UserType.Admin)
                         {
                             <span class="name adminTag ">@Model.User?.UserName</span>
+                            <span class="commentTag ">@Model.User?.UserType.ToString().ToLower()</span>
                         }
 
-                        @if (@Model.User.UserType == Core.Entities.UserType.Anon)
+                        @if (@Model.User.UserType == Core.Entities.UserType.Anon ||
+                         @Model.User.UserType == Core.Entities.UserType.Account)
                         {
                             <span class="name ">@Model.User?.UserName</span>
+                            <span class="commentTag ">anon</span>
                         }
 
                         @*<span class="name ">Anonimo</span>*@
 
 
-                        <span class="commentTag ">@Model.User?.UserType.ToString().ToLower()</span>
+
                         @*<span class="commentTag ">anon</span>*@
+
+                        @if (User.IsInRole(nameof(Core.Data.EF.RoleType.Administrator)))
+                        {
+                            <span class="commentTag pointer" data-delete data-contenttype="1" data-contentid="@Model.ID"><i class="fas fa-times" data-parent></i></span>
+                        }
                     </div>
                     <div class="voxCreatedAt">@Core.Shared.TimeAgo.ConvertToTimeAgo(Model.CreatedOn.DateTime)</div>
                 </div>
@@ -386,14 +395,25 @@
                             <div class="commentAvatar">
                                 @*<div class="unselect avatarColor   @Core.Shared.ColorService.GetColor()">*@
                                 <div class="unselect avatarColor  @comment.Style.ToString().ToLower()">
-                                    <span class="avatarText">@comment.User?.UserType.ToString().ToUpper()</span>
-                                    @*<span class="avatarText">ANON</span>*@
+
+                                    @if (comment.User.UserType == Core.Entities.UserType.Anon ||
+                                      comment.User.UserType == Core.Entities.UserType.Account)
+                                    {
+                                        <span class="avatarText">ANON</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="avatarText">@comment.User?.UserType.ToString().ToUpper()</span>
+                                    }
+
+
                                 </div>
                             </div>
                             <div class="commentBody">
                                 <div class="commentMetadata">
                                     <div class="commentsTag unselect">
-                                        @if (comment.UserID == Model.UserID && comment.User.UserType == Core.Entities.UserType.Admin)
+                                      
+                                        @if (Model.User.UserType == Core.Entities.UserType.Account && comment.UserID == Model.UserID)
                                         {
                                             <span class="commentTagBg op">OP</span>
                                         }
@@ -412,10 +432,12 @@
                                             <span class="commentTag hide adminTag" data-reactive data-contenttype="0" data-contentid="@comment.ID">Reactivar</span>
                                         }
 
-                                        @if (comment.User.UserType == Core.Entities.UserType.Anon)
+                                        @if (comment.User.UserType == Core.Entities.UserType.Anon ||
+                                            comment.User.UserType == Core.Entities.UserType.Account)
                                         {
                                             <span class="author   " style="">@comment.User?.UserName</span>
-                                            <span class="commentTag ">@comment.User?.UserType.ToString().ToLower() </span>
+                                            @*<span class="commentTag ">@comment.User?.UserType.ToString().ToLower() </span>*@
+                                            <span class="commentTag ">anon </span>
                                         }
 
                                         @if (User.Identity.IsAuthenticated)

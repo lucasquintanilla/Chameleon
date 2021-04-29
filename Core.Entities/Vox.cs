@@ -27,5 +27,7 @@ namespace Core.Entities
         public virtual User User { get; set; }
         public Poll Poll { get; set; }
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();
+        public string UserAgent { get; set; }
+        public string IpAddress { get; set; }
     }
 }

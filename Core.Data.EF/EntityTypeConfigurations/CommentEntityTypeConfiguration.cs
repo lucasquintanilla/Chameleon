@@ -46,6 +46,12 @@ namespace Core.Data.EF.EntityTypeConfigurations
               .WithMany()
               //.OnDelete(DeleteBehavior.Restrict)
               .HasForeignKey(x => x.UserID);
+
+            builder.Property(x => x.IpAddress)
+               .HasMaxLength(50);
+
+            builder.Property(x => x.UserAgent)
+                .HasMaxLength(500);
         }
     }
 }

@@ -283,6 +283,8 @@ namespace Voxed.WebApp.Controllers
                         Title = request.Title,
                         Content = formateadorService.Parsear(request.Content),
                         CategoryID = request.Niche,
+                        IpAddress = UserIpAddress.ToString(),
+                        UserAgent = UserAgent
                     };
 
                     if (request.PollOne != null && request.PollTwo != null)

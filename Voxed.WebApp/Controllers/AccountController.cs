@@ -69,7 +69,9 @@ namespace Voxed.WebApp.Controllers
                 { 
                     UserName = request.UserName,  
                     EmailConfirmed = true, 
-                    UserType = UserType.Anon 
+                    UserType = UserType.Anon,
+                    IpAddress = UserIpAddress.ToString(),
+                    UserAgent = UserAgent
                 };
 
                 var result = await _userManager.CreateAsync(user, request.Password);

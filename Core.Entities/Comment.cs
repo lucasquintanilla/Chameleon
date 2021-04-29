@@ -25,5 +25,7 @@ namespace Core.Entities
         public Media Media { get; set; }
         public User User { get; set; }
         //public ICollection<Comment> Replies { get; set; }
+        public string UserAgent { get; set; }
+        public string IpAddress { get; set; }
     }
 }

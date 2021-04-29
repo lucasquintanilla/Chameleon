@@ -84,14 +84,16 @@ namespace Voxed.WebApp.Controllers
 
                 //protected IPAddress UserIpAddress => Request.HttpContext.Connection.RemoteIpAddress;
 
-        var comment = new Comment()
+                var comment = new Comment()
                 {
                     ID = Guid.NewGuid(),
                     Hash = new Hash().NewHash(7),
                     VoxID = new Guid(id),
                     User = user ?? GetAnonUser(),
                     Content = request.Content == null ? null : formateadorService.Parsear(request.Content),
-                    Style = StyleService.GetRandomCommentStyle()
+                    Style = StyleService.GetRandomCommentStyle(),
+                    IpAddress = UserIpAddress.ToString(),
+                    UserAgent = UserAgent
                 };
 
                 await ProcessMedia(request, comment);
@@ -120,7 +122,7 @@ namespace Voxed.WebApp.Controllers
                     VoxHash = vox.Hash,
                     AvatarColor = comment.Style.ToString().ToLower(),
                     IsOp = vox.UserID == comment.UserID && vox.User.UserType != UserType.Anon, //probar cambiarlo cuando solo pruedan craer los usuarios.
-                    Tag = comment.User.UserType.ToString().ToLower(), //admin o dev               
+                    Tag = GetUserTypeTag(comment.User.UserType), //admin o dev               
                     Content = comment.Content ?? "",
                     Name = comment.User.UserName,
                     CreatedAt = TimeAgo.ConvertToTimeAgo(comment.CreatedOn.DateTime),
@@ -221,6 +223,23 @@ namespace Voxed.WebApp.Controllers
                 }
 
                 comment.Media = await fileStoreService.Save(request.File, comment.Hash);
+            }
+        }
+
+        private string GetUserTypeTag(UserType userType)
+        {
+            switch (userType)
+            {
+                case UserType.Anon:
+                    return "anon";
+                case UserType.Admin:
+                    return "admin";
+                case UserType.Mod:
+                    return "mod";
+                case UserType.Account:
+                    return "anon";
+                default:
+                    return "anon";
             }
         }
 

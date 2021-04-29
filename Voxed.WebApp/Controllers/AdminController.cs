@@ -41,6 +41,18 @@ namespace Voxed.WebApp.Controllers
                 await voxedRepository.CompleteAsync();
             }
 
+            if (request.ContentType == "1")
+            {
+                var vox = await voxedRepository.Voxs.GetById(new Guid(request.ContentId));
+                if (vox == null)
+                {
+                    NotFound();
+                }
+
+                vox.State = Core.Entities.VoxState.Deleted;
+                await voxedRepository.CompleteAsync();
+            }
+
             return new Response() { Value = "OK" };
         }
 
