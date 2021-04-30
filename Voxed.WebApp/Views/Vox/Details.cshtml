@@ -534,7 +534,8 @@
                                     }
 
                                     <div class="commentContent">
-                                        @Html.Raw(comment.Content)
+                                        @Html.Raw(comment.Content?.Trim())
+                                        @*@comment.Content*@
                                     </div>
                                 </div>
                             </div>
