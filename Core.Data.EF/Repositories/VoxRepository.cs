@@ -31,11 +31,11 @@ namespace Core.Data.EF.Repositories
                 .Include(x => x.Poll)
                 .Include(x => x.User)
                 .FirstOrDefaultAsync(m => m.ID == id);
-        
+
 
         public async Task<IEnumerable<Vox>> GetLastestAsync() =>
             await _context.Voxs
-                .Where(x => x.State == VoxState.Normal || x.Type == VoxType.Sticky)
+                .Where(x => x.State == VoxState.Normal)
                 .Include(x => x.Media)
                 .Include(x => x.Category)
                 .Include(x => x.Comments.Where(c => c.State == CommentState.Normal))
