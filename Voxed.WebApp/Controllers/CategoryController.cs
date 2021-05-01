@@ -25,24 +25,18 @@ namespace Voxed.WebApp.Controllers
 {
     public class CategoryController : Controller
     {
-        //private readonly VoxedContext _context;
         private IVoxedRepository voxedRepository;
         private IWebHostEnvironment _env;
-        private readonly IHubContext<VoxedHub> notifyHub;
 
         private readonly UserManager<Core.Entities.User> _userManager;
 
         public CategoryController(
-            //VoxedContext context, 
             IVoxedRepository voxedRepository, 
             IWebHostEnvironment env, 
-            IHubContext<VoxedHub> notifyHub, 
             UserManager<Core.Entities.User> userManager)
         {
-            //_context = context;
             this.voxedRepository = voxedRepository;
             _env = env;
-            this.notifyHub = notifyHub;
             _userManager = userManager;
         }
 

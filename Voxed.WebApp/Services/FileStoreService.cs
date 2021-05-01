@@ -1,20 +1,16 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Core.Entities;
+﻿using Core.Entities;
 using ImageProcessor;
 using ImageProcessor.Plugins.WebP.Imaging.Formats;
-using ImageMagick;
-using System.Net.Mime;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using System;
 using System.Diagnostics;
-using Xabe.FFmpeg;
+using System.IO;
+using System.Linq;
 using System.Net.Http;
-//using Voxed.WebApp.Models;
+using System.Net.Mime;
+using System.Threading.Tasks;
+using Xabe.FFmpeg;
 
 namespace Core.Shared
 {

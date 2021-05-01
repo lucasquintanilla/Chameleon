@@ -3,68 +3,10 @@
     ViewData["Title"] = "Resultado";
 }
 
-    @*<h1>Index</h1>
+@*Search resultados*@
 
-    <p>
-        <a asp-action="Create">Create New</a>
-    </p>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Title)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Content)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.CategoryID)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.UserID)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.State)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Bump)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-    @foreach (var item in Model) {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Content)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CategoryID)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.UserID)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.State)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Bump)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-                </td>
-            </tr>
-    }
-        </tbody>
-    </table>*@
 <main>
     <div class="loadNewVox disabled unselect" data-voxs="0" id="voxLoadMore"></div>
-    @*<div class="loadNewVox unselect" data-voxs="0" id="voxLoadMore">Cargar 1 nuevo vox</div>*@
     <div class="voxList" id="voxList">
                 
         <a href="https://brave.com/vox812" data-event="click,button,AD_HOME_1"
@@ -82,7 +24,7 @@
         @await Component.InvokeAsync("VoxDetails", Model)
 
     </div>
-    <span class="commentsVoxText">20</span>
+    @*<span class="commentsVoxText">20</span>*@
     <div class="loadingSpinner hide" id="homeLoadingSpinner"><i class="fas fa-spinner fa-spin"></i></div>
 </main>
 <script>

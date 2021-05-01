@@ -7,7 +7,6 @@
 
     <main>
         <div class="loadNewVox disabled unselect" data-voxs="0" id="voxLoadMore"></div>
-        @*<div class="loadNewVox unselect" data-voxs="0" id="voxLoadMore">Cargar 1 nuevo vox</div>*@
     <div class="voxList" id="voxList">
 
         <a href="/home/info" class="vox newInVoxed"
@@ -20,16 +19,6 @@
             <h4 class="title textShadon">¿Nuevo en Voxed?</h4>
             <div class="over"></div>
         </a>
-        @*<a href="#" class="vox newInVoxed"
-           style="background: url(https://pbs.twimg.com/profile_images/1012362101510160384/EjayQ10E_400x400.jpg);">
-            <div class="voxHeader">
-                <div class="tagList">
-                    <div class="tag sticky">Sticky</div>
-                </div>
-            </div>
-            <h4 class="title textShadon">Hola</h4>
-            <div class="over"></div>
-        </a>*@
         <a href="https://brave.com/vox812" data-event="click,button,AD_HOME_1"
            class="vox" id="voxad"
            style="background: url(https://content.voxed.net/brave1.gif);">
@@ -45,7 +34,7 @@
         @await Component.InvokeAsync("VoxDetails", Model)        
 
     </div>
-        <span class="commentsVoxText">20</span>
+        @*<span class="commentsVoxText">20</span>*@
         <div class="loadingSpinner hide" id="homeLoadingSpinner"><i class="fas fa-spinner fa-spin"></i></div>
     </main>
 <script>
