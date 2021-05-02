@@ -16,6 +16,7 @@ using Voxed.WebApp.Hubs;
 using Newtonsoft.Json;
 using System.Drawing;
 using Core.Shared.Models;
+using Microsoft.Extensions.Logging;
 
 namespace Voxed.WebApp.Controllers
 {
@@ -26,23 +27,26 @@ namespace Voxed.WebApp.Controllers
         private readonly IVoxedRepository voxedRepository;
         private readonly UserManager<User> _userManager;
         private User anonUser;
-        public IHubContext<VoxedHub, INotificationHub> _notificationHub { get; }       
+        private readonly ILogger<HomeController> _logger;
+        public IHubContext<VoxedHub, INotificationHub> _notificationHub { get; }
 
         public CommentController(
             FormateadorService formateadorService,
             FileStoreService fileStoreService,
             IVoxedRepository voxedRepository,
             UserManager<User> userManager,
-            IHubContext<VoxedHub, INotificationHub> notificationHub)
+            IHubContext<VoxedHub, INotificationHub> notificationHub, 
+            ILogger<HomeController> logger)
         {
             this.formateadorService = formateadorService;
             this.fileStoreService = fileStoreService;
             this.voxedRepository = voxedRepository;
             _userManager = userManager;
             _notificationHub = notificationHub;
+            _logger = logger;
         }
 
-        
+
         [HttpPost]
         public async Task<Models.CommentResponse> Nuevo([FromForm] Models.CommentRequest request, [FromRoute] string id)
         {
@@ -165,6 +169,8 @@ namespace Voxed.WebApp.Controllers
             }
             catch (Exception e)
             {
+                _logger.LogError(e.ToString());
+
                 return new Models.CommentResponse()
                 {
                     Hash = "",

@@ -30,12 +30,14 @@ namespace Core.Shared
 
         private int maxFileSize = 10 * 1024 * 1024;
 
-        const string ffmpegPath = @"C:\ffmpeg\bin\ffmpeg.exe";
+        //const string ffmpegPath = @"C:\ffmpeg\bin\ffmpeg.exe";
+        const string ffmpegPath = @"ffmpeg\bin\";
 
         public FileStoreService(IWebHostEnvironment env)
         {
             _env = env;
-            FFmpeg.SetExecutablesPath(@"C:\FFmpeg");
+            //FFmpeg.SetExecutablesPath(@"C:\FFmpeg");
+            FFmpeg.SetExecutablesPath(Path.Combine(env.WebRootPath, ffmpegPath));
 
             string folderPath = Path.Combine(_env.WebRootPath, folderName);
            
