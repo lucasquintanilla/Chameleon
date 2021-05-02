@@ -125,6 +125,15 @@ namespace Voxed.WebApp.Controllers
                 Swal = "Ups"
             };
         }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+
+            return RedirectToAction("Index", "Home");
+        }
     }
 
     public class RegisterRequest

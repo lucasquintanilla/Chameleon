@@ -15035,11 +15035,11 @@
             }), e
         }
         randomAd() {
-            let e = document.getElementById("voxad"),
-                t = Math.floor(15 * Math.random()) + 3;
-            e.classList.remove("hide");
-            let n = e.outerHTML;
-            e.remove(), i(`.vox:nth-child(${t})`).before(n)
+            //let e = document.getElementById("voxad"),
+            //    t = Math.floor(15 * Math.random()) + 3;
+            //e.classList.remove("hide");
+            //let n = e.outerHTML;
+            //e.remove(), i(`.vox:nth-child(${t})`).before(n)
         }
         loadMoreVoxs() {
             if (this.loadingVoxs) return !1;
@@ -26721,19 +26721,25 @@
         s = n(3),
         l = n(29),
         d = n(15),
-        u = n(192)(`https://${o.CONFIG[o.CONFIG.mode].socketIP}:${o.CONFIG[o.CONFIG.mode].socketPort}`),
+        //u = n(192)(`https://${o.CONFIG[o.CONFIG.mode].socketIP}:${o.CONFIG[o.CONFIG.mode].socketPort}`),
+        u = new signalR.HubConnectionBuilder()
+            .withUrl("/hubs/notifications")
+            .withAutomaticReconnect()
+            .build(),
         c = n(1);
     t.SocketService = class {
         constructor() {
             let e = new a.JWTService;
-            this.userData = e.decode(), this.joinRoom(), this.on()
+            this.userData = e.decode(),
+            this.joinRoom(),
+            this.on()
         }
         join(e) {
-            let t = new a.JWTService;
-            u.emit("join", {
-                room: e,
-                userData: t.encode()
-            })
+            //let t = new a.JWTService;
+            //u.emit("join", {
+            //    room: e,
+            //    userData: t.encode()
+            //})
         }
         joinRoom() {
             let e = !1;
@@ -26756,14 +26762,8 @@
 
             //NUEVOOO
 
-            var connection = new signalR.HubConnectionBuilder()
-                .withUrl("/hubs/notifications")
-                .withAutomaticReconnect()
-                .build();
-
-
-            connection.start().then(function () {
-                console.log("conectado");
+            u.start().then(function () {
+                //console.log("conectado");
             })
 
             //NUEVOOO
@@ -26776,7 +26776,7 @@
                     case "vox:tokens":
                         n.addTokens(a)
                 }
-            }), connection.on("comment", t => {
+            }), u.on("comment", t => {
                 switch (window.ACTUAL_PAGE) {
                     case "home":
                         /*console.log("home");*/
@@ -26805,7 +26805,7 @@
                             let e = window.ownSocketComment.indexOf(t.hash); - 1 !== e && window.ownSocketComment.splice(e, 1), document.getElementById(t.hash).querySelector(".author").classList.add("ownComment")
                         }
                 }
-            }), connection.on("vox", n => {
+            }), u.on("vox", n => {
                 //if (!t.suscriptions().includes(n.niche)) return !1;
                 let a = document.querySelector("#voxLoadMore"),
                     r = a.dataset.voxs,
@@ -26843,7 +26843,7 @@
                         let r = document.getElementById("accountActivate");
                         r && r.remove()
                 }
-            }), connection.on("notification", t => {
+            }), u.on("notification", t => {
                 let n = new s.AlertService,
                     a = new l.UtilService,
                     r = document.querySelector("#notificationsCount"),
