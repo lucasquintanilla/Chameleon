@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using Voxed.WebApp.Hubs;
 using Newtonsoft.Json;
+using System.Drawing;
 
 namespace Voxed.WebApp.Controllers
 {
@@ -115,7 +116,7 @@ namespace Voxed.WebApp.Controllers
                     //Media
                     MediaUrl = comment.Media?.Url,
                     MediaThumbnailUrl = comment.Media?.ThumbnailUrl,
-                    Extension = request.GetUploadData()?.Extension,
+                    Extension = request.GetUploadData()?.Extension == Models.UploadDataExtension.Base64 ? GetFileExtensionFromUrl(comment.Media?.Url) : request.GetUploadData()?.Extension,
                     ExtensionData = request.GetUploadData()?.ExtensionData,
                     Via = request.GetUploadData()?.Extension == Models.UploadDataExtension.Youtube ? comment.Media?.Url : null,
                 };
@@ -132,7 +133,7 @@ namespace Voxed.WebApp.Controllers
                             VoxHash = vox.Hash,
                             NotificationBold = "Nuevo Comentario",
                             NotificationText = vox.Title,
-                            Count = "14",
+                            Count = "1",
                             ContentHash = comment.Hash,
                             Id = GuidConverter.ToShortString(vox.ID),
                             ThumbnailUrl = vox.Media?.ThumbnailUrl
@@ -194,7 +195,8 @@ namespace Voxed.WebApp.Controllers
                 }
                 else if (data.Extension == Models.UploadDataExtension.Base64)
                 {
-                    throw new NotImplementedException("Opcion no implementada");
+                    comment.Media = await fileStoreService.SaveFromBase64(data.ExtensionData, comment.Hash);
+                    //throw new NotImplementedException("Opcion no implementada");
                 }
             }
             else if (request.File != null)
@@ -226,5 +228,13 @@ namespace Voxed.WebApp.Controllers
                     return "anon";
             }
         }
+
+        private string GetFileExtensionFromUrl(string url)
+        {
+            var array = url.Split(".");
+            return array[array.Length - 1];
+        }
+
+        
     }
 }

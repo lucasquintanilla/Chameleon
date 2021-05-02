@@ -7,7 +7,7 @@ namespace Core.Entities
 {
     public class Media
     {
-        public Guid ID { get; set; }
+        public Guid ID { get; set; } = Guid.NewGuid();
         public string Url { get; set; }
         public string ThumbnailUrl { get; set; }
         public MediaType MediaType { get; set; }
