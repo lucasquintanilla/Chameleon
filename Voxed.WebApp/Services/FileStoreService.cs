@@ -1,4 +1,5 @@
 ﻿using Core.Entities;
+using Core.Shared.Models;
 using ImageProcessor;
 using ImageProcessor.Plugins.WebP.Imaging.Formats;
 using Microsoft.AspNetCore.Hosting;
@@ -105,7 +106,37 @@ namespace Core.Shared
             };
         }
 
-        public async Task<Media> SaveExternal(Voxed.WebApp.Models.UploadData data, string hash)
+        public async Task ProcessMedia(UploadData data, IFormFile file, IMediaEntity entity)
+        {
+            if (data != null && file == null)
+            {
+                if (data.Extension == UploadDataExtension.Youtube)
+                {
+                    entity.Media = await SaveExternal(data, entity.Hash);
+                }
+                else if (data.Extension == UploadDataExtension.Base64)
+                {
+                    entity.Media = await SaveFromBase64(data.ExtensionData, entity.Hash);
+                }
+                else
+                {
+                    throw new NotImplementedException("Formato de archivo no contemplado");
+                }
+            }
+            else if (file != null)
+            {
+                var isValidFile = await IsValidFile(file);
+
+                if (!isValidFile)
+                {
+                    throw new NotImplementedException("Archivo invalido");
+                }
+
+                entity.Media = await Save(file, entity.Hash);
+            }
+        }
+
+        public async Task<Media> SaveExternal(UploadData data, string hash)
         {
             if (data.Extension == "ytb")
             {

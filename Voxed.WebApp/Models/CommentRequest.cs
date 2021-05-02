@@ -1,4 +1,5 @@
-﻿using Core.Validations;
+﻿using Core.Shared.Models;
+using Core.Validations;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System;
@@ -23,22 +24,11 @@ namespace Voxed.WebApp.Models
         
         public UploadData GetUploadData()
         {
-            return JsonConvert.DeserializeObject<Models.UploadData>(UploadData);
+            return JsonConvert.DeserializeObject<UploadData>(UploadData);
         }
     }
 
-    public class UploadData
-    { 
-        public string Preview { get; set; }
-        public string Extension { get; set; }
-        public string ExtensionData { get; set; }
-    }
+    
 
-    public static class UploadDataExtension
-    {
-        public static string Youtube { get; set; } = "ytb";
-        public static string Png { get; set; } = "png";
-        public static string Jpg { get; set; } = "jpg";
-        public static string Base64 { get; set; } = "base64";
-    }
+    
 }

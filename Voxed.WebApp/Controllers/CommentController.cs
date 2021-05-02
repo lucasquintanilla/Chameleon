@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.SignalR;
 using Voxed.WebApp.Hubs;
 using Newtonsoft.Json;
 using System.Drawing;
+using Core.Shared.Models;
 
 namespace Voxed.WebApp.Controllers
 {
@@ -81,7 +82,8 @@ namespace Voxed.WebApp.Controllers
                     UserAgent = UserAgent
                 };
 
-                await ProcessMedia(request, comment);
+                //await ProcessMedia(request, comment);
+                await fileStoreService.ProcessMedia(request.GetUploadData(), request.File, comment);
 
                 //Detectar Tag >HIDE
                 //if (!comentario.Contenido.ToLower().Contains("gt;hide"))
@@ -116,9 +118,9 @@ namespace Voxed.WebApp.Controllers
                     //Media
                     MediaUrl = comment.Media?.Url,
                     MediaThumbnailUrl = comment.Media?.ThumbnailUrl,
-                    Extension = request.GetUploadData()?.Extension == Models.UploadDataExtension.Base64 ? GetFileExtensionFromUrl(comment.Media?.Url) : request.GetUploadData()?.Extension,
+                    Extension = request.GetUploadData()?.Extension == UploadDataExtension.Base64 ? GetFileExtensionFromUrl(comment.Media?.Url) : request.GetUploadData()?.Extension,
                     ExtensionData = request.GetUploadData()?.ExtensionData,
-                    Via = request.GetUploadData()?.Extension == Models.UploadDataExtension.Youtube ? comment.Media?.Url : null,
+                    Via = request.GetUploadData()?.Extension == UploadDataExtension.Youtube ? comment.Media?.Url : null,
                 };
 
                 await _notificationHub.Clients.All.Comment(commentNotification);
@@ -183,34 +185,37 @@ namespace Voxed.WebApp.Controllers
             return anonUser;
         }
 
-        private async Task ProcessMedia(Models.CommentRequest request, Comment comment)
-        {
-            var data = request.GetUploadData();
+        //private async Task ProcessMedia(Models.CommentRequest request, IMediaEntity comment)
+        //{
+        //    var data = request.GetUploadData();
 
-            if (data != null && request.File == null)
-            {                
-                if (data.Extension == Models.UploadDataExtension.Youtube)
-                {
-                    comment.Media = await fileStoreService.SaveExternal(data, comment.Hash);
-                }
-                else if (data.Extension == Models.UploadDataExtension.Base64)
-                {
-                    comment.Media = await fileStoreService.SaveFromBase64(data.ExtensionData, comment.Hash);
-                    //throw new NotImplementedException("Opcion no implementada");
-                }
-            }
-            else if (request.File != null)
-            {
-                var isValidFile = await fileStoreService.IsValidFile(request.File);
+        //    if (data != null && request.File == null)
+        //    {                
+        //        if (data.Extension == Models.UploadDataExtension.Youtube)
+        //        {
+        //            comment.Media = await fileStoreService.SaveExternal(data, comment.Hash);
+        //        }
+        //        else if (data.Extension == Models.UploadDataExtension.Base64)
+        //        {
+        //            comment.Media = await fileStoreService.SaveFromBase64(data.ExtensionData, comment.Hash);
+        //        }
+        //        else
+        //        {
+        //            throw new NotImplementedException("Formato de archivo no contemplado");
+        //        }
+        //    }
+        //    else if (request.File != null)
+        //    {
+        //        var isValidFile = await fileStoreService.IsValidFile(request.File);
 
-                if (!isValidFile)
-                {
-                    throw new NotImplementedException("Archivo invalido");
-                }
+        //        if (!isValidFile)
+        //        {
+        //            throw new NotImplementedException("Archivo invalido");
+        //        }
 
-                comment.Media = await fileStoreService.Save(request.File, comment.Hash);
-            }
-        }
+        //        comment.Media = await fileStoreService.Save(request.File, comment.Hash);
+        //    }
+        //}
 
         private string GetUserTypeTag(UserType userType)
         {

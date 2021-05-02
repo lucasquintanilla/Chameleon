@@ -9,7 +9,7 @@ namespace Core.Entities
     public enum VoxState { Normal, Deleted }
     public enum VoxType { Normal, Sticky }
 
-    public class Vox
+    public class Vox : IMediaEntity
     {
         public Guid ID { get; set; }
         public string Hash { get; set; }

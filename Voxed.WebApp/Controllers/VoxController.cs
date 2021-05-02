@@ -14,6 +14,7 @@ using System.Text.Json.Serialization;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.SignalR;
 using Voxed.WebApp.Hubs;
+using Core.Shared.Models;
 
 namespace Voxed.WebApp.Controllers
 {
@@ -124,7 +125,7 @@ namespace Voxed.WebApp.Controllers
                         };
                     }
 
-                    await ProcessMedia(request, vox);
+                    await fileStoreService.ProcessMedia(request.GetUploadData(), request.File, vox);
 
                     await voxedRepository.Voxs.Add(vox);
                     await voxedRepository.CompleteAsync();
@@ -181,13 +182,17 @@ namespace Voxed.WebApp.Controllers
 
             if (data != null && request.File == null)
             {
-                if (data.Extension == Models.UploadDataExtension.Youtube)
+                if (data.Extension == UploadDataExtension.Youtube)
                 {
                     vox.Media = await fileStoreService.SaveExternal(data, vox.Hash);
                 }
-                else if (data.Extension == Models.UploadDataExtension.Base64)
+                else if (data.Extension == UploadDataExtension.Base64)
                 {
-                    throw new NotImplementedException("Opcion no implementada");
+                    vox.Media = await fileStoreService.SaveFromBase64(data.ExtensionData, vox.Hash);
+                }
+                else
+                {
+                    throw new NotImplementedException("Formato de archivo no contemplado");
                 }
             }
             else if (request.File != null)
@@ -322,9 +327,9 @@ namespace Voxed.WebApp.Controllers
         [JsonPropertyName("h-captcha-response")]
         public string HCaptcha { get; set; }
 
-        public Models.UploadData GetUploadData()
+        public UploadData GetUploadData()
         {
-            return JsonConvert.DeserializeObject<Models.UploadData>(UploadData);
+            return JsonConvert.DeserializeObject<UploadData>(UploadData);
         }
 
     }
