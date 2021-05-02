@@ -21,8 +21,6 @@ namespace Core.Shared
     {
         private IWebHostEnvironment _env;
 
-        private string _dir;
-
         private static readonly string[] permittedExtensions = new[]
         { 
             ".png", ".jpg", ".jpeg", ".gif", ".webp" 
@@ -37,13 +35,11 @@ namespace Core.Shared
         public FileStoreService(IWebHostEnvironment env)
         {
             _env = env;
-            _dir = env.WebRootPath;
             FFmpeg.SetExecutablesPath(@"C:\FFmpeg");
 
-            string folderPath = Path.Combine(_dir, folderName);
+            string folderPath = Path.Combine(_env.WebRootPath, folderName);
            
             Directory.CreateDirectory(folderPath);
-            
         }
 
         public async Task<bool> IsValidFile(IFormFile file)
@@ -79,10 +75,10 @@ namespace Core.Shared
 
             var originalFileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
             var originalFilename = $"{DateTime.Now:yyyyMMdd}-{hash}{originalFileExtension}";
-            var originalFilePath = Path.Combine(_dir, folderName, originalFilename);
+            var originalFilePath = Path.Combine(_env.WebRootPath, folderName, originalFilename);
 
             var thumbnailFilename = $"{DateTime.Now:yyyyMMdd}-{hash}.webp";
-            var thumbnailFilePath = Path.Combine(_dir, folderName, thumbnailFilename);
+            var thumbnailFilePath = Path.Combine(_env.WebRootPath, folderName, thumbnailFilename);
 
             if (IsGif(file))
             {
@@ -154,10 +150,10 @@ namespace Core.Shared
             var image = LoadBase64(base64);
 
             var originalFilename = $"{DateTime.Now:yyyyMMdd}-{hash}{GetFileExtension(image)}";
-            var originalFilePath = Path.Combine(_dir, folderName, originalFilename);
+            var originalFilePath = Path.Combine(_env.WebRootPath, folderName, originalFilename);
 
             var thumbnailFilename = $"{DateTime.Now:yyyyMMdd}-{hash}.webp";
-            var thumbnailFilePath = Path.Combine(_dir, folderName, thumbnailFilename);
+            var thumbnailFilePath = Path.Combine(_env.WebRootPath, folderName, thumbnailFilename);
 
             
             image.Save(originalFilePath, GetImageFormat(image));
@@ -364,7 +360,7 @@ namespace Core.Shared
             using var stream = await response.Content.ReadAsStreamAsync();
 
             var thumbnailFilename = $"{DateTime.Now:yyyyMMdd}-{hash}.jpg";
-            var thumbnailFilePath = Path.Combine(_dir, folderName, thumbnailFilename);
+            var thumbnailFilePath = Path.Combine(_env.WebRootPath, folderName, thumbnailFilename);
 
             using var fileStream = File.Create(thumbnailFilePath);
             stream.Seek(0, SeekOrigin.Begin);
