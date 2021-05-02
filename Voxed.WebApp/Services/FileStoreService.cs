@@ -118,10 +118,6 @@ namespace Core.Shared
                 {
                     entity.Media = await SaveFromBase64(data.ExtensionData, entity.Hash);
                 }
-                else
-                {
-                    throw new NotImplementedException("Formato de archivo no contemplado");
-                }
             }
             else if (file != null)
             {
