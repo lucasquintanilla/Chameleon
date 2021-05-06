@@ -56,7 +56,7 @@ namespace Core.Data.EF.Repositories
 
         public async Task<IEnumerable<Vox>> GetByCategoryIdAsync(int id)
             => await _context.Voxs
-                        .Where(x => x.CategoryID == id)
+                        .Where(x => x.CategoryID == id && x.State == VoxState.Normal)
                         .Include(x => x.Media)
                         .Include(x => x.Category)
                         .Include(x => x.Comments)
@@ -126,7 +126,7 @@ namespace Core.Data.EF.Repositories
 
         public async Task<IEnumerable<Vox>> GetByCategoryShortNameAsync(string shortName)
             => await _context.Voxs
-                        .Where(x => x.Category.ShortName == shortName)
+                        .Where(x => x.Category.ShortName == shortName && x.State == VoxState.Normal)
                         .Include(x => x.Media)
                         .Include(x => x.Category)
                         .Include(x => x.Comments)
@@ -134,11 +134,13 @@ namespace Core.Data.EF.Repositories
                         .Skip(0)
                         .Take(100)
                         .ToListAsync();
+        //agregar as no tracking
 
         public async Task<Vox> GetLastVoxBump(IEnumerable<string> hash)
          => await _context.Voxs
             .Where(x => hash.Contains(x.Hash))
             .OrderBy(x => x.Bump)
             .FirstAsync();
+        //agregar as no tracking
     }
 }

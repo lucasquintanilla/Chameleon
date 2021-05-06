@@ -8,7 +8,8 @@ namespace Core.Data.EF
     public enum RoleType
     {
         Administrator,
-        Moderator,       
+        Moderator,    
+        Anonymous
     }
 
     public static class RolesHelper
@@ -16,6 +17,8 @@ namespace Core.Data.EF
         public static Dictionary<RoleType, string> RolesDictionary = new Dictionary<RoleType, string>()
         {
             { RoleType.Administrator, nameof(RoleType.Administrator) },
+            { RoleType.Moderator, nameof(RoleType.Moderator) },
+            { RoleType.Anonymous, nameof(RoleType.Anonymous) },
         };
     }
 }

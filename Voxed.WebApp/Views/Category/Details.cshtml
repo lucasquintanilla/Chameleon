@@ -4,38 +4,6 @@
     ViewData["Title"] = Model.Select(x => x.Category.Name).FirstOrDefault();
 }
 
-@*<h1>Details</h1>
-
-    <div>
-        <h4>Category</h4>
-        <hr />
-        <dl class="row">
-            <dt class = "col-sm-2">
-                @Html.DisplayNameFor(model => model.Name)
-            </dt>
-            <dd class = "col-sm-10">
-                @Html.DisplayFor(model => model.Name)
-            </dd>
-            <dt class = "col-sm-2">
-                @Html.DisplayNameFor(model => model.ShortName)
-            </dt>
-            <dd class = "col-sm-10">
-                @Html.DisplayFor(model => model.ShortName)
-            </dd>
-            <dt class = "col-sm-2">
-                @Html.DisplayNameFor(model => model.Media)
-            </dt>
-            <dd class = "col-sm-10">
-                @Html.DisplayFor(model => model.Media.ID)
-            </dd>
-        </dl>
-    </div>
-    <div>
-        <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
-        <a asp-action="Index">Back to List</a>
-    </div>*@
-
-
 <main>
     <div class="loadNewVox disabled unselect" data-voxs="0" id="voxLoadMore"></div>
     <div class="voxList" id="voxList">
@@ -51,7 +19,7 @@
             <div class="over"></div>
         </a>*@
 
-        <a href="https://brave.com/vox812" data-event="click,button,AD_HOME_1"
+        @*<a href="https://brave.com/vox812" data-event="click,button,AD_HOME_1"
            class="vox" id="voxad"
            style="background: url(https://content.voxed.net/brave1.gif);">
             <div class="voxHeader">
@@ -61,7 +29,7 @@
             </div>
             <h4 class="title textShadon">¡Ganá dinero mientras navegas!</h4>
             <div class="over"></div>
-        </a>
+        </a>*@
 
         @await Component.InvokeAsync("VoxDetails", Model)
 

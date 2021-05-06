@@ -82,11 +82,11 @@ namespace Voxed.WebApp.Controllers
             return View(voxs);
         }
        
-        private User GetAnonUser()
+        private User GetAnonymousUser()
         {
             if (anonUser == null)
             {
-                anonUser = _userManager.Users.Where(x => x.UserType == UserType.Anon).FirstOrDefault();                
+                anonUser = _userManager.Users.Where(x => x.UserType == UserType.Anonymous).FirstOrDefault();                
             }
 
             return anonUser;
@@ -107,7 +107,7 @@ namespace Voxed.WebApp.Controllers
                     {
                         ID = Guid.NewGuid(),
                         State = VoxState.Normal,
-                        User = user ?? GetAnonUser(),
+                        User = user ?? GetAnonymousUser(),
                         Hash = new Hash().NewHash(),
                         Title = request.Title,
                         Content = formateadorService.Parsear(request.Content),

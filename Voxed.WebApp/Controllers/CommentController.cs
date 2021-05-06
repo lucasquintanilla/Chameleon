@@ -112,7 +112,7 @@ namespace Voxed.WebApp.Controllers
                     Hash = comment.Hash,
                     VoxHash = vox.Hash,
                     AvatarColor = comment.Style.ToString().ToLower(),
-                    IsOp = vox.UserID == comment.UserID && vox.User.UserType != UserType.Anon, //probar cambiarlo cuando solo pruedan craer los usuarios.
+                    IsOp = vox.UserID == comment.UserID && vox.User.UserType != UserType.Anonymous, //probar cambiarlo cuando solo pruedan craer los usuarios.
                     Tag = GetUserTypeTag(comment.User.UserType), //admin o dev               
                     Content = comment.Content ?? "",
                     Name = comment.User.UserName,
@@ -185,7 +185,7 @@ namespace Voxed.WebApp.Controllers
         {
             if (anonUser == null)
             {
-                anonUser = _userManager.Users.Where(x => x.UserType == UserType.Anon).FirstOrDefault();
+                anonUser = _userManager.Users.Where(x => x.UserType == UserType.Anonymous).FirstOrDefault();
             }
 
             return anonUser;
@@ -227,11 +227,11 @@ namespace Voxed.WebApp.Controllers
         {
             switch (userType)
             {
-                case UserType.Anon:
+                case UserType.Anonymous:
                     return "anon";
-                case UserType.Admin:
+                case UserType.Administrator:
                     return "admin";
-                case UserType.Mod:
+                case UserType.Moderator:
                     return "mod";
                 case UserType.Account:
                     return "anon";

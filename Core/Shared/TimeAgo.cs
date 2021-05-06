@@ -23,7 +23,7 @@ namespace Core.Shared
                 int months = (span.Days / 30);
                 if (span.Days % 31 != 0)
                     months += 1;
-                return $"{months}m";
+                return $"{months}M";
             }
             if (span.Days > 0)
                 return $"{span.Days}d";

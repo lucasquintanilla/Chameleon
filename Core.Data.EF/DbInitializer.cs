@@ -2,14 +2,12 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Core.Data.EF
 {
-    public class DbInitializer : IDbInitializer
+    public class DbInitializer
     {
         private VoxedContext _context;
         private readonly UserManager<User> _userManager;
@@ -74,34 +72,29 @@ namespace Core.Data.EF
             {
                 return;
             }
-
-            var defaultUser = new DefaultUser() { Password = "Alsina911" };
-
+            
             var administrator = new User { 
-                UserName = "admin@voxed.club", 
-                Email = "admin@voxed.club", 
+                UserName = "admin",
                 EmailConfirmed = true, 
-                UserType = UserType.Admin 
+                UserType = UserType.Administrator 
             };
 
-            var result = await _userManager.CreateAsync(administrator, defaultUser.Password);
+            var result = await _userManager.CreateAsync(administrator, "Admin007");
             if (result.Succeeded)
             {
-                var adminUserToRole = await _context.Roles.FirstOrDefaultAsync(x => x.Name == nameof(RoleType.Administrator));
                 await _userManager.AddToRoleAsync(administrator, nameof(RoleType.Administrator));
             }
 
             var anonymus = new User { 
-                UserName = "anon@voxed.club", 
-                Email = "anon@voxed.club", 
+                UserName = "anonimo",
                 EmailConfirmed = true, 
-                UserType = UserType.Anon 
+                UserType = UserType.Anonymous 
             };
 
-            result = await _userManager.CreateAsync(anonymus, defaultUser.Password);
+            result = await _userManager.CreateAsync(anonymus, "Anonimo007");
             if (result.Succeeded)
             {
-
+                await _userManager.AddToRoleAsync(anonymus, nameof(RoleType.Anonymous));
             }
         }
 
@@ -463,13 +456,4 @@ namespace Core.Data.EF
 
             await _context.SaveChangesAsync();
         }
-    }
-
-    public class DefaultUser
-    {
-        public string UserName { get; set; }
-
-        [DataType(DataType.Password)]
-        public string Password { get; set; }
-    }
-}
+    }}

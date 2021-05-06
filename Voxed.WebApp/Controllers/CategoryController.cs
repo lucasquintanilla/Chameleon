@@ -203,24 +203,24 @@ namespace Voxed.WebApp.Controllers
         //}
 
         // GET: Category/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        //public async Task<IActionResult> Details(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var exists = await voxedRepository.Categories.Exists(id.Value);
+        //    var exists = await voxedRepository.Categories.Exists(id.Value);
 
-            if (!exists)
-            {
-                return NotFound();
-            }
+        //    if (!exists)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var voxs = await voxedRepository.Voxs.GetByCategoryIdAsync(id.Value);
+        //    var voxs = await voxedRepository.Voxs.GetByCategoryIdAsync(id.Value);
 
-            return View(voxs);
-        }
+        //    return View(voxs);
+        //}
 
         [Route("/{shortName}")]
         public async Task<IActionResult> Details(string shortName)
@@ -410,9 +410,9 @@ namespace Voxed.WebApp.Controllers
         {
             var comments = await voxedRepository.Comments.GetAll();
 
-            var anonUser = new Core.Entities.User() { UserName = "Anonimo", UserType = Core.Entities.UserType.Anon };
+            var anonUser = new Core.Entities.User() { UserName = "Anonimo", UserType = Core.Entities.UserType.Anonymous };
 
-            foreach (var comment in comments.Where(x => x.User.UserType == Core.Entities.UserType.Anon))
+            foreach (var comment in comments.Where(x => x.User.UserType == Core.Entities.UserType.Anonymous))
             {
                 try
                 {
@@ -429,7 +429,7 @@ namespace Voxed.WebApp.Controllers
 
             var voxs = await voxedRepository.Voxs.GetAll();           
 
-            foreach (var vox in voxs.Where(x => x.User.UserType == Core.Entities.UserType.Anon))
+            foreach (var vox in voxs.Where(x => x.User.UserType == Core.Entities.UserType.Anonymous))
             {
                 try
                 {
@@ -446,7 +446,7 @@ namespace Voxed.WebApp.Controllers
 
              await voxedRepository.CompleteAsync();
 
-            var usersToDelete = _userManager.Users.Where(x => x.Id != anonUser.Id && x.UserType == Core.Entities.UserType.Anon);
+            var usersToDelete = _userManager.Users.Where(x => x.Id != anonUser.Id && x.UserType == Core.Entities.UserType.Anonymous);
 
             foreach (var user in usersToDelete)
             {
