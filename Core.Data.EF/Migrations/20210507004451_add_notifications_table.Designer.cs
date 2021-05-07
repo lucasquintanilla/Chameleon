@@ -3,14 +3,16 @@ using System;
 using Core.Data.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Core.Data.EF.Migrations
 {
     [DbContext(typeof(VoxedContext))]
-    partial class VoxedContextModelSnapshot : ModelSnapshot
+    [Migration("20210507004451_add_notifications_table")]
+    partial class add_notifications_table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

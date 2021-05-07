@@ -1,34 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using Core.Data.Repositories;
+using Core.Entities;
+using Core.Shared;
+using Core.Shared.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Core.Shared;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Core.Entities;
-using Core.Data.Repositories;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.SignalR;
 using Voxed.WebApp.Hubs;
-using Newtonsoft.Json;
-using System.Drawing;
-using Core.Shared.Models;
-using Microsoft.Extensions.Logging;
 
 namespace Voxed.WebApp.Controllers
 {
     public class CommentController : BaseController
     {
-        private FormateadorService formateadorService;        
-        private FileStoreService fileStoreService;
+        private readonly FormateadorService formateadorService;        
+        private readonly FileStoreService fileStoreService;
         private readonly IVoxedRepository voxedRepository;
-        private readonly UserManager<User> _userManager;
-        private User anonUser;
+        private readonly UserManager<User> _userManager;        
         private readonly ILogger<HomeController> _logger;
-        public IHubContext<VoxedHub, INotificationHub> _notificationHub { get; }
+        private readonly IHubContext<VoxedHub, INotificationHub> _notificationHub;
+        private User anonUser;
 
         public CommentController(
             FormateadorService formateadorService,
@@ -102,6 +95,20 @@ namespace Voxed.WebApp.Controllers
                 vox.Bump = DateTimeOffset.Now;
                 await voxedRepository.CompleteAsync();
 
+                if (vox.User.UserType != UserType.Anonymous && vox.UserID != comment.UserID)
+                {
+                    var notification = new Notification()
+                    {
+                        CommentId = comment.ID,
+                        VoxId = vox.ID,
+                        UserId = vox.UserID,
+                        Type = NotificationType.NewComment,
+                    };
+                    
+                    await voxedRepository.Notifications.Add(notification);
+                    await voxedRepository.CompleteAsync();
+                }
+
                 var commentNotification = new CommentNotification()
                 {
                     UniqueId = null, //si es unique id puede tener colores unicos
@@ -131,7 +138,7 @@ namespace Voxed.WebApp.Controllers
 
                 if (comment.UserID != vox.User.Id)
                 {
-                    var notification = new Notification()
+                    var opNotification = new OpNotification()
                     {
                         Type = "new",
                         Content = new Content()
@@ -146,7 +153,7 @@ namespace Voxed.WebApp.Controllers
                         }
                     };
 
-                    await _notificationHub.Clients.User(vox.User.Id.ToString()).Notification(notification);
+                    await _notificationHub.Clients.User(vox.User.Id.ToString()).Notification(opNotification);
                 }
 
                 var response = new Models.CommentResponse()

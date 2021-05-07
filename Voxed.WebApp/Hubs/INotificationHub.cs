@@ -10,7 +10,7 @@ namespace Voxed.WebApp.Hubs
     public interface INotificationHub
     {
         Task Comment(CommentNotification comment);
-        Task Notification(Notification notification);
+        Task Notification(OpNotification notification);
         Task Vox(VoxResponse notification);
     }
 }

@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Core.Entities;
+using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Voxed.WebApp.Controllers;
-using Voxed.WebApp.Models;
 
 namespace Voxed.WebApp.Hubs
 {
@@ -14,16 +13,20 @@ namespace Voxed.WebApp.Hubs
 
         public int TotalUsersOnline => VoxedHub.usersOnline.Count;
 
+        // Envia en la home el destello de nuevo comentario en vox 
+        // Envia en el vox el nuevo comentario
         public async Task SendMessage(CommentNotification comment)
         {
             await Clients.All.Comment(comment);
         }
 
-        public async Task SendOPCommentNotification(Core.Entities.User user, Notification notification)
+        //Envia al OP la notificacion de un nuevo comentario en un Vox
+        public async Task SendOPCommentNotification(User user, OpNotification notification)
         {
             await Clients.Users(user.Id.ToString()).Notification(notification);
         }
 
+        // Envia a la home un nuevo vox
         public async Task HomeNewVoxEvent(VoxResponse notification)
         {
             await Clients.All.Vox(notification);
@@ -47,7 +50,7 @@ namespace Voxed.WebApp.Hubs
         }
     }
 
-    public class Notification
+    public class OpNotification
     {
         public string Type { get; set; }
         public Content Content { get; set; }

@@ -18,6 +18,7 @@ namespace Core.Data.EF.Repositories
             Comments = new CommentRepository(context);
             Media = new MediaRepository(context);
             Polls = new PollRepository(context);
+            Notifications = new NotificationRepository(context);
         }
 
         public IVoxRepository Voxs { get; private set; }
@@ -25,6 +26,7 @@ namespace Core.Data.EF.Repositories
         public IMediaRepository Media { get; private set; }
         public ICommentRepository Comments { get; private set; }
         public IPollRepository Polls { get; private set; }
+        public INotificationRepository Notifications { get; private set; }
 
         public async Task<int> CompleteAsync()
         {

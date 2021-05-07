@@ -47,11 +47,14 @@
             </li>
             <li class="newVox" data-function="createVox">INICIAR VOX</li>
         </ul>
-        <div class="menuModal notifications hide" id="notificationsList">
-            <ul>
-                <li class="noNotification ">No hay notificaciones</li>
-            </ul>
-        </div>
+        
+
+        @await Component.InvokeAsync("NotificationNavList")
+
+
+
+                
+
         <div class="alertBox"></div>
     </nav>
     <div class="bottonContextual" data-function="createVox"><i class="fas fa-plus"></i></div>
