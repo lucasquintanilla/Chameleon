@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Voxed | @ViewData["Title"]</title>
+    <title>@ViewData["NotificationsCount"] Voxed | @ViewData["Title"]</title>
     <meta name="theme-color" content="#2C3E50" />
     @*<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />*@
     @*<link rel="stylesheet" href="~/css/site.css" />*@
@@ -31,7 +31,7 @@
 
         </div>
 
-        <ul class="menu unselect" id="navbarMenu">
+        @*<ul class="menu unselect" id="navbarMenu">
             <li class="menuIcon tooltip-bottom mobile" data-tooltip="Buscar" data-togglesearch>
                 <i class="fas fa-search"></i>
             </li>
@@ -46,7 +46,7 @@
                 <i class="fas fa-bars"></i>
             </li>
             <li class="newVox" data-function="createVox">INICIAR VOX</li>
-        </ul>
+        </ul>*@
         
 
         @await Component.InvokeAsync("NotificationNavList")

@@ -1,13 +1,76 @@
 ﻿@model IEnumerable<Voxed.WebApp.Hubs.OpNotification>
 
+@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<Core.Entities.User> SignInManager
+@inject UserManager<Core.Entities.User> UserManager
+
+<ul class="menu unselect" id="navbarMenu">
+    <li class="menuIcon tooltip-bottom mobile" data-tooltip="Buscar" data-togglesearch>
+        <i class="fas fa-search"></i>
+    </li>
+    <li class="menuIcon tooltip-bottom mobile closeSearch" data-tooltip="Cerrar" data-togglesearch>
+        <i class="fas fa-times"></i>
+    </li>
+    <li class="search">
+        <input type="text" id="searchInput" placeholder="Buscar...">
+    </li>
+
+
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <li class="menuIcon tooltip-bottom mobile" data-tooltip="Notificaciones" data-toggle="notificationsList">
+            <i class="fas fa-bell"></i>
+            @if (@Model.Count() > 0)
+            {
+                <i class="menuIconCount" id="notificationsCount">@Model.Count()</i>
+            }
+            else
+            {
+                <i class="menuIconCount hide" id="notificationsCount">0</i>
+            }
+        </li>
+
+        <li class="menuIcon tooltip-bottom mobile" data-toggle="profileData">
+            <i class="fas fa-user"></i>
+        </li>
+
+        //NUEVO
+        <li class="menuModal notifications hide" id="profileData">
+            <ul class="slideMenuOptions">
+                <li class="optionsTitle">Usuario</li>
+                <li>
+                    <div class="optionIcon"><i class="fas fa-user" aria-hidden="true"></i></div>
+                    <div class="optionText"><span class="name author">@User.Identity.Name</span> </div>
+                </li>
+                <li class="optionsTitle"><a href="/account/logout">Cerrar Sesion</a></li>
+            </ul>
+        </li>
+    }
+    else
+    {
+        <li class="menuIcon tooltip-bottom mobile" data-event="click,button,NAVBAR_LOGIN" data-function="registerModal" data-tooltip="Membresia">
+            <i class="fas fa-user"></i>
+        </li>
+    }
+    <li class="menuIcon tooltip-bottom mobile" data-toggle="slideMenu" data-tooltip="Menu">
+        <i class="fas fa-bars"></i>
+    </li>
+    <li class="newVox" data-function="createVox">INICIAR VOX</li>
+</ul>
+
 <div class="menuModal notifications hide" id="notificationsList">
     <ul>
 
         @if (Model.Count() > 0)
         {
+            
+           
+             
+            
             foreach (var opNotification in Model)
             {
-                <a href="/notification/@opNotification.Content.Id#@opNotification.Content.ContentHash">
+                <a href="/notification/@opNotification.Content.Id/@opNotification.Content.ContentHash">
                     <li id="notification-@opNotification.Content.Id">
                         <div class="avatar">
                             <img src="@opNotification.Content.ThumbnailUrl" alt="">
@@ -15,11 +78,15 @@
                         </div>
                         <div class="notification">
                             <b>@opNotification.Content.NotificationBold</b>
-                            @opNotification.Content.NotificationText;
+                            @opNotification.Content.NotificationText
                         </div>
                     </li>
                 </a>
             }
+
+            <a href="/notification/delete">
+                <li class="noNotification">Limpiar todo</li>
+            </a>
         }
         else
         {

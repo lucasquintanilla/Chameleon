@@ -3,38 +3,54 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Core.Data.Repositories;
+using Core.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Voxed.WebApp.Controllers
 {
     public class NotificationController : BaseController
     {
-        private IVoxedRepository voxedRepository;
+        private IVoxedRepository _voxedRepository;
+        private readonly UserManager<User> _userManager;
 
-        public NotificationController(IVoxedRepository voxedRepository)
+        public NotificationController(IVoxedRepository voxedRepository, 
+            UserManager<User> userManager)
         {
-            this.voxedRepository = voxedRepository;
+            _voxedRepository = voxedRepository;
+            _userManager = userManager;
         }
 
-        ///notification/${e.id}#${e.contentHash}
         [AllowAnonymous]
-        [Route("notification/{parameters}#{commentHash}")]
-        public IActionResult Index(string parameters, string commentHash)
+        [Route("notification/{voxId}/{commentHash}")]
+        public async Task<IActionResult> Index(string voxId, string commentHash)
         {
-            var array = parameters.Split("#");
+            var notification = await _voxedRepository.Notifications.GetByVoxId(Core.Shared.GuidConverter.FromShortString(voxId));
 
-            string voxId = array[0];
-            //string commentHash = array[1];
-            //guardar como notificacion ya leida
+            if (notification != null)
+            {
+                await _voxedRepository.Notifications.Remove(notification);
+                await _voxedRepository.CompleteAsync();
+            }
 
-            // ir al vox 
+            return Redirect($"~/vox/{voxId}#{commentHash}");
+        }
 
-            ///vox/${e.id}#${e.contentHash}
-            ///
-            //return RedirectToAction("details", "Vox", new { Hash = voxId });
-            return Redirect($"vox/{voxId}#{commentHash}");
-            //return LocalRedirect($"vox/{voxId}#{commentHash}");
+        [AllowAnonymous]
+        [Route("notification/delete")]
+        public async Task<IActionResult> Delete()
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            var notifications = await _voxedRepository.Notifications.GetByUserId(user.Id);
+
+            await _voxedRepository.Notifications.RemoveRange(notifications);
+            await _voxedRepository.CompleteAsync();
+
+            var returnUrl = Request.Headers["Referer"].ToString();
+
+            return Redirect(returnUrl);
         }
     }
 }

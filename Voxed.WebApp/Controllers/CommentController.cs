@@ -149,7 +149,7 @@ namespace Voxed.WebApp.Controllers
                             Count = "1",
                             ContentHash = comment.Hash,
                             Id = GuidConverter.ToShortString(vox.ID),
-                            ThumbnailUrl = vox.Media?.ThumbnailUrl
+                            ThumbnailUrl = vox.Media?.ThumbnailUrl                  
                         }
                     };
 

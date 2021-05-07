@@ -14,15 +14,12 @@ namespace Voxed.WebApp.Views.Shared.Components.NotificationNavList
     public class NotificationNavListViewComponent : ViewComponent
     {
         private readonly IVoxedRepository _voxedRepository;
-        private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
 
         public NotificationNavListViewComponent(IVoxedRepository voxedRepository, 
-            SignInManager<User> signInManager, 
             UserManager<User> userManager)
         {
             _voxedRepository = voxedRepository;
-            _signInManager = signInManager;
             _userManager = userManager;
         }
 
@@ -35,6 +32,14 @@ namespace Voxed.WebApp.Views.Shared.Components.NotificationNavList
             if (user != null)
             {
                 var notifications = await _voxedRepository.Notifications.GetByUserId(user.Id);
+
+                if (notifications.Count() > 0)
+                {
+                    ViewData["NotificationsCount"] = $"({notifications.Count()})";
+                    //ViewBag["NotificationsCount"] = $"({notifications.Count()})";
+                }
+
+                
 
                 foreach (var notification in notifications)
                 {
