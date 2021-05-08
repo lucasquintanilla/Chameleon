@@ -16,33 +16,36 @@ namespace Core.Data.EF
             UserManager<User> userManager, 
             RoleManager<Role> roleManager)
         {
-            this._context = context;
+            _context = context;
             _userManager = userManager;
             _roleManager = roleManager;
         }
 
         public async Task Initialize()
         {
-            //context.Database.EnsureCreated();
-
-            var pendingMigrations = _context.Database.GetPendingMigrations();
-
-            _context.Database.Migrate();
+            await InitializeDataBase();
 
             await InitializeCategories();
 
-            await InitilizateRoles();
+            await InitilizeRoles();
 
             await InitializeUsers();
 
             //InitializeVoxs();
 
             //InitializeComments();
-
-            
         }
 
-        private async Task InitilizateRoles()
+        private async Task InitializeDataBase()
+        { 
+            //context.Database.EnsureCreated();
+
+            //var pendingMigrations = _context.Database.GetPendingMigrations();
+
+            await _context.Database.MigrateAsync();
+        }
+
+        private async Task InitilizeRoles()
         {
             if (await _roleManager.Roles.AnyAsync())
             {

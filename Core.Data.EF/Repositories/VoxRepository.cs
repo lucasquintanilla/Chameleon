@@ -12,12 +12,8 @@ namespace Core.Data.EF.Repositories
 {
     public class VoxRepository : GenericRepository<Vox>, IVoxRepository
     {
-        //private readonly VoxedContext _context;
-
-        public VoxRepository(VoxedContext context) : base(context)
-        {
-            //_context = context;
-        }
+        private int[] hiddenCategoriesId = new int[] { 2, 3 };
+        public VoxRepository(VoxedContext context) : base(context) { }
 
         public override async Task<Vox> GetById(Guid id)
             => await _context.Voxs
@@ -32,14 +28,12 @@ namespace Core.Data.EF.Repositories
                 .Include(x => x.User)
                 .FirstOrDefaultAsync(m => m.ID == id);
 
-
         public async Task<IEnumerable<Vox>> GetLastestAsync() =>
             await _context.Voxs
-                .Where(x => x.State == VoxState.Normal)
+                .Where(x => x.State == VoxState.Normal && !hiddenCategoriesId.Contains(x.CategoryID))
                 .Include(x => x.Media)
                 .Include(x => x.Category)
                 .Include(x => x.Comments.Where(c => c.State == CommentState.Normal))
-                //.OrderByDescending(x => x.Bump).ThenByDescending(x => x.Type)
                 .OrderByDescending(x => x.Type).ThenByDescending(x => x.Bump)
                 .Skip(0)
                 .Take(36)
@@ -101,7 +95,8 @@ namespace Core.Data.EF.Repositories
                     .Where(x => x.State == VoxState.Normal 
                                 && x.Type == VoxType.Normal 
                                 && !hashSkipList.Contains(x.Hash) 
-                                && x.Bump < LastBump)
+                                && x.Bump < LastBump 
+                                && !hiddenCategoriesId.Contains(x.CategoryID))
                     .OrderByDescending(x => x.Bump)
                     .Include(x => x.Media)
                     .Include(x => x.Category)

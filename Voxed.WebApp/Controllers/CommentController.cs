@@ -15,13 +15,13 @@ namespace Voxed.WebApp.Controllers
 {
     public class CommentController : BaseController
     {
-        private readonly FormateadorService formateadorService;        
-        private readonly FileStoreService fileStoreService;
-        private readonly IVoxedRepository voxedRepository;
+        private readonly FormateadorService _formateadorService;        
+        private readonly FileStoreService _fileStoreService;
+        private readonly IVoxedRepository _voxedRepository;
         private readonly UserManager<User> _userManager;        
         private readonly ILogger<HomeController> _logger;
         private readonly IHubContext<VoxedHub, INotificationHub> _notificationHub;
-        private User anonUser;
+        private static User _anonUser;
 
         public CommentController(
             FormateadorService formateadorService,
@@ -31,9 +31,9 @@ namespace Voxed.WebApp.Controllers
             IHubContext<VoxedHub, INotificationHub> notificationHub, 
             ILogger<HomeController> logger)
         {
-            this.formateadorService = formateadorService;
-            this.fileStoreService = fileStoreService;
-            this.voxedRepository = voxedRepository;
+            _formateadorService = formateadorService;
+            _fileStoreService = fileStoreService;
+            _voxedRepository = voxedRepository;
             _userManager = userManager;
             _notificationHub = notificationHub;
             _logger = logger;
@@ -72,15 +72,14 @@ namespace Voxed.WebApp.Controllers
                     ID = Guid.NewGuid(),
                     Hash = new Hash().NewHash(7),
                     VoxID = new Guid(id),
-                    User = user ?? GetAnonUser(),
-                    Content = request.Content == null ? null : formateadorService.Parsear(request.Content),
+                    UserID = user == null ? GetAnonUser().Id : user.Id,
+                    Content = request.Content == null ? null : _formateadorService.Parsear(request.Content),
                     Style = StyleService.GetRandomCommentStyle(),
                     IpAddress = UserIpAddress.ToString(),
                     UserAgent = UserAgent
                 };
-
-                //await ProcessMedia(request, comment);
-                await fileStoreService.ProcessMedia(request.GetUploadData(), request.File, comment);
+                
+                await _fileStoreService.ProcessMedia(request.GetUploadData(), request.File, comment);
 
                 //Detectar Tag >HIDE
                 //if (!comentario.Contenido.ToLower().Contains("gt;hide"))
@@ -90,10 +89,15 @@ namespace Voxed.WebApp.Controllers
                 //        .UpdateAsync(new { Bump = DateTimeOffset.Now });
                 //}
 
-                await voxedRepository.Comments.Add(comment);
-                var vox = await voxedRepository.Voxs.GetById(comment.VoxID);
+                //var replied = _formateadorService.GetRepliedHash(request.Content);
+
+
+
+                await _voxedRepository.Comments.Add(comment);
+
+                var vox = await _voxedRepository.Voxs.GetById(comment.VoxID);
                 vox.Bump = DateTimeOffset.Now;
-                await voxedRepository.CompleteAsync();
+                await _voxedRepository.CompleteAsync();
 
                 if (vox.User.UserType != UserType.Anonymous && vox.UserID != comment.UserID)
                 {
@@ -105,8 +109,8 @@ namespace Voxed.WebApp.Controllers
                         Type = NotificationType.NewComment,
                     };
                     
-                    await voxedRepository.Notifications.Add(notification);
-                    await voxedRepository.CompleteAsync();
+                    await _voxedRepository.Notifications.Add(notification);
+                    await _voxedRepository.CompleteAsync();
                 }
 
                 var commentNotification = new CommentNotification()
@@ -190,45 +194,13 @@ namespace Voxed.WebApp.Controllers
 
         private User GetAnonUser()
         {
-            if (anonUser == null)
+            if (_anonUser == null)
             {
-                anonUser = _userManager.Users.Where(x => x.UserType == UserType.Anonymous).FirstOrDefault();
+                _anonUser = _userManager.Users.Where(x => x.UserType == UserType.Anonymous).FirstOrDefault();
             }
 
-            return anonUser;
+            return _anonUser;
         }
-
-        //private async Task ProcessMedia(Models.CommentRequest request, IMediaEntity comment)
-        //{
-        //    var data = request.GetUploadData();
-
-        //    if (data != null && request.File == null)
-        //    {                
-        //        if (data.Extension == Models.UploadDataExtension.Youtube)
-        //        {
-        //            comment.Media = await fileStoreService.SaveExternal(data, comment.Hash);
-        //        }
-        //        else if (data.Extension == Models.UploadDataExtension.Base64)
-        //        {
-        //            comment.Media = await fileStoreService.SaveFromBase64(data.ExtensionData, comment.Hash);
-        //        }
-        //        else
-        //        {
-        //            throw new NotImplementedException("Formato de archivo no contemplado");
-        //        }
-        //    }
-        //    else if (request.File != null)
-        //    {
-        //        var isValidFile = await fileStoreService.IsValidFile(request.File);
-
-        //        if (!isValidFile)
-        //        {
-        //            throw new NotImplementedException("Archivo invalido");
-        //        }
-
-        //        comment.Media = await fileStoreService.Save(request.File, comment.Hash);
-        //    }
-        //}
 
         private string GetUserTypeTag(UserType userType)
         {
@@ -252,7 +224,5 @@ namespace Voxed.WebApp.Controllers
             var array = url.Split(".");
             return array[array.Length - 1];
         }
-
-        
     }
 }

@@ -86,13 +86,22 @@ namespace Core.Shared
             //return sanitezed;
         }
 
-        public string[] GetIdsTageadas(string contenido)
+        public List<string> GetRepliedHash(string contenido)
         {
-            return Regex.Matches(contenido, @">>([A-Z0-9]{8})")
-                .Select(m =>
-                {
-                    return m.Groups[1].Value;
-                }).ToArray();
+            //return Regex.Matches(contenido, @">>([A-Z0-9]{8})")
+            //    .Select(m =>
+            //    {
+            //        return m.Groups[1].Value;
+            //    }).ToList();
+
+            return Regex.Matches(contenido, @"&gt;&gt;([A-Z0-9]{8})")
+                .Select(m => m.Groups[1].Value)
+                .Distinct()
+                .ToList();
+
+            //var x = Regex.Matches(contenido, @">>([A-Z0-9]{8})");
+
+            //return null;
         }
     }
 
