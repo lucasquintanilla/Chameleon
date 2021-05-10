@@ -30,7 +30,7 @@ namespace Voxed.WebApp.Controllers
 
         protected string UserAgent => Request.Headers.ContainsKey("User-Agent") ? Request.Headers["User-Agent"].ToString() : "";
 
-        protected IPAddress UserIpAddress => Request.HttpContext.Connection.RemoteIpAddress;
+        protected IPAddress UserIpAddress => HttpContext.Connection.RemoteIpAddress;
 
         //public IActionResult Index()
         //{

@@ -9,7 +9,7 @@
     <div class="loadNewVox disabled unselect" data-voxs="0" id="voxLoadMore"></div>
     <div class="voxList" id="voxList">
                 
-        <a href="https://brave.com/vox812" data-event="click,button,AD_HOME_1"
+        @*<a href="https://brave.com/vox812" data-event="click,button,AD_HOME_1"
            class="vox" id="voxad"
            style="background: url(https://content.voxed.net/brave1.gif);">
             <div class="voxHeader">
@@ -19,12 +19,11 @@
             </div>
             <h4 class="title textShadon">¡Ganá dinero mientras navegas!</h4>
             <div class="over"></div>
-        </a>
+        </a>*@
 
         @await Component.InvokeAsync("VoxDetails", Model)
 
     </div>
-    @*<span class="commentsVoxText">20</span>*@
     <div class="loadingSpinner hide" id="homeLoadingSpinner"><i class="fas fa-spinner fa-spin"></i></div>
 </main>
 <script>
