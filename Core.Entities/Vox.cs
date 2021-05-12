@@ -20,6 +20,7 @@ namespace Core.Entities
         public Guid MediaID { get; set; }
         public VoxState State { get; set; }
         public VoxType Type { get; set; }
+        public bool IsSticky { get; set; }
         public DateTimeOffset CreatedOn { get; set; } = DateTimeOffset.Now;
         public DateTimeOffset Bump { get; set; } = DateTimeOffset.Now;
         public Media Media { get; set; }
