@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Voxed.WebApp.Hubs;
@@ -18,7 +19,8 @@ namespace Voxed.WebApp.Controllers
         private readonly FormateadorService _formateadorService;        
         private readonly FileStoreService _fileStoreService;
         private readonly IVoxedRepository _voxedRepository;
-        private readonly UserManager<User> _userManager;        
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
         private readonly ILogger<HomeController> _logger;
         private readonly IHubContext<VoxedHub, INotificationHub> _notificationHub;
         private static User _anonUser;
@@ -28,8 +30,9 @@ namespace Voxed.WebApp.Controllers
             FileStoreService fileStoreService,
             IVoxedRepository voxedRepository,
             UserManager<User> userManager,
-            IHubContext<VoxedHub, INotificationHub> notificationHub, 
-            ILogger<HomeController> logger)
+            IHubContext<VoxedHub, INotificationHub> notificationHub,
+            ILogger<HomeController> logger, 
+            SignInManager<User> signInManager)
         {
             _formateadorService = formateadorService;
             _fileStoreService = fileStoreService;
@@ -37,6 +40,7 @@ namespace Voxed.WebApp.Controllers
             _userManager = userManager;
             _notificationHub = notificationHub;
             _logger = logger;
+            _signInManager = signInManager;
         }
 
 
@@ -65,21 +69,8 @@ namespace Voxed.WebApp.Controllers
                     };
 
                 }
-                var user = await _userManager.GetUserAsync(HttpContext.User);
 
-                var comment = new Comment()
-                {
-                    ID = Guid.NewGuid(),
-                    Hash = new Hash().NewHash(7),
-                    VoxID = new Guid(id),
-                    UserID = user == null ? GetAnonUser().Id : user.Id,
-                    Content = request.Content == null ? null : _formateadorService.Parsear(request.Content),
-                    Style = StyleService.GetRandomCommentStyle(),
-                    IpAddress = UserIpAddress.ToString(),
-                    UserAgent = UserAgent
-                };
-                
-                await _fileStoreService.ProcessMedia(request.GetUploadData(), request.File, comment);
+                var comment = await ProcessComment(request, id);
 
                 //Detectar Tag >HIDE
                 //if (!comentario.Contenido.ToLower().Contains("gt;hide"))
@@ -89,76 +80,19 @@ namespace Voxed.WebApp.Controllers
                 //        .UpdateAsync(new { Bump = DateTimeOffset.Now });
                 //}
 
-                //var replied = _formateadorService.GetRepliedHash(request.Content);
-
-
-
+                //cambiar para buscar vox con el id de la request
                 await _voxedRepository.Comments.Add(comment);
-
                 var vox = await _voxedRepository.Voxs.GetById(comment.VoxID);
                 vox.Bump = DateTimeOffset.Now;
                 await _voxedRepository.CompleteAsync();
 
-                if (vox.User.UserType != UserType.Anonymous && vox.UserID != comment.UserID)
-                {
-                    var notification = new Notification()
-                    {
-                        CommentId = comment.ID,
-                        VoxId = vox.ID,
-                        UserId = vox.UserID,
-                        Type = NotificationType.NewComment,
-                    };
-                    
-                    await _voxedRepository.Notifications.Add(notification);
-                    await _voxedRepository.CompleteAsync();
-                }
+                await SaveRepliesNotifications(vox, comment, request);
 
-                var commentNotification = new CommentNotification()
-                {
-                    UniqueId = null, //si es unique id puede tener colores unicos
-                    UniqueColor = null,
-                    UniqueColorContrast = null,
+                await SaveOpNotification(vox, comment);
 
-                    Id = comment.ID.ToString(),
-                    Hash = comment.Hash,
-                    VoxHash = vox.Hash,
-                    AvatarColor = comment.Style.ToString().ToLower(),
-                    IsOp = vox.UserID == comment.UserID && vox.User.UserType != UserType.Anonymous, //probar cambiarlo cuando solo pruedan craer los usuarios.
-                    Tag = GetUserTypeTag(comment.User.UserType), //admin o dev               
-                    Content = comment.Content ?? "",
-                    Name = comment.User.UserName,
-                    CreatedAt = TimeAgo.ConvertToTimeAgo(comment.CreatedOn.DateTime),
-                    Poll = null, //aca va una opcion respondida
+                await SendCommentLiveNotification(comment, vox, request);
 
-                    //Media
-                    MediaUrl = comment.Media?.Url,
-                    MediaThumbnailUrl = comment.Media?.ThumbnailUrl,
-                    Extension = request.GetUploadData()?.Extension == UploadDataExtension.Base64 ? GetFileExtensionFromUrl(comment.Media?.Url) : request.GetUploadData()?.Extension,
-                    ExtensionData = request.GetUploadData()?.ExtensionData,
-                    Via = request.GetUploadData()?.Extension == UploadDataExtension.Youtube ? comment.Media?.Url : null,
-                };
-
-                await _notificationHub.Clients.All.Comment(commentNotification);
-
-                if (comment.UserID != vox.User.Id)
-                {
-                    var opNotification = new OpNotification()
-                    {
-                        Type = "new",
-                        Content = new Content()
-                        {
-                            VoxHash = vox.Hash,
-                            NotificationBold = "Nuevo Comentario",
-                            NotificationText = vox.Title,
-                            Count = "1",
-                            ContentHash = comment.Hash,
-                            Id = GuidConverter.ToShortString(vox.ID),
-                            ThumbnailUrl = vox.Media?.ThumbnailUrl                  
-                        }
-                    };
-
-                    await _notificationHub.Clients.User(vox.User.Id.ToString()).Notification(opNotification);
-                }
+                await SendOpLiveNotification(comment, vox);
 
                 var response = new Models.CommentResponse()
                 {
@@ -223,6 +157,192 @@ namespace Voxed.WebApp.Controllers
         {
             var array = url.Split(".");
             return array[array.Length - 1];
+        }
+
+        private async Task SaveOpNotification(Vox vox, Comment comment)
+        {
+            if (vox.User.UserType != UserType.Anonymous && vox.UserID != comment.UserID)
+            {
+                var notification = new Notification()
+                {
+                    CommentId = comment.ID,
+                    VoxId = vox.ID,
+                    UserId = vox.UserID,
+                    Type = NotificationType.NewComment,
+                };
+
+                await _voxedRepository.Notifications.Add(notification);
+                await _voxedRepository.CompleteAsync();
+            }
+        }
+
+        private async Task SaveRepliesNotifications(Vox vox, Comment comment, Models.CommentRequest request)
+        {
+            var hashList = _formateadorService.GetRepliedHash(request.Content);
+            var usersId = await _voxedRepository.Comments.GetUsersByCommentHash(hashList);
+
+            var repliesNotifications = usersId
+                .Where(x => x != GetAnonUser().Id)
+                .Select(userId => new Notification()
+                {
+                    CommentId = comment.ID,
+                    VoxId = vox.ID,
+                    UserId = userId,
+                    Type = NotificationType.Reply,
+                })
+                .ToList();
+
+            await _voxedRepository.Notifications.AddRange(repliesNotifications);
+            await _voxedRepository.CompleteAsync();
+
+           
+
+            await SendReplyLiveNotification(vox, comment, usersId);
+        }
+
+        private async Task SendCommentLiveNotification(Comment comment, Vox vox, Models.CommentRequest request)
+        {
+            var commentNotification = new CommentNotification()
+            {
+                UniqueId = null, //si es unique id puede tener colores unicos
+                UniqueColor = null,
+                UniqueColorContrast = null,
+
+                Id = comment.ID.ToString(),
+                Hash = comment.Hash,
+                VoxHash = vox.Hash,
+                AvatarColor = comment.Style.ToString().ToLower(),
+                IsOp = vox.UserID == comment.UserID && vox.User.UserType != UserType.Anonymous, //probar cambiarlo cuando solo pruedan craer los usuarios.
+                Tag = GetUserTypeTag(comment.User.UserType), //admin o dev               
+                Content = comment.Content ?? "",
+                Name = GetUserName(comment),
+                CreatedAt = TimeAgo.ConvertToTimeAgo(comment.CreatedOn.DateTime),
+                Poll = null, //aca va una opcion respondida
+
+                //Media
+                MediaUrl = comment.Media?.Url,
+                MediaThumbnailUrl = comment.Media?.ThumbnailUrl,
+                Extension = request.GetUploadData()?.Extension == UploadDataExtension.Base64 ? GetFileExtensionFromUrl(comment.Media?.Url) : request.GetUploadData()?.Extension,
+                ExtensionData = request.GetUploadData()?.ExtensionData,
+                Via = request.GetUploadData()?.Extension == UploadDataExtension.Youtube ? comment.Media?.Url : null,
+            };
+
+            await _notificationHub.Clients.All.Comment(commentNotification);
+        }
+
+        private async Task SendOpLiveNotification(Comment comment, Vox vox)
+        {
+            if (comment.UserID != vox.User.Id)
+            {
+                var userNotification = new UserNotification()
+                {
+                    Type = "new",
+                    Content = new Content()
+                    {
+                        VoxHash = vox.Hash,
+                        NotificationBold = "Nuevo Comentario",
+                        NotificationText = vox.Title,
+                        Count = "1",
+                        ContentHash = comment.Hash,
+                        Id = GuidConverter.ToShortString(vox.ID),
+                        ThumbnailUrl = vox.Media?.ThumbnailUrl
+                    }
+                };
+
+                await _notificationHub.Clients.User(vox.User.Id.ToString()).Notification(userNotification);
+            }
+        }
+
+        private async Task SendReplyLiveNotification(Vox vox, Comment comment, IEnumerable<Guid> userIds)
+        {
+            var userNotification = new UserNotification()
+            {
+                Type = "new",
+                Content = new Content()
+                {
+                    VoxHash = vox.Hash,
+                    NotificationBold = "Nueva respuesta",
+                    NotificationText = vox.Title,
+                    Count = "1",
+                    ContentHash = comment.Hash,
+                    Id = GuidConverter.ToShortString(vox.ID),
+                    ThumbnailUrl = vox.Media?.ThumbnailUrl
+                }
+            };
+
+            var ids = userIds.Select(x => x.ToString()).ToArray();
+
+            await _notificationHub.Clients.Users(ids).Notification(userNotification);
+        }
+
+        private async Task<Comment> ProcessComment(Models.CommentRequest request, string id)
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            if (user == null)
+            {
+                user = await CreateAnonymousUser();
+
+                await _signInManager.SignInAsync(user, true);
+
+                //Crear una notificacion para el nuevo usuario anonimo
+            }
+
+            var comment = new Comment()
+            {
+                ID = Guid.NewGuid(),
+                Hash = new Hash().NewHash(7),
+                VoxID = new Guid(id),
+                UserID = user == null ? GetAnonUser().Id : user.Id,
+                Content = request.Content == null ? null : _formateadorService.Parsear(request.Content),
+                Style = StyleService.GetRandomCommentStyle(),
+                IpAddress = UserIpAddress.ToString(),
+                UserAgent = UserAgent
+            };
+
+            await _fileStoreService.ProcessMedia(request.GetUploadData(), request.File, comment);
+
+            return comment;
+        }
+
+        private async Task<User> CreateAnonymousUser()
+        {
+            var user = new User
+            {
+                UserName = UserNameGenerator.NewAnonymousUserName(),
+                EmailConfirmed = true,
+                UserType = UserType.AnonymousAccount,
+                IpAddress = UserIpAddress.ToString(),
+                UserAgent = UserAgent,
+                Token = TokenGenerator.NewToken()
+            };
+
+            var result = await _userManager.CreateAsync(user);
+            if (result.Succeeded)
+            {
+                return user;
+            }
+
+            throw new Exception();
+        }
+
+        private string GetUserName(Comment comment)
+        {
+            switch (comment.User.UserType)
+            {
+                case UserType.Anonymous:
+                    return "Anonimo";
+                case UserType.Administrator:
+                    return comment.User.UserName;
+                case UserType.Moderator:
+                    return comment.User.UserName;
+                case UserType.Account:
+                    return comment.User.UserName;
+                case UserType.AnonymousAccount:
+                    return "Anonimo";
+                default:
+                    throw new NotImplementedException("Tipo de usuario no contemplado");
+            }
         }
     }
 }

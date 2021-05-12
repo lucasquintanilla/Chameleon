@@ -25,44 +25,50 @@ namespace Voxed.WebApp.Views.Shared.Components.NotificationNavList
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var opNotificationList = new List<OpNotification>();
-
             var user = await _userManager.GetUserAsync(HttpContext.User);
 
-            if (user != null)
+            if (user == null)
             {
-                var notifications = await _voxedRepository.Notifications.GetByUserId(user.Id);
-
-                if (notifications.Count() > 0)
-                {
-                    ViewData["NotificationsCount"] = $"({notifications.Count()})";
-                    //ViewBag["NotificationsCount"] = $"({notifications.Count()})";
-                }
-
-                
-
-                foreach (var notification in notifications)
-                {
-                    var opNotification = new OpNotification()
-                    {
-                        Type = "new",
-                        Content = new Content()
-                        {
-                            VoxHash = notification.Vox.Hash,
-                            NotificationBold = "Nuevo Comentario",
-                            NotificationText = notification.Vox.Title,
-                            Count = "1",
-                            ContentHash = notification.Comment.Hash,
-                            Id = Core.Shared.GuidConverter.ToShortString(notification.Vox.ID),
-                            ThumbnailUrl = notification.Vox.Media?.ThumbnailUrl
-                        }
-                    };
-
-                    opNotificationList.Add(opNotification);
-                }
+                return View(new List<UserNotification>());
             }
 
-            return View(opNotificationList);
+            var notifications = await _voxedRepository.Notifications.GetByUserId(user.Id);
+
+            if (notifications.Count() > 0)
+            {
+                ViewData["NotificationsCount"] = $"({notifications.Count()})";
+            }
+
+            var userNotifications = notifications
+                .Select(notification => new UserNotification
+                {
+                    Type = "new",
+                    Content = new Content()
+                    {
+                        VoxHash = notification.Vox.Hash,
+                        NotificationBold = GetTitleNotification(notification.Type),
+                        NotificationText = notification.Vox.Title,
+                        Count = "1",
+                        ContentHash = notification.Comment.Hash,
+                        Id = Core.Shared.GuidConverter.ToShortString(notification.Vox.ID),
+                        ThumbnailUrl = notification.Vox.Media?.ThumbnailUrl
+                    }
+                });
+
+            return View(userNotifications);
+        }
+
+        private string GetTitleNotification(NotificationType notificationType)
+        {
+            switch (notificationType)
+            {
+                case NotificationType.NewComment:
+                    return "Nuevo comentario";
+                case NotificationType.Reply:
+                    return "Nueva respuesta";
+                default:
+                    return "Nuevo notificacion"; 
+            }
         }
     }
 }

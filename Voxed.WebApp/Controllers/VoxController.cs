@@ -23,6 +23,8 @@ namespace Voxed.WebApp.Controllers
         private FileStoreService fileStoreService;
         private IVoxedRepository voxedRepository;
         private readonly UserManager<User> _userManager;
+
+        private readonly SignInManager<User> _signInManager;
         private FormateadorService formateadorService;
         private User anonUser;
 
@@ -32,14 +34,16 @@ namespace Voxed.WebApp.Controllers
             FileStoreService fileStoreService,
             IVoxedRepository voxedRepository,
             UserManager<User> userManager,
-            FormateadorService formateadorService, 
-            IHubContext<VoxedHub, INotificationHub> notificationHub)
+            FormateadorService formateadorService,
+            IHubContext<VoxedHub, INotificationHub> notificationHub, 
+            SignInManager<User> signInManager)
         {
             this.fileStoreService = fileStoreService;
             this.voxedRepository = voxedRepository;
             _userManager = userManager;
             this.formateadorService = formateadorService;
             _notificationHub = notificationHub;
+            _signInManager = signInManager;
         }
 
         [HttpGet("vox/{hash}")]
@@ -102,6 +106,15 @@ namespace Voxed.WebApp.Controllers
                 try
                 {
                     var user = await _userManager.GetUserAsync(HttpContext.User);
+
+                    if (user == null)
+                    {
+                        user = await CreateAnonymousUser();
+
+                        await _signInManager.SignInAsync(user, true);
+
+                        //Crear una notificacion para el nuevo usuario anonimo
+                    }
 
                     var vox = new Vox()
                     {
@@ -261,6 +274,27 @@ namespace Voxed.WebApp.Controllers
                     Voxs = voxsList
                 },
             };
+        }
+
+        private async Task<User> CreateAnonymousUser()
+        {
+            var user = new User
+            {
+                UserName = UserNameGenerator.NewAnonymousUserName(),
+                EmailConfirmed = true,
+                UserType = UserType.AnonymousAccount,
+                IpAddress = UserIpAddress.ToString(),
+                UserAgent = UserAgent,
+                Token = TokenGenerator.NewToken()
+            };
+
+            var result = await _userManager.CreateAsync(user);
+            if (result.Succeeded)
+            {
+                return user;
+            }
+
+            throw new Exception();
         }
 
         private VoxResponse ConvertoToVoxResponse(Vox vox)

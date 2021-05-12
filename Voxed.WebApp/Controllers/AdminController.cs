@@ -38,6 +38,9 @@ namespace Voxed.WebApp.Controllers
                 }
 
                 comment.State = Core.Entities.CommentState.Deleted;
+
+                await UpdateVoxLastBump(comment);
+
                 await voxedRepository.CompleteAsync();
             }
 
@@ -56,15 +59,33 @@ namespace Voxed.WebApp.Controllers
             return new Response() { Value = "OK" };
         }
 
-        public class Request
+        private async Task UpdateVoxLastBump(Core.Entities.Comment comment)
         {
-            public string ContentType { get; set; } //puede ser 0:comment o 1
-            public string ContentId { get; set; }
-        }
+            var vox = await voxedRepository.Voxs.GetById(comment.VoxID);
 
-        public class Response
-        {
-            public string Value { get; set; }
+            if (vox == null)
+            {
+                return;
+            }
+
+            var lastBump = vox.Comments
+                .Where(x => x.State == Core.Entities.CommentState.Normal)
+                .OrderByDescending(x => x.CreatedOn)                
+                .Select(x => x.CreatedOn)
+                .First();
+
+            vox.Bump = lastBump;
         }
+    }
+
+    public class Request
+    {
+        public string ContentType { get; set; } //puede ser 0:comment o 1
+        public string ContentId { get; set; }
+    }
+
+    public class Response
+    {
+        public string Value { get; set; }
     }
 }

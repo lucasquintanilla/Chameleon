@@ -20,7 +20,7 @@ namespace Core.Data.EF.Repositories
                 .Include(x => x.Media)
                 .Include(x => x.Category)
                 .Include(x => x.Category.Media)
-                .Include(x => x.Comments.Where(c => c.State == CommentState.Normal))
+                .Include(x => x.Comments.Where(c => c.State == CommentState.Normal)) //agregar order by descending
                     .ThenInclude(c => c.Media)
                 .Include(x => x.Comments.Where(c => c.State == CommentState.Normal))
                     .ThenInclude(c => c.User)

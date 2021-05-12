@@ -86,22 +86,12 @@ namespace Core.Shared
             //return sanitezed;
         }
 
-        public List<string> GetRepliedHash(string contenido)
+        public List<string> GetRepliedHash(string content)
         {
-            //return Regex.Matches(contenido, @">>([A-Z0-9]{8})")
-            //    .Select(m =>
-            //    {
-            //        return m.Groups[1].Value;
-            //    }).ToList();
-
-            return Regex.Matches(contenido, @"&gt;&gt;([A-Z0-9]{8})")
+            return Regex.Matches(content, @">>([A-Z0-9]{7})") // {7} is hash lenght
                 .Select(m => m.Groups[1].Value)
                 .Distinct()
                 .ToList();
-
-            //var x = Regex.Matches(contenido, @">>([A-Z0-9]{8})");
-
-            //return null;
         }
     }
 

@@ -20,6 +20,7 @@ namespace Core.Shared
                         {UserType.Administrator, "admin" },
                         {UserType.Moderator, "mod" },
                         {UserType.Account, "anon" },
+                        {UserType.AnonymousAccount, "anon" },
                     };
 
                 return _description;

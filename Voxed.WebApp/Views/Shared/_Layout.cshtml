@@ -239,47 +239,47 @@
             </button>
         </form>*@
 
-    <div class="modalBox accountModal" id="accountModal">
-        <div class="modalSelector">
-            <div class="selectorOption selectedOption unselect" data-selector="login">Iniciar Sesion</div>
-            <div class="selectorOption unselect" data-selector="register">
-                <i class="fas fa-address-card"></i>Registrarse
-            </div>
+<div class="modalBox accountModal" id="accountModal">
+    <div class="modalSelector">
+        <div class="selectorOption selectedOption unselect" data-selector="login">Iniciar Sesion</div>
+        <div class="selectorOption unselect" data-selector="register">
+            <i class="fas fa-address-card"></i>Registrarse
         </div>
-        <form class="modalSection login" id="login">
-            <input type="text" name="username" placeholder="Nombre de usuario">
-            <input type="password" name="password" placeholder="Contraseña">
-            @*<div class="loginCaptcha">
-                    <div class="g-recaptcha" data-sitekey="52e1cb08-4dd4-4587-add7-60137b2a6a5a"></div>
-                </div>*@
-            <button type="submit" class="buttonPress">Entrar</button>
-        </form>
-        <form class="modalSection register hideSelector" id="register">
-            <input type="text" name="username" placeholder="Nombre de usuario">
-            <input type="password" name="password" placeholder="Contraseña">
-            <input type="password" name="confirmPassword" placeholder="Confirmar contraseña">
-            @*<select name="days">
-                    <option value="30">[1000 tokens] Membresia por 30 dias (U$D 2)</option>
-                    <option value="90" selected>[4000 tokens] Membresia por 90 dias (U$D 5)</option>
-                    <option value="180">[8000 tokens] Membresia por 180 dias (U$D 8)</option>
-                    <option value="360">[20000 tokens] Membresia por 360 dias (U$D 12)</option>
-                    <option value="360">[100000 tokens] Membresia por 360 dias (U$D 30)</option>
-                </select>*@
-            @*<div class="paymentInfo">
-                    <a href="#"
-                       data-event="click,button,REGISTER_FORM_MORE_DATA">¿Que beneficios tengo con mi membresia?</a>
-                </div>*@
-            <button data-event="click,button,REGISTER" type="submit" class="buttonPress" id="registerSubmit">
-                <i class="fas fa-circle-notch fa-spin loadingIcon"></i>Registrarme
-            </button>
-            @*<div class="paymentInfo">
-                    El pago se efectua por MercadoPago, estan disponibles todos los medios de pagos con tarjeta de debito, credito,
-                    rapipago, y saldo de MercadoPago.
-                    <br><br>
-                    Una vez efectuado el pago la membresia se activa en el instante.
-                </div>*@
-        </form>
     </div>
+    <form class="modalSection login" id="login">
+        <input type="text" name="username" placeholder="Nombre de usuario">
+        <input type="password" name="password" placeholder="Contraseña">
+        @*<div class="loginCaptcha">
+                <div class="g-recaptcha" data-sitekey="52e1cb08-4dd4-4587-add7-60137b2a6a5a"></div>
+            </div>*@
+        <button type="submit" class="buttonPress">Entrar</button>
+    </form>
+    <form class="modalSection register hideSelector" id="register">
+        <input type="text" name="username" placeholder="Nombre de usuario">
+        <input type="password" name="password" placeholder="Contraseña">
+        <input type="password" name="confirmPassword" placeholder="Confirmar contraseña">
+        @*<select name="days">
+                <option value="30">[1000 tokens] Membresia por 30 dias (U$D 2)</option>
+                <option value="90" selected>[4000 tokens] Membresia por 90 dias (U$D 5)</option>
+                <option value="180">[8000 tokens] Membresia por 180 dias (U$D 8)</option>
+                <option value="360">[20000 tokens] Membresia por 360 dias (U$D 12)</option>
+                <option value="360">[100000 tokens] Membresia por 360 dias (U$D 30)</option>
+            </select>*@
+        @*<div class="paymentInfo">
+                <a href="#"
+                   data-event="click,button,REGISTER_FORM_MORE_DATA">¿Que beneficios tengo con mi membresia?</a>
+            </div>*@
+        <button data-event="click,button,REGISTER" type="submit" class="buttonPress" id="registerSubmit">
+            <i class="fas fa-circle-notch fa-spin loadingIcon"></i>Registrarme
+        </button>
+        @*<div class="paymentInfo">
+                El pago se efectua por MercadoPago, estan disponibles todos los medios de pagos con tarjeta de debito, credito,
+                rapipago, y saldo de MercadoPago.
+                <br><br>
+                Una vez efectuado el pago la membresia se activa en el instante.
+            </div>*@
+    </form>
+</div>
 
 
 

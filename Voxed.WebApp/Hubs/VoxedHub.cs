@@ -21,7 +21,7 @@ namespace Voxed.WebApp.Hubs
         }
 
         //Envia al OP la notificacion de un nuevo comentario en un Vox
-        public async Task SendOPCommentNotification(User user, OpNotification notification)
+        public async Task SendOPCommentNotification(User user, UserNotification notification)
         {
             await Clients.Users(user.Id.ToString()).Notification(notification);
         }
@@ -50,7 +50,7 @@ namespace Voxed.WebApp.Hubs
         }
     }
 
-    public class OpNotification
+    public class UserNotification
     {
         public string Type { get; set; }
         public Content Content { get; set; }

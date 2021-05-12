@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Core.Entities
 {
-    public enum UserType { Anonymous, Administrator, Moderator, Account }
+    public enum UserType { Anonymous, Administrator, Moderator, Account, AnonymousAccount }
 
     public class User : IdentityUser<Guid>
     {
@@ -14,5 +14,6 @@ namespace Core.Entities
         public UserType UserType { get; set; }
         public string UserAgent { get; set; }
         public string IpAddress { get; set; }
+        public string Token { get; set; }
     }
 }
