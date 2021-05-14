@@ -1,4 +1,4 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
+﻿@*<div class="top-row pl-4 navbar navbar-dark">
     <a class="navbar-brand" href="">Voxed.PWA</a>
     <button class="navbar-toggler" @onclick="ToggleNavMenu">
         <span class="navbar-toggler-icon"></span>
@@ -34,4 +34,27 @@
     {
         collapseNavMenu = !collapseNavMenu;
     }
-}
+}*@
+
+
+
+<nav>
+    <div class="logo unselect">
+        <a href="/" class="navbarLogo">voxed</a>
+
+        <!-- @await Component.InvokeAsync("CategoriesMenuList")-->
+
+    </div>
+
+
+
+
+    <!--@await Component.InvokeAsync("NotificationNavList")-->
+
+
+
+
+
+    <div class="alertBox"></div>
+</nav>
+<div class="bottonContextual" data-function="createVox"><i class="fas fa-plus"></i></div>

@@ -1,10 +1,10 @@
 {
-  "name": "Voxed.PWA",
-  "short_name": "Voxed.PWA",
+  "name": "Voxed",
+  "short_name": "Voxed",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#03173d",
+  "theme_color": "#2C3E50",
   "icons": [
     {
       "src": "icon-512.png",
