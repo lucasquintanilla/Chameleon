@@ -22,11 +22,28 @@ namespace Voxed.WebApp.Controllers
             _userManager = userManager;
         }
 
+        //[AllowAnonymous]
+        //[Route("notification/{voxId}/{commentHash}")]
+        //public async Task<IActionResult> Index(string voxId, string commentHash)
+        //{
+        //    var notification = await _voxedRepository.Notifications.GetByVoxId(Core.Shared.GuidConverter.FromShortString(voxId));
+
+        //    if (notification != null)
+        //    {
+        //        await _voxedRepository.Notifications.Remove(notification);
+        //        await _voxedRepository.CompleteAsync();
+        //    }
+
+        //    return Redirect($"~/vox/{voxId}#{commentHash}");
+        //}
+
         [AllowAnonymous]
-        [Route("notification/{voxId}/{commentHash}")]
-        public async Task<IActionResult> Index(string voxId, string commentHash)
+        [Route("notification/{id}")]
+        public async Task<IActionResult> Index(Guid id)
         {
-            var notification = await _voxedRepository.Notifications.GetByVoxId(Core.Shared.GuidConverter.FromShortString(voxId));
+            var notification = await _voxedRepository.Notifications.GetById(id);
+            var voxHash = Core.Shared.GuidConverter.ToShortString(notification.VoxId);
+            var commentHash = notification.Comment.Hash;
 
             if (notification != null)
             {
@@ -34,7 +51,7 @@ namespace Voxed.WebApp.Controllers
                 await _voxedRepository.CompleteAsync();
             }
 
-            return Redirect($"~/vox/{voxId}#{commentHash}");
+            return Redirect($"~/vox/{voxHash}#{commentHash}");
         }
 
         [AllowAnonymous]

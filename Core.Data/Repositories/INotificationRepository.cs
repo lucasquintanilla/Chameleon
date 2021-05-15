@@ -9,6 +9,5 @@ namespace Core.Data.Repositories
     public interface INotificationRepository : IGenericRepository<Notification>
     {
         Task<IEnumerable<Notification>> GetByUserId(Guid userId);
-        Task<Notification> GetByVoxId(Guid voxId);
     }
 }

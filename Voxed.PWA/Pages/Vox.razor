@@ -1,7 +1,118 @@
 ﻿@page "/vox/{id}"
+@inject HttpClient Http
 
 <h3>Vox</h3>
 
-@code {
+@if (voxs == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
 
+    @foreach (var item in voxs)
+    {
+        <a class="vox    "
+           data-vox id="@item.Hash"
+           data-hash="@item.Hash"
+           href="/vox/@item.Hash"
+           style="background: url(@item.ThumbnailUrl);">
+
+            <div class="voxHeader">
+                <div class="tagList">
+                    @if (item.Sticky == "1")
+                    {
+                        <div class="tag sticky">Sticky</div>
+                    }
+
+                    <div class="tag categoryTag">@item.Slug</div>
+
+                    @if (item.New)
+                    {
+                        <div class="tag new">Nuevo</div>
+                    }
+
+                    @*<div class="tagInvisible pollTag">
+                            <div class="tagWrapper"></div>
+                            <i class="fas fa-poll"></i>
+                        </div>*@
+
+                    @*@if (item.Media.MediaType == MediaType.YouTube)
+                        {
+                            <div class="tagInvisible videoWebmYtb">
+                                <div class="tagWrapper"></div>
+                                <i class="fab fa-youtube"></i>
+                            </div>
+                        }
+
+                        @if (item.Media.MediaType == MediaType.Video)
+                        {
+                            <div class="tagInvisible videoWebm">
+                                <div class="tagWrapper"></div>
+                                <i class="fab fa-youtube"></i>
+                            </div>
+                        }*@
+
+                </div>
+                <div class="voxComments textShadon">
+                    <i class="fas fa-comment"></i>
+                    <span class="countComments">@item.Comments</span>
+                </div>
+                <div class="voxAction textShadon">
+                    <div class="actionBotton" data-voxaction="@item.Hash">
+                        <i class="fas fa-ellipsis-v" data-voxaction="@item.Hash"></i>
+                    </div>
+                </div>
+            </div>
+            <h4 class="title textShadon">@item.Title</h4>
+            <div class="over"></div>
+            <div class="voxActions unselect">
+                <div class="voxActionBotton">
+                    <div class="actionText" data-meta="hide" data-contenttype="1" data-contentid="@item.Hash">Ocultar</div>
+                </div>
+                <div class="voxActionBotton">
+                    <div class="actionText" data-meta="favorite" data-contenttype="1" data-contentid="@item.Hash">Favorito</div>
+                </div>
+                <div class="voxActionBotton">
+                    <div class="actionText" data-report="vox" data-contentid="@item.Hash" data-contenttype="1">Reportar</div>
+                </div>
+                <div class="voxActionBotton">
+                    <div class="actionText" data-action="close"><i class="fas fa-times" data-action="close"></i></div>
+                </div>
+            </div>
+        </a>
+    }
+
+}
+
+@code {
+    private VoxViewModel[] voxs;
+
+    protected override async Task OnInitializedAsync()
+    {
+        voxs = await Http.GetFromJsonAsync<VoxViewModel[]>("https://voxed.club/vox/list");
+    }
+
+    public class VoxViewModel
+    {
+        public string Hash { get; set; }
+        public string Status { get; set; }
+        public string Niche { get; set; }
+        public string Title { get; set; }
+        public string Comments { get; set; }
+        public string Extension { get; set; }
+        public string Sticky { get; set; }
+        public string CreatedAt { get; set; }
+        public string PollOne { get; set; }
+        public string PollTwo { get; set; }
+        public string Id { get; set; }
+        public string Slug { get; set; }
+        public string VoxId { get; set; }
+        public bool New { get; set; }
+
+
+        //Agregado extras
+        public string ThumbnailUrl { get; set; }
+        public string Category { get; set; }
+    }
 }

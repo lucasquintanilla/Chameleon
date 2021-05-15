@@ -27,10 +27,11 @@ namespace Core.Data.EF.Repositories
                 .ToListAsync();
         }
 
-        public async Task<Notification> GetByVoxId(Guid voxId)
+        public override async Task<Notification> GetById(Guid id)
         {
             return await _context.Notifications
-                .Where(x => x.VoxId == voxId)
+                .Where(x => x.Id == id)
+                .Include(x => x.Comment)
                 .FirstOrDefaultAsync();
         }
     }

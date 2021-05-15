@@ -90,9 +90,9 @@ namespace Voxed.WebApp.Controllers
 
                 await SaveOpNotification(vox, comment);
 
-                await SendCommentLiveNotification(comment, vox, request);
+                await SendCommentLiveUpdate(comment, vox, request);
 
-                await SendOpLiveNotification(comment, vox);
+                //await SendOpLiveNotification(comment, vox, notification);
 
                 var response = new Models.CommentResponse()
                 {
@@ -173,6 +173,8 @@ namespace Voxed.WebApp.Controllers
 
                 await _voxedRepository.Notifications.Add(notification);
                 await _voxedRepository.CompleteAsync();
+
+                await SendOpLiveNotification(comment, vox, notification);
             }
         }
 
@@ -195,12 +197,13 @@ namespace Voxed.WebApp.Controllers
             await _voxedRepository.Notifications.AddRange(repliesNotifications);
             await _voxedRepository.CompleteAsync();
 
-           
-
-            await SendReplyLiveNotification(vox, comment, usersId);
+            foreach (var notification in repliesNotifications)
+            {
+                await SendReplyLiveNotification(vox, comment, notification);
+            }
         }
 
-        private async Task SendCommentLiveNotification(Comment comment, Vox vox, Models.CommentRequest request)
+        private async Task SendCommentLiveUpdate(Comment comment, Vox vox, Models.CommentRequest request)
         {
             var commentNotification = new CommentNotification()
             {
@@ -230,7 +233,7 @@ namespace Voxed.WebApp.Controllers
             await _notificationHub.Clients.All.Comment(commentNotification);
         }
 
-        private async Task SendOpLiveNotification(Comment comment, Vox vox)
+        private async Task SendOpLiveNotification(Comment comment, Vox vox, Notification notification)
         {
             if (comment.UserID != vox.User.Id)
             {
@@ -244,7 +247,7 @@ namespace Voxed.WebApp.Controllers
                         NotificationText = vox.Title,
                         Count = "1",
                         ContentHash = comment.Hash,
-                        Id = GuidConverter.ToShortString(vox.ID),
+                        Id = notification.Id.ToString(),
                         ThumbnailUrl = vox.Media?.ThumbnailUrl
                     }
                 };
@@ -253,7 +256,7 @@ namespace Voxed.WebApp.Controllers
             }
         }
 
-        private async Task SendReplyLiveNotification(Vox vox, Comment comment, IEnumerable<Guid> userIds)
+        private async Task SendReplyLiveNotification(Vox vox, Comment comment, IEnumerable<Guid> userIds, Notification notification)
         {
             var userNotification = new UserNotification()
             {
@@ -265,7 +268,7 @@ namespace Voxed.WebApp.Controllers
                     NotificationText = vox.Title,
                     Count = "1",
                     ContentHash = comment.Hash,
-                    Id = GuidConverter.ToShortString(vox.ID),
+                    Id = notification.Id.ToString(), //id notification
                     ThumbnailUrl = vox.Media?.ThumbnailUrl
                 }
             };
@@ -273,6 +276,26 @@ namespace Voxed.WebApp.Controllers
             var ids = userIds.Select(x => x.ToString()).ToArray();
 
             await _notificationHub.Clients.Users(ids).Notification(userNotification);
+        }
+
+        private async Task SendReplyLiveNotification(Vox vox, Comment comment, Notification notification)
+        {
+            var userNotification = new UserNotification()
+            {
+                Type = "new",
+                Content = new Content()
+                {
+                    VoxHash = vox.Hash,
+                    NotificationBold = "Nueva respuesta",
+                    NotificationText = vox.Title,
+                    Count = "1",
+                    ContentHash = comment.Hash,
+                    Id = notification.Id.ToString(), //id notification
+                    ThumbnailUrl = vox.Media?.ThumbnailUrl
+                }
+            };
+
+            await _notificationHub.Clients.Users(notification.UserId.ToString()).Notification(userNotification);
         }
 
         private async Task<Comment> ProcessComment(Models.CommentRequest request, string id)

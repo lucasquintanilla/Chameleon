@@ -16,7 +16,6 @@ namespace Core.Entities
         public Guid VoxId { get; set; }
         public Guid CommentId { get; set; }
         public NotificationType Type { get; set; }
-        //public int Count { get; set; }
         public DateTimeOffset CreatedOn { get; set; } = DateTimeOffset.Now;
         public DateTimeOffset UpdatedOn { get; set; }
         public virtual User Owner { get; set; }
