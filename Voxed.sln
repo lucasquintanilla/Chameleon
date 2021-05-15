@@ -19,7 +19,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\Unit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RozBot", "RozBot\RozBot.csproj", "{5D74AE9A-ADA0-41DE-B53D-F3C652434285}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Voxed.PWA", "Voxed.PWA\Voxed.PWA.csproj", "{BF6F4D7E-1BAB-48DA-AEA2-8F5C677D38A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Voxed.PWA", "Voxed.PWA\Voxed.PWA.csproj", "{BF6F4D7E-1BAB-48DA-AEA2-8F5C677D38A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication1", "WebApplication1\WebApplication1.csproj", "{8CC2896D-64D2-4B44-A409-5CA9933A3769}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,10 @@ Global
 		{BF6F4D7E-1BAB-48DA-AEA2-8F5C677D38A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BF6F4D7E-1BAB-48DA-AEA2-8F5C677D38A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BF6F4D7E-1BAB-48DA-AEA2-8F5C677D38A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CC2896D-64D2-4B44-A409-5CA9933A3769}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CC2896D-64D2-4B44-A409-5CA9933A3769}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CC2896D-64D2-4B44-A409-5CA9933A3769}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CC2896D-64D2-4B44-A409-5CA9933A3769}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -27,7 +27,7 @@ namespace Voxed.WebApp.Hubs
         }
 
         // Envia a la home un nuevo vox
-        public async Task HomeNewVoxEvent(VoxResponse notification)
+        public async Task HomeNewVoxEvent(Models.VoxResponse notification)
         {
             await Clients.All.Vox(notification);
         }

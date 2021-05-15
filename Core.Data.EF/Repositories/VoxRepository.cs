@@ -106,6 +106,22 @@ namespace Core.Data.EF.Repositories
                     .AsNoTracking()
                     .ToListAsync();
 
+        public async Task<IEnumerable<Vox>> GetLastestAsync(IEnumerable<Guid> idSkipList, DateTimeOffset LastBump) =>
+            await _context.Voxs
+                    .Where(x => x.State == VoxState.Normal
+                                && x.Type == VoxType.Normal
+                                && !idSkipList.Contains(x.ID)
+                                && x.Bump < LastBump
+                                && !hiddenCategoriesId.Contains(x.CategoryID))
+                    .OrderByDescending(x => x.Bump)
+                    .Include(x => x.Media)
+                    .Include(x => x.Category)
+                    .Include(x => x.Comments.Where(c => c.State == CommentState.Normal))
+                    .Skip(idSkipList.Count())
+                    .Take(36)
+                    .AsNoTracking()
+                    .ToListAsync();
+
         public async Task<Vox> GetByHash(string hash)
          => await _context.Voxs
                 .Include(x => x.Media)
@@ -134,6 +150,12 @@ namespace Core.Data.EF.Repositories
         public async Task<Vox> GetLastVoxBump(IEnumerable<string> hash)
          => await _context.Voxs
             .Where(x => hash.Contains(x.Hash))
+            .OrderBy(x => x.Bump)
+            .FirstAsync();
+
+        public async Task<Vox> GetLastVoxBump(IEnumerable<Guid> idsSkip)
+         => await _context.Voxs
+            .Where(x => idsSkip.Contains(x.ID))
             .OrderBy(x => x.Bump)
             .FirstAsync();
         //agregar as no tracking

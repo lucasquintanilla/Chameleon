@@ -1,7 +1,7 @@
 <!--<!DOCTYPE html>
-<html>-->
+<html>
 
-<!--<head>
+<head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Voxed.PWA</title>
@@ -37,28 +37,34 @@
     <base href="/" />
     <link href="manifest.json" rel="manifest" />
     <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png" />
-    <meta name="theme-color" content="#2C3E50" />
+    <!--<meta name="theme-color" content="#2C3E50" />-->
     <link rel="stylesheet" href="css/bundle.min.css" />
-    <meta name="description"
+    <!--<meta name="description"
           content="Voxed es una plataforma social orientada al anonimato, donde se puede compartir casi cualquier tipo de contenido de forma inmediata.">
 
     <link rel="stylesheet"
           href="https://use.fontawesome.com/releases/v5.11.2/css/all.css"
           integrity="" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css?family=Roboto&amp;display=swap"
-          rel="stylesheet" async defer>
+          rel="stylesheet" async defer>-->
     <!--<link rel="stylesheet"
           href="https://www.voxed.net/node_modules/css-tooltip/dist/css-tooltip.min.css" />-->
-    <link rel="shortcut icon" href="https://www.voxed.net/favicon.ico?v=4.5.61">
+    <!--<link rel="shortcut icon" href="https://www.voxed.net/favicon.ico?v=4.5.61">-->
 </head>
 <body>
 
-    <app>Loading...</app>
-    <div id="blazor-error-ui">
+    <app>
+        <!--<img src="loading.svg" alt="Loading...">-->
+        <div class="logo unselect">
+            <a href="/" class="navbarLogo">voxed</a>
+        </div>
+    </app>
+
+    <!--<div id="blazor-error-ui">
         An unhandled error has occurred.
         <a href="" class="reload">Reload</a>
         <a class="dismiss">🗙</a>
-    </div>
+    </div>-->
 
     <script src="_framework/blazor.webassembly.js"></script>
     <script>navigator.serviceWorker.register('service-worker.js');</script>

@@ -1,34 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Core.Data.Repositories;
-using Core.Shared;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
+﻿using Core.Data.Repositories;
 using Core.Entities;
-using Microsoft.AspNetCore.Identity;
-using Newtonsoft.Json;
-using Microsoft.AspNetCore.Http;
-using System.Text.Json.Serialization;
-using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.SignalR;
-using Voxed.WebApp.Hubs;
+using Core.Shared;
 using Core.Shared.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
+using Voxed.WebApp.Hubs;
 
 namespace Voxed.WebApp.Controllers
 {
     public class VoxController : BaseController
     {
-        private FileStoreService fileStoreService;
-        private IVoxedRepository voxedRepository;
+        private readonly FileStoreService _fileStoreService;
+        private readonly IVoxedRepository _voxedRepository;
         private readonly UserManager<User> _userManager;
-
         private readonly SignInManager<User> _signInManager;
-        private FormateadorService formateadorService;
-        private User anonUser;
-
-        private IHubContext<VoxedHub, INotificationHub> _notificationHub;
+        private readonly FormateadorService _formateadorService;
+        private readonly IHubContext<VoxedHub, INotificationHub> _notificationHub;
+        private User _anonUser;
 
         public VoxController(
             FileStoreService fileStoreService,
@@ -38,10 +35,10 @@ namespace Voxed.WebApp.Controllers
             IHubContext<VoxedHub, INotificationHub> notificationHub, 
             SignInManager<User> signInManager)
         {
-            this.fileStoreService = fileStoreService;
-            this.voxedRepository = voxedRepository;
+            _fileStoreService = fileStoreService;
+            _voxedRepository = voxedRepository;
             _userManager = userManager;
-            this.formateadorService = formateadorService;
+            _formateadorService = formateadorService;
             _notificationHub = notificationHub;
             _signInManager = signInManager;
         }
@@ -56,7 +53,7 @@ namespace Voxed.WebApp.Controllers
 
             var voxId = GuidConverter.FromShortString(hash);
 
-            var vox = await voxedRepository.Voxs.GetById(voxId);
+            var vox = await _voxedRepository.Voxs.GetById(voxId);
 
             if (vox == null)
             {
@@ -81,19 +78,21 @@ namespace Voxed.WebApp.Controllers
 
             //var words = search.Split(" ");
 
-            var voxs = await voxedRepository.Voxs.SearchAsync(value);
+            var voxs = await _voxedRepository.Voxs.SearchAsync(value);
 
-            return View(voxs);
+            var voxsList = ConvertToViewModel(voxs);
+
+            return View(voxsList);
         }
        
         private User GetAnonymousUser()
         {
-            if (anonUser == null)
+            if (_anonUser == null)
             {
-                anonUser = _userManager.Users.Where(x => x.UserType == UserType.Anonymous).FirstOrDefault();                
+                _anonUser = _userManager.Users.Where(x => x.UserType == UserType.Anonymous).FirstOrDefault();                
             }
 
-            return anonUser;
+            return _anonUser;
         }
 
         [HttpPost]
@@ -123,7 +122,7 @@ namespace Voxed.WebApp.Controllers
                         User = user ?? GetAnonymousUser(),
                         Hash = new Hash().NewHash(),
                         Title = request.Title,
-                        Content = formateadorService.Parsear(request.Content),
+                        Content = _formateadorService.Parsear(request.Content),
                         CategoryID = request.Niche,
                         IpAddress = UserIpAddress.ToString(),
                         UserAgent = UserAgent
@@ -138,13 +137,13 @@ namespace Voxed.WebApp.Controllers
                         };
                     }
 
-                    await fileStoreService.ProcessMedia(request.GetUploadData(), request.File, vox);
+                    await _fileStoreService.ProcessMedia(request.GetUploadData(), request.File, vox);
 
-                    await voxedRepository.Voxs.Add(vox);
-                    await voxedRepository.CompleteAsync();
+                    await _voxedRepository.Voxs.Add(vox);
+                    await _voxedRepository.CompleteAsync();
 
                     //disparo notificacion del vox
-                    vox = await voxedRepository.Voxs.GetById(vox.ID);
+                    vox = await _voxedRepository.Voxs.GetById(vox.ID);
                     var voxToHub = ConvertoToVoxResponse(vox);
 
                     await _notificationHub.Clients.All.Vox(voxToHub);
@@ -189,91 +188,45 @@ namespace Voxed.WebApp.Controllers
             };
         }
 
-        private async Task ProcessMedia(CreateVoxRequest request, Vox vox)
-        {
-            var data = request.GetUploadData();
-
-            if (data != null && request.File == null)
-            {
-                if (data.Extension == UploadDataExtension.Youtube)
-                {
-                    vox.Media = await fileStoreService.SaveExternal(data, vox.Hash);
-                }
-                else if (data.Extension == UploadDataExtension.Base64)
-                {
-                    vox.Media = await fileStoreService.SaveFromBase64(data.ExtensionData, vox.Hash);
-                }
-                else
-                {
-                    throw new NotImplementedException("Formato de archivo no contemplado");
-                }
-            }
-            else if (request.File != null)
-            {
-                var isValidFile = await fileStoreService.IsValidFile(request.File);
-
-                if (!isValidFile)
-                {
-                    throw new NotImplementedException("Archivo invalido");
-                }
-
-                vox.Media = await fileStoreService.Save(request.File, vox.Hash);
-            }
-        }
-
         [HttpPost]
         //[ValidateAntiForgeryToken]
         public async Task<ListResponse> List([FromForm]ListRequest request)
         {
-            var skipList = JsonConvert.DeserializeObject<List<string>>(request?.Ignore);
+            var response = new ListResponse();
 
-            var lastVox = await voxedRepository.Voxs.GetLastVoxBump(skipList);
+            var skipList = JsonConvert.DeserializeObject<IEnumerable<string>>(request?.Ignore);
 
-            var voxs = await voxedRepository.Voxs.GetLastestAsync(skipList, lastVox.Bump);
+            var guidList = skipList.Select(x => GuidConverter.FromShortString(x)).ToList();
 
-            var voxsList = voxs.Select(x => new VoxResponse() {
-                Hash = GuidConverter.ToShortString(x.ID),
-                Status = "1",
-                Niche = "20",
-                Title = x.Title,                
-                Comments = x.Comments.Count().ToString(),
-                Extension = "",
-                Sticky = x.Type == VoxType.Sticky ? "1" : "0",
-                CreatedAt = x.CreatedOn.ToString(),
-                PollOne = "",
-                PollTwo = "",
-                Id = "20",
-                Slug = x.Category.ShortName.ToUpper(),
-                VoxId = x.ID.ToString(),
-                New = false,
-                ThumbnailUrl = x.Media?.ThumbnailUrl
-            });
+            var lastVox = await _voxedRepository.Voxs.GetLastVoxBump(guidList);
+
+            var voxs = await _voxedRepository.Voxs.GetLastestAsync(guidList, lastVox.Bump);
+
+            var voxsList = ConvertToViewModel(voxs);
 
             //Devuelve 36 voxs
 
             if (voxsList.Count() > 0)
             {
-                return new ListResponse()
-                {
-                    Status = true,
-                    List = new List()
-                    {
-                        //Page = "",
-                        Page = "category-sld",
-                        Voxs = voxsList
-                    },
-                };
-            }
-           
-            return new ListResponse()
-            {
-                Status = false,
-                List = new List()
+                response.Status = true;
+                response.List = new List()
                 {
                     Page = "category-sld",
                     Voxs = voxsList
-                },
-            };
+                };
+                
+            }
+            else
+            {
+                response.Status = false;
+                response.List = new List()
+                {
+                    Page = "category-sld",
+                    Voxs = voxsList
+                };
+            }
+
+            return response;
         }
 
         private async Task<User> CreateAnonymousUser()
@@ -297,11 +250,12 @@ namespace Voxed.WebApp.Controllers
             throw new Exception();
         }
 
-        private VoxResponse ConvertoToVoxResponse(Vox vox)
+        private Models.VoxResponse ConvertoToVoxResponse(Vox vox)
         {
-            return new VoxResponse()
+            return new Models.VoxResponse()
             {
                 Hash = GuidConverter.ToShortString(vox.ID),
+                //Hash = vox.Hash,
                 Status = "1",
                 Niche = "20",
                 Title = vox.Title,
@@ -314,9 +268,14 @@ namespace Voxed.WebApp.Controllers
                 Id = "20",
                 Slug = vox.Category.ShortName.ToUpper(),
                 VoxId = vox.ID.ToString(),
-                New = false,
+                New = vox.CreatedOn.Date == DateTime.Now.Date,
                 ThumbnailUrl = vox.Media?.ThumbnailUrl
             };
+        }
+
+        public IEnumerable<Models.VoxResponse> ConvertToViewModel(IEnumerable<Vox> voxs)
+        {
+            return voxs.Select(vox => ConvertoToVoxResponse(vox));
         }
     }
 
@@ -365,7 +324,6 @@ namespace Voxed.WebApp.Controllers
         {
             return JsonConvert.DeserializeObject<UploadData>(UploadData);
         }
-
     }
 
     public class CreateVoxResponse
@@ -384,31 +342,10 @@ namespace Voxed.WebApp.Controllers
         public string Ignore { get; set; }
 
     }
-    public class VoxResponse
-    {
-        public string Hash { get; set; }
-        public string Status { get; set; }
-        public string Niche { get; set; }
-        public string Title { get; set; }
-        public string Comments { get; set; }
-        public string Extension { get; set; }
-        public string Sticky { get; set; }
-        public string CreatedAt { get; set; }
-        public string PollOne { get; set; }
-        public string PollTwo { get; set; }
-        public string Id { get; set; }
-        public string Slug { get; set; }
-        public string VoxId { get; set; }
-        public bool New { get; set; }
-
-
-        //Agregado extras
-        public string ThumbnailUrl { get; set; }
-    }
 
     public class List
     {
-        public IEnumerable<VoxResponse> Voxs { get; set; } = new List<VoxResponse>();
+        public IEnumerable<Models.VoxResponse> Voxs { get; set; } = new List<Models.VoxResponse>();
         public string Page { get; set; }
     }
 
@@ -417,6 +354,4 @@ namespace Voxed.WebApp.Controllers
         public bool Status { get; set; }
         public List List { get; set; }
     }
-
-
 }

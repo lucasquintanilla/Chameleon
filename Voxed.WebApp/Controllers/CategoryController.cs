@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Core.Data.Repositories;
+using Core.Entities;
 using Core.Shared;
 using GroupDocs.Metadata;
 using ImageProcessor;
@@ -239,7 +240,27 @@ namespace Voxed.WebApp.Controllers
 
             var voxs = await voxedRepository.Voxs.GetByCategoryShortNameAsync(shortName);
 
-            return View(voxs);
+            var voxsList = voxs.Select(x => new Models.VoxResponse()
+            {
+                Hash = GuidConverter.ToShortString(x.ID),
+                Status = "1",
+                Niche = "20",
+                Title = x.Title,
+                Comments = x.Comments.Count().ToString(),
+                Extension = "",
+                Sticky = x.Type == VoxType.Sticky ? "1" : "0",
+                CreatedAt = x.CreatedOn.ToString(),
+                PollOne = "",
+                PollTwo = "",
+                Id = "20",
+                Slug = x.Category.ShortName.ToUpper(),
+                VoxId = GuidConverter.ToShortString(x.ID),
+                New = x.CreatedOn.Date == DateTime.Now.Date,
+                ThumbnailUrl = x.Media?.ThumbnailUrl,
+                Category = x.Category.Name
+            }).ToList();
+
+            return View(voxsList);
         }
 
         // GET: Category/Create

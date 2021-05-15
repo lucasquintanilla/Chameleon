@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Core.Data.Repositories;
+using Core.Entities;
+using Core.Shared;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Core.Data.Repositories;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-//using Voxed.WebApp.Data;
-//using Voxed.WebApp.Models;
-using Core.Entities;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Voxed.WebApp.Controllers
 {
@@ -18,20 +15,40 @@ namespace Voxed.WebApp.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private IVoxedRepository voxedRepository;
+        private IVoxedRepository _voxedRepository;
 
         public HomeController(ILogger<HomeController> logger, 
             IVoxedRepository voxedRepository)
         {
             _logger = logger;
-            this.voxedRepository = voxedRepository;
+            _voxedRepository = voxedRepository;
         }
 
         public async Task<IActionResult> Index()
         {
-            var voxs = await voxedRepository.Voxs.GetLastestAsync();
+            var voxs = await _voxedRepository.Voxs.GetLastestAsync();
 
-            return View(voxs);
+            var voxsList = voxs.Select(vox => new Models.VoxResponse()
+            {
+                Hash = GuidConverter.ToShortString(vox.ID),
+                //Hash = x.Hash,
+                Status = "1",
+                Niche = "20",
+                Title = vox.Title,
+                Comments = vox.Comments.Count().ToString(),
+                Extension = "",
+                Sticky = vox.Type == VoxType.Sticky ? "1" : "0",
+                CreatedAt = vox.CreatedOn.ToString(),
+                PollOne = "",
+                PollTwo = "",
+                Id = "20",
+                Slug = vox.Category.ShortName.ToUpper(),
+                VoxId = GuidConverter.ToShortString(vox.ID),
+                New = vox.CreatedOn.Date == DateTime.Now.Date,
+                ThumbnailUrl = vox.Media?.ThumbnailUrl
+            }).ToList();
+
+            return View(voxsList);
         }
 
         public IActionResult Privacy()

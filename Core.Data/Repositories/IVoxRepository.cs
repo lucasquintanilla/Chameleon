@@ -16,5 +16,7 @@ namespace Core.Data.Repositories
         Task<Vox> GetByHash(string hash);
         Task<Vox> GetLastVoxBump(IEnumerable<string> hash);
         Task<IEnumerable<Vox>> GetLastestAsync(IEnumerable<string> hashSkipList, DateTimeOffset LastBump);
+        Task<Vox> GetLastVoxBump(IEnumerable<Guid> idsSkip);
+        Task<IEnumerable<Vox>> GetLastestAsync(IEnumerable<Guid> idSkipList, DateTimeOffset LastBump);
     }
 }

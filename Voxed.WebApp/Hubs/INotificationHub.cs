@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Voxed.WebApp.Controllers;
-using Voxed.WebApp.Models;
+﻿using System.Threading.Tasks;
 
 namespace Voxed.WebApp.Hubs
 {
@@ -11,7 +6,7 @@ namespace Voxed.WebApp.Hubs
     {
         Task Comment(CommentNotification comment);
         Task Notification(UserNotification notification);
-        Task Vox(VoxResponse notification);
+        Task Vox(Models.VoxResponse notification);
     }
 }
 
