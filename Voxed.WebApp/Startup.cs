@@ -18,6 +18,8 @@ namespace Voxed.WebApp
 {
     public class Startup
     {
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -28,6 +30,20 @@ namespace Voxed.WebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                                  builder =>
+                                  {
+                                      //builder.WithOrigins("http://localhost",
+                                      //                    "http://www.contoso.com");
+
+                                      builder.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost")
+                                      .AllowAnyHeader()
+                                      .AllowAnyMethod();
+                                  });
+            });
+
             services.AddControllersWithViews();
             services.AddRazorPages();
 
@@ -92,12 +108,24 @@ namespace Voxed.WebApp
             //});
 
             services.AddSignalR();
+
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseAllElasticApm(Configuration);
+
+
+            //app.UseCors(builder => builder
+            //    .AllowAnyOrigin()
+            //    .AllowAnyMethod()
+            //    //.AllowCredentials()
+            //    .AllowAnyHeader()
+            //    .SetPreflightMaxAge(TimeSpan.FromDays(365)));
+
+            app.UseCors(MyAllowSpecificOrigins);
 
             if (env.IsDevelopment())
             {

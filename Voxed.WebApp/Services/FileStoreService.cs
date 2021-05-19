@@ -1,6 +1,7 @@
 ﻿using Core.Entities;
 using Core.Shared.Models;
 using ImageProcessor;
+using ImageProcessor.Imaging.Formats;
 using ImageProcessor.Plugins.WebP.Imaging.Formats;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -30,7 +31,6 @@ namespace Core.Shared
 
         private int maxFileSize = 10 * 1024 * 1024;
 
-        //const string ffmpegPath = @"C:\ffmpeg\bin\ffmpeg.exe";
         const string ffmpegPath = @"ffmpeg\bin\";
 
         public FileStoreService(IWebHostEnvironment env)
@@ -249,19 +249,40 @@ namespace Core.Shared
         private bool IsGif(IFormFile file)
             => file.ContentType == MediaTypeNames.Image.Gif;
 
-        private async Task<bool> SaveImageThumbnail(IFormFile file, string filePath)
+        private async Task SaveImageThumbnail(IFormFile file, string filePath)
         {
             // Then save in WebP format
             using var webPFileStream = new FileStream(filePath, FileMode.Create);
             using (ImageFactory imageFactory = new ImageFactory(preserveExifData: false))
             {
+                var resize = new ImageProcessor.Imaging.ResizeLayer(new Size(300, 300),
+                            ImageProcessor.Imaging.ResizeMode.Crop,
+                            ImageProcessor.Imaging.AnchorPosition.Center);
+                
                 imageFactory.Load(file.OpenReadStream())
+                            .Resize(resize)
                             .Format(new WebPFormat())
                             .Quality(50)
                             .Save(webPFileStream);
             }
+        }
 
-            return true;
+        private async Task SaveImage(IFormFile file, string filePath)
+        {
+            // Then save in WebP format
+            using var webPFileStream = new FileStream(filePath, FileMode.Create);
+            using (ImageFactory imageFactory = new ImageFactory(preserveExifData: false))
+            {
+                //var resize = new ImageProcessor.Imaging.ResizeLayer(new Size(300, 300),
+                //            ImageProcessor.Imaging.ResizeMode.Crop,
+                //            ImageProcessor.Imaging.AnchorPosition.Center);
+
+                imageFactory.Load(file.OpenReadStream())
+                            //.Resize(resize)
+                            .Format(new JpegFormat())
+                            .Quality(50)
+                            .Save(webPFileStream);
+            }
         }
 
         private async Task<bool> SaveGifThumbnail(IFormFile gifFile, string outputFilePath)

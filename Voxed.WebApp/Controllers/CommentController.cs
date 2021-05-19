@@ -136,22 +136,22 @@ namespace Voxed.WebApp.Controllers
             return _anonUser;
         }
 
-        private string GetUserTypeTag(UserType userType)
-        {
-            switch (userType)
-            {
-                case UserType.Anonymous:
-                    return "anon";
-                case UserType.Administrator:
-                    return "admin";
-                case UserType.Moderator:
-                    return "mod";
-                case UserType.Account:
-                    return "anon";
-                default:
-                    return "anon";
-            }
-        }
+        //private string GetUserTypeTag(UserType userType)
+        //{
+        //    switch (userType)
+        //    {
+        //        case UserType.Anonymous:
+        //            return "anon";
+        //        case UserType.Administrator:
+        //            return "admin";
+        //        case UserType.Moderator:
+        //            return "mod";
+        //        case UserType.Account:
+        //            return "anon";
+        //        default:
+        //            return "anon";
+        //    }
+        //}
 
         private string GetFileExtensionFromUrl(string url)
         {
@@ -216,9 +216,9 @@ namespace Voxed.WebApp.Controllers
                 VoxHash = vox.Hash,
                 AvatarColor = comment.Style.ToString().ToLower(),
                 IsOp = vox.UserID == comment.UserID && vox.User.UserType != UserType.Anonymous, //probar cambiarlo cuando solo pruedan craer los usuarios.
-                Tag = GetUserTypeTag(comment.User.UserType), //admin o dev               
+                Tag = UserViewHelper.GetUserTypeTag(comment.User.UserType), //admin o dev               
                 Content = comment.Content ?? "",
-                Name = GetUserName(comment),
+                Name = UserViewHelper.GetUserName(comment.User),
                 CreatedAt = TimeAgo.ConvertToTimeAgo(comment.CreatedOn.DateTime),
                 Poll = null, //aca va una opcion respondida
 
@@ -349,23 +349,23 @@ namespace Voxed.WebApp.Controllers
             throw new Exception();
         }
 
-        private string GetUserName(Comment comment)
-        {
-            switch (comment.User.UserType)
-            {
-                case UserType.Anonymous:
-                    return "Anonimo";
-                case UserType.Administrator:
-                    return comment.User.UserName;
-                case UserType.Moderator:
-                    return comment.User.UserName;
-                case UserType.Account:
-                    return comment.User.UserName;
-                case UserType.AnonymousAccount:
-                    return "Anonimo";
-                default:
-                    throw new NotImplementedException("Tipo de usuario no contemplado");
-            }
-        }
+        //private string GetUserName(Comment comment)
+        //{
+        //    switch (comment.User.UserType)
+        //    {
+        //        case UserType.Anonymous:
+        //            return "Anonimo";
+        //        case UserType.Administrator:
+        //            return comment.User.UserName;
+        //        case UserType.Moderator:
+        //            return comment.User.UserName;
+        //        case UserType.Account:
+        //            return comment.User.UserName;
+        //        case UserType.AnonymousAccount:
+        //            return "Anonimo";
+        //        default:
+        //            throw new NotImplementedException("Tipo de usuario no contemplado");
+        //    }
+        //}
     }
 }

@@ -5,6 +5,7 @@
 
     <SurveyPrompt Title="How is Blazor working for you?" />*@
 
+
 <main>
     <div class="loadNewVox disabled unselect" data-voxs="0" id="voxLoadMore"></div>
     <div class="voxList" id="voxList">
@@ -31,7 +32,7 @@
                 <a class="vox    "
                    data-vox id="@item.Hash"
                    data-hash="@item.Hash"
-                   href="/vox/@item.Hash"
+                   href="vox/@item.Hash"
                    style="background: url(@item.ThumbnailUrl);">
 
                     <div class="voxHeader">
@@ -113,16 +114,12 @@
 
 @inject HttpClient Http
 
-<h3>Vox</h3>
-
-
-
 @code {
     private VoxViewModel[] voxs;
 
     protected override async Task OnInitializedAsync()
     {
-        voxs = await Http.GetFromJsonAsync<VoxViewModel[]>("https://voxed.club/v1/voxs");
+        voxs = await Http.GetFromJsonAsync<VoxViewModel[]>("https://voxed.club/api/vox");
     }
 
     public class VoxViewModel

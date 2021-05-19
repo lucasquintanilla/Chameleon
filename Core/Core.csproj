@@ -16,4 +16,8 @@
     <ProjectReference Include="..\Core.Entities\Core.Entities.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="V1\Vox\Get\" />
+  </ItemGroup>
+
 </Project>
