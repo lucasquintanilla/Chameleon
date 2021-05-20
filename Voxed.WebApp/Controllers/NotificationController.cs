@@ -7,6 +7,8 @@ using Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Voxed.WebApp.Hubs;
 
 namespace Voxed.WebApp.Controllers
 {
@@ -14,12 +16,15 @@ namespace Voxed.WebApp.Controllers
     {
         private IVoxedRepository _voxedRepository;
         private readonly UserManager<User> _userManager;
+        private readonly IHubContext<VoxedHub, INotificationHub> _notificationHub;
 
-        public NotificationController(IVoxedRepository voxedRepository, 
-            UserManager<User> userManager)
+        public NotificationController(IVoxedRepository voxedRepository,
+            UserManager<User> userManager, 
+            IHubContext<VoxedHub, INotificationHub> notificationHub)
         {
             _voxedRepository = voxedRepository;
             _userManager = userManager;
+            _notificationHub = notificationHub;
         }
 
         //[AllowAnonymous]
@@ -42,14 +47,25 @@ namespace Voxed.WebApp.Controllers
         public async Task<IActionResult> Index(Guid id)
         {
             var notification = await _voxedRepository.Notifications.GetById(id);
+
+            if (notification == null)
+            {
+                return Redirect($"/");
+            }
+
             var voxHash = Core.Shared.GuidConverter.ToShortString(notification.VoxId);
             var commentHash = notification.Comment.Hash;
 
-            if (notification != null)
-            {
-                await _voxedRepository.Notifications.Remove(notification);
-                await _voxedRepository.CompleteAsync();
-            }
+            new RemoveNotificationModel() { Id = notification.Id.ToString() };
+
+            await _notificationHub.Clients
+                .User(notification.UserId.ToString())
+                .RemoveNotification(new RemoveNotificationModel() { Id = notification.Id.ToString() });
+
+            
+            await _voxedRepository.Notifications.Remove(notification);
+            await _voxedRepository.CompleteAsync();
+            
 
             return Redirect($"~/vox/{voxHash}#{commentHash}");
         }

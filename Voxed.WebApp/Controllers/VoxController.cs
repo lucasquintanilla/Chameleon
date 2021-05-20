@@ -19,7 +19,7 @@ namespace Voxed.WebApp.Controllers
 {
     public class VoxController : BaseController
     {
-        private readonly FileStoreService _fileStoreService;
+        private readonly FileUploadService _fileUploadService;
         private readonly IVoxedRepository _voxedRepository;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
@@ -28,14 +28,14 @@ namespace Voxed.WebApp.Controllers
         private User _anonUser;
 
         public VoxController(
-            FileStoreService fileStoreService,
+            FileUploadService fileUploadService,
             IVoxedRepository voxedRepository,
             UserManager<User> userManager,
             FormateadorService formateadorService,
             IHubContext<VoxedHub, INotificationHub> notificationHub, 
             SignInManager<User> signInManager)
         {
-            _fileStoreService = fileStoreService;
+            _fileUploadService = fileUploadService;
             _voxedRepository = voxedRepository;
             _userManager = userManager;
             _formateadorService = formateadorService;
@@ -137,7 +137,7 @@ namespace Voxed.WebApp.Controllers
                         };
                     }
 
-                    await _fileStoreService.ProcessMedia(request.GetUploadData(), request.File, vox);
+                    await _fileUploadService.ProcessMedia(request.GetUploadData(), request.File, vox);
 
                     await _voxedRepository.Voxs.Add(vox);
                     await _voxedRepository.CompleteAsync();

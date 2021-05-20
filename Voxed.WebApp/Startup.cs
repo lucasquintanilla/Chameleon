@@ -2,6 +2,7 @@ using Core.Data.EF;
 using Core.Data.EF.Repositories;
 using Core.Data.Repositories;
 using Core.Entities;
+using Core.Services.FileUploadService;
 using Core.Shared;
 using Elastic.Apm.NetCoreAll;
 using Microsoft.AspNetCore.Builder;
@@ -30,6 +31,7 @@ namespace Voxed.WebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Cors Configuration must be before MVC / Razor Configuration
             services.AddCors(options =>
             {
                 options.AddPolicy(name: MyAllowSpecificOrigins,
@@ -65,7 +67,7 @@ namespace Voxed.WebApp
                 .AddErrorDescriber<SpanishIdentityErrorDescriber>();
 
             services.AddSingleton<FormateadorService>();
-            services.AddSingleton<FileStoreService>();
+            services.AddSingleton<FileUploadService>();
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -109,12 +111,14 @@ namespace Voxed.WebApp
 
             services.AddSignalR();
 
-            
+            //services.Configure<FileUploadServiceConfiguration>(Configuration.GetSection("FileUploadService"));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            // Elastic Apm Configuration must be before all configuration
             app.UseAllElasticApm(Configuration);
 
 

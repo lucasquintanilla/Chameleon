@@ -17,7 +17,7 @@ namespace Voxed.WebApp.Controllers
     public class CommentController : BaseController
     {
         private readonly FormateadorService _formateadorService;        
-        private readonly FileStoreService _fileStoreService;
+        private readonly FileUploadService _fileUploadService;
         private readonly IVoxedRepository _voxedRepository;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
@@ -27,7 +27,7 @@ namespace Voxed.WebApp.Controllers
 
         public CommentController(
             FormateadorService formateadorService,
-            FileStoreService fileStoreService,
+            FileUploadService fileUploadService,
             IVoxedRepository voxedRepository,
             UserManager<User> userManager,
             IHubContext<VoxedHub, INotificationHub> notificationHub,
@@ -35,7 +35,7 @@ namespace Voxed.WebApp.Controllers
             SignInManager<User> signInManager)
         {
             _formateadorService = formateadorService;
-            _fileStoreService = fileStoreService;
+            _fileUploadService = fileUploadService;
             _voxedRepository = voxedRepository;
             _userManager = userManager;
             _notificationHub = notificationHub;
@@ -323,7 +323,7 @@ namespace Voxed.WebApp.Controllers
                 UserAgent = UserAgent
             };
 
-            await _fileStoreService.ProcessMedia(request.GetUploadData(), request.File, comment);
+            await _fileUploadService.ProcessMedia(request.GetUploadData(), request.File, comment);
 
             return comment;
         }

@@ -1,10 +1,12 @@
 ﻿using Core.Entities;
+using Core.Services.FileUploadService;
 using Core.Shared.Models;
 using ImageProcessor;
 using ImageProcessor.Imaging.Formats;
 using ImageProcessor.Plugins.WebP.Imaging.Formats;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -18,40 +20,32 @@ using Xabe.FFmpeg;
 
 namespace Core.Shared
 {
-    public class FileStoreService
+    public class FileUploadService
     {
         private IWebHostEnvironment _env;
+        private readonly FileUploadServiceConfiguration _configuration;
 
-        private static readonly string[] permittedExtensions = new[]
-        { 
-            ".png", ".jpg", ".jpeg", ".gif", ".webp" 
-        };
-
-        private readonly string folderName = "media";
-
-        private int maxFileSize = 10 * 1024 * 1024;
-
-        const string ffmpegPath = @"ffmpeg\bin\";
-
-        public FileStoreService(IWebHostEnvironment env)
+        public FileUploadService(IWebHostEnvironment env, IConfiguration configuration)
         {
             _env = env;
-            //FFmpeg.SetExecutablesPath(@"C:\FFmpeg");
-            FFmpeg.SetExecutablesPath(Path.Combine(env.WebRootPath, ffmpegPath));
+            _configuration = configuration.GetSection("FileUploadService").Get<FileUploadServiceConfiguration>(); ;
+            Initialize();
+        }
 
-            string folderPath = Path.Combine(_env.WebRootPath, folderName);
-           
-            Directory.CreateDirectory(folderPath);
+        private void Initialize()
+        {
+            FFmpeg.SetExecutablesPath(Path.Combine(_env.WebRootPath, _configuration.FFmpegPath));
+            Directory.CreateDirectory(Path.Combine(_env.WebRootPath, _configuration.MediaFolderName));
         }
 
         public async Task<bool> IsValidFile(IFormFile file)
         {
-            var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
+            var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
 
-            if (string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext))
+            if (string.IsNullOrEmpty(extension) || !_configuration.PermittedExtensions.Contains(extension))
             {
                 // The extension is invalid ... discontinue processing the file
-                return false;
+                throw new Exception("Formato de archivo no valido.");
             }
 
             using (var memoryStream = new MemoryStream())
@@ -59,12 +53,15 @@ namespace Core.Shared
                 await file.CopyToAsync(memoryStream);
 
                 // Upload the file if less than X MB
-                if (memoryStream.Length > maxFileSize 
-                    || memoryStream.Length == 225467 //Gif fuck
-                    || memoryStream.Length == 963 //GIF blanco y negro
-                    )
-                {                    
-                    return false;
+                if (memoryStream.Length > _configuration.MaxFileSize * 1024 * 1024)
+                {
+                    throw new Exception($"Archivo supera el tamaño maximo de {_configuration.MaxFileSize} MB");
+                }
+
+                if (memoryStream.Length == 225467 //Gif fuck
+                    || memoryStream.Length == 963) //GIF blanco y negro)
+                {
+                    throw new Exception($"Archivo no permitido por pertenecer a la Backlist");
                 }
             }
 
@@ -77,31 +74,26 @@ namespace Core.Shared
 
             var originalFileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
             var originalFilename = $"{DateTime.Now:yyyyMMdd}-{hash}{originalFileExtension}";
-            var originalFilePath = Path.Combine(_env.WebRootPath, folderName, originalFilename);
+            var originalFilePath = Path.Combine(_env.WebRootPath, _configuration.MediaFolderName, originalFilename);
 
             var thumbnailFilename = $"{DateTime.Now:yyyyMMdd}-{hash}.webp";
-            var thumbnailFilePath = Path.Combine(_env.WebRootPath, folderName, thumbnailFilename);
+            var thumbnailFilePath = Path.Combine(_env.WebRootPath, _configuration.MediaFolderName, thumbnailFilename);
 
             if (IsGif(file))
             {
                 //CONVERT AND SAVE GIF TO WEBP
                 //ConvertoAndSaveToWebp(file, filePath);                
 
-                await SaveGifThumbnail(file, thumbnailFilePath);                
-                await SaveOriginalFormat(file, originalFilePath);
+                await SaveGifThumbnail(file, thumbnailFilePath); 
             }
             else
             {
                 await SaveImageThumbnail(file, thumbnailFilePath);
-                await SaveOriginalFormat(file, originalFilePath);
             }
 
-            return new Media
-            {
-                Url = $"/{folderName}/{originalFilename}",
-                ThumbnailUrl = $"/{folderName}/{thumbnailFilename}",
-                MediaType = MediaType.Image
-            };
+            await SaveOriginalFormat(file, originalFilePath);
+
+            return GetMediaResponse(originalFilename, thumbnailFilename, MediaType.Image);
         }
 
         public async Task ProcessMedia(UploadData data, IFormFile file, IMediaEntity entity)
@@ -152,10 +144,10 @@ namespace Core.Shared
             var image = LoadBase64(base64);
 
             var originalFilename = $"{DateTime.Now:yyyyMMdd}-{hash}{GetFileExtension(image)}";
-            var originalFilePath = Path.Combine(_env.WebRootPath, folderName, originalFilename);
+            var originalFilePath = Path.Combine(_env.WebRootPath, _configuration.MediaFolderName, originalFilename);
 
             var thumbnailFilename = $"{DateTime.Now:yyyyMMdd}-{hash}.webp";
-            var thumbnailFilePath = Path.Combine(_env.WebRootPath, folderName, thumbnailFilename);
+            var thumbnailFilePath = Path.Combine(_env.WebRootPath, _configuration.MediaFolderName, thumbnailFilename);
 
             
             image.Save(originalFilePath, GetImageFormat(image));
@@ -163,12 +155,7 @@ namespace Core.Shared
             image.Save(thumbnailFilePath, GetImageFormat(image));
 
 
-            return new Media
-            {
-                Url = $"/{folderName}/{originalFilename}",
-                ThumbnailUrl = $"/{folderName}/{thumbnailFilename}",
-                MediaType = MediaType.Image
-            };
+            return GetMediaResponse(originalFilename, thumbnailFilename, MediaType.Image);
         }
 
         private ImageFormat GetImageFormat(Image image)
@@ -326,7 +313,7 @@ namespace Core.Shared
 
 
             var command = string.Format ($"-i {inputFilePath} -b:v 0 -crf 25 -loop 0 {outputFilePath}");
-            using (var process = Process.Start(ffmpegPath, command))
+            using (var process = Process.Start(_configuration.FFmpegPath, command))
             {
                 process.WaitForExit();
                 if (process.ExitCode == 0)
@@ -358,7 +345,7 @@ namespace Core.Shared
                 if (!Directory.Exists(tempPath))
                     Directory.CreateDirectory(tempPath);
                 foreach (var file in Directory.GetFiles(tempPath))
-                    System.IO.File.Delete(file);
+                    File.Delete(file);
             }
             catch (Exception ex)
             {
@@ -383,13 +370,23 @@ namespace Core.Shared
             using var stream = await response.Content.ReadAsStreamAsync();
 
             var thumbnailFilename = $"{DateTime.Now:yyyyMMdd}-{hash}.jpg";
-            var thumbnailFilePath = Path.Combine(_env.WebRootPath, folderName, thumbnailFilename);
+            var thumbnailFilePath = Path.Combine(_env.WebRootPath, _configuration.MediaFolderName, thumbnailFilename);
 
             using var fileStream = File.Create(thumbnailFilePath);
             stream.Seek(0, SeekOrigin.Begin);
             await stream.CopyToAsync(fileStream);
 
-            return $"/{folderName}/" + thumbnailFilename;
+            return $"/{_configuration.MediaFolderName}/" + thumbnailFilename;
+        }
+
+        private Media GetMediaResponse(string originalFilename, string thumbnailFilename, MediaType mediaType)
+        {
+            return new Media
+            {
+                Url = $"/{_configuration.MediaFolderName}/{originalFilename}",
+                ThumbnailUrl = $"/{_configuration.MediaFolderName}/{thumbnailFilename}",
+                MediaType = mediaType
+            };
         }
 
     }

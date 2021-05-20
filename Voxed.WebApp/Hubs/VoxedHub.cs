@@ -37,6 +37,11 @@ namespace Voxed.WebApp.Hubs
             await Groups.AddToGroupAsync(Context.ConnectionId, voxId);
         }
 
+        public async Task RemoveNotification(User user, RemoveNotificationModel removeNotification)
+        {
+            await Clients.Users(user.Id.ToString()).RemoveNotification(removeNotification);
+        }
+
         public override async Task OnConnectedAsync()
         {
             usersOnline.Add(Context.GetHttpContext().Connection.RemoteIpAddress.MapToIPv4().ToString());
@@ -92,5 +97,10 @@ namespace Voxed.WebApp.Hubs
         public string Content { get; set; }
         public string MediaUrl { get; set; }
         public string MediaThumbnailUrl { get; set; }
+    }
+
+    public class RemoveNotificationModel
+    {
+        public string Id { get; set; } //Content.Id (notification ID)
     }
 }
