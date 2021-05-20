@@ -196,7 +196,7 @@ namespace Voxed.WebApp.Controllers
 
                 Id = comment.ID.ToString(),
                 Hash = comment.Hash,
-                VoxHash = vox.Hash,
+                VoxHash = GuidConverter.ToShortString(vox.ID),
                 AvatarColor = comment.Style.ToString().ToLower(),
                 IsOp = vox.UserID == comment.UserID && vox.User.UserType != UserType.Anonymous, //probar cambiarlo cuando solo pruedan craer los usuarios.
                 Tag = UserViewHelper.GetUserTypeTag(comment.User.UserType), //admin o dev               
