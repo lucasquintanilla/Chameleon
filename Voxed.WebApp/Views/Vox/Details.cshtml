@@ -525,7 +525,8 @@
 
 <script>
     var VOX_ID = "@Model.ID";
-    var VOX_HASH = "@Model.Hash";
+    //var VOX_HASH = "@Model.Hash";
+    var VOX_HASH = "@Core.Shared.GuidConverter.ToShortString(Model.ID)";
     var IS_OP = "0";
     var ACTUAL_PAGE = "vox";
     var TITLE = "Voxed  | @Model.Title";
