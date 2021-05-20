@@ -126,11 +126,12 @@ namespace Core.Shared
         {
             if (data.Extension == "ytb")
             {
+                var thumbnailFilename = await GenerateYoutubeThumbnail(data.ExtensionData, hash);
+
                 return new Media()
                 {
-                    ID = Guid.NewGuid(),
                     Url = $"https://www.youtube.com/watch?v={data.ExtensionData}",
-                    ThumbnailUrl = await GenerateYoutubeThumbnail(data.ExtensionData, hash),
+                    ThumbnailUrl = $"/{_configuration.MediaFolderName}/" + thumbnailFilename,
                     MediaType = MediaType.YouTube,
                 };
 
@@ -376,7 +377,7 @@ namespace Core.Shared
             stream.Seek(0, SeekOrigin.Begin);
             await stream.CopyToAsync(fileStream);
 
-            return $"/{_configuration.MediaFolderName}/" + thumbnailFilename;
+            return thumbnailFilename;
         }
 
         private Media GetMediaResponse(string originalFilename, string thumbnailFilename, MediaType mediaType)

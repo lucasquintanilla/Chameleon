@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Voxed.WebApp.Hubs;
@@ -67,7 +66,6 @@ namespace Voxed.WebApp.Controllers
                         Error = "",
                         Swal = "Debes ingresar un contenido",
                     };
-
                 }
 
                 var comment = await ProcessComment(request, id);
@@ -136,23 +134,6 @@ namespace Voxed.WebApp.Controllers
             return _anonUser;
         }
 
-        //private string GetUserTypeTag(UserType userType)
-        //{
-        //    switch (userType)
-        //    {
-        //        case UserType.Anonymous:
-        //            return "anon";
-        //        case UserType.Administrator:
-        //            return "admin";
-        //        case UserType.Moderator:
-        //            return "mod";
-        //        case UserType.Account:
-        //            return "anon";
-        //        default:
-        //            return "anon";
-        //    }
-        //}
-
         private string GetFileExtensionFromUrl(string url)
         {
             var array = url.Split(".");
@@ -180,6 +161,8 @@ namespace Voxed.WebApp.Controllers
 
         private async Task SaveRepliesNotifications(Vox vox, Comment comment, Models.CommentRequest request)
         {
+            if (string.IsNullOrWhiteSpace(comment.Content)) return;
+
             var hashList = _formateadorService.GetRepliedHash(request.Content);
             var usersId = await _voxedRepository.Comments.GetUsersByCommentHash(hashList);
 
@@ -256,27 +239,27 @@ namespace Voxed.WebApp.Controllers
             }
         }
 
-        private async Task SendReplyLiveNotification(Vox vox, Comment comment, IEnumerable<Guid> userIds, Notification notification)
-        {
-            var userNotification = new UserNotification()
-            {
-                Type = "new",
-                Content = new Content()
-                {
-                    VoxHash = vox.Hash,
-                    NotificationBold = "Nueva respuesta",
-                    NotificationText = vox.Title,
-                    Count = "1",
-                    ContentHash = comment.Hash,
-                    Id = notification.Id.ToString(), //id notification
-                    ThumbnailUrl = vox.Media?.ThumbnailUrl
-                }
-            };
+        //private async Task SendReplyLiveNotification(Vox vox, Comment comment, IEnumerable<Guid> userIds, Notification notification)
+        //{
+        //    var userNotification = new UserNotification()
+        //    {
+        //        Type = "new",
+        //        Content = new Content()
+        //        {
+        //            VoxHash = vox.Hash,
+        //            NotificationBold = "Nueva respuesta",
+        //            NotificationText = vox.Title,
+        //            Count = "1",
+        //            ContentHash = comment.Hash,
+        //            Id = notification.Id.ToString(), //id notification
+        //            ThumbnailUrl = vox.Media?.ThumbnailUrl
+        //        }
+        //    };
 
-            var ids = userIds.Select(x => x.ToString()).ToArray();
+        //    var ids = userIds.Select(x => x.ToString()).ToArray();
 
-            await _notificationHub.Clients.Users(ids).Notification(userNotification);
-        }
+        //    await _notificationHub.Clients.Users(ids).Notification(userNotification);
+        //}
 
         private async Task SendReplyLiveNotification(Vox vox, Comment comment, Notification notification)
         {
@@ -348,24 +331,5 @@ namespace Voxed.WebApp.Controllers
 
             throw new Exception();
         }
-
-        //private string GetUserName(Comment comment)
-        //{
-        //    switch (comment.User.UserType)
-        //    {
-        //        case UserType.Anonymous:
-        //            return "Anonimo";
-        //        case UserType.Administrator:
-        //            return comment.User.UserName;
-        //        case UserType.Moderator:
-        //            return comment.User.UserName;
-        //        case UserType.Account:
-        //            return comment.User.UserName;
-        //        case UserType.AnonymousAccount:
-        //            return "Anonimo";
-        //        default:
-        //            throw new NotImplementedException("Tipo de usuario no contemplado");
-        //    }
-        //}
     }
 }
