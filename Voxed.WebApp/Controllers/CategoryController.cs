@@ -43,7 +43,7 @@ namespace Voxed.WebApp.Controllers
                 Title = x.Title,
                 Comments = x.Comments.Count().ToString(),
                 Extension = "",
-                Sticky = x.Type == VoxType.Sticky ? "1" : "0",
+                Sticky = x.IsSticky ? "1" : "0",
                 CreatedAt = x.CreatedOn.ToString(),
                 PollOne = "",
                 PollTwo = "",

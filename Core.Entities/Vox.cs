@@ -4,7 +4,6 @@ using System.Collections.Generic;
 namespace Core.Entities
 {
     public enum VoxState { Normal, Deleted }
-    public enum VoxType { Normal, Sticky }
 
     public class Vox : IMediaEntity
     {
@@ -16,7 +15,6 @@ namespace Core.Entities
         public Guid UserID { get; set; }
         public Guid MediaID { get; set; }
         public VoxState State { get; set; }
-        public VoxType Type { get; set; }
         public bool IsSticky { get; set; }
         public DateTimeOffset CreatedOn { get; set; } = DateTimeOffset.Now;
         public DateTimeOffset Bump { get; set; } = DateTimeOffset.Now;

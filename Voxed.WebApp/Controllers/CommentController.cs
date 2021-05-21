@@ -239,28 +239,6 @@ namespace Voxed.WebApp.Controllers
             }
         }
 
-        //private async Task SendReplyLiveNotification(Vox vox, Comment comment, IEnumerable<Guid> userIds, Notification notification)
-        //{
-        //    var userNotification = new UserNotification()
-        //    {
-        //        Type = "new",
-        //        Content = new Content()
-        //        {
-        //            VoxHash = vox.Hash,
-        //            NotificationBold = "Nueva respuesta",
-        //            NotificationText = vox.Title,
-        //            Count = "1",
-        //            ContentHash = comment.Hash,
-        //            Id = notification.Id.ToString(), //id notification
-        //            ThumbnailUrl = vox.Media?.ThumbnailUrl
-        //        }
-        //    };
-
-        //    var ids = userIds.Select(x => x.ToString()).ToArray();
-
-        //    await _notificationHub.Clients.Users(ids).Notification(userNotification);
-        //}
-
         private async Task SendReplyLiveNotification(Vox vox, Comment comment, Notification notification)
         {
             var userNotification = new UserNotification()
