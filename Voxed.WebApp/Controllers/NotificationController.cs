@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Core.Data.Repositories;
+﻿using Core.Data.Repositories;
 using Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using System;
+using System.Threading.Tasks;
 using Voxed.WebApp.Hubs;
 
 namespace Voxed.WebApp.Controllers
@@ -26,21 +24,6 @@ namespace Voxed.WebApp.Controllers
             _userManager = userManager;
             _notificationHub = notificationHub;
         }
-
-        //[AllowAnonymous]
-        //[Route("notification/{voxId}/{commentHash}")]
-        //public async Task<IActionResult> Index(string voxId, string commentHash)
-        //{
-        //    var notification = await _voxedRepository.Notifications.GetByVoxId(Core.Shared.GuidConverter.FromShortString(voxId));
-
-        //    if (notification != null)
-        //    {
-        //        await _voxedRepository.Notifications.Remove(notification);
-        //        await _voxedRepository.CompleteAsync();
-        //    }
-
-        //    return Redirect($"~/vox/{voxId}#{commentHash}");
-        //}
 
         [AllowAnonymous]
         [Route("notification/{id}")]
