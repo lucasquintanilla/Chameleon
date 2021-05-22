@@ -59,27 +59,27 @@ namespace Voxed.WebApp
             #endregion
 
             services.AddDbContext<SqliteVoxedContext>(options =>
-                    options.UseSqlite(Configuration.GetConnectionString("Sqlite")));
+                    options.UseSqlite(Configuration.GetConnectionString(nameof(SqlProvider.Sqlite))));
 
             services.AddDbContext<MySqlVoxedContext>(options =>
-                   options.UseMySql(Configuration.GetConnectionString("MySql"), 
-                   ServerVersion.AutoDetect(Configuration.GetConnectionString("MySql"))));
+                   options.UseMySql(Configuration.GetConnectionString(nameof(SqlProvider.MySql)), 
+                   ServerVersion.AutoDetect(Configuration.GetConnectionString(nameof(SqlProvider.MySql)))));
 
-            var provider = Configuration.GetValue("Provider", "Sqlite");
+            var provider = Configuration.GetValue("Provider", nameof(SqlProvider.Sqlite));
             services.AddDbContext<VoxedContext>(
                             options => _ = provider switch
                             {
-                                "Sqlite" => options.UseSqlite(
-                                    Configuration.GetConnectionString("Sqlite"),
-                                    x => x.MigrationsAssembly("Core.Data.EF.Sqlite")),
+                                nameof(SqlProvider.Sqlite) => options.UseSqlite(
+                                    Configuration.GetConnectionString(nameof(SqlProvider.Sqlite)),
+                                    x => x.MigrationsAssembly(typeof(SqliteVoxedContext).Assembly.GetName().Name)),
 
-                                "MySql" => options.UseMySql(
-                                    Configuration.GetConnectionString("MySql"),
-                                    ServerVersion.AutoDetect(Configuration.GetConnectionString("MySql")),
-                                    x => x.MigrationsAssembly("Core.Data.EF.MySql")),
+                                nameof(SqlProvider.MySql) => options.UseMySql(
+                                    Configuration.GetConnectionString(nameof(SqlProvider.MySql)),
+                                    ServerVersion.AutoDetect(Configuration.GetConnectionString(nameof(SqlProvider.MySql))),
+                                    x => x.MigrationsAssembly(typeof(MySqlVoxedContext).Assembly.GetName().Name)),
 
-                                //"SqlServer" => options.UseSqlServer(
-                                //configuration.GetConnectionString("SqlServerConnection"),
+                                //nameof(SqlProvider.SqlServer) => options.UseSqlServer(
+                                //Configuration.GetConnectionString(nameof(SqlProvider.SqlServer)),
                                 //x => x.MigrationsAssembly("SqlServerMigrations")),
 
                                 _ => throw new Exception($"Unsupported provider: {provider}")
@@ -185,5 +185,11 @@ namespace Voxed.WebApp
                 endpoints.MapHub<VoxedHub>("/hubs/notifications");
             });
         }
+    }
+
+    public enum SqlProvider{
+        MySql,
+        Sqlite,
+        SqlServer
     }
 }
