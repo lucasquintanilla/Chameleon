@@ -349,7 +349,7 @@
 
                     @foreach (var comment in Model.Comments.OrderByDescending(x => x.CreatedOn))
                     {
-                        <div class="comment   " id="@comment.Hash" data-id="11375022">
+                        <div class="comment   " id="@comment.Hash" data-id="@comment.Hash">
                             <div class="commentAvatar">
                                 @*<div class="unselect avatarColor   @Core.Shared.ColorService.GetColor()">*@
                                 <div class="unselect avatarColor  @comment.Style.ToString().ToLower()">
@@ -421,7 +421,7 @@
                                     </div>
                                     <div class="commentMetaRight">
                                         <div class="commentCreatedAt">@Core.Shared.TimeAgo.ConvertToTimeAgo(@comment.CreatedOn.DateTime)</div>
-                                        <div class="commentAction" data-commentaction="11375022">
+                                        <div class="commentAction" data-commentaction="@comment.Hash">
                                             <i data-parent
                                                class="fas fa-ellipsis-v"></i>
                                         </div>
@@ -524,7 +524,8 @@
 </main>
 
 <script>
-    var VOX_ID = "@Model.ID";
+    var VOX_ID = "@Core.Shared.GuidConverter.ToShortString(Model.ID)";
+    //var VOX_ID = "@Model.ID";
     //var VOX_HASH = "@Model.Hash";
     var VOX_HASH = "@Core.Shared.GuidConverter.ToShortString(Model.ID)";
     var IS_OP = "0";
