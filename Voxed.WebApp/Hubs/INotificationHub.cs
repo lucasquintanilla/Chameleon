@@ -5,7 +5,7 @@ namespace Voxed.WebApp.Hubs
 {
     public interface INotificationHub
     {
-        Task Comment(CommentNotification comment);
+        Task Comment(CommentLiveUpdate comment);
         Task Notification(UserNotification notification);
         Task RemoveNotification(RemoveNotificationModel removeNotification);
         Task Vox(Models.VoxResponse notification);

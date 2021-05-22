@@ -3668,7 +3668,7 @@
             {
                 case "vox" == window.ACTUAL_PAGE:
                     if (document.querySelector("#commentLoadMore").addEventListener("click", () => {
-                        console.log("hola");
+                        //console.log("hola");
                         document.querySelectorAll(".loadHide").forEach(e => {
                             e.classList.remove("loadHide"),
                             //this.commentQuotes(e),
@@ -16100,7 +16100,7 @@
             })
         }
     }, window.slideMenu = () => {
-        console.log("test")
+        //console.log("test")
     }, window.hiddenWords = () => {
         (new a.ModalService).openModal("hiddenWords")
     }

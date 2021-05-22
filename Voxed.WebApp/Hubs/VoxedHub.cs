@@ -15,7 +15,7 @@ namespace Voxed.WebApp.Hubs
 
         // Envia en la home el destello de nuevo comentario en vox 
         // Envia en el vox el nuevo comentario
-        public async Task SendMessage(CommentNotification comment)
+        public async Task SendMessage(CommentLiveUpdate comment)
         {
             await Clients.All.Comment(comment);
         }
@@ -77,7 +77,7 @@ namespace Voxed.WebApp.Hubs
         public string Count { get; set; }
         public string ThumbnailUrl { get; set; }
     }
-    public class CommentNotification 
+    public class CommentLiveUpdate
     {
         public string Id { get; set; }
         public string Hash { get; set; }

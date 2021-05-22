@@ -1,9 +1,7 @@
 using Core.Data.EF;
-using Core.Data.EF.MySql;
 using Core.Data.EF.Repositories;
 using Core.Data.Repositories;
 using Core.Entities;
-using Core.Services.FileUploadService;
 using Core.Shared;
 using Elastic.Apm.NetCoreAll;
 using Microsoft.AspNetCore.Builder;
@@ -57,9 +55,6 @@ namespace Voxed.WebApp
             services.AddTransient<IVoxedRepository, VoxedRepository>();
 
             #endregion
-
-            //services.AddDbContext<VoxedContext>(options =>
-            //        options.UseSqlite(Configuration.GetConnectionString("Sqlite")));
 
             var provider = Configuration.GetValue("Provider", "Sqlite");
             services.AddDbContext<VoxedContext>(

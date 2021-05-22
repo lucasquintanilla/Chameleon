@@ -82,11 +82,13 @@ namespace Voxed.WebApp.Controllers
                 await _voxedRepository.Comments.Add(comment);
                 var vox = await _voxedRepository.Voxs.GetById(comment.VoxID);
                 vox.Bump = DateTimeOffset.Now;
-                await _voxedRepository.CompleteAsync();
+                //await _voxedRepository.CompleteAsync();
 
                 await SaveRepliesNotifications(vox, comment, request);
 
                 await SaveOpNotification(vox, comment);
+
+                await _voxedRepository.CompleteAsync();
 
                 await SendCommentLiveUpdate(comment, vox, request);
 
@@ -153,7 +155,7 @@ namespace Voxed.WebApp.Controllers
                 };
 
                 await _voxedRepository.Notifications.Add(notification);
-                await _voxedRepository.CompleteAsync();
+                //await _voxedRepository.CompleteAsync();
 
                 await SendOpLiveNotification(comment, vox, notification);
             }
@@ -164,7 +166,12 @@ namespace Voxed.WebApp.Controllers
             if (string.IsNullOrWhiteSpace(comment.Content)) return;
 
             var hashList = _formateadorService.GetRepliedHash(request.Content);
-            var usersId = await _voxedRepository.Comments.GetUsersByCommentHash(hashList);
+
+            if (!hashList.Any()) return;
+
+            var usersId = await _voxedRepository.Comments.GetUsersByCommentHash(hashList, new Guid[] { comment.UserID });
+
+            if (!usersId.Any()) return;
 
             var repliesNotifications = usersId
                 .Where(x => x != GetAnonUser().Id)
@@ -178,7 +185,7 @@ namespace Voxed.WebApp.Controllers
                 .ToList();
 
             await _voxedRepository.Notifications.AddRange(repliesNotifications);
-            await _voxedRepository.CompleteAsync();
+            //await _voxedRepository.CompleteAsync();
 
             foreach (var notification in repliesNotifications)
             {
@@ -188,7 +195,7 @@ namespace Voxed.WebApp.Controllers
 
         private async Task SendCommentLiveUpdate(Comment comment, Vox vox, Models.CommentRequest request)
         {
-            var commentNotification = new CommentNotification()
+            var commentNotification = new CommentLiveUpdate()
             {
                 UniqueId = null, //si es unique id puede tener colores unicos
                 UniqueColor = null,
@@ -276,7 +283,7 @@ namespace Voxed.WebApp.Controllers
             {
                 ID = Guid.NewGuid(),
                 Hash = new Hash().NewHash(7),
-                VoxID = new Guid(id),
+                VoxID = GuidConverter.FromShortString(id),
                 UserID = user == null ? GetAnonUser().Id : user.Id,
                 Content = request.Content == null ? null : _formateadorService.Parsear(request.Content),
                 Style = StyleService.GetRandomCommentStyle(),

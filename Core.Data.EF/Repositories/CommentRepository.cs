@@ -20,9 +20,9 @@ namespace Core.Data.EF.Repositories
                    .Include(x => x.User)
                    .ToListAsync();
 
-        public async Task<IEnumerable<Guid>> GetUsersByCommentHash(IEnumerable<string> hashList)
+        public async Task<IEnumerable<Guid>> GetUsersByCommentHash(IEnumerable<string> hashList, ICollection<Guid> skipUserId)
             => await _context.Comments
-                .Where(x => hashList.Contains(x.Hash))
+                .Where(x => hashList.Contains(x.Hash) && !skipUserId.Contains(x.UserID))
                 .Select(x => x.UserID)
                 .ToListAsync();
 
