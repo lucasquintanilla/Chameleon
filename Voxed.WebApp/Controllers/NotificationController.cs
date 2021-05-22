@@ -47,7 +47,7 @@ namespace Voxed.WebApp.Controllers
 
             
             await _voxedRepository.Notifications.Remove(notification);
-            await _voxedRepository.CompleteAsync();
+            await _voxedRepository.SaveChangesAsync();
             
 
             return Redirect($"~/vox/{voxHash}#{commentHash}");
@@ -62,7 +62,7 @@ namespace Voxed.WebApp.Controllers
             var notifications = await _voxedRepository.Notifications.GetByUserId(user.Id);
 
             await _voxedRepository.Notifications.RemoveRange(notifications);
-            await _voxedRepository.CompleteAsync();
+            await _voxedRepository.SaveChangesAsync();
 
             var returnUrl = Request.Headers["Referer"].ToString();
 

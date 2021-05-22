@@ -1,5 +1,7 @@
 using Core.Data.EF;
+using Core.Data.EF.MySql;
 using Core.Data.EF.Repositories;
+using Core.Data.EF.Sqlite;
 using Core.Data.Repositories;
 using Core.Entities;
 using Core.Shared;
@@ -55,6 +57,13 @@ namespace Voxed.WebApp
             services.AddTransient<IVoxedRepository, VoxedRepository>();
 
             #endregion
+
+            services.AddDbContext<SqliteVoxedContext>(options =>
+                    options.UseSqlite(Configuration.GetConnectionString("Sqlite")));
+
+            services.AddDbContext<MySqlVoxedContext>(options =>
+                   options.UseMySql(Configuration.GetConnectionString("MySql"), 
+                   ServerVersion.AutoDetect(Configuration.GetConnectionString("MySql"))));
 
             var provider = Configuration.GetValue("Provider", "Sqlite");
             services.AddDbContext<VoxedContext>(

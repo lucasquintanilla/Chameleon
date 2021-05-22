@@ -12,6 +12,6 @@ namespace Core.Data.Repositories
         IMediaRepository Media { get; }
         ICommentRepository Comments { get; }
         INotificationRepository Notifications { get; }
-        Task<int> CompleteAsync();
+        Task<int> SaveChangesAsync();
     }
 }

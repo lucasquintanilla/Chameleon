@@ -140,7 +140,7 @@ namespace Voxed.WebApp.Controllers
                     await _fileUploadService.ProcessMedia(request.GetUploadData(), request.File, vox);
 
                     await _voxedRepository.Voxs.Add(vox);
-                    await _voxedRepository.CompleteAsync();
+                    await _voxedRepository.SaveChangesAsync();
 
                     //disparo notificacion del vox
                     vox = await _voxedRepository.Voxs.GetById(vox.ID);

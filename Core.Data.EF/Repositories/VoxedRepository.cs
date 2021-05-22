@@ -28,7 +28,7 @@ namespace Core.Data.EF.Repositories
         public IPollRepository Polls { get; private set; }
         public INotificationRepository Notifications { get; private set; }
 
-        public async Task<int> CompleteAsync()
+        public async Task<int> SaveChangesAsync()
         {
             return await _context.SaveChangesAsync();
         }

@@ -41,7 +41,7 @@ namespace Voxed.WebApp.Controllers
 
                 await UpdateVoxLastBump(comment);
 
-                await voxedRepository.CompleteAsync();
+                await voxedRepository.SaveChangesAsync();
             }
 
             if (request.ContentType == "1")
@@ -53,7 +53,7 @@ namespace Voxed.WebApp.Controllers
                 }
 
                 vox.State = Core.Entities.VoxState.Deleted;
-                await voxedRepository.CompleteAsync();
+                await voxedRepository.SaveChangesAsync();
             }
 
             return new Response() { Value = "OK" };

@@ -123,7 +123,7 @@ namespace Voxed.WebApp.Controllers
                 await SaveRepliesNotifications(vox, comment, request);
                 await SaveOpNotification(vox, comment);
 
-                await _voxedRepository.CompleteAsync();
+                await _voxedRepository.SaveChangesAsync();
 
                 await SendCommentLiveUpdate(comment, vox, request);
 
