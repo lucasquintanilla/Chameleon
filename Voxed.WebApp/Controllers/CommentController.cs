@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Voxed.WebApp.Hubs;
 
@@ -82,17 +83,49 @@ namespace Voxed.WebApp.Controllers
                 await _voxedRepository.Comments.Add(comment);
                 var vox = await _voxedRepository.Voxs.GetById(comment.VoxID);
                 vox.Bump = DateTimeOffset.Now;
-                //await _voxedRepository.CompleteAsync();
+                await _voxedRepository.CompleteAsync();
 
+                //var repliesNotificationTask = Task.Run(() => SaveRepliesNotifications(vox, comment, request));
+                //var opNotificationTask = Task.Run(() => SaveOpNotification(vox, comment));
+
+                //new Task(() => SaveRepliesNotifications(vox, comment, request)).Start();
+                //new Task(() => SaveOpNotification(vox, comment)).Start();
+
+                //Thread backgroundThread = new Thread(new ThreadStart(SaveRepliesNotifications));
+                //backgroundThread.IsBackground = true;
+                //backgroundThread.Start(vox, comment, request);
+
+                //new Thread(() => SaveRepliesNotifications(vox, comment, request)).Start();
+                //new Thread(() => SaveOpNotification(vox, comment)).Start();
+
+
+
+
+                // FUNCIONA EN BACKGORUND PERO TIRA ERRROR POR LOS OBJETOS DE DISPONEN
+                //var voxForNotification = vox;
+                //var commentForNotification = comment;
+                //var requestForNotification = request;
+
+                //var th = new Thread(() => SaveRepliesNotifications(voxForNotification, commentForNotification, requestForNotification));
+                //th.IsBackground = true;
+                //th.Start();
+                //var th2 = new Thread(() => SaveOpNotification(voxForNotification, commentForNotification));
+                //th2.IsBackground = true;
+                //th2.Start();
+
+
+
+                // NO FUNCIONA
+                //var task1 = SaveRepliesNotifications(vox, comment, request);
+                //var task2 = SaveOpNotification(vox, comment);
+
+                // Manejar guardado de y envio de notificaciones en threads separados en background
                 await SaveRepliesNotifications(vox, comment, request);
-
                 await SaveOpNotification(vox, comment);
 
                 await _voxedRepository.CompleteAsync();
 
                 await SendCommentLiveUpdate(comment, vox, request);
-
-                //await SendOpLiveNotification(comment, vox, notification);
 
                 var response = new Models.CommentResponse()
                 {
@@ -144,6 +177,8 @@ namespace Voxed.WebApp.Controllers
 
         private async Task SaveOpNotification(Vox vox, Comment comment)
         {
+            //await Task.Delay(10000);
+
             if (vox.User.UserType != UserType.Anonymous && vox.UserID != comment.UserID)
             {
                 var notification = new Notification()
@@ -155,7 +190,7 @@ namespace Voxed.WebApp.Controllers
                 };
 
                 await _voxedRepository.Notifications.Add(notification);
-                //await _voxedRepository.CompleteAsync();
+                await _voxedRepository.CompleteAsync();
 
                 await SendOpLiveNotification(comment, vox, notification);
             }
@@ -185,7 +220,7 @@ namespace Voxed.WebApp.Controllers
                 .ToList();
 
             await _voxedRepository.Notifications.AddRange(repliesNotifications);
-            //await _voxedRepository.CompleteAsync();
+            await _voxedRepository.CompleteAsync();
 
             foreach (var notification in repliesNotifications)
             {
