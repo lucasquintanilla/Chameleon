@@ -57,8 +57,31 @@ namespace Voxed.WebApp
 
             #endregion
 
-            services.AddDbContext<VoxedContext>(options =>
-                    options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+            //services.AddDbContext<VoxedContext>(options =>
+            //        options.UseSqlite(Configuration.GetConnectionString("Sqlite")));
+
+            //services.AddDbContext<VoxedContext>(options => options
+            //    .UseMySQL(Configuration.GetConnectionString("MySQL")));
+
+            var provider = Configuration.GetValue("Provider", "Sqlite");
+            //var provider = Configuration.GetValue("Provider", "MySql");
+            services.AddDbContext<VoxedContext>(
+                            options => _ = provider switch
+                            {
+                                "Sqlite" => options.UseSqlite(
+                                    Configuration.GetConnectionString("Sqlite"),
+                                    x => x.MigrationsAssembly("SqliteMigrations")),
+
+                                "MySql" => options.UseMySQL(
+                                    Configuration.GetConnectionString("MySql"),
+                                    x => x.MigrationsAssembly("Core.Data.EF.MySql")),
+
+                                //"SqlServer" => options.UseSqlServer(
+                                //configuration.GetConnectionString("SqlServerConnection"),
+                                //x => x.MigrationsAssembly("SqlServerMigrations")),
+
+                                _ => throw new Exception($"Unsupported provider: {provider}")
+                            });
 
             services.AddDefaultIdentity<User>(options => 
                     options.SignIn.RequireConfirmedAccount = true)

@@ -21,7 +21,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RozBot", "RozBot\RozBot.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Voxed.PWA", "Voxed.PWA\Voxed.PWA.csproj", "{BF6F4D7E-1BAB-48DA-AEA2-8F5C677D38A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication1", "WebApplication1\WebApplication1.csproj", "{8CC2896D-64D2-4B44-A409-5CA9933A3769}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApplication1", "WebApplication1\WebApplication1.csproj", "{8CC2896D-64D2-4B44-A409-5CA9933A3769}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqliteMigrations", "SqliteMigrations\SqliteMigrations.csproj", "{67358ACC-3C78-48F8-954E-996EC88EB40A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +71,10 @@ Global
 		{8CC2896D-64D2-4B44-A409-5CA9933A3769}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8CC2896D-64D2-4B44-A409-5CA9933A3769}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8CC2896D-64D2-4B44-A409-5CA9933A3769}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67358ACC-3C78-48F8-954E-996EC88EB40A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67358ACC-3C78-48F8-954E-996EC88EB40A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67358ACC-3C78-48F8-954E-996EC88EB40A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67358ACC-3C78-48F8-954E-996EC88EB40A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
