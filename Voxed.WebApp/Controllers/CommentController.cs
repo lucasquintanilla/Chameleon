@@ -83,7 +83,7 @@ namespace Voxed.WebApp.Controllers
                 await _voxedRepository.Comments.Add(comment);
                 var vox = await _voxedRepository.Voxs.GetById(comment.VoxID);
                 vox.Bump = DateTimeOffset.Now;
-                await _voxedRepository.CompleteAsync();
+                //await _voxedRepository.CompleteAsync();
 
                 //var repliesNotificationTask = Task.Run(() => SaveRepliesNotifications(vox, comment, request));
                 //var opNotificationTask = Task.Run(() => SaveOpNotification(vox, comment));
@@ -190,7 +190,7 @@ namespace Voxed.WebApp.Controllers
                 };
 
                 await _voxedRepository.Notifications.Add(notification);
-                await _voxedRepository.CompleteAsync();
+                //await _voxedRepository.CompleteAsync();
 
                 await SendOpLiveNotification(comment, vox, notification);
             }
@@ -220,7 +220,7 @@ namespace Voxed.WebApp.Controllers
                 .ToList();
 
             await _voxedRepository.Notifications.AddRange(repliesNotifications);
-            await _voxedRepository.CompleteAsync();
+            //await _voxedRepository.CompleteAsync();
 
             foreach (var notification in repliesNotifications)
             {
