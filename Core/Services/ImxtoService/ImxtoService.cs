@@ -17,23 +17,14 @@ namespace Core.Services.ImxtoService
         {
             string baseUrl = "https://imx.to/dropzone.php?session_id=68giijgrtpqe0nk9ttlot9noi4";
 
-            Dictionary<string, string> parameters = new Dictionary<string, string>
-            {
-                { "thumbnail_format", "3" },
-                { "thumb_size_contaner", "4" },
-                { "adult", "1" },
-                { "simple_upload", "Upload" }
-            };
-
             MultipartFormDataContent form = new MultipartFormDataContent();
-            HttpContent content = new StringContent("fileToUpload");
             
             form.Add(new StringContent("3"), "thumbnail_format");
             form.Add(new StringContent("4"), "thumb_size_contaner");
             form.Add(new StringContent("1"), "adult");
             form.Add(new StringContent("Upload"), "simple_upload");
-           
-            content = new StreamContent(stream);
+
+            HttpContent content = new StreamContent(stream);
             content.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
             {
                 Name = "uploaded",

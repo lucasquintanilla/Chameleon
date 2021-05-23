@@ -30,9 +30,9 @@ namespace Core.Shared
         public FileUploadService(IWebHostEnvironment env, IConfiguration configuration, ImxtoService imxtoService)
         {
             _env = env;
-            _configuration = configuration.GetSection("FileUploadService").Get<FileUploadServiceConfiguration>(); ;
-            Initialize();
+            _configuration = configuration.GetSection("FileUploadService").Get<FileUploadServiceConfiguration>();            
             _imxtoService = imxtoService;
+            Initialize();
         }
 
         private void Initialize()
@@ -75,37 +75,40 @@ namespace Core.Shared
         {
             if (file == null) throw new ArgumentNullException(nameof(file));
 
-            //var originalFileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
-            //var originalFilename = $"{DateTime.Now:yyyyMMdd}-{hash}{originalFileExtension}";
-            //var originalFilePath = Path.Combine(_env.WebRootPath, _configuration.MediaFolderName, originalFilename);
-
-            //var thumbnailFilename = $"{DateTime.Now:yyyyMMdd}-{hash}.webp";
-            //var thumbnailFilePath = Path.Combine(_env.WebRootPath, _configuration.MediaFolderName, thumbnailFilename);
-
-            //if (IsGif(file))
-            //{
-            //    //CONVERT AND SAVE GIF TO WEBP
-            //    //ConvertoAndSaveToWebp(file, filePath);                
-
-            //    await SaveGifThumbnail(file, thumbnailFilePath); 
-            //}
-            //else
-            //{
-            //    await SaveImageThumbnail(file, thumbnailFilePath);
-            //}
-
-            //await SaveOriginalFormat(file, originalFilePath);
-
-            //return GetMediaResponse(originalFilename, thumbnailFilename, MediaType.Image);
-
-            var uploadedFile = await _imxtoService.Upload(file.OpenReadStream());
-
-            return new Media()
+            if (_configuration.UseImxto)
             {
-                MediaType = MediaType.Image,
-                ThumbnailUrl = uploadedFile.ThumbnailUrl,
-                Url = uploadedFile.OriginalUrl
-            };
+                var uploadedFile = await _imxtoService.Upload(file.OpenReadStream());
+
+                return new Media()
+                {
+                    MediaType = MediaType.Image,
+                    ThumbnailUrl = uploadedFile.ThumbnailUrl,
+                    Url = uploadedFile.OriginalUrl
+                };
+            }
+
+            var originalFileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
+            var originalFilename = $"{DateTime.Now:yyyyMMdd}-{hash}{originalFileExtension}";
+            var originalFilePath = Path.Combine(_env.WebRootPath, _configuration.MediaFolderName, originalFilename);
+
+            var thumbnailFilename = $"{DateTime.Now:yyyyMMdd}-{hash}.webp";
+            var thumbnailFilePath = Path.Combine(_env.WebRootPath, _configuration.MediaFolderName, thumbnailFilename);
+
+            if (IsGif(file))
+            {
+                //CONVERT AND SAVE GIF TO WEBP
+                //ConvertoAndSaveToWebp(file, filePath);                
+
+                await SaveGifThumbnail(file, thumbnailFilePath);
+            }
+            else
+            {
+                await SaveImageThumbnail(file, thumbnailFilePath);
+            }
+
+            await SaveOriginalFormat(file, originalFilePath);
+
+            return GetMediaResponse(originalFilename, thumbnailFilename, MediaType.Image);
         }
 
         public async Task ProcessMedia(UploadData data, IFormFile file, IMediaEntity entity)

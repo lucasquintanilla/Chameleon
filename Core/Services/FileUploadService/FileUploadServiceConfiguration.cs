@@ -9,5 +9,6 @@ namespace Core.Services.FileUploadService
         public int MaxFileSize { get; set; }
         public string FFmpegPath { get; set; }
         public int ThumbnailQuality { get; set; }
+        public bool UseImxto { get; set; }
     }
 }
