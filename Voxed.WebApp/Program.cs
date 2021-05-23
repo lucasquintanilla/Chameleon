@@ -16,6 +16,8 @@ using Elastic.Apm.SerilogEnricher;
 using Elastic.CommonSchema.Serilog;
 using Serilog.Sinks.Elasticsearch;
 using Serilog.Extensions.Logging;
+using Core.Data.EF.Sqlite;
+using Core.Data.EF.MySql;
 
 namespace Voxed.WebApp
 {
@@ -56,7 +58,10 @@ namespace Voxed.WebApp
                     var userManager = services.GetRequiredService<UserManager<User>>();
                     var roleManager = services.GetRequiredService<RoleManager<Role>>();
 
-                    await new DbInitializer(context, userManager, roleManager).Initialize();
+                    //await new DbInitializer(context, userManager, roleManager).Initialize();
+
+                    //await SqliteInitialize(services);
+                    //await MySqlInitialize(services);
                 }
                 catch (Exception ex)
                 {
@@ -91,5 +96,23 @@ namespace Voxed.WebApp
                         .ReadFrom.Configuration(context.Configuration);
 
                 });
+
+        private static async Task SqliteInitialize(IServiceProvider services)
+        {
+            var context = services.GetRequiredService<SqliteVoxedContext>();
+            var userManager = services.GetRequiredService<UserManager<User>>();
+            var roleManager = services.GetRequiredService<RoleManager<Role>>();
+
+            await new DbInitializer(context, userManager, roleManager).Initialize();
+        }
+
+        private static async Task MySqlInitialize(IServiceProvider services)
+        {
+            var context = services.GetRequiredService<MySqlVoxedContext>();
+            var userManager = services.GetRequiredService<UserManager<User>>();
+            var roleManager = services.GetRequiredService<RoleManager<Role>>();
+
+            await new DbInitializer(context, userManager, roleManager).Initialize();
+        }
     }
 }

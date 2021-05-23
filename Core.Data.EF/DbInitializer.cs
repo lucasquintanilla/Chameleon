@@ -9,7 +9,7 @@ namespace Core.Data.EF
 {
     public class DbInitializer
     {
-        private VoxedContext _context;
+        private readonly VoxedContext _context;
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
         public DbInitializer(VoxedContext context,

@@ -4,6 +4,7 @@ using Core.Data.EF.Repositories;
 using Core.Data.EF.Sqlite;
 using Core.Data.Repositories;
 using Core.Entities;
+using Core.Services.ImxtoService;
 using Core.Shared;
 using Elastic.Apm.NetCoreAll;
 using Microsoft.AspNetCore.Builder;
@@ -78,10 +79,6 @@ namespace Voxed.WebApp
                                     ServerVersion.AutoDetect(Configuration.GetConnectionString(nameof(SqlProvider.MySql))),
                                     x => x.MigrationsAssembly(typeof(MySqlVoxedContext).Assembly.GetName().Name)),
 
-                                //nameof(SqlProvider.SqlServer) => options.UseSqlServer(
-                                //Configuration.GetConnectionString(nameof(SqlProvider.SqlServer)),
-                                //x => x.MigrationsAssembly("SqlServerMigrations")),
-
                                 _ => throw new Exception($"Unsupported provider: {provider}")
                             });
 
@@ -93,6 +90,7 @@ namespace Voxed.WebApp
 
             services.AddSingleton<FormateadorService>();
             services.AddSingleton<FileUploadService>();
+            services.AddSingleton<ImxtoService>();
 
             services.Configure<IdentityOptions>(options =>
             {
