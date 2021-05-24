@@ -75,18 +75,6 @@ namespace Core.Shared
         {
             if (file == null) throw new ArgumentNullException(nameof(file));
 
-            if (_configuration.UseImxto)
-            {
-                var uploadedFile = await _imxtoService.Upload(file.OpenReadStream());
-
-                return new Media()
-                {
-                    MediaType = MediaType.Image,
-                    ThumbnailUrl = uploadedFile.ThumbnailUrl,
-                    Url = uploadedFile.OriginalUrl
-                };
-            }
-
             var originalFileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
             var originalFilename = $"{DateTime.Now:yyyyMMdd}-{hash}{originalFileExtension}";
             var originalFilePath = Path.Combine(_env.WebRootPath, _configuration.MediaFolderName, originalFilename);
@@ -100,15 +88,27 @@ namespace Core.Shared
                 //ConvertoAndSaveToWebp(file, filePath);                
 
                 await SaveGifThumbnail(file, thumbnailFilePath);
-            }
-            else
-            {
                 await SaveImageThumbnail(file, thumbnailFilePath);
+
+                return GetLocalMediaResponse(originalFilename, thumbnailFilename, MediaType.Image);
             }
 
+            if (_configuration.UseImxto)
+            {
+                var uploadedFile = await _imxtoService.Upload(file.OpenReadStream());
+
+                return new Media()
+                {
+                    MediaType = MediaType.Image,
+                    ThumbnailUrl = uploadedFile.ThumbnailUrl,
+                    Url = uploadedFile.OriginalUrl
+                };
+            }
+
+            await SaveImageThumbnail(file, thumbnailFilePath);
             await SaveOriginalFormat(file, originalFilePath);
 
-            return GetMediaResponse(originalFilename, thumbnailFilename, MediaType.Image);
+            return GetLocalMediaResponse(originalFilename, thumbnailFilename, MediaType.Image);
         }
 
         public async Task ProcessMedia(UploadData data, IFormFile file, IMediaEntity entity)
@@ -171,7 +171,7 @@ namespace Core.Shared
             image.Save(thumbnailFilePath, GetImageFormat(image));
 
 
-            return GetMediaResponse(originalFilename, thumbnailFilename, MediaType.Image);
+            return GetLocalMediaResponse(originalFilename, thumbnailFilename, MediaType.Image);
         }
 
         private ImageFormat GetImageFormat(Image image)
@@ -395,7 +395,7 @@ namespace Core.Shared
             return thumbnailFilename;
         }
 
-        private Media GetMediaResponse(string originalFilename, string thumbnailFilename, MediaType mediaType)
+        private Media GetLocalMediaResponse(string originalFilename, string thumbnailFilename, MediaType mediaType)
         {
             return new Media
             {
