@@ -1,6 +1,7 @@
 ﻿using Core.Data.Repositories;
 using Core.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -18,7 +19,9 @@ namespace Voxed.WebApp.Controllers
 
         public NotificationController(IVoxedRepository voxedRepository,
             UserManager<User> userManager, 
-            IHubContext<VoxedHub, INotificationHub> notificationHub)
+            IHubContext<VoxedHub, 
+            INotificationHub> notificationHub,
+            IHttpContextAccessor accessor) : base(accessor)
         {
             _voxedRepository = voxedRepository;
             _userManager = userManager;

@@ -2,6 +2,7 @@
 using Core.Entities;
 using Core.Shared;
 using Core.Shared.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -31,8 +32,9 @@ namespace Voxed.WebApp.Controllers
             IVoxedRepository voxedRepository,
             UserManager<User> userManager,
             IHubContext<VoxedHub, INotificationHub> notificationHub,
-            ILogger<HomeController> logger, 
-            SignInManager<User> signInManager)
+            ILogger<HomeController> logger,
+            SignInManager<User> signInManager, 
+            IHttpContextAccessor accessor) : base(accessor)
         {
             _formateadorService = formateadorService;
             _fileUploadService = fileUploadService;

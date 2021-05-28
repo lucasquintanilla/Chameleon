@@ -79,6 +79,9 @@ namespace Voxed.WebApp.Controllers
 
         public async Task<IActionResult> Index()
         {
+
+            //var x = Request.Headers.TryGetValue("CF-IPCountry", out var result);
+
             var voxs = await _voxedRepository.Voxs.GetLastestAsync();
 
             var voxsList = voxs.Select(vox => new Models.VoxResponse()

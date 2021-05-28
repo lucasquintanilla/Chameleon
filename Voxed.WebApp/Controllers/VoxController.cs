@@ -33,7 +33,8 @@ namespace Voxed.WebApp.Controllers
             UserManager<User> userManager,
             FormateadorService formateadorService,
             IHubContext<VoxedHub, INotificationHub> notificationHub, 
-            SignInManager<User> signInManager)
+            SignInManager<User> signInManager,
+            IHttpContextAccessor accessor) : base(accessor)
         {
             _fileUploadService = fileUploadService;
             _voxedRepository = voxedRepository;

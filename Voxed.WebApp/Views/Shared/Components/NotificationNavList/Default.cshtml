@@ -1,11 +1,16 @@
 ﻿@model IEnumerable<Voxed.WebApp.Hubs.UserNotification>
 
 @using Microsoft.AspNetCore.Identity
+@using Voxed.WebApp.Hubs 
 
 @inject SignInManager<Core.Entities.User> SignInManager
 @inject UserManager<Core.Entities.User> UserManager
 
 <ul class="menu unselect" id="navbarMenu">
+    <li class="menuIcon tooltip-bottom mobile" data-tooltip="Dispositivos online">
+        <i class="fas fa-laptop"></i>
+        <div class="navOnlineDevicesCount">@VoxedHub.TotalUsersOnline.ToString()</div>
+    </li>
     <li class="menuIcon tooltip-bottom mobile" data-tooltip="Buscar" data-togglesearch>
         <i class="fas fa-search"></i>
     </li>

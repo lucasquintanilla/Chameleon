@@ -1,5 +1,6 @@
 ﻿using Core.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -15,7 +16,9 @@ namespace Voxed.WebApp.Controllers
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
 
-        public AccountController(SignInManager<User> signInManager, UserManager<User> userManager)
+        public AccountController(SignInManager<User> signInManager, 
+            UserManager<User> userManager, 
+            IHttpContextAccessor accessor) : base(accessor)
         {
             _signInManager = signInManager;
             _userManager = userManager;

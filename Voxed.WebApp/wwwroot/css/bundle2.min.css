@@ -401,6 +401,12 @@ img.categoryLogo {
     font-size: 12px;
 }
 
+.navOnlineDevicesCount {
+    font-family: Lato,sans-serif;
+    margin-left: 12px;
+    font-size: 12px;
+}
+
 .notificationsList {
     display: flex;
     flex-wrap: wrap;
