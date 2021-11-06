@@ -37,8 +37,8 @@ namespace Core.Data.EF
         }
 
         private async Task InitializeDataBase()
-        { 
-            //context.Database.EnsureCreated();
+        {
+            //await _context.Database.EnsureCreatedAsync();
 
             //var pendingMigrations = _context.Database.GetPendingMigrations();
 

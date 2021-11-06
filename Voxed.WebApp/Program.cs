@@ -61,7 +61,7 @@ namespace Voxed.WebApp
                     //await new DbInitializer(context, userManager, roleManager).Initialize();
 
                     //await SqliteInitialize(services);
-                    //await MySqlInitialize(services);
+                    await MySqlInitialize(services);
                 }
                 catch (Exception ex)
                 {

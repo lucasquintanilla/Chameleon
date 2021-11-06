@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Core.Data.EF.MySql.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class Creation : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
