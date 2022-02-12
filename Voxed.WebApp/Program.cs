@@ -18,6 +18,7 @@ using Serilog.Sinks.Elasticsearch;
 using Serilog.Extensions.Logging;
 using Core.Data.EF.Sqlite;
 using Core.Data.EF.MySql;
+using Microsoft.Extensions.Logging;
 
 namespace Voxed.WebApp
 {
@@ -58,15 +59,15 @@ namespace Voxed.WebApp
                     var userManager = services.GetRequiredService<UserManager<User>>();
                     var roleManager = services.GetRequiredService<RoleManager<Role>>();
 
-                    //await new DbInitializer(context, userManager, roleManager).Initialize();
+                    await new DbInitializer(context, userManager, roleManager).Initialize();
 
                     //await SqliteInitialize(services);
-                    await MySqlInitialize(services);
+                    //await MySqlInitialize(services);
                 }
                 catch (Exception ex)
                 {
-                    //var logger = services.GetRequiredService<ILogger<Program>>();
-                    //logger.LogError(ex, "An error occurred creating the DB.");
+                    var logger = services.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(ex, "An error occurred creating the DB.");
                 }
             }
         }
@@ -77,25 +78,26 @@ namespace Voxed.WebApp
                 {
                     webBuilder.UseStartup<Startup>();
                 })
-                .UseSerilog((context, configuration) =>
-                {
-                    configuration.Enrich.FromLogContext()
-                        //.Enrich.WithMachineName()
-                        .WriteTo.Console()
-                        .WriteTo.File("./Logs/log-.txt", rollingInterval: RollingInterval.Day)
-                        .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri("https://i-o-optimized-deployment-d7f8f8.es.eastus2.azure.elastic-cloud.com:9243"))
-                        {
-                            IndexFormat = $"{context.Configuration["ApplicationName"]}-logs-{context.HostingEnvironment.EnvironmentName?.ToLower().Replace(".", "-")}-{DateTime.Now:yyyy-MM}",
-                            AutoRegisterTemplate = true,
-                            NumberOfShards = 2,
-                            NumberOfReplicas = 1,
-                            ModifyConnectionSettings = x => x.BasicAuthentication("elastic", "pZbpxWQhkWGsBmVAGuXh7nTj"),
-                            MinimumLogEventLevel = LogEventLevel.Information
-                        })
-                        .Enrich.WithProperty("Environment", context.HostingEnvironment.EnvironmentName)
-                        .ReadFrom.Configuration(context.Configuration);
+                //.UseSerilog((context, configuration) =>
+                //{
+                //    configuration.Enrich.FromLogContext()
+                //        //.Enrich.WithMachineName()
+                //        .WriteTo.Console()
+                //        .WriteTo.File("./Logs/log-.txt", rollingInterval: RollingInterval.Day)
+                //        .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri("https://i-o-optimized-deployment-d7f8f8.es.eastus2.azure.elastic-cloud.com:9243"))
+                //        {
+                //            IndexFormat = $"{context.Configuration["ApplicationName"]}-logs-{context.HostingEnvironment.EnvironmentName?.ToLower().Replace(".", "-")}-{DateTime.Now:yyyy-MM}",
+                //            AutoRegisterTemplate = true,
+                //            NumberOfShards = 2,
+                //            NumberOfReplicas = 1,
+                //            ModifyConnectionSettings = x => x.BasicAuthentication("elastic", "pZbpxWQhkWGsBmVAGuXh7nTj"),
+                //            MinimumLogEventLevel = LogEventLevel.Information
+                //        })
+                //        .Enrich.WithProperty("Environment", context.HostingEnvironment.EnvironmentName)
+                //        .ReadFrom.Configuration(context.Configuration);
 
-                });
+                //})
+                ;
 
         private static async Task SqliteInitialize(IServiceProvider services)
         {

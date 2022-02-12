@@ -12,8 +12,9 @@ namespace Core.Data.EF
         private readonly VoxedContext _context;
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
+
         public DbInitializer(VoxedContext context,
-            UserManager<User> userManager, 
+            UserManager<User> userManager,
             RoleManager<Role> roleManager)
         {
             _context = context;
@@ -27,7 +28,7 @@ namespace Core.Data.EF
 
             await InitializeCategories();
 
-            await InitilizeRoles();
+            await InitiliazeRoles();
 
             await InitializeUsers();
 
@@ -38,19 +39,16 @@ namespace Core.Data.EF
 
         private async Task InitializeDataBase()
         {
+            // Using this method you will not able to use Migrations
             //await _context.Database.EnsureCreatedAsync();
 
-            //var pendingMigrations = _context.Database.GetPendingMigrations();
-
-            await _context.Database.MigrateAsync();
+            var pendingMigrations = await _context.Database.GetPendingMigrationsAsync();
+            if (pendingMigrations.Any()) await _context.Database.MigrateAsync();
         }
 
-        private async Task InitilizeRoles()
+        private async Task InitiliazeRoles()
         {
-            if (await _roleManager.Roles.AnyAsync())
-            {
-                return;
-            }
+            if (await _roleManager.Roles.AnyAsync()) return;
 
             var roles = Enum.GetValues(typeof(RoleType)).Cast<RoleType>();
 
@@ -68,18 +66,19 @@ namespace Core.Data.EF
                 }
             }
         }
-        
+
         private async Task InitializeUsers()
         {
             if (await _userManager.Users.AnyAsync())
             {
                 return;
             }
-            
-            var administrator = new User { 
+
+            var administrator = new User
+            {
                 UserName = "admin",
-                EmailConfirmed = true, 
-                UserType = UserType.Administrator 
+                EmailConfirmed = true,
+                UserType = UserType.Administrator
             };
 
             var result = await _userManager.CreateAsync(administrator, "Admin007");
@@ -88,10 +87,11 @@ namespace Core.Data.EF
                 await _userManager.AddToRoleAsync(administrator, nameof(RoleType.Administrator));
             }
 
-            var anonymus = new User { 
+            var anonymus = new User
+            {
                 UserName = "anonimo",
-                EmailConfirmed = true, 
-                UserType = UserType.Anonymous 
+                EmailConfirmed = true,
+                UserType = UserType.Anonymous
             };
 
             result = await _userManager.CreateAsync(anonymus, "Anonimo007");
@@ -454,9 +454,10 @@ namespace Core.Data.EF
                 },
             };
 
-            
-            await _context.Categories.AddRangeAsync(categories);            
+
+            await _context.Categories.AddRangeAsync(categories);
 
             await _context.SaveChangesAsync();
         }
-    }}
+    }
+}

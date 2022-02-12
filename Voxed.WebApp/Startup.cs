@@ -59,12 +59,12 @@ namespace Voxed.WebApp
 
             #endregion
 
-            services.AddDbContext<SqliteVoxedContext>(options =>
-                    options.UseSqlite(Configuration.GetConnectionString(nameof(SqlProvider.Sqlite))));
+            //services.AddDbContext<SqliteVoxedContext>(options =>
+            //        options.UseSqlite(Configuration.GetConnectionString(nameof(SqlProvider.Sqlite))));
 
-            services.AddDbContext<MySqlVoxedContext>(options =>
-                   options.UseMySql(Configuration.GetConnectionString(nameof(SqlProvider.MySql)), 
-                   ServerVersion.AutoDetect(Configuration.GetConnectionString(nameof(SqlProvider.MySql)))));
+            //services.AddDbContext<MySqlVoxedContext>(options =>
+            //       options.UseMySql(Configuration.GetConnectionString(nameof(SqlProvider.MySql)), 
+            //       ServerVersion.AutoDetect(Configuration.GetConnectionString(nameof(SqlProvider.MySql)))));
 
             var provider = Configuration.GetValue("Provider", nameof(SqlProvider.Sqlite));
             services.AddDbContext<VoxedContext>(
