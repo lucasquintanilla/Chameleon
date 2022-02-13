@@ -59,15 +59,17 @@ namespace Voxed.WebApp
                     var userManager = services.GetRequiredService<UserManager<User>>();
                     var roleManager = services.GetRequiredService<RoleManager<Role>>();
 
-                    await new DbInitializer(context, userManager, roleManager).Initialize();
+                    //await new DbInitializer(context, userManager, roleManager).Initialize();
 
                     //await SqliteInitialize(services);
-                    //await MySqlInitialize(services);
+                    await MySqlInitialize(services);
                 }
                 catch (Exception ex)
                 {
                     var logger = services.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(ex, "localdb string connection: " + Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb"));
                     logger.LogError(ex, "An error occurred creating the DB.");
+                    throw;
                 }
             }
         }
@@ -83,7 +85,7 @@ namespace Voxed.WebApp
                     configuration.Enrich.FromLogContext()
                         //.Enrich.WithMachineName()
                         .WriteTo.Console()
-                        .WriteTo.File("./Logs/log-.txt", rollingInterval: RollingInterval.Day)
+                        .WriteTo.File("./logs/logs-.txt", rollingInterval: RollingInterval.Day)
                         .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri("https://i-o-optimized-deployment-d7f8f8.es.eastus2.azure.elastic-cloud.com:9243"))
                         {
                             IndexFormat = $"{context.Configuration["ApplicationName"]}-logs-{context.HostingEnvironment.EnvironmentName?.ToLower().Replace(".", "-")}-{DateTime.Now:yyyy-MM}",

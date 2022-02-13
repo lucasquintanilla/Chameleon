@@ -59,28 +59,60 @@ namespace Voxed.WebApp
 
             #endregion
 
-            //services.AddDbContext<SqliteVoxedContext>(options =>
-            //        options.UseSqlite(Configuration.GetConnectionString(nameof(SqlProvider.Sqlite))));
+            services.AddDbContext<SqliteVoxedContext>(options =>
+                    options.UseSqlite(Configuration.GetConnectionString(nameof(SqlProvider.Sqlite))));
 
             //services.AddDbContext<MySqlVoxedContext>(options =>
-            //       options.UseMySql(Configuration.GetConnectionString(nameof(SqlProvider.MySql)), 
+            //       options.UseMySql(Configuration.GetConnectionString(nameof(SqlProvider.MySql)),
             //       ServerVersion.AutoDetect(Configuration.GetConnectionString(nameof(SqlProvider.MySql)))));
 
-            var provider = Configuration.GetValue("Provider", nameof(SqlProvider.Sqlite));
-            services.AddDbContext<VoxedContext>(
-                            options => _ = provider switch
-                            {
-                                nameof(SqlProvider.Sqlite) => options.UseSqlite(
-                                    Configuration.GetConnectionString(nameof(SqlProvider.Sqlite)),
-                                    x => x.MigrationsAssembly(typeof(SqliteVoxedContext).Assembly.GetName().Name)),
+            if (Core.Utilities.Utilities.IsDebug())
+            {
+                services.AddDbContext<MySqlVoxedContext>(options =>
+                       options.UseMySql(Configuration.GetConnectionString(nameof(SqlProvider.MySql)),
+                       ServerVersion.AutoDetect(Configuration.GetConnectionString(nameof(SqlProvider.MySql)))));
 
-                                nameof(SqlProvider.MySql) => options.UseMySql(
-                                    Configuration.GetConnectionString(nameof(SqlProvider.MySql)),
-                                    ServerVersion.AutoDetect(Configuration.GetConnectionString(nameof(SqlProvider.MySql))),
-                                    x => x.MigrationsAssembly(typeof(MySqlVoxedContext).Assembly.GetName().Name)),
+                var provider = Configuration.GetValue("Provider", nameof(SqlProvider.MySql));
+                services.AddDbContext<VoxedContext>(
+                    options => _ = provider switch
+                    {
+                        nameof(SqlProvider.Sqlite) => options.UseSqlite(
+                            Configuration.GetConnectionString(nameof(SqlProvider.Sqlite)),
+                            x => x.MigrationsAssembly(typeof(SqliteVoxedContext).Assembly.GetName().Name)),
 
-                                _ => throw new Exception($"Unsupported provider: {provider}")
-                            });
+                        nameof(SqlProvider.MySql) => options.UseMySql(
+                            Configuration.GetConnectionString(nameof(SqlProvider.MySql)),
+                            ServerVersion.AutoDetect(Configuration.GetConnectionString(nameof(SqlProvider.MySql))),
+                            x => x.MigrationsAssembly(typeof(MySqlVoxedContext).Assembly.GetName().Name)),
+
+                        _ => throw new Exception($"Unsupported provider: {provider}")
+                    });
+
+            }
+            else
+            {
+                services.AddDbContext<MySqlVoxedContext>(options =>
+                    options.UseMySql(Configuration.GetConnectionString(nameof(SqlProvider.MySql)),
+                        ServerVersion.AutoDetect(Configuration.GetConnectionString(nameof(SqlProvider.MySql)))));
+
+                var provider = Configuration.GetValue("Provider", nameof(SqlProvider.MySql));
+                services.AddDbContext<VoxedContext>(
+                    options => _ = provider switch
+                    {
+                        nameof(SqlProvider.Sqlite) => options.UseSqlite(
+                            Configuration.GetConnectionString(nameof(SqlProvider.Sqlite)),
+                            x => x.MigrationsAssembly(typeof(SqliteVoxedContext).Assembly.GetName().Name)),
+
+                        nameof(SqlProvider.MySql) => options.UseMySql(
+                            Configuration.GetConnectionString(nameof(SqlProvider.MySql)),
+                            ServerVersion.AutoDetect(Configuration.GetConnectionString(nameof(SqlProvider.MySql))),
+                            x => x.MigrationsAssembly(typeof(MySqlVoxedContext).Assembly.GetName().Name)),
+
+                        _ => throw new Exception($"Unsupported provider: {provider}")
+                    });
+            }
+            
+            
 
             services.AddDefaultIdentity<User>(options => 
                     options.SignIn.RequireConfirmedAccount = true)
