@@ -38,6 +38,7 @@ namespace Core.Shared
         private void Initialize()
         {
             FFmpeg.SetExecutablesPath(Path.Combine(_env.WebRootPath, _configuration.FFmpegPath));
+            
             Directory.CreateDirectory(Path.Combine(_env.WebRootPath, _configuration.MediaFolderName));
         }
 
@@ -88,9 +89,10 @@ namespace Core.Shared
                 //ConvertoAndSaveToWebp(file, filePath);                
 
                 await SaveGifThumbnail(file, thumbnailFilePath);
-                await SaveImageThumbnail(file, thumbnailFilePath);
+                //await SaveImageThumbnail(file, thumbnailFilePath);
+                await SaveOriginalFormat(file, originalFilePath);
 
-                return GetLocalMediaResponse(originalFilename, thumbnailFilename, MediaType.Image);
+                return GetLocalMediaResponse(originalFilename, thumbnailFilename, MediaType.Gif);
             }
 
             if (_configuration.UseImxto)

@@ -8,7 +8,7 @@ Visual Studio 2019 Comunity or superior
 Mysql 
 Workbench or DBeaver (MySql)
 Dbrowser (Sqlite)
-ffmpeg executables (edit path in appsetting.json)
+argegar ffmpeg executables en wwwroot\ffmpeg (edit path in appsetting.json)
 
 ## Configuracion
 
@@ -24,3 +24,8 @@ Pull request son bienvenidos. Para cambios grandes abrir una issue primero.
 openssl pkcs12 -inkey voxed.club.key -in voxed.club.pem -export -out voxed.club.pfx
 
 tutorial https://swimburger.net/blog/azure/setting-up-cloudflare-full-universal-ssl-with-an-azure-app-services
+
+## To fix
+
+[ ] Doble envio de noticacion al OP cuando responden etiquetandolo en un comentario del propio post
+

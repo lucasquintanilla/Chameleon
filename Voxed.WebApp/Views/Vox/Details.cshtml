@@ -119,6 +119,18 @@
                             </figure>
                             break;
 
+                        case Core.Entities.MediaType.Gif:
+
+                            <figure class="voxAttach">
+                                <div class="voxAttachContainer">
+                                    <a class="voxImage" target="_BLANK" href="@Model.Media.Url">
+                                        @*<img class="lazyload" data-src="@Model.Media.Url" alt="@Model.Title">*@
+                                        <img src="@Model.Media.Url" alt="@Model.Title">
+                                    </a>
+                                </div>
+                            </figure>
+                            break;
+
                         case Core.Entities.MediaType.YouTube:
 
                             <figure class="voxAttach">
@@ -439,6 +451,19 @@
                                         switch (comment.Media.MediaType)
                                         {
                                             case Core.Entities.MediaType.Image:
+
+                                                <figure class="commentAttach">
+                                                    <div class="commentAttachContainer">
+                                                        <a class="voxImage" target="_BLANK"
+                                                           href="@comment.Media.Url">
+                                                            <img class="lazyload"
+                                                                 data-src="@comment.Media.Url">
+                                                        </a>
+                                                    </div>
+                                                </figure>
+                                                break;
+
+                                            case Core.Entities.MediaType.Gif:
 
                                                 <figure class="commentAttach">
                                                     <div class="commentAttachContainer">
