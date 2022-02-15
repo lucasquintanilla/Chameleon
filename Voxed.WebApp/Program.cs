@@ -86,15 +86,15 @@ namespace Voxed.WebApp
                         //.Enrich.WithMachineName()
                         .WriteTo.Console()
                         .WriteTo.File("./logs/logs-.txt", rollingInterval: RollingInterval.Day)
-                        .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri("https://i-o-optimized-deployment-d7f8f8.es.eastus2.azure.elastic-cloud.com:9243"))
-                        {
-                            IndexFormat = $"{context.Configuration["ApplicationName"]}-logs-{context.HostingEnvironment.EnvironmentName?.ToLower().Replace(".", "-")}-{DateTime.Now:yyyy-MM}",
-                            AutoRegisterTemplate = true,
-                            NumberOfShards = 2,
-                            NumberOfReplicas = 1,
-                            ModifyConnectionSettings = x => x.BasicAuthentication("elastic", "pZbpxWQhkWGsBmVAGuXh7nTj"),
-                            MinimumLogEventLevel = LogEventLevel.Information
-                        })
+                        //.WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri("https://i-o-optimized-deployment-d7f8f8.es.eastus2.azure.elastic-cloud.com:9243"))
+                        //{
+                        //    IndexFormat = $"{context.Configuration["ApplicationName"]}-logs-{context.HostingEnvironment.EnvironmentName?.ToLower().Replace(".", "-")}-{DateTime.Now:yyyy-MM}",
+                        //    AutoRegisterTemplate = true,
+                        //    NumberOfShards = 2,
+                        //    NumberOfReplicas = 1,
+                        //    ModifyConnectionSettings = x => x.BasicAuthentication("elastic", "pZbpxWQhkWGsBmVAGuXh7nTj"),
+                        //    MinimumLogEventLevel = LogEventLevel.Information
+                        //})
                         .Enrich.WithProperty("Environment", context.HostingEnvironment.EnvironmentName)
                         .ReadFrom.Configuration(context.Configuration);
 
