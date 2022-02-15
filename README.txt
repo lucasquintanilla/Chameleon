@@ -18,3 +18,9 @@ Ejectuar Voxed.WebApp
 ## Contribucion
 
 Pull request son bienvenidos. Para cambios grandes abrir una issue primero.
+
+## SSL Configuracion Cloudflare + Azure
+
+openssl pkcs12 -inkey voxed.club.key -in voxed.club.pem -export -out voxed.club.pfx
+
+tutorial https://swimburger.net/blog/azure/setting-up-cloudflare-full-universal-ssl-with-an-azure-app-services
