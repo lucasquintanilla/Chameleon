@@ -32,7 +32,7 @@ namespace Voxed.WebApp.Controllers
             IVoxedRepository voxedRepository,
             UserManager<User> userManager,
             FormateadorService formateadorService,
-            IHubContext<VoxedHub, INotificationHub> notificationHub, 
+            IHubContext<VoxedHub, INotificationHub> notificationHub,
             SignInManager<User> signInManager,
             IHttpContextAccessor accessor) : base(accessor)
         {
@@ -47,24 +47,15 @@ namespace Voxed.WebApp.Controllers
         [HttpGet("vox/{hash}")]
         public async Task<IActionResult> Details(string hash)
         {
-            if (hash == null)
-            {
-                return NotFound();
-            }
+            if (hash == null) return NotFound();
 
             var voxId = GuidConverter.FromShortString(hash);
 
             var vox = await _voxedRepository.Voxs.GetById(voxId);
 
-            if (vox == null)
-            {
-                return NotFound();
-            }
+            if (vox == null) return NotFound();
 
-            if (vox.State == VoxState.Deleted)
-            {
-                return NotFound();
-            }
+            if (vox.State == VoxState.Deleted) return NotFound();
 
             return View(vox);
         }
@@ -72,10 +63,7 @@ namespace Voxed.WebApp.Controllers
         [HttpGet("search/{value}")]
         public async Task<IActionResult> Index(string value)
         {
-            if (string.IsNullOrWhiteSpace(value))
-            {
-                BadRequest();
-            }
+            if (string.IsNullOrWhiteSpace(value)) return BadRequest();
 
             //var words = search.Split(" ");
 
@@ -85,16 +73,9 @@ namespace Voxed.WebApp.Controllers
 
             return View(voxsList);
         }
-       
-        private User GetAnonymousUser()
-        {
-            if (_anonUser == null)
-            {
-                _anonUser = _userManager.Users.Where(x => x.UserType == UserType.Anonymous).FirstOrDefault();                
-            }
 
-            return _anonUser;
-        }
+        private User GetAnonymousUser() 
+            => _anonUser ??= _userManager.Users.FirstOrDefault(x => x.UserType == UserType.Anonymous);
 
         [HttpPost]
         //[ValidateAntiForgeryToken]
@@ -177,7 +158,7 @@ namespace Voxed.WebApp.Controllers
                         Swal = "Error",
                     };
                 }
-                
+
             }
 
             return new CreateVoxResponse()
@@ -191,7 +172,7 @@ namespace Voxed.WebApp.Controllers
 
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<ListResponse> List([FromForm]ListRequest request)
+        public async Task<ListResponse> List([FromForm] ListRequest request)
         {
             var response = new ListResponse();
 
@@ -207,7 +188,7 @@ namespace Voxed.WebApp.Controllers
 
             //Devuelve 36 voxs
 
-            if (voxsList.Count() > 0)
+            if (voxsList.Any())
             {
                 response.Status = true;
                 response.List = new List()
@@ -215,7 +196,7 @@ namespace Voxed.WebApp.Controllers
                     Page = "category-sld",
                     Voxs = voxsList
                 };
-                
+
             }
             else
             {
@@ -276,26 +257,26 @@ namespace Voxed.WebApp.Controllers
 
         public IEnumerable<Models.VoxResponse> ConvertToViewModel(IEnumerable<Vox> voxs)
         {
-            return voxs.Select(vox => ConvertoToVoxResponse(vox));
+            return voxs.Select(ConvertoToVoxResponse);
         }
     }
 
-        //{
-        //        "hash": "LVsFqy15CYaRdNXsv5jR",
-        //        "status": "1",
-        //        "niche": "20",
-        //        "title": "Es verdad que las concha de tanto cojer se oscurecen? ",
-        //        "comments": "101",
-        //        "extension": "jpg",
-        //        "sticky": "0",
-        //        "createdAt": "2020-10-30 10:20:34",
-        //        "pollOne": " Es por tanto cojer, mir\u00e1 te cuento ",
-        //        "pollTwo": "Es por esto",
-        //        "id": "20",
-        //        "slug": "sld",
-        //        "voxId": "405371",
-        //        "new": false
-        //},
+    //{
+    //        "hash": "LVsFqy15CYaRdNXsv5jR",
+    //        "status": "1",
+    //        "niche": "20",
+    //        "title": "Es verdad que las concha de tanto cojer se oscurecen? ",
+    //        "comments": "101",
+    //        "extension": "jpg",
+    //        "sticky": "0",
+    //        "createdAt": "2020-10-30 10:20:34",
+    //        "pollOne": " Es por tanto cojer, mir\u00e1 te cuento ",
+    //        "pollTwo": "Es por esto",
+    //        "id": "20",
+    //        "slug": "sld",
+    //        "voxId": "405371",
+    //        "new": false
+    //},
 
     public class CreateVoxRequest
     {
