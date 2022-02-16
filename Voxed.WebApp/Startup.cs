@@ -174,7 +174,7 @@ namespace Voxed.WebApp
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             // Elastic Apm Configuration must be before all configuration
-            app.UseAllElasticApm(Configuration);
+            //app.UseAllElasticApm(Configuration);
 
 
             //app.UseCors(builder => builder

@@ -28,7 +28,7 @@ namespace Voxed.WebApp
         {
             try
             {
-                Log.Logger.Information("Starting web host");
+                //Log.Logger.Information("Starting web host");
 
                 var host = CreateHostBuilder(args).Build();
                 await CreateDbIfNotExists(host);
@@ -39,7 +39,7 @@ namespace Voxed.WebApp
             }
             catch (Exception ex)
             {
-                Log.Fatal(ex, "Host terminated unexpectedly");
+                //Log.Fatal(ex, "Host terminated unexpectedly");
                 return 1;
             }
             finally
@@ -85,7 +85,7 @@ namespace Voxed.WebApp
                     configuration.Enrich.FromLogContext()
                         //.Enrich.WithMachineName()
                         .WriteTo.Console()
-                        .WriteTo.File("./logs/logs-.txt", rollingInterval: RollingInterval.Day)
+                        //.WriteTo.File("./logs/logs-.txt", rollingInterval: RollingInterval.Day)
                         //.WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri("https://i-o-optimized-deployment-d7f8f8.es.eastus2.azure.elastic-cloud.com:9243"))
                         //{
                         //    IndexFormat = $"{context.Configuration["ApplicationName"]}-logs-{context.HostingEnvironment.EnvironmentName?.ToLower().Replace(".", "-")}-{DateTime.Now:yyyy-MM}",

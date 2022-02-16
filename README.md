@@ -1,19 +1,27 @@
 # Voxed
 
-Open source project
+Es un proyecto de codigo abierto escrito en .NET
+
+> https://voxed.club
 
 ## Requisitos previos
 
-Visual Studio 2019 Comunity or superior
-Mysql 
-Workbench or DBeaver (MySql)
-Dbrowser (Sqlite)
-argegar ffmpeg executables en wwwroot\ffmpeg (edit path in appsetting.json)
+- [Visual Studio](https://visualstudio.microsoft.com/downloads/)
+- [Mysql](https://dev.mysql.com/downloads/installer/)
+- Workbench or DBeaver (MySql)
+- [Dbrowser (Sqlite)](https://sqlitebrowser.org/dl/)
+- [FFmpeg](https://ffmpeg.org/download.html) agregar ffmpeg executables en wwwroot\ffmpeg (edit path in appsetting.json)
+- [Git](https://git-scm.com/download/win)
+
+## Instalacion
+
+- Clonar repositorio y abrir .sln con Visual Studio
+> git clone https://github.com/lucasquintanilla/Voxed.git
 
 ## Configuracion
 
-Seleccionar que tipo de base de datos utilizar desde appsettings.json (Mysql or Sqlite) 
-Ejectuar Voxed.WebApp
+- Seleccionar que tipo de base de datos utilizar desde appsettings.json (Mysql or Sqlite) 
+- Ejectuar Voxed.WebApp
 
 ## Contribucion
 
@@ -28,4 +36,7 @@ tutorial https://swimburger.net/blog/azure/setting-up-cloudflare-full-universal-
 ## To fix
 
 [ ] Doble envio de noticacion al OP cuando responden etiquetandolo en un comentario del propio post
+[ ] Buscador
+[ ] Logs en Azure
+
 
