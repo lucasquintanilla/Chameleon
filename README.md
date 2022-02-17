@@ -1,6 +1,6 @@
 # Voxed
 
-Es un proyecto de codigo abierto escrito en .NET
+Es un proyecto de codigo abierto escrito en ASP .NET Core 3.1 MVC
 
 > https://voxed.club
 
@@ -8,7 +8,7 @@ Es un proyecto de codigo abierto escrito en .NET
 
 - [Visual Studio](https://visualstudio.microsoft.com/downloads/)
 - [Mysql](https://dev.mysql.com/downloads/installer/)
-- Workbench or DBeaver (MySql)
+- [Workbench](https://dev.mysql.com/downloads/workbench/) or [DBeaver](https://dbeaver.io/) (MySql)
 - [Dbrowser (Sqlite)](https://sqlitebrowser.org/dl/)
 - [FFmpeg](https://ffmpeg.org/download.html) agregar ffmpeg executables en wwwroot\ffmpeg (edit path in appsetting.json)
 - [Git](https://git-scm.com/download/win)
@@ -59,5 +59,5 @@ tutorial https://swimburger.net/blog/azure/setting-up-cloudflare-full-universal-
 
 # Patrones
 
-- Repository Pattern
+- Generic Repository Pattern
 

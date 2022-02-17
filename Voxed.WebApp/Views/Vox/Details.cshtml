@@ -51,8 +51,6 @@
                         {
                             <span class="name adminTag ">@Model.User?.UserName</span>
                             <span class="commentTag ">@Core.Shared.UserTypeDictionary.GetDescription(Model.User.UserType).ToLower()</span>
-
-
                         }
 
                         @if (@Model.User.UserType == Core.Entities.UserType.Anonymous ||
@@ -550,8 +548,6 @@
 
 <script>
     var VOX_ID = "@Core.Shared.GuidConverter.ToShortString(Model.ID)";
-    //var VOX_ID = "@Model.ID";
-    //var VOX_HASH = "@Model.Hash";
     var VOX_HASH = "@Core.Shared.GuidConverter.ToShortString(Model.ID)";
     var IS_OP = "0";
     var ACTUAL_PAGE = "vox";
