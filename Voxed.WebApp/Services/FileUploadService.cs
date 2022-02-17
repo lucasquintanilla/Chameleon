@@ -30,7 +30,7 @@ namespace Core.Shared
         public FileUploadService(IWebHostEnvironment env, IConfiguration configuration, ImxtoService imxtoService)
         {
             _env = env;
-            _configuration = configuration.GetSection("FileUploadService").Get<FileUploadServiceConfiguration>();            
+            _configuration = configuration.GetSection("FileUploadService").Get<FileUploadServiceConfiguration>();
             _imxtoService = imxtoService;
             Initialize();
         }
@@ -38,7 +38,7 @@ namespace Core.Shared
         private void Initialize()
         {
             FFmpeg.SetExecutablesPath(Path.Combine(_env.WebRootPath, _configuration.FFmpegPath));
-            
+
             Directory.CreateDirectory(Path.Combine(_env.WebRootPath, _configuration.MediaFolderName));
         }
 
@@ -72,7 +72,7 @@ namespace Core.Shared
             return true;
         }
 
-        public async Task<Media> Save(IFormFile file, string hash) 
+        public async Task<Media> Save(IFormFile file, string hash)
         {
             if (file == null) throw new ArgumentNullException(nameof(file));
 
@@ -162,18 +162,22 @@ namespace Core.Shared
             var image = LoadBase64(base64);
 
             var originalFilename = $"{DateTime.Now:yyyyMMdd}-{hash}{GetFileExtension(image)}";
-            var originalFilePath = Path.Combine(_env.WebRootPath, _configuration.MediaFolderName, originalFilename);
+            var originalFilePath = GetFilePath(originalFilename);
 
             var thumbnailFilename = $"{DateTime.Now:yyyyMMdd}-{hash}.webp";
-            var thumbnailFilePath = Path.Combine(_env.WebRootPath, _configuration.MediaFolderName, thumbnailFilename);
+            var thumbnailFilePath = GetFilePath(thumbnailFilename);
 
-            
             image.Save(originalFilePath, GetImageFormat(image));
 
             image.Save(thumbnailFilePath, GetImageFormat(image));
 
 
             return GetLocalMediaResponse(originalFilename, thumbnailFilename, MediaType.Image);
+        }
+
+        private string GetFilePath(string filename)
+        {
+            return Path.Combine(_env.WebRootPath, _configuration.MediaFolderName, filename);
         }
 
         private ImageFormat GetImageFormat(Image image)
@@ -183,15 +187,16 @@ namespace Core.Shared
             {
                 return ImageFormat.Jpeg;
             }
-            else if (image.RawFormat.Equals(ImageFormat.Gif))
+
+            if (image.RawFormat.Equals(ImageFormat.Gif))
             {
                 return ImageFormat.Gif;
             }
-            else if (image.RawFormat.Equals(ImageFormat.Png))
+            if (image.RawFormat.Equals(ImageFormat.Png))
             {
                 return ImageFormat.Png;
             }
-            else if (image.RawFormat.Equals(ImageFormat.Bmp))
+            if (image.RawFormat.Equals(ImageFormat.Bmp))
             {
                 return ImageFormat.Bmp;
             }
@@ -201,28 +206,24 @@ namespace Core.Shared
 
         private string GetFileExtension(Image image)
         {
-
-            string fileName = "";
-
             if (image.RawFormat.Equals(ImageFormat.Jpeg))
             {
-                fileName = fileName + ".jpg";
+                return ".jpg";
             }
-            else if (image.RawFormat.Equals(ImageFormat.Gif))
+            if (image.RawFormat.Equals(ImageFormat.Gif))
             {
-                fileName = fileName + ".gif";
+                return ".gif";
             }
-            else if (image.RawFormat.Equals(ImageFormat.Png))
+            if (image.RawFormat.Equals(ImageFormat.Png))
             {
-                fileName = fileName + ".png";
+                return ".png";
             }
-            else if (image.RawFormat.Equals(ImageFormat.Bmp))
+            if (image.RawFormat.Equals(ImageFormat.Bmp))
             {
-                fileName = fileName + ".bmp";
+                return ".bmp";
             }
 
-
-            return fileName;
+            throw new NotImplementedException("Formato archivo no implementado");
         }
 
         public static Image LoadBase64(string s)
@@ -263,7 +264,7 @@ namespace Core.Shared
                 var resize = new ImageProcessor.Imaging.ResizeLayer(new Size(300, 300),
                             ImageProcessor.Imaging.ResizeMode.Crop,
                             ImageProcessor.Imaging.AnchorPosition.Center);
-                
+
                 imageFactory.Load(file.OpenReadStream())
                             .Resize(resize)
                             .Format(new WebPFormat())
@@ -330,12 +331,12 @@ namespace Core.Shared
             //var command = $"-i {inputFilePath} -vcodec libwebp -lossless 0 -qscale 75 -preset default -loop 0 -vf scale=320:-1,fps=15 -an -vsync 0 {outputFilePath}";
 
 
-            var command = string.Format ($"-i {inputFilePath} -b:v 0 -crf 25 -loop 0 {outputFilePath}");
+            var command = string.Format($"-i {inputFilePath} -b:v 0 -crf 25 -loop 0 {outputFilePath}");
             using (var process = Process.Start(_configuration.FFmpegPath, command))
             {
                 process.WaitForExit();
                 if (process.ExitCode == 0)
-                {                    
+                {
                     return true;
                 }
             }

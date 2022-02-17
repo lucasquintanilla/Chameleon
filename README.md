@@ -43,5 +43,9 @@ tutorial https://swimburger.net/blog/azure/setting-up-cloudflare-full-universal-
 - [ ] PWA
 - [ ] envio de notificaciones con pwa
 - [ ] Reducir consultas a la db
+- [ ] Agregar roles mods
+- [ ] Ocultar categorias
+- [ ] Bug al raplicar comentarios, en el cometario original no aparece el tag de la respuesta
+- [ ] Al hovear un tag de los comentarios se abre un una previsualizacion y no se cierra solo
 
 

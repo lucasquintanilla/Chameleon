@@ -21,7 +21,7 @@ namespace Voxed.WebApp
 {
     public class Startup
     {
-        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+        private const string myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
         public Startup(IConfiguration configuration)
         {
@@ -36,7 +36,7 @@ namespace Voxed.WebApp
             // Cors Configuration must be before MVC / Razor Configuration
             services.AddCors(options =>
             {
-                options.AddPolicy(name: MyAllowSpecificOrigins,
+                options.AddPolicy(name: myAllowSpecificOrigins,
                                   builder =>
                                   {
                                       //builder.WithOrigins("http://localhost",
@@ -111,8 +111,6 @@ namespace Voxed.WebApp
                         _ => throw new Exception($"Unsupported provider: {provider}")
                     });
             }
-            
-            
 
             services.AddDefaultIdentity<User>(options => 
                     options.SignIn.RequireConfirmedAccount = true)
@@ -184,7 +182,7 @@ namespace Voxed.WebApp
             //    .AllowAnyHeader()
             //    .SetPreflightMaxAge(TimeSpan.FromDays(365)));
 
-            app.UseCors(MyAllowSpecificOrigins);
+            app.UseCors(myAllowSpecificOrigins);
 
             if (env.IsDevelopment())
             {
