@@ -35,8 +35,13 @@ tutorial https://swimburger.net/blog/azure/setting-up-cloudflare-full-universal-
 
 ## To fix
 
-[ ] Doble envio de noticacion al OP cuando responden etiquetandolo en un comentario del propio post
-[ ] Buscador
-[ ] Logs en Azure
+- [ ] Doble envio de noticacion al OP cuando responden etiquetandolo en un comentario del propio post
+- [ ] areglar buscador
+- [ ] Logs en Azure
+- [ ] mejorar performance home
+- [ ] separar front del back
+- [ ] PWA
+- [ ] envio de notificaciones con pwa
+- [ ] Reducir consultas a la db
 
 
