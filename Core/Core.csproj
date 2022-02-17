@@ -5,6 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Extensions\**" />
+    <Compile Remove="V1\**" />
+    <EmbeddedResource Remove="Extensions\**" />
+    <EmbeddedResource Remove="V1\**" />
+    <None Remove="Extensions\**" />
+    <None Remove="V1\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AngleSharp" Version="0.14.0" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.33" />
     <PackageReference Include="HtmlSanitizer" Version="5.0.376" />
@@ -17,11 +26,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Core.Data\Core.Data.csproj" />
     <ProjectReference Include="..\Core.Entities\Core.Entities.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Extensions\" />
-    <Folder Include="V1\Vox\Get\" />
   </ItemGroup>
 
 </Project>
