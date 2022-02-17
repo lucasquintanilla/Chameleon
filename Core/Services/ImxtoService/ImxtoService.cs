@@ -1,10 +1,7 @@
 ﻿using HtmlAgilityPack;
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Core.Services.ImxtoService
@@ -18,7 +15,7 @@ namespace Core.Services.ImxtoService
             string baseUrl = "https://imx.to/dropzone.php?session_id=68giijgrtpqe0nk9ttlot9noi4";
 
             MultipartFormDataContent form = new MultipartFormDataContent();
-            
+
             form.Add(new StringContent("3"), "thumbnail_format");
             form.Add(new StringContent("4"), "thumb_size_contaner");
             form.Add(new StringContent("1"), "adult");
