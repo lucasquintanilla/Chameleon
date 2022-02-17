@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Voxed.WebApp.Models
+﻿namespace Voxed.WebApp.Models
 {
     public class CommentResponse
     {
