@@ -18,7 +18,7 @@ namespace Core.Shared
             this.encoder = encoder;
         }
 
-        public string Parsear(string contenido)
+        public string Parse(string contenido)
         {
             var tags = new List<string>();
 
@@ -110,7 +110,7 @@ namespace Core.Shared
         //        this.encoder = encoder;
         //    }
 
-        //    public string Parsear(string contenido)
+        //    public string Parse(string contenido)
         //    {
         //        var tags = new List<string>();
         //        string ret = string.Join("\n", contenido.Split("\n").Select(t => {

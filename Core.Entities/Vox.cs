@@ -11,7 +11,7 @@ namespace Core.Entities
         public string Hash { get; set; }
         public string Title { get; set; }
         public string Content { get; set; }
-        public int CategoryID { get; set; }        
+        public int CategoryID { get; set; }
         public Guid UserID { get; set; }
         public Guid MediaID { get; set; }
         public VoxState State { get; set; }

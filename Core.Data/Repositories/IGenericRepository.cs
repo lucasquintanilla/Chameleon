@@ -1,8 +1,6 @@
-﻿using Core.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Core.Data.Repositories
@@ -17,6 +15,5 @@ namespace Core.Data.Repositories
         Task Remove(T entity);
         Task RemoveRange(IEnumerable<T> entities);
         Task<T> GetById(Guid id);
-        
     }
 }

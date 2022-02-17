@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Core.Entities
 {
+    public enum MediaType { Image, Video, YouTube, Gif }
+
     public class Media
     {
         public Guid ID { get; set; } = Guid.NewGuid();
@@ -12,6 +11,4 @@ namespace Core.Entities
         public string ThumbnailUrl { get; set; }
         public MediaType MediaType { get; set; }
     }
-
-    public enum MediaType { Image, Video, YouTube, Gif }
 }

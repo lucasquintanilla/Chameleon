@@ -48,4 +48,16 @@ tutorial https://swimburger.net/blog/azure/setting-up-cloudflare-full-universal-
 - [ ] Bug al raplicar comentarios, en el cometario original no aparece el tag de la respuesta
 - [ ] Al hovear un tag de los comentarios se abre un una previsualizacion y no se cierra solo
 
+# Tecnologias
+
+- ASP .NET Core 3.1 MVC
+- MySQL
+- Sqlite
+- SignalR
+- FFmpeg
+- Elastic Search
+
+# Patrones
+
+- Repository Pattern
 

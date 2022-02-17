@@ -23,7 +23,7 @@ namespace Voxed.WebApp.Controllers
         private readonly IVoxedRepository _voxedRepository;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
-        private readonly FormateadorService _formateadorService;
+        private readonly FormateadorService _formatterService;
         private readonly IHubContext<VoxedHub, INotificationHub> _notificationHub;
         private User _anonUser;
 
@@ -31,7 +31,7 @@ namespace Voxed.WebApp.Controllers
             FileUploadService fileUploadService,
             IVoxedRepository voxedRepository,
             UserManager<User> userManager,
-            FormateadorService formateadorService,
+            FormateadorService formatterService,
             IHubContext<VoxedHub, INotificationHub> notificationHub,
             SignInManager<User> signInManager,
             IHttpContextAccessor accessor) : base(accessor)
@@ -39,7 +39,7 @@ namespace Voxed.WebApp.Controllers
             _fileUploadService = fileUploadService;
             _voxedRepository = voxedRepository;
             _userManager = userManager;
-            _formateadorService = formateadorService;
+            _formatterService = formatterService;
             _notificationHub = notificationHub;
             _signInManager = signInManager;
         }
@@ -74,7 +74,7 @@ namespace Voxed.WebApp.Controllers
             return View(voxsList);
         }
 
-        private User GetAnonymousUser() 
+        private User GetAnonymousUser()
             => _anonUser ??= _userManager.Users.FirstOrDefault(x => x.UserType == UserType.Anonymous);
 
         [HttpPost]
@@ -104,7 +104,7 @@ namespace Voxed.WebApp.Controllers
                         User = user ?? GetAnonymousUser(),
                         Hash = new Hash().NewHash(),
                         Title = request.Title,
-                        Content = _formateadorService.Parsear(request.Content),
+                        Content = _formatterService.Parse(request.Content),
                         CategoryID = request.Niche,
                         IpAddress = UserIpAddress.ToString(),
                         UserAgent = UserAgent
@@ -178,11 +178,11 @@ namespace Voxed.WebApp.Controllers
 
             var skipList = JsonConvert.DeserializeObject<IEnumerable<string>>(request?.Ignore);
 
-            var guidList = skipList.Select(x => GuidConverter.FromShortString(x)).ToList();
+            var skipIdList = skipList.Select(x => GuidConverter.FromShortString(x)).ToList();
 
-            var lastVox = await _voxedRepository.Voxs.GetLastVoxBump(guidList);
+            var lastVox = await _voxedRepository.Voxs.GetLastVoxBump(skipIdList);
 
-            var voxs = await _voxedRepository.Voxs.GetLastestAsync(guidList, lastVox.Bump);
+            var voxs = await _voxedRepository.Voxs.GetLastestAsync(skipIdList, lastVox.Bump);
 
             var voxsList = ConvertToViewModel(voxs);
 
@@ -294,11 +294,11 @@ namespace Voxed.WebApp.Controllers
         public string PollOne { get; set; }
         public string PollTwo { get; set; }
         public string UploadData { get; set; }
+        
 
-        //g-recaptcha-response
         [JsonPropertyName("g-recaptcha-response")]
         public string GReCaptcha { get; set; }
-        //h-captcha-response
+        
         [JsonPropertyName("h-captcha-response")]
         public string HCaptcha { get; set; }
 

@@ -1,8 +1,4 @@
 ﻿using Core.Data.Repositories;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Core.Data.EF.Repositories
@@ -21,12 +17,12 @@ namespace Core.Data.EF.Repositories
             Notifications = new NotificationRepository(context);
         }
 
-        public IVoxRepository Voxs { get; private set; }
-        public ICategoryRepository Categories { get; private set; }
-        public IMediaRepository Media { get; private set; }
-        public ICommentRepository Comments { get; private set; }
-        public IPollRepository Polls { get; private set; }
-        public INotificationRepository Notifications { get; private set; }
+        public IVoxRepository Voxs { get; }
+        public ICategoryRepository Categories { get; }
+        public IMediaRepository Media { get; }
+        public ICommentRepository Comments { get; }
+        public IPollRepository Polls { get; }
+        public INotificationRepository Notifications { get; }
 
         public async Task<int> SaveChangesAsync()
         {

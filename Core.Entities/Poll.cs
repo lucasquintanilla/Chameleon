@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Core.Entities
 {
@@ -11,7 +9,7 @@ namespace Core.Entities
         public string OptionBDescription { get; set; }
         public int OptionAVotes { get; set; }
         public int OptionBVotes { get; set; }
-    }    
+    }
 
     public class PollOption
     {

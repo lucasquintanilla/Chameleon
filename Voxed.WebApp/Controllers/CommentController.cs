@@ -322,7 +322,7 @@ namespace Voxed.WebApp.Controllers
                 Hash = new Hash().NewHash(7),
                 VoxID = GuidConverter.FromShortString(id),
                 UserID = user == null ? GetAnonUser().Id : user.Id,
-                Content = request.Content == null ? null : _formateadorService.Parsear(request.Content),
+                Content = request.Content == null ? null : _formateadorService.Parse(request.Content),
                 Style = StyleService.GetRandomCommentStyle(),
                 IpAddress = UserIpAddress.ToString(),
                 UserAgent = UserAgent

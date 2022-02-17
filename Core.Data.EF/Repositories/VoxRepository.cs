@@ -1,18 +1,17 @@
-﻿using Core.Data.Repositories;
-using Core.Entities;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
+using Core.Data.Repositories;
+using Core.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Core.Data.EF.Repositories
 {
     public class VoxRepository : GenericRepository<Vox>, IVoxRepository
     {
-        private int[] hiddenCategoriesId = new int[] { 2, 3 };
+        private readonly int[] _hiddenCategoriesId = { 2, 3 };
+
         public VoxRepository(VoxedContext context) : base(context) { }
 
         public override async Task<Vox> GetById(Guid id)
@@ -30,7 +29,7 @@ namespace Core.Data.EF.Repositories
 
         public async Task<IEnumerable<Vox>> GetLastestAsync() =>
             await _context.Voxs
-                .Where(x => x.State == VoxState.Normal && !hiddenCategoriesId.Contains(x.CategoryID))
+                .Where(x => x.State == VoxState.Normal && !_hiddenCategoriesId.Contains(x.CategoryID))
                 .Include(x => x.Media)
                 .Include(x => x.Category)
                 .Include(x => x.Comments.Where(c => c.State == CommentState.Normal))
@@ -106,13 +105,13 @@ namespace Core.Data.EF.Repositories
         //            .AsNoTracking()
         //            .ToListAsync();
 
-        public async Task<IEnumerable<Vox>> GetLastestAsync(IEnumerable<Guid> idSkipList, DateTimeOffset LastBump) =>
+        public async Task<IEnumerable<Vox>> GetLastestAsync(IEnumerable<Guid> idSkipList, DateTimeOffset lastBump) =>
             await _context.Voxs
                     .Where(x => x.State == VoxState.Normal
                                 //&& x.Type == VoxType.Normal
                                 && !idSkipList.Contains(x.ID)
-                                && x.Bump < LastBump
-                                && !hiddenCategoriesId.Contains(x.CategoryID))
+                                && x.Bump < lastBump
+                                && !_hiddenCategoriesId.Contains(x.CategoryID))
                     .OrderByDescending(x => x.Bump)
                     .Include(x => x.Media)
                     .Include(x => x.Category)
@@ -153,9 +152,9 @@ namespace Core.Data.EF.Repositories
         //    .OrderBy(x => x.Bump)
         //    .FirstAsync();
 
-        public async Task<Vox> GetLastVoxBump(IEnumerable<Guid> idsSkip)
+        public async Task<Vox> GetLastVoxBump(IEnumerable<Guid> skipIds)
          => await _context.Voxs
-            .Where(x => idsSkip.Contains(x.ID))
+            .Where(x => skipIds.Contains(x.ID))
             .OrderBy(x => x.Bump)
             .FirstAsync();
         //agregar as no tracking

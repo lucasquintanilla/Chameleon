@@ -1,11 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Core.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Core.Entities;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Core.Data.EF.EntityTypeConfigurations
 {
@@ -48,7 +43,7 @@ namespace Core.Data.EF.EntityTypeConfigurations
             builder.HasOne(x => x.User)
               .WithMany()
               //.OnDelete(DeleteBehavior.Restrict)
-              .HasForeignKey(x => x.UserID);           
+              .HasForeignKey(x => x.UserID);
 
             builder.HasOne(x => x.Category)
               .WithMany()

@@ -1,21 +1,16 @@
 ﻿using Core.Data.EF.EntityTypeConfigurations;
 using Core.Entities;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Core.Data.EF
 {
     public class VoxedContext : IdentityDbContext<User, Role, Guid>
     {
-        public VoxedContext(DbContextOptions<VoxedContext> options) : base(options)
-        {
-        }        
+        public VoxedContext(DbContextOptions<VoxedContext> options) : base(options) { }
 
         public DbSet<Vox> Voxs { get; set; }
         public DbSet<Comment> Comments { get; set; }
@@ -27,7 +22,7 @@ namespace Core.Data.EF
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            
+
             modelBuilder.Entity<Poll>().ToTable(nameof(Polls));
 
             new UserEntityTypeConfiguration().Configure(modelBuilder.Entity<User>());

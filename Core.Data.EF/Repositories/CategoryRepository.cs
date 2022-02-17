@@ -1,10 +1,8 @@
 ﻿using Core.Data.Repositories;
 using Core.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Core.Data.EF.Repositories
@@ -28,7 +26,7 @@ namespace Core.Data.EF.Repositories
             return await _context.Categories.AnyAsync(c => c.ShortName == shortName);
         }
 
-        public override async Task<IEnumerable<Category>> GetAll() 
+        public override async Task<IEnumerable<Category>> GetAll()
         {
             return await context.Categories
                 .OrderBy(c => c.Name)

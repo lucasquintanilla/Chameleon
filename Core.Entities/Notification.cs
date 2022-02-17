@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Core.Entities
 {
-    public enum NotificationType
-    {
-        NewComment, Reply
-    }
+    public enum NotificationType { NewComment, Reply }
 
     public class Notification
     {
