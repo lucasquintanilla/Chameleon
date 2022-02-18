@@ -130,7 +130,7 @@ namespace Voxed.WebApp.Controllers
                 await _voxedRepository.SaveChangesAsync();
 
                 //disparo notificacion del vox
-                vox = await _voxedRepository.Voxs.GetById(vox.ID);
+                vox = await _voxedRepository.Voxs.GetById(vox.ID); // Ver si se puede remover
                 var voxToHub = ConvertoToVoxResponse(vox);
                 await _notificationHub.Clients.All.Vox(voxToHub);
 
