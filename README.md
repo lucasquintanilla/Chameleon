@@ -59,5 +59,7 @@ tutorial https://swimburger.net/blog/azure/setting-up-cloudflare-full-universal-
 
 # Patrones
 
+- Coding First
 - Generic Repository Pattern
+
 

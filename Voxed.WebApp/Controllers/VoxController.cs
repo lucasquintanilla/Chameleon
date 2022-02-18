@@ -65,8 +65,6 @@ namespace Voxed.WebApp.Controllers
         {
             if (string.IsNullOrWhiteSpace(value)) return BadRequest();
 
-            //var words = search.Split(" ");
-
             var voxs = await _voxedRepository.Voxs.SearchAsync(value);
 
             var voxsList = ConvertToViewModel(voxs);
@@ -75,99 +73,84 @@ namespace Voxed.WebApp.Controllers
         }
 
         private User GetAnonymousUser()
-            => _anonUser ??= _userManager.Users.FirstOrDefault(x => x.UserType == UserType.Anonymous);
+        {
+            return _anonUser ??= _userManager.Users.FirstOrDefault(x => x.UserType == UserType.Anonymous);
+        }
 
         [HttpPost]
         //[ValidateAntiForgeryToken]
         [Route("anon/vox")]
         public async Task<CreateVoxResponse> Create(CreateVoxRequest request)
         {
-            if (ModelState.IsValid)
+            var response = new CreateVoxResponse();
+
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    var user = await _userManager.GetUserAsync(HttpContext.User);
-
-                    if (user == null)
-                    {
-                        user = await CreateAnonymousUser();
-
-                        await _signInManager.SignInAsync(user, true);
-
-                        //Crear una notificacion para el nuevo usuario anonimo
-                    }
-
-                    var vox = new Vox()
-                    {
-                        ID = Guid.NewGuid(),
-                        State = VoxState.Normal,
-                        User = user ?? GetAnonymousUser(),
-                        Hash = new Hash().NewHash(),
-                        Title = request.Title,
-                        Content = _formatterService.Parse(request.Content),
-                        CategoryID = request.Niche,
-                        IpAddress = UserIpAddress.ToString(),
-                        UserAgent = UserAgent
-                    };
-
-                    if (request.PollOne != null && request.PollTwo != null)
-                    {
-                        vox.Poll = new Poll()
-                        {
-                            OptionADescription = request.PollOne,
-                            OptionBDescription = request.PollTwo,
-                        };
-                    }
-
-                    await _fileUploadService.ProcessMedia(request.GetUploadData(), request.File, vox);
-
-                    await _voxedRepository.Voxs.Add(vox);
-                    await _voxedRepository.SaveChangesAsync();
-
-                    //disparo notificacion del vox
-                    vox = await _voxedRepository.Voxs.GetById(vox.ID);
-                    var voxToHub = ConvertoToVoxResponse(vox);
-
-                    await _notificationHub.Clients.All.Vox(voxToHub);
-
-                    return new CreateVoxResponse()
-                    {
-                        VoxHash = GuidConverter.ToShortString(vox.ID),
-                        Status = true,
-                        Error = "",
-                        Swal = "",
-                    };
-                }
-                catch (NotImplementedException e)
-                {
-                    return new CreateVoxResponse()
-                    {
-                        VoxHash = "",
-                        Status = false,
-                        Error = "",
-                        Swal = e.Message,
-                    };
-                }
-                catch (Exception e)
-                {
-                    return new CreateVoxResponse()
-                    {
-                        VoxHash = "",
-                        Status = false,
-                        Error = "",
-                        Swal = "Error",
-                    };
-                }
-
+                response.Status = false;
+                response.Swal = "error";
+                return response;
             }
 
-            return new CreateVoxResponse()
+            try
             {
-                VoxHash = "",
-                Status = false,
-                Error = "",
-                Swal = "Error",
-            };
+                var user = await _userManager.GetUserAsync(HttpContext.User);
+                if (user == null)
+                {
+                    user = await CreateAnonymousUser();
+                    await _signInManager.SignInAsync(user, true);
+
+                    //TODO: Crear una notificacion para el nuevo usuario anonimo
+                }
+
+                var vox = new Vox()
+                {
+                    ID = Guid.NewGuid(),
+                    State = VoxState.Normal,
+                    User = user ?? GetAnonymousUser(),
+                    Hash = new Hash().NewHash(),
+                    Title = request.Title,
+                    Content = _formatterService.Parse(request.Content),
+                    CategoryID = request.Niche,
+                    IpAddress = UserIpAddress.ToString(),
+                    UserAgent = UserAgent
+                };
+
+                if (request.PollOne != null && request.PollTwo != null)
+                {
+                    vox.Poll = new Poll()
+                    {
+                        OptionADescription = request.PollOne,
+                        OptionBDescription = request.PollTwo,
+                    };
+                }
+
+                await _fileUploadService.ProcessMedia(request.GetUploadData(), request.File, vox);
+
+                await _voxedRepository.Voxs.Add(vox);
+                await _voxedRepository.SaveChangesAsync();
+
+                //disparo notificacion del vox
+                vox = await _voxedRepository.Voxs.GetById(vox.ID);
+                var voxToHub = ConvertoToVoxResponse(vox);
+                await _notificationHub.Clients.All.Vox(voxToHub);
+
+                response.VoxHash = GuidConverter.ToShortString(vox.ID);
+                response.Status = true;
+
+                return response;
+            }
+            catch (NotImplementedException e)
+            {
+                response.Status = false;
+                response.Swal = e.Message;
+                return response;
+            }
+            catch (Exception)
+            {
+                response.Status = false;
+                response.Swal = "Error";
+                return response;
+            }
         }
 
         [HttpPost]
@@ -186,27 +169,12 @@ namespace Voxed.WebApp.Controllers
 
             var voxsList = ConvertToViewModel(voxs);
 
-            //Devuelve 36 voxs
-
-            if (voxsList.Any())
+            response.Status = voxsList.Any();
+            response.List = new List()
             {
-                response.Status = true;
-                response.List = new List()
-                {
-                    Page = "category-sld",
-                    Voxs = voxsList
-                };
-
-            }
-            else
-            {
-                response.Status = false;
-                response.List = new List()
-                {
-                    Page = "category-sld",
-                    Voxs = voxsList
-                };
-            }
+                Page = "category-sld",
+                Voxs = voxsList
+            };
 
             return response;
         }
@@ -229,15 +197,31 @@ namespace Voxed.WebApp.Controllers
                 return user;
             }
 
-            throw new Exception();
+            throw new Exception("Usuario no pudo ser creado");
         }
 
         private Models.VoxResponse ConvertoToVoxResponse(Vox vox)
         {
             return new Models.VoxResponse()
             {
+                //{
+                //        "hash": "LVsFqy15CYaRdNXsv5jR",
+                //        "status": "1",
+                //        "niche": "20",
+                //        "title": "Es verdad que las concha de tanto cojer se oscurecen? ",
+                //        "comments": "101",
+                //        "extension": "jpg",
+                //        "sticky": "0",
+                //        "createdAt": "2020-10-30 10:20:34",
+                //        "pollOne": " Es por tanto cojer, mir\u00e1 te cuento ",
+                //        "pollTwo": "Es por esto",
+                //        "id": "20",
+                //        "slug": "sld",
+                //        "voxId": "405371",
+                //        "new": false
+                //},
+
                 Hash = GuidConverter.ToShortString(vox.ID),
-                //Hash = vox.Hash,
                 Status = "1",
                 Niche = "20",
                 Title = vox.Title,
@@ -261,23 +245,6 @@ namespace Voxed.WebApp.Controllers
         }
     }
 
-    //{
-    //        "hash": "LVsFqy15CYaRdNXsv5jR",
-    //        "status": "1",
-    //        "niche": "20",
-    //        "title": "Es verdad que las concha de tanto cojer se oscurecen? ",
-    //        "comments": "101",
-    //        "extension": "jpg",
-    //        "sticky": "0",
-    //        "createdAt": "2020-10-30 10:20:34",
-    //        "pollOne": " Es por tanto cojer, mir\u00e1 te cuento ",
-    //        "pollTwo": "Es por esto",
-    //        "id": "20",
-    //        "slug": "sld",
-    //        "voxId": "405371",
-    //        "new": false
-    //},
-
     public class CreateVoxRequest
     {
         [Required(ErrorMessage = "Debe ingresar un titulo")]
@@ -294,11 +261,11 @@ namespace Voxed.WebApp.Controllers
         public string PollOne { get; set; }
         public string PollTwo { get; set; }
         public string UploadData { get; set; }
-        
+
 
         [JsonPropertyName("g-recaptcha-response")]
         public string GReCaptcha { get; set; }
-        
+
         [JsonPropertyName("h-captcha-response")]
         public string HCaptcha { get; set; }
 
