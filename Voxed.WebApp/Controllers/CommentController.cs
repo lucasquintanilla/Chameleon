@@ -23,6 +23,7 @@ namespace Voxed.WebApp.Controllers
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly ILogger<HomeController> _logger;
+        //private readonly ILogger _logger;
         private readonly IHubContext<VoxedHub, INotificationHub> _notificationHub;
         private static User _anonUser;
 
@@ -33,6 +34,7 @@ namespace Voxed.WebApp.Controllers
             UserManager<User> userManager,
             IHubContext<VoxedHub, INotificationHub> notificationHub,
             ILogger<HomeController> logger,
+            ILoggerFactory loggerFactory,
             SignInManager<User> signInManager, 
             IHttpContextAccessor accessor) : base(accessor)
         {
@@ -42,12 +44,14 @@ namespace Voxed.WebApp.Controllers
             _userManager = userManager;
             _notificationHub = notificationHub;
             _logger = logger;
+            //_logger = loggerFactory.CreateLogger(nameof(CommentController));
             _signInManager = signInManager;
         }
 
 
         [HttpPost]
-        public async Task<Models.CommentResponse> Nuevo([FromForm] Models.CommentRequest request, [FromRoute] string id)
+        [Route("comment/nuevo/{id}")]
+        public async Task<Models.CommentResponse> Create([FromForm] Models.CommentRequest request, [FromRoute] string id)
         {
             if (!ModelState.IsValid)
                 return new Models.CommentResponse()
@@ -149,7 +153,7 @@ namespace Voxed.WebApp.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e.ToString());
+                _logger.LogError(e.Message);
 
                 return new Models.CommentResponse()
                 {

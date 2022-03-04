@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging.AzureAppServices;
 
 namespace Voxed.WebApp
 {
@@ -52,14 +53,14 @@ namespace Voxed.WebApp
                     //var roleManager = services.GetRequiredService<RoleManager<Role>>();
                     //await new DbInitializer(context, userManager, roleManager).Initialize();
 
-                    if (context.Database.ProviderName == "Microsoft.EntityFrameworkCore.Sqlite")
+                    switch (context.Database.ProviderName)
                     {
-                        await SqliteInitialize(services);
-                    }
-
-                    if (context.Database.ProviderName == "Pomelo.EntityFrameworkCore.MySql")
-                    {
-                        await MySqlInitialize(services);
+                        case "Microsoft.EntityFrameworkCore.Sqlite":
+                            await SqliteInitialize(services);
+                            break;
+                        case "Pomelo.EntityFrameworkCore.MySql":
+                            await MySqlInitialize(services);
+                            break;
                     }
                 }
                 catch (Exception ex)
@@ -74,6 +75,23 @@ namespace Voxed.WebApp
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                //.ConfigureLogging(logging =>
+                //{
+                //    logging.ClearProviders();
+                //    // We have to be precise on the logging levels
+                //    logging.AddConsole();
+                //    logging.AddDebug();
+                //    logging.AddAzureWebAppDiagnostics();
+                //})
+                //.ConfigureServices(services =>
+                //{
+                //    services.Configure<AzureFileLoggerOptions>(options =>
+                //    {
+                //        options.FileName = "my-azure-diagnostics-";
+                //        options.FileSizeLimit = 50 * 1024;
+                //        options.RetainedFileCountLimit = 5;
+                //    });
+                //})
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
@@ -83,7 +101,7 @@ namespace Voxed.WebApp
                     configuration.Enrich.FromLogContext()
                         //.Enrich.WithMachineName()
                         .WriteTo.Console()
-                        //.WriteTo.File("./logs/logs-.txt", rollingInterval: RollingInterval.Day)
+                        .WriteTo.File("./logs/logs-.txt", rollingInterval: RollingInterval.Day)
                         //.WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri("https://i-o-optimized-deployment-d7f8f8.es.eastus2.azure.elastic-cloud.com:9243"))
                         //{
                         //    IndexFormat = $"{context.Configuration["ApplicationName"]}-logs-{context.HostingEnvironment.EnvironmentName?.ToLower().Replace(".", "-")}-{DateTime.Now:yyyy-MM}",
@@ -95,7 +113,6 @@ namespace Voxed.WebApp
                         //})
                         .Enrich.WithProperty("Environment", context.HostingEnvironment.EnvironmentName)
                         .ReadFrom.Configuration(context.Configuration);
-
                 })
                 ;
 

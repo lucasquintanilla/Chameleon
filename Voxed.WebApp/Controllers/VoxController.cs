@@ -14,6 +14,7 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Voxed.WebApp.Hubs;
+using Microsoft.Extensions.Logging;
 
 namespace Voxed.WebApp.Controllers
 {
@@ -26,8 +27,10 @@ namespace Voxed.WebApp.Controllers
         private readonly FormateadorService _formatterService;
         private readonly IHubContext<VoxedHub, INotificationHub> _notificationHub;
         private User _anonUser;
+        private readonly ILogger<VoxController> _logger;
 
         public VoxController(
+            ILogger<VoxController> logger,
             FileUploadService fileUploadService,
             IVoxedRepository voxedRepository,
             UserManager<User> userManager,
@@ -42,6 +45,7 @@ namespace Voxed.WebApp.Controllers
             _formatterService = formatterService;
             _notificationHub = notificationHub;
             _signInManager = signInManager;
+            _logger = logger;
         }
 
         [HttpGet("vox/{hash}")]
@@ -146,6 +150,8 @@ namespace Voxed.WebApp.Controllers
             }
             catch (Exception e)
             {
+                _logger.LogError(e.Message);
+
                 response.Status = false;
                 response.Swal = "error";
                 return response;
@@ -155,7 +161,6 @@ namespace Voxed.WebApp.Controllers
         [HttpPost]
         public async Task<ListResponse> List([FromForm] ListRequest request)
         {
-            var response = new ListResponse();
 
             var skipList = JsonConvert.DeserializeObject<IEnumerable<string>>(request?.Ignore);
 
@@ -167,11 +172,14 @@ namespace Voxed.WebApp.Controllers
 
             var voxsList = ConvertToViewModel(voxs);
 
-            response.Status = voxsList.Any();
-            response.List = new List()
+            var response = new ListResponse
             {
-                Page = "category-sld",
-                Voxs = voxsList
+                Status = voxsList.Any(),
+                List = new List()
+                {
+                    Page = "category-sld",
+                    Voxs = voxsList
+                }
             };
 
             return response;
