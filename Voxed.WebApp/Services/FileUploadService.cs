@@ -26,12 +26,14 @@ namespace Core.Shared
         private IWebHostEnvironment _env;
         private readonly FileUploadServiceConfiguration _configuration;
         private readonly ImxtoService _imxtoService;
+        private readonly CopService _cop;
 
         public FileUploadService(IWebHostEnvironment env, IConfiguration configuration, ImxtoService imxtoService)
         {
             _env = env;
             _configuration = configuration.GetSection("FileUploadService").Get<FileUploadServiceConfiguration>();
             _imxtoService = imxtoService;
+            _cop = new CopService(Path.Combine(_env.WebRootPath, "media", "banned"));
             Initialize();
         }
 
@@ -135,8 +137,15 @@ namespace Core.Shared
                     throw new NotImplementedException("Archivo invalido");
                 }
 
+                if (_cop.ShouldBeArrested(Image.FromStream(file.OpenReadStream())))
+                {
+                    throw new NotImplementedException("Llamando al 911...");
+                }
+                
                 entity.Media = await Save(file, entity.Hash);
             }
+
+            // missing else ???
         }
 
         public async Task<Media> SaveExternal(UploadData data, string hash)
@@ -160,6 +169,11 @@ namespace Core.Shared
         public async Task<Media> SaveFromBase64(string base64, string hash)
         {
             var image = LoadBase64(base64);
+
+            if (_cop.ShouldBeArrested(image))
+            {
+                throw new NotImplementedException("Llamando al 911...");
+            }
 
             var originalFilename = $"{DateTime.Now:yyyyMMdd}-{hash}{GetFileExtension(image)}";
             var originalFilePath = GetFilePath(originalFilename);

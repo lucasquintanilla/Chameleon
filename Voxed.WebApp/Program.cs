@@ -1,24 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
 //using Microsoft.Extensions.Logging;
 using Core.Data.EF;
-using Microsoft.Extensions.DependencyInjection;
-using Serilog;
-using Serilog.Events;
-using Microsoft.AspNetCore.Identity;
-using Core.Entities;
-using Elastic.Apm.SerilogEnricher;
-using Elastic.CommonSchema.Serilog;
-using Serilog.Sinks.Elasticsearch;
-using Serilog.Extensions.Logging;
-using Core.Data.EF.Sqlite;
 using Core.Data.EF.MySql;
+using Core.Data.EF.Sqlite;
+using Core.Entities;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Serilog;
+using System;
+using System.Threading.Tasks;
 
 namespace Voxed.WebApp
 {
@@ -34,7 +26,7 @@ namespace Voxed.WebApp
                 await CreateDbIfNotExists(host);
                 host.Run();
 
-                
+
                 return 0;
             }
             catch (Exception ex)
@@ -56,13 +48,19 @@ namespace Voxed.WebApp
                 try
                 {
                     var context = services.GetRequiredService<VoxedContext>();
-                    var userManager = services.GetRequiredService<UserManager<User>>();
-                    var roleManager = services.GetRequiredService<RoleManager<Role>>();
-
+                    //var userManager = services.GetRequiredService<UserManager<User>>();
+                    //var roleManager = services.GetRequiredService<RoleManager<Role>>();
                     //await new DbInitializer(context, userManager, roleManager).Initialize();
 
-                    //await SqliteInitialize(services);
-                    await MySqlInitialize(services);
+                    if (context.Database.ProviderName == "Microsoft.EntityFrameworkCore.Sqlite")
+                    {
+                        await SqliteInitialize(services);
+                    }
+
+                    if (context.Database.ProviderName == "Pomelo.EntityFrameworkCore.MySql")
+                    {
+                        await MySqlInitialize(services);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -75,7 +73,7 @@ namespace Voxed.WebApp
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)                
+            Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();

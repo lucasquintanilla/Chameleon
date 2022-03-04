@@ -1,23 +1,23 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace Core.Validations
 {
     public class AllowedExtensionsAttribute : ValidationAttribute
     {
         private readonly string[] _extensions;
+
         public AllowedExtensionsAttribute(string[] extensions)
         {
             _extensions = extensions;
         }
 
         protected override ValidationResult IsValid(
-        object value, ValidationContext validationContext)
+            object value,
+            ValidationContext validationContext)
         {
             var file = value as IFormFile;
             if (file != null)

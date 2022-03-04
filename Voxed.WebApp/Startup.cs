@@ -16,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using Voxed.WebApp.Hubs;
+using Voxed.WebApp.Services;
 
 namespace Voxed.WebApp
 {
@@ -50,6 +51,10 @@ namespace Voxed.WebApp
 
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+            services.AddDistributedMemoryCache();
+            services.AddSession();
+            services.AddScoped<TraceIPAttribute>();
 
             #region Repositories
 
@@ -201,6 +206,8 @@ namespace Voxed.WebApp
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {

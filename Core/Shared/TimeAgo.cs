@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Core.Shared
 {
     public class TimeAgo
     {
-
         public static string ConvertToTimeAgo(DateTime dt)
         {
             TimeSpan span = DateTime.Now - dt;
@@ -73,6 +69,4 @@ namespace Core.Shared
             return string.Empty;
         }
     }
-
-    
 }

@@ -68,11 +68,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\media\" />
+    <Reference Include="SimpleImageComparisonClassLibrary">
+      <HintPath>..\..\Simple-image-comparison\SimpleImageComparisonClassLibrary\bin\Debug\netcoreapp3.1\publish\SimpleImageComparisonClassLibrary.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>
     <Content Update="wwwroot\js\bundle13.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\media\banned\20220224-WGJQGVGJ9XCC8B8GY28B.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

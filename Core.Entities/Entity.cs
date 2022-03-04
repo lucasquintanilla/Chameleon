@@ -6,7 +6,7 @@ namespace Core.Entities
     public class Entity
     {
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public Guid ID { get; set; }
+        public Guid Id { get; set; }
         public DateTimeOffset CreatedOn { get; set; } = DateTimeOffset.Now;
     }
 }

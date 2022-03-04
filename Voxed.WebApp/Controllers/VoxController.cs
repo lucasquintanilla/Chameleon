@@ -78,7 +78,6 @@ namespace Voxed.WebApp.Controllers
         }
 
         [HttpPost]
-        //[ValidateAntiForgeryToken]
         [Route("anon/vox")]
         public async Task<CreateVoxResponse> Create(CreateVoxRequest request)
         {
@@ -145,16 +144,15 @@ namespace Voxed.WebApp.Controllers
                 response.Swal = e.Message;
                 return response;
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 response.Status = false;
-                response.Swal = "Error";
+                response.Swal = "error";
                 return response;
             }
         }
 
         [HttpPost]
-        //[ValidateAntiForgeryToken]
         public async Task<ListResponse> List([FromForm] ListRequest request)
         {
             var response = new ListResponse();
@@ -204,33 +202,16 @@ namespace Voxed.WebApp.Controllers
         {
             return new Models.VoxResponse()
             {
-                //{
-                //        "hash": "LVsFqy15CYaRdNXsv5jR",
-                //        "status": "1",
-                //        "niche": "20",
-                //        "title": "Es verdad que las concha de tanto cojer se oscurecen? ",
-                //        "comments": "101",
-                //        "extension": "jpg",
-                //        "sticky": "0",
-                //        "createdAt": "2020-10-30 10:20:34",
-                //        "pollOne": " Es por tanto cojer, mir\u00e1 te cuento ",
-                //        "pollTwo": "Es por esto",
-                //        "id": "20",
-                //        "slug": "sld",
-                //        "voxId": "405371",
-                //        "new": false
-                //},
-
                 Hash = GuidConverter.ToShortString(vox.ID),
                 Status = "1",
                 Niche = "20",
                 Title = vox.Title,
                 Comments = vox.Comments.Count().ToString(),
-                Extension = "",
+                Extension = string.Empty,
                 Sticky = vox.IsSticky ? "1" : "0",
                 CreatedAt = vox.CreatedOn.ToString(),
-                PollOne = "",
-                PollTwo = "",
+                PollOne = string.Empty,
+                PollTwo = string.Empty,
                 Id = "20",
                 Slug = vox.Category.ShortName.ToUpper(),
                 VoxId = vox.ID.ToString(),

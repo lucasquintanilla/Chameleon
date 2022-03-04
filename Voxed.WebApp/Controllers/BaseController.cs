@@ -6,12 +6,18 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Voxed.WebApp.Extensions;
+using Voxed.WebApp.Services;
 
 namespace Voxed.WebApp.Controllers
 {
+    //[ServiceFilter(typeof(TraceIPAttribute))]
     public class BaseController : Controller
     {
         private readonly IHttpContextAccessor _accessor;
+        private static string[] bannedIpList = {
+            "198.41.231.163",
+            "198.41.231.229"
+        };
 
         public BaseController(IHttpContextAccessor accessor)
         {
@@ -22,6 +28,11 @@ namespace Voxed.WebApp.Controllers
 
         protected IPAddress UserIpAddress => HttpContext.Connection.RemoteIpAddress;
         //protected string UserIpAddress => _accessor.GetIpAddress();
+
+        protected void RetringBannedIps()
+        {
+
+        }
     }
 
     //public class BaseMvcController : Controller

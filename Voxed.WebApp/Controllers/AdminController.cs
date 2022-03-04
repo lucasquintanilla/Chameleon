@@ -1,22 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Core.Data.EF;
+using Core.Data.Repositories;
+using Core.Entities;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Core.Data.EF;
-using Core.Data.Repositories;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Voxed.WebApp.Controllers
 {
     [Authorize(Roles = nameof(RoleType.Administrator))]
     public class AdminController : Controller
     {
-        private readonly IVoxedRepository voxedRepository;
+        private readonly IVoxedRepository _voxedRepository;
+        private readonly IWebHostEnvironment _env;
 
-        public AdminController(IVoxedRepository voxedRepository)
+        public AdminController(IVoxedRepository voxedRepository, IWebHostEnvironment env)
         {
-            this.voxedRepository = voxedRepository;
+            _voxedRepository = voxedRepository;
+            _env = env;
         }
 
         public IActionResult Index()
@@ -26,42 +30,57 @@ namespace Voxed.WebApp.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<Response> Delete([FromForm]Request request)
+        public async Task<Response> Delete([FromForm] Request request)
         {
-            //comment
-            if (request.ContentType == "0")
+            try
             {
-                var comment = await voxedRepository.Comments.GetById(new Guid(request.ContentId));
-                if (comment == null)
+                //comment
+                if (request.ContentType == "0")
                 {
-                    NotFound();
+                    var comment = await _voxedRepository.Comments.GetById(new Guid(request.ContentId));
+                    if (comment == null)
+                    {
+                        NotFound();
+                    }
+
+                    comment.State = Core.Entities.CommentState.Deleted;
+
+                    if (comment.MediaID.HasValue)
+                    {
+                        await BanMedia(comment.MediaID.Value);
+                    }
+
+                    await UpdateVoxLastBump(comment);
+
+                    await _voxedRepository.SaveChangesAsync();
                 }
 
-                comment.State = Core.Entities.CommentState.Deleted;
-
-                await UpdateVoxLastBump(comment);
-
-                await voxedRepository.SaveChangesAsync();
-            }
-
-            if (request.ContentType == "1")
-            {
-                var vox = await voxedRepository.Voxs.GetById(new Guid(request.ContentId));
-                if (vox == null)
+                if (request.ContentType == "1")
                 {
-                    NotFound();
-                }
+                    var vox = await _voxedRepository.Voxs.GetById(new Guid(request.ContentId));
+                    if (vox == null)
+                    {
+                        NotFound();
+                    }
 
-                vox.State = Core.Entities.VoxState.Deleted;
-                await voxedRepository.SaveChangesAsync();
+                    await BanMedia(vox.MediaID);
+
+                    vox.State = Core.Entities.VoxState.Deleted;
+                    await _voxedRepository.SaveChangesAsync();
+                }
             }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+           
 
             return new Response() { Value = "OK" };
         }
 
         private async Task UpdateVoxLastBump(Core.Entities.Comment comment)
         {
-            var vox = await voxedRepository.Voxs.GetById(comment.VoxID);
+            var vox = await _voxedRepository.Voxs.GetById(comment.VoxID);
 
             if (vox == null)
             {
@@ -70,11 +89,31 @@ namespace Voxed.WebApp.Controllers
 
             var lastBump = vox.Comments
                 .Where(x => x.State == Core.Entities.CommentState.Normal)
-                .OrderByDescending(x => x.CreatedOn)                
+                .OrderByDescending(x => x.CreatedOn)
                 .Select(x => x.CreatedOn)
                 .First();
 
             vox.Bump = lastBump;
+        }
+
+        private async Task BanMedia(Guid mediaId)
+        {
+            var media = await _voxedRepository.Media.GetById(mediaId);
+
+            if (media.MediaType == MediaType.Image)
+            {
+                string destination = Path.Combine(_env.WebRootPath, "media", "banned");
+                var filename = media.Url.Split('/')[media.Url.Split('/').Length - 1];
+
+                try
+                {
+                    System.IO.File.Copy(Path.Combine(_env.WebRootPath, "media", filename), Path.Combine(destination, filename));
+                }
+                catch (FileNotFoundException e)
+                {
+                    Console.WriteLine(e);
+                }
+            }
         }
     }
 

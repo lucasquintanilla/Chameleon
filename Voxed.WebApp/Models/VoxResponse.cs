@@ -1,7 +1,23 @@
 ﻿namespace Voxed.WebApp.Models
 {
     public class VoxResponse
-    {
+    {   
+        //{
+        //        "hash": "LVsFqy15CYaRdNXsv5jR",
+        //        "status": "1",
+        //        "niche": "20",
+        //        "title": "Es verdad que las concha de tanto cojer se oscurecen? ",
+        //        "comments": "101",
+        //        "extension": "jpg",
+        //        "sticky": "0",
+        //        "createdAt": "2020-10-30 10:20:34",
+        //        "pollOne": " Es por tanto cojer, mir\u00e1 te cuento ",
+        //        "pollTwo": "Es por esto",
+        //        "id": "20",
+        //        "slug": "sld",
+        //        "voxId": "405371",
+        //        "new": false
+        //}
         public string Hash { get; set; }
         public string Status { get; set; }
         public string Niche { get; set; }
@@ -16,9 +32,6 @@
         public string Slug { get; set; }
         public string VoxId { get; set; }
         public bool New { get; set; }
-
-
-        //Agregado extras
         public string ThumbnailUrl { get; set; }
         public string Category { get; set; }
     }
