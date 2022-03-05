@@ -52,26 +52,32 @@ namespace Voxed.WebApp.Controllers
             _telegramService = telegramService;
         }
 
-        [HttpPost("report")]
-        public async Task<ReportResponse> Report(ReportRequest report)
+        [HttpPost("meta/{id}/toggle")]
+        public async Task<FavoriteResponse> Favorite(FavoriteRequest request, string id)
+        {
+            return new FavoriteResponse() { Status = false, Swal = $"Funcion {id} en desarrollo" };
+        }
+
+        [HttpPost("request")]
+        public async Task<ReportResponse> Report(ReportRequest request)
         {
             try
             {
                 string message = null;
 
-                switch (report.ContentType)
+                switch (request.ContentType)
                 {
                     case 0:
-                    {
-                            var comment =_voxedRepository.Comments.Find(x => x.Hash == report.ContentId).Result.FirstOrDefault();
-                            message = $"NUEVA DENUNCIA \n Reason: {report.Reason}. \n https://voxed.club/vox/{GuidConverter.ToShortString(comment.VoxID)}#{comment.Hash}";
+                        {
+                            var comment = _voxedRepository.Comments.Find(x => x.Hash == request.ContentId).Result.FirstOrDefault();
+                            message = $"NUEVA DENUNCIA \n Reason: {request.Reason}. \n https://voxed.club/vox/{GuidConverter.ToShortString(comment.VoxID)}#{comment.Hash}";
                             break;
-                    }
+                        }
                     case 1:
-                    {
-                        message = $"NUEVA DENUNCIA \n Reason: {report.Reason}. \n https://voxed.club/vox/{GuidConverter.ToShortString(new Guid(report.ContentId))}";
-                        break;
-                    }
+                        {
+                            message = $"NUEVA DENUNCIA \n Reason: {request.Reason}. \n https://voxed.club/vox/{GuidConverter.ToShortString(new Guid(request.ContentId))}";
+                            break;
+                        }
                 }
 
                 await _telegramService.SendMessage(message);
@@ -352,5 +358,17 @@ namespace Voxed.WebApp.Controllers
     {
         public bool Status { get; set; }
         public List List { get; set; }
+    }
+
+    public class FavoriteRequest
+    {
+        public int ContentType { get; set; }
+        public Guid ContentId { get; set; }
+    }
+
+    public class FavoriteResponse
+    {
+        public bool Status { get; set; }
+        public string Swal { get; set; }
     }
 }

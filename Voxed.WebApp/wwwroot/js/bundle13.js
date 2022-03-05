@@ -3862,7 +3862,7 @@
         meta(e, t, n, o) {
             let s = new i.AlertService,
                 d = new a.ModalService;
-            if (!(new r.SessionService).isActive()) return d.openModal("verify"), !1;
+            //if (!(new r.SessionService).isActive()) return d.openModal("verify"), !1;
             let u = new FormData;
             u.append("contentType", t), u.append("contentId", n), l.ajax({
                 url: `/meta/${e}/toggle`,
