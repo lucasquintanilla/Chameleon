@@ -124,10 +124,13 @@ namespace Voxed.WebApp
                 .AddEntityFrameworkStores<VoxedContext>()
                 .AddErrorDescriber<SpanishIdentityErrorDescriber>();
 
+            
+            services.AddTransient<NotificationService>();
             services.AddSingleton<FormateadorService>();
             services.AddSingleton<FileUploadService>();
             services.AddSingleton<ImxtoService>();
             services.AddSingleton<TelegramService>();
+            
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -171,6 +174,7 @@ namespace Voxed.WebApp
 
             services.AddSignalR();
 
+            
             //services.Configure<FileUploadServiceConfiguration>(Configuration.GetSection("FileUploadService"));
 
         }

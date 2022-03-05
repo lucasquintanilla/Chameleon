@@ -8,6 +8,7 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Voxed.WebApp.Models;
 
 namespace Voxed.WebApp.Controllers
 {
@@ -15,7 +16,7 @@ namespace Voxed.WebApp.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private IVoxedRepository _voxedRepository;
+        private readonly IVoxedRepository _voxedRepository;
 
         public HomeController(ILogger<HomeController> logger, 
             IVoxedRepository voxedRepository)
@@ -29,7 +30,7 @@ namespace Voxed.WebApp.Controllers
         {
             var voxs = await _voxedRepository.Voxs.GetLastestAsync();
 
-            var voxsList = voxs.Select(vox => new Models.VoxResponse()
+            var voxsList = voxs.Select(vox => new VoxResponse()
             {
                 Hash = GuidConverter.ToShortString(vox.ID),
                 //Hash = x.Hash,
@@ -84,10 +85,9 @@ namespace Voxed.WebApp.Controllers
 
             var voxs = await _voxedRepository.Voxs.GetLastestAsync();
 
-            var voxsList = voxs.Select(vox => new Models.VoxResponse()
+            var voxsList = voxs.Select(vox => new VoxResponse()
             {
                 Hash = GuidConverter.ToShortString(vox.ID),
-                //Hash = x.Hash,
                 Status = "1",
                 Niche = "20",
                 Title = vox.Title,
@@ -120,7 +120,7 @@ namespace Voxed.WebApp.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new Models.ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

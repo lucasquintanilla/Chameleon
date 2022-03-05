@@ -12,6 +12,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Voxed.WebApp.Hubs;
+using Voxed.WebApp.Models;
+using Voxed.WebApp.Services;
 
 namespace Voxed.WebApp.Controllers
 {
@@ -26,15 +28,17 @@ namespace Voxed.WebApp.Controllers
         //private readonly ILogger _logger;
         private readonly IHubContext<VoxedHub, INotificationHub> _notificationHub;
         private static User _anonUser;
+        private readonly NotificationService _notificationService;
 
         public CommentController(
+            NotificationService notificationService,
             FormateadorService formateadorService,
             FileUploadService fileUploadService,
             IVoxedRepository voxedRepository,
             UserManager<User> userManager,
             IHubContext<VoxedHub, INotificationHub> notificationHub,
             ILogger<HomeController> logger,
-            ILoggerFactory loggerFactory,
+            //ILoggerFactory loggerFactory,
             SignInManager<User> signInManager, 
             IHttpContextAccessor accessor) : base(accessor)
         {
@@ -46,15 +50,16 @@ namespace Voxed.WebApp.Controllers
             _logger = logger;
             //_logger = loggerFactory.CreateLogger(nameof(CommentController));
             _signInManager = signInManager;
+            _notificationService = notificationService;
         }
 
 
         [HttpPost]
         [Route("comment/nuevo/{id}")]
-        public async Task<Models.CommentResponse> Create([FromForm] Models.CommentRequest request, [FromRoute] string id)
+        public async Task<Models.CommentResponse> Create([FromForm] CommentRequest request, [FromRoute] string id)
         {
             if (!ModelState.IsValid)
-                return new Models.CommentResponse()
+                return new CommentResponse()
                 {
                     Hash = id,
                     Status = false,
@@ -66,7 +71,7 @@ namespace Voxed.WebApp.Controllers
             {
                 if (request.Content == null && request.File == null && request.GetUploadData().Extension == null)
                 {
-                    return new Models.CommentResponse()
+                    return new CommentResponse()
                     {
                         Hash = id,
                         Status = false,
@@ -89,41 +94,6 @@ namespace Voxed.WebApp.Controllers
                 await _voxedRepository.Comments.Add(comment);
                 var vox = await _voxedRepository.Voxs.GetById(comment.VoxID);
                 vox.Bump = DateTimeOffset.Now;
-                //await _voxedRepository.CompleteAsync();
-
-                //var repliesNotificationTask = Task.Run(() => SaveRepliesNotifications(vox, comment, request));
-                //var opNotificationTask = Task.Run(() => SaveOpNotification(vox, comment));
-
-                //new Task(() => SaveRepliesNotifications(vox, comment, request)).Start();
-                //new Task(() => SaveOpNotification(vox, comment)).Start();
-
-                //Thread backgroundThread = new Thread(new ThreadStart(SaveRepliesNotifications));
-                //backgroundThread.IsBackground = true;
-                //backgroundThread.Start(vox, comment, request);
-
-                //new Thread(() => SaveRepliesNotifications(vox, comment, request)).Start();
-                //new Thread(() => SaveOpNotification(vox, comment)).Start();
-
-
-
-
-                // FUNCIONA EN BACKGORUND PERO TIRA ERRROR POR LOS OBJETOS DE DISPONEN
-                //var voxForNotification = vox;
-                //var commentForNotification = comment;
-                //var requestForNotification = request;
-
-                //var th = new Thread(() => SaveRepliesNotifications(voxForNotification, commentForNotification, requestForNotification));
-                //th.IsBackground = true;
-                //th.Start();
-                //var th2 = new Thread(() => SaveOpNotification(voxForNotification, commentForNotification));
-                //th2.IsBackground = true;
-                //th2.Start();
-
-
-
-                // NO FUNCIONA
-                //var task1 = SaveRepliesNotifications(vox, comment, request);
-                //var task2 = SaveOpNotification(vox, comment);
 
                 // Manejar guardado de y envio de notificaciones en threads separados en background
                 await SaveRepliesNotifications(vox, comment, request);
@@ -133,7 +103,7 @@ namespace Voxed.WebApp.Controllers
 
                 await SendCommentLiveUpdate(comment, vox, request);
 
-                var response = new Models.CommentResponse()
+                var response = new CommentResponse()
                 {
                     Hash = comment.Hash,
                     Status = true,
@@ -143,7 +113,7 @@ namespace Voxed.WebApp.Controllers
             }
             catch (NotImplementedException e)
             {
-                return new Models.CommentResponse()
+                return new CommentResponse()
                 {
                     Hash = "",
                     Status = false,
@@ -155,7 +125,7 @@ namespace Voxed.WebApp.Controllers
             {
                 _logger.LogError(e.Message);
 
-                return new Models.CommentResponse()
+                return new CommentResponse()
                 {
                     Hash = "",
                     Status = false,
@@ -169,22 +139,14 @@ namespace Voxed.WebApp.Controllers
         {
             if (_anonUser == null)
             {
-                _anonUser = _userManager.Users.Where(x => x.UserType == UserType.Anonymous).FirstOrDefault();
+                _anonUser = _userManager.Users.FirstOrDefault(x => x.UserType == UserType.Anonymous);
             }
 
             return _anonUser;
         }
 
-        private string GetFileExtensionFromUrl(string url)
-        {
-            var array = url.Split(".");
-            return array[array.Length - 1];
-        }
-
         private async Task SaveOpNotification(Vox vox, Comment comment)
         {
-            //await Task.Delay(10000);
-
             if (vox.User.UserType != UserType.Anonymous && vox.UserID != comment.UserID)
             {
                 var notification = new Notification()
@@ -202,7 +164,7 @@ namespace Voxed.WebApp.Controllers
             }
         }
 
-        private async Task SaveRepliesNotifications(Vox vox, Comment comment, Models.CommentRequest request)
+        private async Task SaveRepliesNotifications(Vox vox, Comment comment, CommentRequest request)
         {
             if (string.IsNullOrWhiteSpace(comment.Content)) return;
 
@@ -234,7 +196,7 @@ namespace Voxed.WebApp.Controllers
             }
         }
 
-        private async Task SendCommentLiveUpdate(Comment comment, Vox vox, Models.CommentRequest request)
+        private async Task SendCommentLiveUpdate(Comment comment, Vox vox, CommentRequest request)
         {
             var commentNotification = new CommentLiveUpdate()
             {
@@ -248,7 +210,7 @@ namespace Voxed.WebApp.Controllers
                 AvatarColor = comment.Style.ToString().ToLower(),
                 IsOp = vox.UserID == comment.UserID && vox.User.UserType != UserType.Anonymous, //probar cambiarlo cuando solo pruedan craer los usuarios.
                 Tag = UserViewHelper.GetUserTypeTag(comment.User.UserType), //admin o dev               
-                Content = comment.Content ?? "",
+                Content = comment.Content ?? string.Empty,
                 Name = UserViewHelper.GetUserName(comment.User),
                 CreatedAt = TimeAgo.ConvertToTimeAgo(comment.CreatedOn.DateTime),
                 Poll = null, //aca va una opcion respondida
@@ -256,7 +218,7 @@ namespace Voxed.WebApp.Controllers
                 //Media
                 MediaUrl = comment.Media?.Url,
                 MediaThumbnailUrl = comment.Media?.ThumbnailUrl,
-                Extension = request.GetUploadData()?.Extension == UploadDataExtension.Base64 ? GetFileExtensionFromUrl(comment.Media?.Url) : request.GetUploadData()?.Extension,
+                Extension = request.GetUploadData()?.Extension == UploadDataExtension.Base64 ? Core.Utilities.Utilities.GetFileExtensionFromUrl(comment.Media?.Url) : request.GetUploadData()?.Extension,
                 ExtensionData = request.GetUploadData()?.ExtensionData,
                 Via = request.GetUploadData()?.Extension == UploadDataExtension.Youtube ? comment.Media?.Url : null,
             };
@@ -307,7 +269,7 @@ namespace Voxed.WebApp.Controllers
             await _notificationHub.Clients.Users(notification.UserId.ToString()).Notification(userNotification);
         }
 
-        private async Task<Comment> ProcessComment(Models.CommentRequest request, string id)
+        private async Task<Comment> ProcessComment(CommentRequest request, string id)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
 
