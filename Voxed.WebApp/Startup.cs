@@ -15,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using Core.Services.Telegram;
 using Voxed.WebApp.Hubs;
 using Voxed.WebApp.Services;
 
@@ -126,6 +127,7 @@ namespace Voxed.WebApp
             services.AddSingleton<FormateadorService>();
             services.AddSingleton<FileUploadService>();
             services.AddSingleton<ImxtoService>();
+            services.AddSingleton<TelegramService>();
 
             services.Configure<IdentityOptions>(options =>
             {

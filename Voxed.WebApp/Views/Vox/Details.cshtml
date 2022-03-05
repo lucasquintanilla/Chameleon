@@ -26,19 +26,19 @@
             </div>
             <div class="voxBar">
                 <div class="actions">
-                    <div class="voxOption" data-report="vox" data-contentid="389779" data-contenttype="1">
+                    <div class="voxOption" data-report="vox" data-contentid="@Model.ID" data-contenttype="1">
                         <i class="fas fa-flag" data-parent></i>
                         <span class="voxOptionText" data-parent>Denunciar</span>
                     </div>
-                    <div class="voxOption " data-meta="favorite" data-contenttype="1" data-contentid="389779">
+                    <div class="voxOption " data-meta="favorite" data-contenttype="1" data-contentid="@Model.ID">
                         <i data-parent class="fas fa-star"></i>
                         <span data-parent class="voxOptionText">Favorito</span>
                     </div>
-                    <div class="voxOption " data-meta="follow" data-contenttype="1" data-contentid="389779">
+                    <div class="voxOption " data-meta="follow" data-contenttype="1" data-contentid="@Model.ID">
                         <i data-parent class="fas fa-thumbtack"></i>
                         <span data-parent class="voxOptionText">Seguir</span>
                     </div>
-                    <div class="voxOption " data-meta="hide" data-contenttype="1" data-contentid="389779">
+                    <div class="voxOption " data-meta="hide" data-contenttype="1" data-contentid="@Model.ID">
                         <i data-parent class="fas fa-lock"></i>
                         <span data-parent class="voxOptionText">Ocultar</span>
                     </div>
@@ -359,7 +359,7 @@
 
                     @foreach (var comment in Model.Comments.OrderByDescending(x => x.CreatedOn))
                     {
-                        <div class="comment   " id="@comment.Hash" data-id="@comment.Hash">
+                        <div class="comment   " id="@comment.ID" data-id="@comment.ID">
                             <div class="commentAvatar">
                                 @*<div class="unselect avatarColor   @Core.Shared.ColorService.GetColor()">*@
                                 <div class="unselect avatarColor  @comment.Style.ToString().ToLower()">

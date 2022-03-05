@@ -1,11 +1,13 @@
 ﻿using Core.Data.Repositories;
 using Core.Entities;
+using Core.Services.Telegram;
 using Core.Shared;
 using Core.Shared.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -14,7 +16,6 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Voxed.WebApp.Hubs;
-using Microsoft.Extensions.Logging;
 
 namespace Voxed.WebApp.Controllers
 {
@@ -28,8 +29,10 @@ namespace Voxed.WebApp.Controllers
         private readonly IHubContext<VoxedHub, INotificationHub> _notificationHub;
         private User _anonUser;
         private readonly ILogger<VoxController> _logger;
+        private readonly TelegramService _telegramService;
 
         public VoxController(
+            TelegramService telegramService,
             ILogger<VoxController> logger,
             FileUploadService fileUploadService,
             IVoxedRepository voxedRepository,
@@ -46,6 +49,50 @@ namespace Voxed.WebApp.Controllers
             _notificationHub = notificationHub;
             _signInManager = signInManager;
             _logger = logger;
+            _telegramService = telegramService;
+        }
+
+        [HttpPost("report")]
+        public async Task<ReportResponse> Report(ReportRequest report)
+        {
+            try
+            {
+                string message = null;
+
+                switch (report.ContentType)
+                {
+                    case 0:
+                    {
+                            var comment =_voxedRepository.Comments.Find(x => x.Hash == report.ContentId).Result.FirstOrDefault();
+                            message = $"NUEVA DENUNCIA \n Reason: {report.Reason}. \n https://voxed.club/vox/{GuidConverter.ToShortString(comment.VoxID)}#{comment.Hash}";
+                            break;
+                    }
+                    case 1:
+                    {
+                        message = $"NUEVA DENUNCIA \n Reason: {report.Reason}. \n https://voxed.club/vox/{GuidConverter.ToShortString(new Guid(report.ContentId))}";
+                        break;
+                    }
+                }
+
+                await _telegramService.SendMessage(message);
+
+                return new ReportResponse()
+                {
+                    Status = true,
+                    Swal = "Gracias por enviarnos tu denuncia"
+                };
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+
+                return new ReportResponse()
+                {
+                    Status = false,
+                    Swal = "Hubo un error al enviar tu denuncia"
+                };
+            }
+
         }
 
         [HttpGet("vox/{hash}")]
@@ -232,6 +279,20 @@ namespace Voxed.WebApp.Controllers
         {
             return voxs.Select(ConvertoToVoxResponse);
         }
+    }
+
+
+    public class ReportRequest
+    {
+        public int ContentType { get; set; }
+        public string ContentId { get; set; }
+        public string Reason { get; set; }
+    }
+
+    public class ReportResponse
+    {
+        public bool Status { get; set; }
+        public string Swal { get; set; }
     }
 
     public class CreateVoxRequest
