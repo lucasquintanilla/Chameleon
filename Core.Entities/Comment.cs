@@ -6,7 +6,7 @@ namespace Core.Entities
     public enum CommentType { Normal, Sticky }
     public enum CommentStyle { Black, Blue, Green, Multi, Red, White, Yellow } //invested
 
-    public class Comment : IMediaEntity
+    public class Comment : IAttachment
     {
         public Guid ID { get; set; }
         public string Hash { get; set; }

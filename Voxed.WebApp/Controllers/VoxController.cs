@@ -220,7 +220,7 @@ namespace Voxed.WebApp.Controllers
                     };
                 }
 
-                await _fileUploadService.ProcessMedia(request.GetUploadData(), request.File, vox);
+                await _fileUploadService.ProcessAttachment(request.GetUploadData(), request.File, vox);
 
                 await _voxedRepository.Voxs.Add(vox);
                 await _voxedRepository.SaveChangesAsync();

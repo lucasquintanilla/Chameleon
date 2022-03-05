@@ -294,7 +294,7 @@ namespace Voxed.WebApp.Controllers
                 UserAgent = UserAgent
             };
 
-            await _fileUploadService.ProcessMedia(request.GetUploadData(), request.File, comment);
+            await _fileUploadService.ProcessAttachment(request.GetUploadData(), request.File, comment);
 
             return comment;
         }

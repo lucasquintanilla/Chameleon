@@ -6,9 +6,9 @@ namespace Core.Shared.Models
 {
     public static class UploadDataExtension
     {
-        public static string Youtube { get; set; } = "ytb";
-        public static string Png { get; set; } = "png";
-        public static string Jpg { get; set; } = "jpg";
-        public static string Base64 { get; set; } = "base64";
+        public const string Youtube = "ytb";
+        public const string Png = "png";
+        public const string Jpg = "jpg";
+        public const string Base64  = "base64";
     }
 }

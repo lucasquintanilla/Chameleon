@@ -130,6 +130,7 @@ namespace Voxed.WebApp
             services.AddSingleton<FileUploadService>();
             services.AddSingleton<ImxtoService>();
             services.AddSingleton<TelegramService>();
+            services.AddSingleton<YoutubeService>();
             
 
             services.Configure<IdentityOptions>(options =>

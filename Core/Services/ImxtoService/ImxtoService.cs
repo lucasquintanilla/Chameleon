@@ -14,12 +14,13 @@ namespace Core.Services.ImxtoService
         {
             string baseUrl = "https://imx.to/dropzone.php?session_id=68giijgrtpqe0nk9ttlot9noi4";
 
-            MultipartFormDataContent form = new MultipartFormDataContent();
-
-            form.Add(new StringContent("3"), "thumbnail_format");
-            form.Add(new StringContent("4"), "thumb_size_contaner");
-            form.Add(new StringContent("1"), "adult");
-            form.Add(new StringContent("Upload"), "simple_upload");
+            MultipartFormDataContent form = new MultipartFormDataContent
+            {
+                { new StringContent("3"), "thumbnail_format" },
+                { new StringContent("4"), "thumb_size_contaner" },
+                { new StringContent("1"), "adult" },
+                { new StringContent("Upload"), "simple_upload" }
+            };
 
             HttpContent content = new StreamContent(stream);
             content.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")

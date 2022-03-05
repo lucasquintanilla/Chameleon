@@ -1,9 +1,4 @@
-﻿using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Processing;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -11,27 +6,25 @@ namespace Voxed.WebApp.Services
 {
     public class YoutubeService
     {
-        //private readonly HttpClient client = new HttpClient();
+        private readonly HttpClient _client;
 
-        //public async Task<string> GenerateThumbnail(string id, string hash)
-        //{
-        //    var response = await client.GetAsync($"https://img.youtube.com/vi/{id}/maxresdefault.jpg");
+        public YoutubeService()
+        {
+            _client = new HttpClient();
+        }
 
-        //    if (!response.IsSuccessStatusCode)
-        //    {
-        //        response = await client.GetAsync($"https://img.youtube.com/vi/{id}/hqdefault.jpg");
-        //    }
+        public async Task<Stream> GetYoutubeThumbnailStream(string videoId)
+        {
+            var response = await _client.GetAsync($"https://img.youtube.com/vi/{videoId}/maxresdefault.jpg");
 
-        //    if (!response.IsSuccessStatusCode) return null;
+            if (!response.IsSuccessStatusCode)
+            {
+                response = await _client.GetAsync($"https://img.youtube.com/vi/{videoId}/hqdefault.jpg");
+            }
 
-        //    using var stream = await response.Content.ReadAsStreamAsync();
+            if (!response.IsSuccessStatusCode) return null;
 
-        //    var thumbnailFilename = $"{DateTime.Now:yyyyMMdd}-{hash}.jpg";
-        //    var thumbnailFilePath = Path.Combine(_dir, folderName, thumbnailFilename);
-
-        //    using var fileStream = File.Create($"{CarpetaDeAlmacenamiento}/{media.VistaPreviaLocal}");
-        //    stream.Seek(0, SeekOrigin.Begin);
-        //    await stream.CopyToAsync(fileStream);
-        //}
+            return await response.Content.ReadAsStreamAsync();
+        }
     }
 }

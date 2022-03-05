@@ -1,6 +1,6 @@
 ﻿namespace Core.Entities
 {
-    public interface IMediaEntity
+    public interface IAttachment
     {
         string Hash { get; set; }
         Media Media { get; set; }

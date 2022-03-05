@@ -5,7 +5,7 @@ namespace Core.Entities
 {
     public enum VoxState { Normal, Deleted }
 
-    public class Vox : IMediaEntity
+    public class Vox : IAttachment
     {
         public Guid ID { get; set; }
         public string Hash { get; set; }
