@@ -1,9 +1,9 @@
-﻿@*@model Core.Entities.Vox*@
-@model Voxed.WebApp.ViewModels.VoxDetailViewModel
+﻿@model Voxed.WebApp.ViewModels.VoxDetailViewModel
 
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.EntityFrameworkCore.Infrastructure
 @using Voxed.WebApp.ViewModels
+
 @inject SignInManager<Core.Entities.User> SignInManager
 @inject UserManager<Core.Entities.User> UserManager
 
@@ -136,7 +136,7 @@
                                          data-hash="@Model.Hash"
                                          style="background: url('@Model.Media.ThumbnailUrl')">
                                         <img class="lazyload" data-parent
-                                             data-src="https://www.voxed.net/assets/images/play.png" alt="">
+                                             data-src="/assets/images/play.png" alt="">
                                     </div>
                                 </div>
                                 <div class="via">
@@ -479,7 +479,7 @@
                                                              style="background: url('@comment.Media.ThumbnailUrl')">
                                                             <img class="lazyload"
                                                                  data-parent
-                                                                 data-src="https://www.voxed.net/assets/images/play.png"
+                                                                 data-src="/assets/images/play.png"
                                                                  alt="">
                                                         </div>
                                                     </div>
