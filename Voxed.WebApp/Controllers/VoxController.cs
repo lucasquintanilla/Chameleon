@@ -16,6 +16,7 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Voxed.WebApp.Hubs;
+using Voxed.WebApp.ViewModels;
 
 namespace Voxed.WebApp.Controllers
 {
@@ -114,7 +115,46 @@ namespace Voxed.WebApp.Controllers
 
             if (vox.State == VoxState.Deleted) return NotFound();
 
-            return View(vox);
+            var voxViewModel = new VoxDetailViewModel()
+            {
+                Id = vox.ID,
+                Title = vox.Title,
+                Content = vox.Content,
+                Hash = vox.Hash,
+                UserId = vox.UserID,
+                
+                CommentTag = UserTypeDictionary.GetDescription(vox.User.UserType).ToLower(),
+                CategoryName = vox.Category.Name,
+                CategoryShortName = vox.Category.ShortName,
+                CategoryThumbnailUrl = vox.Category.Media.ThumbnailUrl,
+                CommentsAttachmentCount = vox.Comments.Where(x => x.Media != null).Count(),
+                CommentsCount = vox.Comments.Count(),
+                UserName = vox.User.UserName,
+                UserType = (ViewModels.UserType)(int)vox.User.UserType,
+                CreatedOn = TimeAgo.ConvertToTimeAgo(vox.CreatedOn.DateTime),
+                Comments = vox.Comments,
+                Media = new MediaViewModel()
+                {
+                    ThumbnailUrl = vox.Media.ThumbnailUrl,
+                    Url = vox.Media.Url,
+                    MediaType = (ViewModels.MediaType)(int)vox.Media.MediaType,
+                    ExtensionData = vox.Media?.Url.Split('=')[(vox.Media?.Url.Split('=').Length - 1).Value]
+                }
+                
+                //Comments = vox.Comments.Select(x => new CommentViewModel()
+                //{
+                //    Id = x.ID,
+                //    Content = x.Content,
+                //    Hash = x.Hash,
+                //    AvatarColor = x.Style.ToString().ToLower(),
+                //    AvatarText = Core.Shared.UserTypeDictionary.GetDescription(x.User.UserType).ToUpper(),
+                //    IsOp = x.
+                //}).ToList(),
+
+
+            };
+
+            return View(voxViewModel);
         }
 
         [HttpGet("search/{value}")]
@@ -131,7 +171,7 @@ namespace Voxed.WebApp.Controllers
 
         private User GetAnonymousUser()
         {
-            return _anonUser ??= _userManager.Users.FirstOrDefault(x => x.UserType == UserType.Anonymous);
+            return _anonUser ??= _userManager.Users.FirstOrDefault(x => x.UserType == Core.Entities.UserType.Anonymous);
         }
 
         [HttpPost]
@@ -244,7 +284,7 @@ namespace Voxed.WebApp.Controllers
             {
                 UserName = UserNameGenerator.NewAnonymousUserName(),
                 EmailConfirmed = true,
-                UserType = UserType.AnonymousAccount,
+                UserType = Core.Entities.UserType.AnonymousAccount,
                 IpAddress = UserIpAddress.ToString(),
                 UserAgent = UserAgent,
                 Token = TokenGenerator.NewToken()

@@ -1,6 +1,9 @@
-﻿@model Core.Entities.Vox
+﻿@*@model Core.Entities.Vox*@
+@model Voxed.WebApp.ViewModels.VoxDetailViewModel
 
 @using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore.Infrastructure
+@using Voxed.WebApp.ViewModels
 @inject SignInManager<Core.Entities.User> SignInManager
 @inject UserManager<Core.Entities.User> UserManager
 
@@ -13,32 +16,32 @@
         <section class="voxData">
             <div class="voxBar">
                 <div class="voxCategoryBar">
-                    <a href="/@Model.Category.ShortName">
+                    <a href="/@Model.CategoryShortName">
                         <div class="voxCategory">
                             <div class="categoryAvatar">
-                                <img class="lazyload" data-src="@Model.Category.Media.ThumbnailUrl"
+                                <img class="lazyload" data-src="@Model.CategoryThumbnailUrl"
                                      alt="">
                             </div>
-                            <div class="categoryTitle">@Model.Category.Name</div>
+                            <div class="categoryTitle">@Model.CategoryName</div>
                         </div>
                     </a>
                 </div>
             </div>
             <div class="voxBar">
                 <div class="actions">
-                    <div class="voxOption" data-report="vox" data-contentid="@Model.ID" data-contenttype="1">
+                    <div class="voxOption" data-report="vox" data-contentid="@Model.Id" data-contenttype="1">
                         <i class="fas fa-flag" data-parent></i>
                         <span class="voxOptionText" data-parent>Denunciar</span>
                     </div>
-                    <div class="voxOption " data-meta="favorite" data-contenttype="1" data-contentid="@Model.ID">
+                    <div class="voxOption " data-meta="favorite" data-contenttype="1" data-contentid="@Model.Id">
                         <i data-parent class="fas fa-star"></i>
                         <span data-parent class="voxOptionText">Favorito</span>
                     </div>
-                    <div class="voxOption " data-meta="follow" data-contenttype="1" data-contentid="@Model.ID">
+                    <div class="voxOption " data-meta="follow" data-contenttype="1" data-contentid="@Model.Id">
                         <i data-parent class="fas fa-thumbtack"></i>
                         <span data-parent class="voxOptionText">Seguir</span>
                     </div>
-                    <div class="voxOption " data-meta="hide" data-contenttype="1" data-contentid="@Model.ID">
+                    <div class="voxOption " data-meta="hide" data-contenttype="1" data-contentid="@Model.Id">
                         <i data-parent class="fas fa-lock"></i>
                         <span data-parent class="voxOptionText">Ocultar</span>
                     </div>
@@ -47,41 +50,34 @@
                     <div class="authorVox">
 
 
-                        @if (@Model.User.UserType == Core.Entities.UserType.Administrator)
+                        @if (@Model.UserType == UserType.Administrator)
                         {
-                            <span class="name adminTag ">@Model.User?.UserName</span>
-                            <span class="commentTag ">@Core.Shared.UserTypeDictionary.GetDescription(Model.User.UserType).ToLower()</span>
+                            <span class="name adminTag ">@Model.UserName</span>                            
                         }
 
-                        @if (@Model.User.UserType == Core.Entities.UserType.Anonymous ||
-                        @Model.User.UserType == Core.Entities.UserType.Account)
+                        @if (@Model.UserType == UserType.Anonymous || @Model.UserType == UserType.Account)
                         {
-                            <span class="name ">@Model.User?.UserName</span>
-                            <span class="commentTag ">@Core.Shared.UserTypeDictionary.GetDescription(Model.User.UserType).ToLower()</span>
+                            <span class="name ">@Model.UserName</span>                            
                         }
 
-                        @if (@Model.User.UserType == Core.Entities.UserType.AnonymousAccount)
+                        @if (@Model.UserType == UserType.AnonymousAccount)
                         {
                             <span class="name ">Anonimo</span>
-                            <span class="commentTag ">@Core.Shared.UserTypeDictionary.GetDescription(Model.User.UserType).ToLower()</span>
                         }
 
-                        @*<span class="name ">Anonimo</span>*@
-
-
-
-                        @*<span class="commentTag ">anon</span>*@
-
+                        <span class="commentTag ">@Model.CommentTag</span>
+                        
                         @if (User.IsInRole(nameof(Core.Data.EF.RoleType.Administrator)))
                         {
-                            <span class="commentTag pointer" data-delete data-contenttype="1" data-contentid="@Model.ID"><i class="fas fa-times" data-parent></i></span>
+                            <span class="commentTag pointer" data-delete data-contenttype="1" data-contentid="@Model.Id"><i class="fas fa-times" data-parent></i></span>
                         }
                     </div>
-                    <div class="voxCreatedAt">@Core.Shared.TimeAgo.ConvertToTimeAgo(Model.CreatedOn.DateTime)</div>
+                    <div class="voxCreatedAt">@Model.CreatedOn</div>
                 </div>
             </div>
 
-            @if (Model.Poll != null)
+            @*Guardar para la implementacion*@
+            @*@if (Model.Poll != null)
             {
                 <div class="voxBar pollBar">
                     <div class="pollOptions">
@@ -97,7 +93,7 @@
                         </div>
                     </div>
                 </div>
-            }
+            }*@
 
             <article class="voxContent" itemscope="itemscope" itemtype="http://schema.org/NewsArticle">
 
@@ -105,7 +101,7 @@
                 {
                     switch (@Model.Media.MediaType)
                     {
-                        case Core.Entities.MediaType.Image:
+                        case Voxed.WebApp.ViewModels.MediaType.Image:
 
                             <figure class="voxAttach">
                                 <div class="voxAttachContainer">
@@ -117,7 +113,7 @@
                             </figure>
                             break;
 
-                        case Core.Entities.MediaType.Gif:
+                        case Voxed.WebApp.ViewModels.MediaType.Gif:
 
                             <figure class="voxAttach">
                                 <div class="voxAttachContainer">
@@ -129,14 +125,14 @@
                             </figure>
                             break;
 
-                        case Core.Entities.MediaType.YouTube:
+                        case Voxed.WebApp.ViewModels.MediaType.YouTube:
 
                             <figure class="voxAttach">
                                 <div class="voxAttachContainer">
                                     <div class="videoPreview"
                                          data-videopreview
                                          data-extension="ytb"
-                                         data-extensiondata="@Model.Media?.Url.Split('=')[(Model.Media?.Url.Split('=').Length-1).Value]"
+                                         data-extensiondata="@Model.Media.ExtensionData"
                                          data-hash="@Model.Hash"
                                          style="background: url('@Model.Media.ThumbnailUrl')">
                                         <img class="lazyload" data-parent
@@ -150,7 +146,7 @@
                             </figure>
                             break;
 
-                        case Core.Entities.MediaType.Video:
+                        case Voxed.WebApp.ViewModels.MediaType.Video:
 
                             <video controls="" autoplay="" muted="" class="attach_video" width="100%" height="auto" preload="metadata" loop="">
                                 <source src="@Model.Media.Url" type="video/webm">
@@ -173,7 +169,7 @@
         </section>
         <section class="voxCommentList">
 
-            @await Component.InvokeAsync("CommentForm", new { voxID = Model.ID, userID = Model.UserID })
+            @await Component.InvokeAsync("CommentForm", new { voxID = Model.Id, userID = Model.UserId })
 
 
             @*<form asp-controller="Comment" asp-action="Create">
@@ -370,17 +366,17 @@
                                 <div class="commentMetadata">
                                     <div class="commentsTag unselect">
 
-                                        @if (Model.User.UserType == Core.Entities.UserType.Account && comment.UserID == Model.UserID)
+                                        @if (Model.UserType == UserType.Account && comment.UserID == Model.UserId)
                                         {
                                             <span class="commentTagBg op">OP</span>
                                         }
 
-                                        @if (Model.User.UserType == Core.Entities.UserType.AnonymousAccount && comment.UserID == Model.UserID)
+                                        @if (Model.UserType == UserType.AnonymousAccount && comment.UserID == Model.UserId)
                                         {
                                             <span class="commentTagBg op">OP</span>
                                         }
 
-                                        @if (Model.User.UserType == Core.Entities.UserType.Administrator && comment.UserID == Model.UserID)
+                                        @if (Model.UserType == UserType.Administrator && comment.UserID == Model.UserId)
                                         {
                                             <span class="commentTagBg op">OP</span>
                                         }
@@ -415,7 +411,7 @@
                                         {
                                             var userId = Guid.Parse(UserManager.GetUserId(User));
 
-                                            @if (userId == Model.UserID || User.IsInRole(nameof(Core.Data.EF.RoleType.Administrator)))
+                                            @if (userId == Model.UserId || User.IsInRole(nameof(Core.Data.EF.RoleType.Administrator)))
                                             {
                                                 <span class="commentTag pointer" data-delete data-contenttype="0" data-contentid="@comment.ID"><i class="fas fa-times" data-parent></i></span>
                                             }
@@ -547,8 +543,8 @@
 </main>
 
 <script>
-    var VOX_ID = "@Core.Shared.GuidConverter.ToShortString(Model.ID)";
-    var VOX_HASH = "@Core.Shared.GuidConverter.ToShortString(Model.ID)";
+    var VOX_ID = "@Core.Shared.GuidConverter.ToShortString(Model.Id)";
+    var VOX_HASH = "@Core.Shared.GuidConverter.ToShortString(Model.Id)";
     var IS_OP = "0";
     var ACTUAL_PAGE = "vox";
     var TITLE = "Voxed  | @Model.Title";
