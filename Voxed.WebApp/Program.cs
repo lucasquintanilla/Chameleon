@@ -21,23 +21,15 @@ namespace Voxed.WebApp
         {
             try
             {
-                //Log.Logger.Information("Starting web host");
-
                 var host = CreateHostBuilder(args).Build();
                 await CreateDbIfNotExists(host);
-                host.Run();
-
+                await host.RunAsync();
 
                 return 0;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                //Log.Fatal(ex, "Host terminated unexpectedly");
                 return 1;
-            }
-            finally
-            {
-                Log.CloseAndFlush();
             }
         }
 
@@ -115,7 +107,7 @@ namespace Voxed.WebApp
                         .ReadFrom.Configuration(context.Configuration);
                 })
                 ;
-
+        
         private static async Task SqliteInitialize(IServiceProvider services)
         {
             var context = services.GetRequiredService<SqliteVoxedContext>();
