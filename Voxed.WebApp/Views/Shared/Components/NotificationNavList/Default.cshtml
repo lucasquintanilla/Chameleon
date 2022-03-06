@@ -7,10 +7,12 @@
 @inject UserManager<Core.Entities.User> UserManager
 
 <ul class="menu unselect" id="navbarMenu">
-    <li class="menuIcon tooltip-bottom mobile" data-tooltip="Dispositivos online">
+
+    @*ICONO TOTAL USERS CONECTADOS*@
+    @*<li class="menuIcon tooltip-bottom mobile" data-tooltip="Dispositivos online">
         <i class="fas fa-laptop"></i>
         <div class="navOnlineDevicesCount">@VoxedHub.TotalUsersOnline.ToString()</div>
-    </li>
+    </li>*@
     <li class="menuIcon tooltip-bottom mobile" data-tooltip="Buscar" data-togglesearch>
         <i class="fas fa-search"></i>
     </li>
