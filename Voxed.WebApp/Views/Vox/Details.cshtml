@@ -171,6 +171,21 @@
 
             @await Component.InvokeAsync("CommentForm", new { voxID = Model.Id, userID = Model.UserId })
 
+            <div class="sendMessage">
+                <div data-modal="sendMessage">Enviar mensaje global</div>
+            </div>
+
+            <div class="globalMessages">
+                <ul>
+                    <a href="/registro" data-event="click,button,REGISTER_GLOBAL_MESSAGE">
+                        <li class="message   multi">
+                            <div class="backgroundMessage" style="width: 97%"></div>
+                            <div class="messageContent">MENSAJE GLOBAL</div>
+                            <div class="messageTokens"><i class="fas fa-gem" aria-hidden="true"></i> 4000</div>
+                        </li>
+                    </a>
+                </ul>
+            </div>
 
             @*<form asp-controller="Comment" asp-action="Create">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -355,7 +370,7 @@
 
                     @foreach (var comment in Model.Comments.OrderByDescending(x => x.CreatedOn))
                     {
-                        <div class="comment   " id="@comment.ID" data-id="@comment.ID">
+                        <div class="comment   " id="@comment.Hash" data-id="@comment.Hash">
                             <div class="commentAvatar">
                                 @*<div class="unselect avatarColor   @Core.Shared.ColorService.GetColor()">*@
                                 <div class="unselect avatarColor  @comment.Style.ToString().ToLower()">
@@ -413,7 +428,7 @@
 
                                             @if (userId == Model.UserId || User.IsInRole(nameof(Core.Data.EF.RoleType.Administrator)))
                                             {
-                                                <span class="commentTag pointer" data-delete data-contenttype="0" data-contentid="@comment.ID"><i class="fas fa-times" data-parent></i></span>
+                                                <span class="commentTag pointer" data-delete data-contenttype="0" data-contentid="@comment.Hash"><i class="fas fa-times" data-parent></i></span>
                                             }
                                         }
 

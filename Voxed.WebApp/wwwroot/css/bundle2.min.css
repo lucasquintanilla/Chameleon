@@ -1012,7 +1012,7 @@ header.voxBody h1 {
     line-height: 1.7;
     word-break: break-word;
     margin-bottom: 16px;
-    white-space: pre-wrap; /*nuevo*/
+    /*white-space: pre-wrap;*/ /*nuevo*/
 }
 
 /* Comentarios */

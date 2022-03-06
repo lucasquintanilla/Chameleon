@@ -45,6 +45,15 @@ namespace Core.Shared
 
                         if (esLink) return t;
 
+                        //if (t.StartsWith("&gt;&gt;"))
+                        //{
+                        //    var id = t
+                        //    //.Replace("&gt;&gt;", "")
+                        //    //.Replace("&#xD;", "")
+                        //    .Trim();
+                        //    return $"<a href=\"#{id}\" data-quote=\"{id}\">&gt;&gt;{id}</a>\n<br>";
+                        //}
+
                         if (t.StartsWith("&gt;&gt;"))
                         {
                             var id = t
@@ -55,7 +64,7 @@ namespace Core.Shared
                         }
 
                         //Respuestas
-                        t = Regex.Replace(t, @"&gt;&gt;([A-Z0-9]{8})", m =>
+                        t = Regex.Replace(t, @"&gt;&gt;([A-Z0-9]{7})", m =>
                         {
                             esTag = true;
                             if (tags.Contains(m.Value)) return "";
@@ -79,7 +88,9 @@ namespace Core.Shared
                     });
 
             //var ret = string.Join("\n", x);
-            var ret = string.Join("<br>", x);
+            var ret = string.Join("<br>\n", x);
+            //var ret = string.Join("\r\n", x);
+            //var ret = string.Join("<br>", x); // No funciona cuando js intenta crear los tag en los comments
             return ret;
 
             //VERSION SEGURA PROBARLO A FUTURO
@@ -93,6 +104,8 @@ namespace Core.Shared
             {
                 return new List<string>();
             }
+
+            var hashLength = 7;
 
             return Regex.Matches(content, @">>([A-Z0-9]{7})") // {7} is hash lenght
                 .Select(m => m.Groups[1].Value)
