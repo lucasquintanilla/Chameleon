@@ -78,7 +78,7 @@ namespace Voxed.WebApp.Controllers
             return new Response() { Value = "OK" };
         }
 
-        private async Task UpdateVoxLastBump(Core.Entities.Comment comment)
+        private async Task UpdateVoxLastBump(Comment comment)
         {
             var vox = await _voxedRepository.Voxs.GetById(comment.VoxID);
 
