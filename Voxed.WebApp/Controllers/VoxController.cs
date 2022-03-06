@@ -59,7 +59,7 @@ namespace Voxed.WebApp.Controllers
             return new FavoriteResponse() { Status = false, Swal = $"Funcion {id} en desarrollo" };
         }
 
-        [HttpPost("request")]
+        [HttpPost("report")]
         public async Task<ReportResponse> Report(ReportRequest request)
         {
             try
@@ -69,16 +69,13 @@ namespace Voxed.WebApp.Controllers
                 switch (request.ContentType)
                 {
                     case 0:
-                        {
-                            var comment = _voxedRepository.Comments.Find(x => x.Hash == request.ContentId).Result.FirstOrDefault();
-                            message = $"NUEVA DENUNCIA \n Reason: {request.Reason}. \n https://voxed.club/vox/{GuidConverter.ToShortString(comment.VoxID)}#{comment.Hash}";
-                            break;
-                        }
+                        var comment = _voxedRepository.Comments.Find(x => x.Hash == request.ContentId).Result.FirstOrDefault();
+                        message = $"NUEVA DENUNCIA \n Reason: {request.Reason}. \n https://voxed.club/vox/{GuidConverter.ToShortString(comment.VoxID)}#{comment.Hash}";
+                        break;
+
                     case 1:
-                        {
-                            message = $"NUEVA DENUNCIA \n Reason: {request.Reason}. \n https://voxed.club/vox/{GuidConverter.ToShortString(new Guid(request.ContentId))}";
-                            break;
-                        }
+                        message = $"NUEVA DENUNCIA \n Reason: {request.Reason}. \n https://voxed.club/vox/{GuidConverter.ToShortString(new Guid(request.ContentId))}";
+                        break;
                 }
 
                 await _telegramService.SendMessage(message);
@@ -122,7 +119,7 @@ namespace Voxed.WebApp.Controllers
                 Content = vox.Content,
                 Hash = vox.Hash,
                 UserId = vox.UserID,
-                
+
                 CommentTag = UserTypeDictionary.GetDescription(vox.User.UserType).ToLower(),
                 CategoryName = vox.Category.Name,
                 CategoryShortName = vox.Category.ShortName,
@@ -140,7 +137,7 @@ namespace Voxed.WebApp.Controllers
                     MediaType = (ViewModels.MediaType)(int)vox.Media.MediaType,
                     ExtensionData = vox.Media?.Url.Split('=')[(vox.Media?.Url.Split('=').Length - 1).Value]
                 }
-                
+
                 //Comments = vox.Comments.Select(x => new CommentViewModel()
                 //{
                 //    Id = x.ID,

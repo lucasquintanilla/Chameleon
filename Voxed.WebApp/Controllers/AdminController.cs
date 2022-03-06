@@ -43,7 +43,7 @@ namespace Voxed.WebApp.Controllers
                         NotFound();
                     }
 
-                    comment.State = Core.Entities.CommentState.Deleted;
+                    comment.State = CommentState.Deleted;
 
                     if (comment.MediaID.HasValue)
                     {
@@ -88,7 +88,7 @@ namespace Voxed.WebApp.Controllers
             }
 
             var lastBump = vox.Comments
-                .Where(x => x.State == Core.Entities.CommentState.Normal)
+                .Where(x => x.State == CommentState.Normal)
                 .OrderByDescending(x => x.CreatedOn)
                 .Select(x => x.CreatedOn)
                 .First();
@@ -103,7 +103,7 @@ namespace Voxed.WebApp.Controllers
             if (media.MediaType == MediaType.Image)
             {
                 string destination = Path.Combine(_env.WebRootPath, "media", "banned");
-                var filename = media.Url.Split('/')[media.Url.Split('/').Length - 1];
+                var filename = Core.Utilities.Utilities.GetFileNameFromUrl(media.Url);
 
                 try
                 {

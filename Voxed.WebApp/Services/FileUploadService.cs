@@ -131,16 +131,19 @@ namespace Core.Shared
                 entity.Media = uploadData.Extension switch
                 {
                     UploadDataExtension.Youtube => await SaveFromYoutube(uploadData.ExtensionData, entity.Hash),
-                    UploadDataExtension.Base64 => await SaveFromBase64(uploadData.ExtensionData, entity.Hash),
+                    UploadDataExtension.Base64 => SaveFromBase64(uploadData.ExtensionData, entity.Hash),
                     _ => throw new NotImplementedException("Invalid file extension"),
                 };
 
                 return;
             }
 
-            ValidateFile(file);
+            if (file != null)
+            {
+                ValidateFile(file);
 
-            entity.Media = await SaveFromFile(file, entity.Hash);
+                entity.Media = await SaveFromFile(file, entity.Hash);
+            }            
         }
 
         private async Task<Media> SaveFromYoutube(string videoId, string hash)

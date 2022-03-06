@@ -9,7 +9,12 @@ namespace Core.Utilities
         public static string GetFileExtensionFromUrl(string url)
         {
             var array = url.Split(".");
-            return array[array.Length - 1];
+            return array[^1];
+        }
+
+        public static string GetFileNameFromUrl(string url)
+        {
+            return url.Split('/')[^1];
         }
 
         public static bool IsDebug()

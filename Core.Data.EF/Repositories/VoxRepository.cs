@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Core.Data.EF.Extensions;
 using Core.Data.Repositories;
 using Core.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -60,18 +62,25 @@ namespace Core.Data.EF.Repositories
 
         public async Task<IEnumerable<Vox>> SearchAsync(string search)
         {
-            return await _context.Voxs
-                .Where(x => x.State == VoxState.Normal)
-                .Where(q => q.Title.ToLower().Contains(search.ToLower()))
-                .Where(q => q.Content.ToLower().Contains(search.ToLower()))
+            HashSet<string> keywords = new HashSet<string>(search.ToLower().Split(' '));
+
+            var predicateTitle = keywords.Select(k => (Expression<Func<Vox, bool>>)(x => x.Title.Contains(k))).ToArray();            
+            //var predicateContent = keywords.Select(k => (Expression<Func<Vox, bool>>)(x => x.Content.Contains(k))).ToArray();            
+
+            return _context.Voxs
                 .Include(x => x.Media)
                 .Include(x => x.Category)
                 .Include(x => x.Comments)
+                .Where(x => x.State == VoxState.Normal)
+                //.Where(vox => keywords.Any(keyword => vox.Title.Contains(keyword)))
+                //.Where(vox => keywords.Any(keyword => vox.Content.Contains(keyword)))
+                .WhereAny(predicateTitle)                
+                //.WhereAny(predicateContent)                
                 .OrderByDescending(x => x.Bump)                
                 .Skip(0)
                 .Take(36)
                 .AsNoTracking()
-                .ToListAsync();
+                .ToList();
 
             //var p = db.Posts.Where(q => keywords.Any(k => q.Title.Contains(k)));
         }

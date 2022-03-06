@@ -69,7 +69,7 @@ namespace Voxed.WebApp.Controllers
 
             try
             {
-                if (request.Content == null && request.File == null && request.GetUploadData().Extension == null)
+                if (request.Content == null && request.File == null && request.GetUploadData()?.Extension == null)
                 {
                     return new CommentResponse()
                     {
