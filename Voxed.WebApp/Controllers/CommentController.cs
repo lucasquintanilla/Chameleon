@@ -290,7 +290,7 @@ namespace Voxed.WebApp.Controllers
                 UserID = user == null ? GetAnonUser().Id : user.Id,
                 Content = request.Content == null ? null : _formateadorService.Parse(request.Content),
                 Style = StyleService.GetRandomCommentStyle(),
-                IpAddress = UserIpAddress.ToString(),
+                IpAddress = UserIpAddress,
                 UserAgent = UserAgent
             };
 
@@ -306,7 +306,7 @@ namespace Voxed.WebApp.Controllers
                 UserName = UserNameGenerator.NewAnonymousUserName(),
                 EmailConfirmed = true,
                 UserType = UserType.AnonymousAccount,
-                IpAddress = UserIpAddress.ToString(),
+                IpAddress = UserIpAddress,
                 UserAgent = UserAgent,
                 Token = TokenGenerator.NewToken()
             };

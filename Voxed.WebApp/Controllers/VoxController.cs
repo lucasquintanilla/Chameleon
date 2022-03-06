@@ -204,7 +204,7 @@ namespace Voxed.WebApp.Controllers
                     Title = request.Title,
                     Content = _formatterService.Parse(request.Content),
                     CategoryID = request.Niche,
-                    IpAddress = UserIpAddress.ToString(),
+                    IpAddress = UserIpAddress,
                     UserAgent = UserAgent
                 };
 

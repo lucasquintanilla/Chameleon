@@ -73,7 +73,7 @@ namespace Voxed.WebApp.Controllers
                     UserName = request.UserName,  
                     EmailConfirmed = true, 
                     UserType = UserType.Account,
-                    IpAddress = UserIpAddress.ToString(),
+                    IpAddress = UserIpAddress,
                     UserAgent = UserAgent
                 };
 

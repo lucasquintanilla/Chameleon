@@ -9,8 +9,8 @@ namespace Core.Shared
     public class CopService
     {
         private static List<Image> _bannedImages = new List<Image>();
-        byte _thresholdLevel = 10;
-        string _directory;
+        readonly byte _thresholdLevel = 10;
+        readonly string _directory;
 
         public CopService(string directory)
         {

@@ -9,16 +9,11 @@ using Voxed.WebApp.Extensions;
 
 namespace Voxed.WebApp.Hubs
 {
-    public static class ConnectedUser
-    {
-        private static HashSet<string> usersOnline = new HashSet<string>();
-    }
-
     public class VoxedHub : Hub<INotificationHub>
     {
-        private static HashSet<string> usersOnline = new HashSet<string>();
+        private static HashSet<string> _usersOnline = new HashSet<string>();
 
-        public static int TotalUsersOnline => VoxedHub.usersOnline.Count;
+        public static int TotalUsersOnline => _usersOnline.Count;
 
         // Envia en la home el destello de nuevo comentario en vox 
         // Envia en el vox el nuevo comentario
@@ -51,14 +46,14 @@ namespace Voxed.WebApp.Hubs
 
         public override async Task OnConnectedAsync()
         {
-            usersOnline.Add(Context.GetHttpContext().Connection.RemoteIpAddress.MapToIPv4().ToString());
+            _usersOnline.Add(Context.GetHttpContext().Connection.RemoteIpAddress.MapToIPv4().ToString());
             //usersOnline.Add(Context.ConnectionId);
             await base.OnConnectedAsync();
         }
 
         public override async Task OnDisconnectedAsync(Exception exception)
         {
-            usersOnline.Remove(Context.GetHttpContext().Connection.RemoteIpAddress.MapToIPv4().ToString());
+            _usersOnline.Remove(Context.GetHttpContext().Connection.RemoteIpAddress.MapToIPv4().ToString());
             //usersOnline.Remove(Context.GetHttpContext().GetServerVariable("HTTP_X_FORWARDED_FOR"));
             //usersOnline.Remove(Context.ConnectionId);
             await base.OnDisconnectedAsync(exception);

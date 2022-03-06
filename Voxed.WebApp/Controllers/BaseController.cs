@@ -24,9 +24,9 @@ namespace Voxed.WebApp.Controllers
             _accessor = accessor;
         }
 
-        protected string UserAgent => Request.Headers.ContainsKey("User-Agent") ? Request.Headers["User-Agent"].ToString() : "";
+        protected string UserAgent => Request.Headers.ContainsKey("User-Agent") ? Request.Headers["User-Agent"].ToString() : String.Empty;
 
-        protected IPAddress UserIpAddress => HttpContext.Connection.RemoteIpAddress;
+        protected string UserIpAddress => HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
         //protected string UserIpAddress => _accessor.GetIpAddress();
 
         protected void RetringBannedIps()
