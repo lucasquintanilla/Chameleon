@@ -2,7 +2,6 @@
 using Core.Entities;
 using Core.Services.Telegram;
 using Core.Shared;
-using Core.Shared.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -11,11 +10,10 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Voxed.WebApp.Hubs;
+using Voxed.WebApp.Models;
 using Voxed.WebApp.ViewModels;
 
 namespace Voxed.WebApp.Controllers
@@ -164,12 +162,7 @@ namespace Voxed.WebApp.Controllers
             var voxsList = ConvertToViewModel(voxs);
 
             return View(voxsList);
-        }
-
-        private User GetAnonymousUser()
-        {
-            return _anonUser ??= _userManager.Users.FirstOrDefault(x => x.UserType == Core.Entities.UserType.Anonymous);
-        }
+        }        
 
         [HttpPost]
         [Route("anon/vox")]
@@ -296,9 +289,9 @@ namespace Voxed.WebApp.Controllers
             throw new Exception("Usuario no pudo ser creado");
         }
 
-        private Models.VoxResponse ConvertoToVoxResponse(Vox vox)
+        private VoxResponse ConvertoToVoxResponse(Vox vox)
         {
-            return new Models.VoxResponse()
+            return new VoxResponse()
             {
                 Hash = GuidConverter.ToShortString(vox.ID),
                 Status = "1",
@@ -318,94 +311,14 @@ namespace Voxed.WebApp.Controllers
             };
         }
 
-        public IEnumerable<Models.VoxResponse> ConvertToViewModel(IEnumerable<Vox> voxs)
+        private IEnumerable<VoxResponse> ConvertToViewModel(IEnumerable<Vox> voxs)
         {
             return voxs.Select(ConvertoToVoxResponse);
         }
-    }
 
-
-    public class ReportRequest
-    {
-        public int ContentType { get; set; }
-        public string ContentId { get; set; }
-        public string Reason { get; set; }
-    }
-
-    public class ReportResponse
-    {
-        public bool Status { get; set; }
-        public string Swal { get; set; }
-    }
-
-    public class CreateVoxRequest
-    {
-        [Required(ErrorMessage = "Debe ingresar un titulo")]
-        [StringLength(120, ErrorMessage = "El titulo no puede superar los {1} caracteres.")]
-        public string Title { get; set; }
-
-        [Required(ErrorMessage = "Debe ingresar un contenido")]
-        [StringLength(5000, ErrorMessage = "El contenido no puede superar los {1} caracteres.")]
-        public string Content { get; set; }
-
-        [Required(ErrorMessage = "Debe seleccionar una categoria.")]
-        public int Niche { get; set; }
-        public IFormFile File { get; set; }
-        public string PollOne { get; set; }
-        public string PollTwo { get; set; }
-        public string UploadData { get; set; }
-
-
-        [JsonPropertyName("g-recaptcha-response")]
-        public string GReCaptcha { get; set; }
-
-        [JsonPropertyName("h-captcha-response")]
-        public string HCaptcha { get; set; }
-
-        public UploadData GetUploadData()
+        private User GetAnonymousUser()
         {
-            return JsonConvert.DeserializeObject<UploadData>(UploadData);
+            return _anonUser ??= _userManager.Users.FirstOrDefault(x => x.UserType == Core.Entities.UserType.Anonymous);
         }
-    }
-
-    public class CreateVoxResponse
-    {
-        public bool Status { get; set; }
-        public string VoxHash { get; set; }
-        public string Swal { get; set; }
-        public string Error { get; set; }
-    }
-
-    public class ListRequest
-    {
-        public string Page { get; set; } //category-anm o home
-        public int LoadMore { get; set; }
-        public string Suscriptions { get; set; }
-        public string Ignore { get; set; }
-
-    }
-
-    public class List
-    {
-        public IEnumerable<Models.VoxResponse> Voxs { get; set; } = new List<Models.VoxResponse>();
-        public string Page { get; set; }
-    }
-
-    public class ListResponse
-    {
-        public bool Status { get; set; }
-        public List List { get; set; }
-    }
-
-    public class FavoriteRequest
-    {
-        public int ContentType { get; set; }
-        public Guid ContentId { get; set; }
-    }
-
-    public class FavoriteResponse
-    {
-        public bool Status { get; set; }
-        public string Swal { get; set; }
     }
 }
