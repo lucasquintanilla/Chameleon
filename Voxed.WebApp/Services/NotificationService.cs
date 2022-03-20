@@ -1,20 +1,20 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Core.Data.Repositories;
+﻿using Core.Data.Repositories;
 using Core.Entities;
 using Core.Shared;
-using Core.Utilities;
 using Core.Shared.Models;
 using Microsoft.AspNetCore.SignalR;
-using Voxed.WebApp.Hubs;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Voxed.WebApp.Extensions;
+using Voxed.WebApp.Hubs;
 
 namespace Voxed.WebApp.Services
 {
     public class NotificationService
     {
-        private readonly IVoxedRepository _voxedRepository; 
+        private readonly IVoxedRepository _voxedRepository;
         private readonly IHubContext<VoxedHub, INotificationHub> _notificationHub;
         private readonly FormateadorService _formateadorService;
 
@@ -29,58 +29,72 @@ namespace Voxed.WebApp.Services
             _formateadorService = formateadorService;
         }
 
-        private async Task SaveOpNotification(Vox vox, Comment comment)
+        public async Task ManageReplyNotifications(Vox vox, Comment comment, Models.CommentRequest request)
         {
-            if (vox.User.UserType != UserType.Anonymous && vox.UserID != comment.UserID)
+            var replyNotifications = await CreateReplyNotifications(vox, comment, request);
+
+            foreach (var notification in replyNotifications)
             {
-                var notification = new Notification()
-                {
-                    CommentId = comment.ID,
-                    VoxId = vox.ID,
-                    UserId = vox.UserID,
-                    Type = NotificationType.NewComment,
-                };
-
-                await _voxedRepository.Notifications.Add(notification);
-                //await _voxedRepository.CompleteAsync();
-
-                await SendOpLiveNotification(comment, vox, notification);
+                await SendReplyLiveNotification(vox, comment, notification);
             }
         }
 
-        //private async Task SaveRepliesNotifications(Vox vox, Comment comment, Models.CommentRequest request)
-        //{
-        //    if (string.IsNullOrWhiteSpace(comment.Content)) return;
+        public async Task ManageOpNotification(Vox vox, Comment comment)
+        {
+            var notification = await CreateOpNotification(vox, comment);
+            await SendOpLiveNotification(comment, vox, notification);
+        }
 
-        //    var hashList = _formateadorService.GetRepliedHash(request.Content);
+        private async Task<Notification> CreateOpNotification(Vox vox, Comment comment)
+        {
+            var notification = new Notification()
+            {
+                CommentId = comment.ID,
+                VoxId = vox.ID,
+                UserId = vox.UserID,
+                Type = NotificationType.NewComment,
+            };
 
-        //    if (!hashList.Any()) return;
+            await _voxedRepository.Notifications.Add(notification);
 
-        //    var usersId = await _voxedRepository.Comments.GetUsersByCommentHash(hashList, new Guid[] { comment.UserID });
+            await _voxedRepository.SaveChangesAsync();
 
-        //    if (!usersId.Any()) return;
+            return notification;
+        }
 
-        //    var repliesNotifications = usersId
-        //        .Where(x => x != GetAnonUser().Id)
-        //        .Select(userId => new Notification()
-        //        {
-        //            CommentId = comment.ID,
-        //            VoxId = vox.ID,
-        //            UserId = userId,
-        //            Type = NotificationType.Reply,
-        //        })
-        //        .ToList();
+        private async Task<List<Notification>> CreateReplyNotifications(Vox vox, Comment comment, Models.CommentRequest request)
+        {
+            var notifications = new List<Notification>();
 
-        //    await _voxedRepository.Notifications.AddRange(repliesNotifications);
-        //    //await _voxedRepository.CompleteAsync();
+            if (string.IsNullOrWhiteSpace(comment.Content)) return notifications;
 
-        //    foreach (var notification in repliesNotifications)
-        //    {
-        //        await SendReplyLiveNotification(vox, comment, notification);
-        //    }
-        //}
+            var hashList = _formateadorService.GetRepliedHash(request.Content);
 
-        private async Task SendCommentLiveUpdate(Comment comment, Vox vox, Models.CommentRequest request)
+            if (!hashList.Any()) return notifications;
+
+            var usersId = await _voxedRepository.Comments.GetUsersByCommentHash(hashList, new Guid[] { comment.UserID });
+
+            if (!usersId.Any()) return notifications;
+
+            var repliesNotifications = usersId
+                .Select(userId => new Notification()
+                {
+                    CommentId = comment.ID,
+                    VoxId = vox.ID,
+                    UserId = userId,
+                    Type = NotificationType.Reply,
+                })
+                .ToList();
+
+            await _voxedRepository.Notifications.AddRange(repliesNotifications);
+
+            await _voxedRepository.SaveChangesAsync();
+
+            return repliesNotifications;
+
+        }
+
+        public async Task SendCommentLiveUpdate(Comment comment, Vox vox, Models.CommentRequest request)
         {
             var commentNotification = new CommentLiveUpdate()
             {
@@ -112,25 +126,22 @@ namespace Voxed.WebApp.Services
 
         private async Task SendOpLiveNotification(Comment comment, Vox vox, Notification notification)
         {
-            if (comment.UserID != vox.User.Id)
+            var userNotification = new UserNotification()
             {
-                var userNotification = new UserNotification()
+                Type = "new",
+                Content = new Content()
                 {
-                    Type = "new",
-                    Content = new Content()
-                    {
-                        VoxHash = vox.Hash,
-                        NotificationBold = "Nuevo Comentario",
-                        NotificationText = vox.Title,
-                        Count = "1",
-                        ContentHash = comment.Hash,
-                        Id = notification.Id.ToString(),
-                        ThumbnailUrl = vox.Media?.ThumbnailUrl
-                    }
-                };
+                    VoxHash = vox.Hash,
+                    NotificationBold = "Nuevo Comentario",
+                    NotificationText = vox.Title,
+                    Count = "1",
+                    ContentHash = comment.Hash,
+                    Id = notification.Id.ToString(),
+                    ThumbnailUrl = vox.Media?.ThumbnailUrl
+                }
+            };
 
-                await _notificationHub.Clients.User(vox.User.Id.ToString()).Notification(userNotification);
-            }
+            await _notificationHub.Clients.User(vox.UserID.ToString()).Notification(userNotification);
         }
 
         private async Task SendReplyLiveNotification(Vox vox, Comment comment, Notification notification)
@@ -145,7 +156,7 @@ namespace Voxed.WebApp.Services
                     NotificationText = vox.Title,
                     Count = "1",
                     ContentHash = comment.Hash,
-                    Id = notification.Id.ToString(), //id notification
+                    Id = notification.Id.ToString(),
                     ThumbnailUrl = vox.Media?.ThumbnailUrl
                 }
             };
@@ -153,6 +164,4 @@ namespace Voxed.WebApp.Services
             await _notificationHub.Clients.Users(notification.UserId.ToString()).Notification(userNotification);
         }
     }
-
-
 }

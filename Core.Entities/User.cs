@@ -3,7 +3,7 @@ using System;
 
 namespace Core.Entities
 {
-    public enum UserType { Anonymous, Administrator, Moderator, Account, AnonymousAccount }
+    public enum UserType { Anonymous, Administrator, Moderator, Account, AnonymousAccount, Developer }
 
     public class User : IdentityUser<Guid>
     {

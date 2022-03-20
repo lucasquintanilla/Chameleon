@@ -19,6 +19,7 @@ namespace Core.Shared
                         {UserType.Moderator, "mod" },
                         {UserType.Account, "anon" },
                         {UserType.AnonymousAccount, "anon" },
+                        {UserType.Developer, "dev" },
                     };
 
                 return _description;

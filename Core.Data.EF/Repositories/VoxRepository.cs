@@ -67,7 +67,7 @@ namespace Core.Data.EF.Repositories
             var predicateTitle = keywords.Select(k => (Expression<Func<Vox, bool>>)(x => x.Title.Contains(k))).ToArray();            
             //var predicateContent = keywords.Select(k => (Expression<Func<Vox, bool>>)(x => x.Content.Contains(k))).ToArray();            
 
-            return _context.Voxs
+            return await _context.Voxs
                 .Include(x => x.Media)
                 .Include(x => x.Category)
                 .Include(x => x.Comments)
@@ -80,7 +80,7 @@ namespace Core.Data.EF.Repositories
                 .Skip(0)
                 .Take(36)
                 .AsNoTracking()
-                .ToList();
+                .ToListAsync();
 
             //var p = db.Posts.Where(q => keywords.Any(k => q.Title.Contains(k)));
         }
@@ -125,7 +125,8 @@ namespace Core.Data.EF.Repositories
                     .Include(x => x.Media)
                     .Include(x => x.Category)
                     .Include(x => x.Comments.Where(c => c.State == CommentState.Normal))
-                    .Skip(idSkipList.Count())
+                    //.Skip(idSkipList.Count()) // esto estab incluido peor no se porque
+                    .Skip(0)
                     .Take(36)
                     .AsNoTracking()
                     .ToListAsync();

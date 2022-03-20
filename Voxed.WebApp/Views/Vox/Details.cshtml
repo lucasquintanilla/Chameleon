@@ -394,17 +394,7 @@
                                 <div class="commentMetadata">
                                     <div class="commentsTag unselect">
 
-                                        @if (Model.UserType == UserType.Account && comment.UserID == Model.UserId)
-                                        {
-                                            <span class="commentTagBg op">OP</span>
-                                        }
-
-                                        @if (Model.UserType == UserType.AnonymousAccount && comment.UserID == Model.UserId)
-                                        {
-                                            <span class="commentTagBg op">OP</span>
-                                        }
-
-                                        @if (Model.UserType == UserType.Administrator && comment.UserID == Model.UserId)
+                                        @if (comment.UserID == Model.UserId)
                                         {
                                             <span class="commentTagBg op">OP</span>
                                         }

@@ -20,14 +20,7 @@ namespace Core.Shared
 
         public static string GetUserTypeTag(UserType userType)
         {
-            return userType switch
-            {
-                UserType.Anonymous => "anon",
-                UserType.Administrator => "admin",
-                UserType.Moderator => "mod",
-                UserType.Account => "anon",
-                _ => "anon"
-            };
+            return UserTypeDictionary.GetDescription(userType).ToLower();
         }
     }
 }
