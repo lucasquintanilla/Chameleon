@@ -28,10 +28,10 @@ namespace Voxed.WebApp.Controllers
         private readonly IHubContext<VoxedHub, INotificationHub> _notificationHub;
         private User _anonUser;
         private readonly ILogger<VoxController> _logger;
-        private readonly TelegramService _telegramService;
+        private readonly Core.Services.Telegram.TelegramService _telegramService;
 
         public VoxController(
-            TelegramService telegramService,
+            Core.Services.Telegram.TelegramService telegramService,
             ILogger<VoxController> logger,
             FileUploadService fileUploadService,
             IVoxedRepository voxedRepository,

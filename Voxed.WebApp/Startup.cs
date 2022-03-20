@@ -129,6 +129,8 @@ namespace Voxed.WebApp
             services.AddSingleton<FormateadorService>();
             services.AddSingleton<FileUploadService>();
             services.AddSingleton<ImxtoService>();
+
+            services.Configure<TelegramConfiguration>(Configuration.GetSection(TelegramConfiguration.Telegram));
             services.AddSingleton<TelegramService>();
             services.AddSingleton<YoutubeService>();
             
@@ -174,10 +176,6 @@ namespace Voxed.WebApp
             //});
 
             services.AddSignalR();
-
-            
-            //services.Configure<FileUploadServiceConfiguration>(Configuration.GetSection("FileUploadService"));
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

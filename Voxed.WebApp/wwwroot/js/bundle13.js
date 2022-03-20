@@ -5226,7 +5226,7 @@
                     void 0 === t || 0 == t ? t != i && a.put(i, "token") : a.put(i, "token")
                 }
             }, n.onerror = function (e) {
-                alert("error opening database " + e.target.errorCode)
+                //alert("error opening database " + e.target.errorCode)
             }
         }
     }, window.verifySession = e => {

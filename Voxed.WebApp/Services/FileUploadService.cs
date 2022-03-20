@@ -173,9 +173,9 @@ namespace Core.Shared
             var thumbnailFilename = GetNormalizedFileName(hash, ".webp");
             var thumbnailFilePath = GetFilePath(thumbnailFilename);
 
-            image.Save(originalFilePath, image.GetImageFormat());
+            image.Save(originalFilePath, image.RawFormat);
 
-            image.Save(thumbnailFilePath, image.GetImageFormat());
+            image.Save(thumbnailFilePath, image.RawFormat);
 
             return GetLocalMediaResponse(originalFilename, thumbnailFilename, MediaType.Image);
         }

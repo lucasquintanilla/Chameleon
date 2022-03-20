@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Options;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -11,13 +12,15 @@ namespace Core.Services.Telegram
 {
     public class TelegramService
     {
+        private readonly TelegramConfiguration _config;
         private readonly TelegramBotClient _client;
         private readonly string _chatId;
 
-        public TelegramService()
+        public TelegramService(IOptions<TelegramConfiguration> options)
         {
-            _client = new TelegramBotClient("5261713830:AAGw4Xe-uSKsPVM1Io8BonCd59dk6Mr-aNc");
-            _chatId = "1719638925";
+            _config = options.Value;
+            _client = new TelegramBotClient(_config.Token);
+            _chatId = _config.ChatId;
 
             using var cts = new CancellationTokenSource();
 
