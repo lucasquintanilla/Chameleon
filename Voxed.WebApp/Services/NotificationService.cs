@@ -8,6 +8,7 @@ using Core.Utilities;
 using Core.Shared.Models;
 using Microsoft.AspNetCore.SignalR;
 using Voxed.WebApp.Hubs;
+using Voxed.WebApp.Extensions;
 
 namespace Voxed.WebApp.Services
 {
@@ -95,7 +96,7 @@ namespace Voxed.WebApp.Services
                 Tag = UserViewHelper.GetUserTypeTag(comment.User.UserType), //admin o dev               
                 Content = comment.Content ?? "",
                 Name = UserViewHelper.GetUserName(comment.User),
-                CreatedAt = TimeAgo.ConvertToTimeAgo(comment.CreatedOn.DateTime),
+                CreatedAt = comment.CreatedOn.DateTime.ToTimeAgo(),
                 Poll = null, //aca va una opcion respondida
 
                 //Media

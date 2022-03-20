@@ -133,6 +133,7 @@ namespace Voxed.WebApp
             services.Configure<TelegramConfiguration>(Configuration.GetSection(TelegramConfiguration.Telegram));
             services.AddSingleton<TelegramService>();
             services.AddSingleton<YoutubeService>();
+            //services.AddSingleton<GlobalMessageService>();
             
 
             services.Configure<IdentityOptions>(options =>

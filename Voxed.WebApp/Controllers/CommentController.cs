@@ -11,6 +11,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Voxed.WebApp.Extensions;
 using Voxed.WebApp.Hubs;
 using Voxed.WebApp.Models;
 using Voxed.WebApp.Services;
@@ -212,7 +213,7 @@ namespace Voxed.WebApp.Controllers
                 Tag = UserViewHelper.GetUserTypeTag(comment.User.UserType), //admin o dev               
                 Content = comment.Content ?? string.Empty,
                 Name = UserViewHelper.GetUserName(comment.User),
-                CreatedAt = TimeAgo.ConvertToTimeAgo(comment.CreatedOn.DateTime),
+                CreatedAt = comment.CreatedOn.DateTime.ToTimeAgo(),
                 Poll = null, //aca va una opcion respondida
 
                 //Media

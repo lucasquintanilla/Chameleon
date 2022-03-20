@@ -2,6 +2,8 @@
 
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.EntityFrameworkCore.Infrastructure
+@using Voxed.WebApp.Extensions
+@using Voxed.WebApp.Services
 @using Voxed.WebApp.ViewModels
 
 @inject SignInManager<Core.Entities.User> SignInManager
@@ -177,13 +179,24 @@
 
             <div class="globalMessages">
                 <ul>
-                    <a href="/registro" data-event="click,button,REGISTER_GLOBAL_MESSAGE">
+                    @foreach(var message in GlobalMessageService.GetActiveMessages())
+                    {
+                        <a href="/home" data-event="click,button,REGISTER_GLOBAL_MESSAGE">
+                        <li class="message   multi">
+                            <div class="backgroundMessage" style="width: 97%"></div>
+                            <div class="messageContent">@message.Content</div>
+                            <div class="messageTokens"><i class="fas fa-gem" aria-hidden="true"></i> @message.Tokens.ToString()</div>
+                        </li>
+                    </a>
+                        
+                    }
+                    @*<a href="/home" data-event="click,button,REGISTER_GLOBAL_MESSAGE">
                         <li class="message   multi">
                             <div class="backgroundMessage" style="width: 97%"></div>
                             <div class="messageContent">MENSAJE GLOBAL</div>
                             <div class="messageTokens"><i class="fas fa-gem" aria-hidden="true"></i> 4000</div>
                         </li>
-                    </a>
+                    </a>*@
                 </ul>
             </div>
 
@@ -441,7 +454,7 @@
                                         <span class="commentTag pointer" data-tag="@comment.Hash">@comment.Hash</span>
                                     </div>
                                     <div class="commentMetaRight">
-                                        <div class="commentCreatedAt">@Core.Shared.TimeAgo.ConvertToTimeAgo(@comment.CreatedOn.DateTime)</div>
+                                        <div class="commentCreatedAt">@comment.CreatedOn.DateTime.ToTimeAgo()</div>
                                         <div class="commentAction" data-commentaction="@comment.Hash">
                                             <i data-parent
                                                class="fas fa-ellipsis-v"></i>

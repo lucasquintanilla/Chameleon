@@ -12,8 +12,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Voxed.WebApp.Extensions;
 using Voxed.WebApp.Hubs;
 using Voxed.WebApp.Models;
+using Voxed.WebApp.Services;
 using Voxed.WebApp.ViewModels;
 
 namespace Voxed.WebApp.Controllers
@@ -28,10 +30,10 @@ namespace Voxed.WebApp.Controllers
         private readonly IHubContext<VoxedHub, INotificationHub> _notificationHub;
         private User _anonUser;
         private readonly ILogger<VoxController> _logger;
-        private readonly Core.Services.Telegram.TelegramService _telegramService;
+        private readonly TelegramService _telegramService;
 
         public VoxController(
-            Core.Services.Telegram.TelegramService telegramService,
+            TelegramService telegramService,
             ILogger<VoxController> logger,
             FileUploadService fileUploadService,
             IVoxedRepository voxedRepository,
@@ -39,7 +41,8 @@ namespace Voxed.WebApp.Controllers
             FormateadorService formatterService,
             IHubContext<VoxedHub, INotificationHub> notificationHub,
             SignInManager<User> signInManager,
-            IHttpContextAccessor accessor) : base(accessor)
+            IHttpContextAccessor accessor
+            ) : base(accessor)
         {
             _fileUploadService = fileUploadService;
             _voxedRepository = voxedRepository;
@@ -49,6 +52,53 @@ namespace Voxed.WebApp.Controllers
             _signInManager = signInManager;
             _logger = logger;
             _telegramService = telegramService;
+        }
+
+        [HttpPost("account/message")]
+        public async Task<FavoriteResponse> SendGlobalMessage(GlobalMessageFormViewModel messageForm)
+        {
+            try
+            {
+                var message = new GlobalMessage() { Content = messageForm.Content, };
+                switch (messageForm.Type)
+                {
+                    case GlobalMessageFormViewModel.GlobalMessageType.TenMinutes:
+                        message.DueDate = DateTime.UtcNow.AddMinutes(10);
+                        message.Tokens = 50;
+                        break;
+                    case GlobalMessageFormViewModel.GlobalMessageType.ThirtyMinutes:
+                        message.DueDate = DateTime.UtcNow.AddMinutes(30);
+                        message.Tokens = 30;
+                        break;
+                    case GlobalMessageFormViewModel.GlobalMessageType.OneHour:
+                        message.DueDate = DateTime.UtcNow.AddMinutes(60);
+                        message.Tokens = 300;
+                        break;
+                    case GlobalMessageFormViewModel.GlobalMessageType.TwoHours:
+                        message.DueDate = DateTime.UtcNow.AddHours(2);
+                        message.Tokens = 500;
+                        break;
+                    case GlobalMessageFormViewModel.GlobalMessageType.FourHours:
+                        message.DueDate = DateTime.UtcNow.AddHours(4);
+                        message.Tokens = 1000;
+                        break;
+                    case GlobalMessageFormViewModel.GlobalMessageType.TwentyFourHours:
+                        message.DueDate = DateTime.UtcNow.AddHours(24);
+                        message.Tokens = 4000;
+                        break;
+                    default:
+                        throw new Exception("Tiempo de mensaje global invalido");
+                }
+
+                GlobalMessageService.AddMessage(message);
+
+                return new FavoriteResponse() { Status = true, Swal = $"Mensaje global agregado!" };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return new FavoriteResponse() { Status = false, Swal = $"Hubo un error al agregar tu mensaje global" };
+            }
         }
 
         [HttpPost("meta/{id}/toggle")]
@@ -126,7 +176,7 @@ namespace Voxed.WebApp.Controllers
                 CommentsCount = vox.Comments.Count(),
                 UserName = vox.User.UserName,
                 UserType = (ViewModels.UserType)(int)vox.User.UserType,
-                CreatedOn = TimeAgo.ConvertToTimeAgo(vox.CreatedOn.DateTime),
+                CreatedOn = vox.CreatedOn.DateTime.ToTimeAgo(),
                 Comments = vox.Comments,
                 Media = new MediaViewModel()
                 {
@@ -162,7 +212,7 @@ namespace Voxed.WebApp.Controllers
             var voxsList = ConvertToViewModel(voxs);
 
             return View(voxsList);
-        }        
+        }
 
         [HttpPost]
         [Route("anon/vox")]

@@ -75,7 +75,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="wwwroot\js\bundle13.js">
+    <Content Update="wwwroot\js\bundle14.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Update="wwwroot\media\banned\20220224-WGJQGVGJ9XCC8B8GY28B.png">

@@ -62,4 +62,8 @@ tutorial https://swimburger.net/blog/azure/setting-up-cloudflare-full-universal-
 - Coding First
 - Generic Repository Pattern
 
+# Ejemplos
+
+- [Id Unico](https://web.archive.org/web/20201020000307/https://www.voxed.net/off/R6X0nNN0BA6ySYDQa8EU)
+
 

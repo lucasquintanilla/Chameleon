@@ -8,6 +8,7 @@ using Core.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Voxed.WebApp.Extensions;
 
 namespace Voxed.WebApp.Controllers.V1
 {
@@ -83,7 +84,7 @@ namespace Voxed.WebApp.Controllers.V1
                 CategoryName = vox.Category.Name,
                 CategoryShortName = vox.Category.ShortName,
                 CategoryThumbnailUrl = vox.Category.Media.ThumbnailUrl,
-                CreatedOn = TimeAgo.ConvertToTimeAgo(vox.CreatedOn.DateTime),
+                CreatedOn = vox.CreatedOn.DateTime.ToTimeAgo(),
                 UserName = UserViewHelper.GetUserName(vox.User),
                 UserTag = UserViewHelper.GetUserTypeTag(vox.User.UserType),
                 CommentsCount = vox.Comments.Count().ToString(),
@@ -101,7 +102,7 @@ namespace Voxed.WebApp.Controllers.V1
                     Tag = UserViewHelper.GetUserTypeTag(comment.User.UserType), //admin o dev               
                     Content = comment.Content ?? string.Empty,
                     Name = UserViewHelper.GetUserName(comment.User),
-                    CreatedAt = TimeAgo.ConvertToTimeAgo(comment.CreatedOn.DateTime),
+                    CreatedAt = comment.CreatedOn.DateTime.ToTimeAgo(),
                     Poll = null, //aca va una opcion respondida
 
                     //Media
