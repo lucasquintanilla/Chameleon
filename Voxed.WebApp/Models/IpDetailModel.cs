@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Voxed.WebApp.Services
+namespace Voxed.WebApp.Models
 {
     public class IPDetailModel
     {

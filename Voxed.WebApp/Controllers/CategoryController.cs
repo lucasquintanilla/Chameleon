@@ -14,18 +14,12 @@ namespace Voxed.WebApp.Controllers
     public class CategoryController : Controller
     {
         private readonly IVoxedRepository _voxedRepository;
-        //private readonly SqliteVoxedContext _sqliteVoxedContext;
-        //private readonly MySqlVoxedContext _mySqlVoxedContext;
 
         public CategoryController(
             IVoxedRepository voxedRepository
-            //SqliteVoxedContext sqliteVoxedContext, 
-            //MySqlVoxedContext mySqlVoxedContext
             )
         {
             _voxedRepository = voxedRepository;
-            //_sqliteVoxedContext = sqliteVoxedContext;
-            //_mySqlVoxedContext = mySqlVoxedContext;
         }
 
         [Route("/{shortName}")]
@@ -66,29 +60,6 @@ namespace Voxed.WebApp.Controllers
             }).ToList();
 
             return View(voxsList);
-        }
-
-        [Route("test")]
-        public async Task<IActionResult> Test()
-        {
-            //var media = await _sqliteVoxedContext.Media.ToListAsync();
-            //await _mySqlVoxedContext.Media.AddRangeAsync(media);
-
-            //var categories = await _sqliteVoxedContext.Categories.ToListAsync();
-            //await _mySqlVoxedContext.Categories.AddRangeAsync(categories);
-
-            //var voxs = await _sqliteVoxedContext.Voxs.ToListAsync();
-            //await _mySqlVoxedContext.Voxs.AddRangeAsync(voxs);
-
-            //var comments = await _sqliteVoxedContext.Comments.ToListAsync();
-            //await _mySqlVoxedContext.Comments.AddRangeAsync(comments);
-
-            //var notifications = await _sqliteVoxedContext.Notifications.ToListAsync();
-            //await _mySqlVoxedContext.Notifications.AddRangeAsync(notifications);
-
-            //await _mySqlVoxedContext.SaveChangesAsync();
-
-            return Ok();
         }
     }
 }
