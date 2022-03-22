@@ -41,19 +41,19 @@ namespace Voxed.WebApp
                 try
                 {
                     var context = services.GetRequiredService<VoxedContext>();
-                    //var userManager = services.GetRequiredService<UserManager<User>>();
-                    //var roleManager = services.GetRequiredService<RoleManager<Role>>();
-                    //await new DbInitializer(context, userManager, roleManager).Initialize();
+                    var userManager = services.GetRequiredService<UserManager<User>>();
+                    var roleManager = services.GetRequiredService<RoleManager<Role>>();
+                    await new DbInitializer(context, userManager, roleManager).Initialize();
 
-                    switch (context.Database.ProviderName)
-                    {
-                        case "Microsoft.EntityFrameworkCore.Sqlite":
-                            await SqliteInitialize(services);
-                            break;
-                        case "Pomelo.EntityFrameworkCore.MySql":
-                            await MySqlInitialize(services);
-                            break;
-                    }
+                    //switch (context.Database.ProviderName)
+                    //{
+                    //    case "Microsoft.EntityFrameworkCore.Sqlite":
+                    //        await SqliteInitialize(services);
+                    //        break;
+                    //    case "Pomelo.EntityFrameworkCore.MySql":
+                    //        await MySqlInitialize(services);
+                    //        break;
+                    //}
                 }
                 catch (Exception ex)
                 {
@@ -108,22 +108,22 @@ namespace Voxed.WebApp
                 })
                 ;
         
-        private static async Task SqliteInitialize(IServiceProvider services)
-        {
-            var context = services.GetRequiredService<SqliteVoxedContext>();
-            var userManager = services.GetRequiredService<UserManager<User>>();
-            var roleManager = services.GetRequiredService<RoleManager<Role>>();
+        //private static async Task SqliteInitialize(IServiceProvider services)
+        //{
+        //    var context = services.GetRequiredService<VoxedContext>();
+        //    var userManager = services.GetRequiredService<UserManager<User>>();
+        //    var roleManager = services.GetRequiredService<RoleManager<Role>>();
 
-            await new DbInitializer(context, userManager, roleManager).Initialize();
-        }
+        //    await new DbInitializer(context, userManager, roleManager).Initialize();
+        //}
 
-        private static async Task MySqlInitialize(IServiceProvider services)
-        {
-            var context = services.GetRequiredService<MySqlVoxedContext>();
-            var userManager = services.GetRequiredService<UserManager<User>>();
-            var roleManager = services.GetRequiredService<RoleManager<Role>>();
+        //private static async Task MySqlInitialize(IServiceProvider services)
+        //{
+        //    var context = services.GetRequiredService<VoxedContext>();
+        //    var userManager = services.GetRequiredService<UserManager<User>>();
+        //    var roleManager = services.GetRequiredService<RoleManager<Role>>();
 
-            await new DbInitializer(context, userManager, roleManager).Initialize();
-        }
+        //    await new DbInitializer(context, userManager, roleManager).Initialize();
+        //}
     }
 }

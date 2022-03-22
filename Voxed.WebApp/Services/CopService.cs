@@ -35,6 +35,7 @@ namespace Core.Shared
 
         private void LoadBannedImages()
         {
+            Directory.CreateDirectory(_directory);
             var imagesPathList = Directory.GetFiles(_directory);
 
             foreach (var ImagePath in imagesPathList)

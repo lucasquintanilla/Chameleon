@@ -7,8 +7,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Core.Data.EF.MySql.Migrations
 {
-    [DbContext(typeof(MySqlVoxedContext))]
-    partial class MySqlVoxedContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(VoxedContext))]
+    partial class VoxedContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {

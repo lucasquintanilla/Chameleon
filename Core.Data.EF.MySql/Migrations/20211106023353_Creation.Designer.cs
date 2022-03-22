@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Core.Data.EF.MySql.Migrations
 {
-    [DbContext(typeof(MySqlVoxedContext))]
+    [DbContext(typeof(VoxedContext))]
     [Migration("20211106023353_Creation")]
     partial class Creation
     {

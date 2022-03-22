@@ -43,7 +43,8 @@ namespace Core.Data.EF
             //await _context.Database.EnsureCreatedAsync();
 
             var pendingMigrations = await _context.Database.GetPendingMigrationsAsync();
-            if (pendingMigrations.Any()) await _context.Database.MigrateAsync();
+            if (pendingMigrations.Any()) 
+                await _context.Database.MigrateAsync();
         }
 
         private async Task InitiliazeRoles()

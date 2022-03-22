@@ -65,18 +65,9 @@ namespace Voxed.WebApp
 
             #endregion
 
-            services.AddDbContext<SqliteVoxedContext>(options =>
-                    options.UseSqlite(Configuration.GetConnectionString(nameof(SqlProvider.Sqlite))));
-
-            //services.AddDbContext<MySqlVoxedContext>(options =>
-            //       options.UseMySql(Configuration.GetConnectionString(nameof(SqlProvider.MySql)),
-            //       ServerVersion.AutoDetect(Configuration.GetConnectionString(nameof(SqlProvider.MySql)))));
-
             if (Core.Utilities.Utilities.IsDebug())
             {
-                services.AddDbContext<MySqlVoxedContext>(options =>
-                       options.UseMySql(Configuration.GetConnectionString(nameof(SqlProvider.MySql)),
-                       ServerVersion.AutoDetect(Configuration.GetConnectionString(nameof(SqlProvider.MySql)))));
+                //https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/providers?tabs=dotnet-core-cli
 
                 var provider = Configuration.GetValue("Provider", nameof(SqlProvider.MySql));
                 services.AddDbContext<VoxedContext>(
@@ -89,7 +80,7 @@ namespace Voxed.WebApp
                         nameof(SqlProvider.MySql) => options.UseMySql(
                             Configuration.GetConnectionString(nameof(SqlProvider.MySql)),
                             ServerVersion.AutoDetect(Configuration.GetConnectionString(nameof(SqlProvider.MySql))),
-                            x => x.MigrationsAssembly(typeof(MySqlVoxedContext).Assembly.GetName().Name)),
+                    x => x.MigrationsAssembly(typeof(MySqlVoxedContext).Assembly.GetName().Name)),
 
                         _ => throw new Exception($"Unsupported provider: {provider}")
                     });
