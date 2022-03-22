@@ -9,7 +9,7 @@ Es un proyecto de codigo abierto escrito en ASP .NET Core 3.1
 ### Nivel Basico
 
 - [Visual Studio](https://visualstudio.microsoft.com/downloads/)
-- [Dbrowser (Sqlite)](https://sqlitebrowser.org/dl/)
+- [Dbrowser (Sqlite)](https://sqlitebrowser.org/dl/) (opcional)
 - [FFmpeg](https://ffmpeg.org/download.html) Descargar archivos ejectuables (.exe)
 - [Git](https://git-scm.com/download/win)
 
@@ -17,7 +17,7 @@ Es un proyecto de codigo abierto escrito en ASP .NET Core 3.1
 
 - [Visual Studio](https://visualstudio.microsoft.com/downloads/)
 - [Mysql](https://dev.mysql.com/downloads/installer/)
-- [Workbench](https://dev.mysql.com/downloads/workbench/) o [DBeaver](https://dbeaver.io/) (MySql)
+- [Workbench](https://dev.mysql.com/downloads/workbench/) o [DBeaver](https://dbeaver.io/) (MySql) (opcional)
 - [FFmpeg](https://ffmpeg.org/download.html) agregar ffmpeg executables en wwwroot\ffmpeg (edit path in appsetting.json)
 - [Git](https://git-scm.com/download/win)
 
@@ -36,7 +36,7 @@ Es un proyecto de codigo abierto escrito en ASP .NET Core 3.1
 
 ### Nivel Avanzado
 
-- Instalar software requerido y crear instancia de MySql
+- Instalar software requerido, crear instancia de MySql y base de datos
 - Clonar repositorio ejecutando comando git clone
 > git clone https://github.com/lucasquintanilla/Voxed.git
 - Agregar archivos ejecutable FFmpeg en wwwroot\ffmpeg (o tambien podes editar el path en appsetting.json)
