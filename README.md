@@ -6,22 +6,43 @@ Es un proyecto de codigo abierto escrito en ASP .NET Core 3.1
 
 ## Requisitos previos
 
+### Nivel Basico
+
+- [Visual Studio](https://visualstudio.microsoft.com/downloads/)
+- [Dbrowser (Sqlite)](https://sqlitebrowser.org/dl/)
+- [FFmpeg](https://ffmpeg.org/download.html) Descargar archivos ejectuables (.exe)
+- [Git](https://git-scm.com/download/win)
+
+### Nivel Avanzado
+
 - [Visual Studio](https://visualstudio.microsoft.com/downloads/)
 - [Mysql](https://dev.mysql.com/downloads/installer/)
 - [Workbench](https://dev.mysql.com/downloads/workbench/) o [DBeaver](https://dbeaver.io/) (MySql)
-- [Dbrowser (Sqlite)](https://sqlitebrowser.org/dl/)
 - [FFmpeg](https://ffmpeg.org/download.html) agregar ffmpeg executables en wwwroot\ffmpeg (edit path in appsetting.json)
 - [Git](https://git-scm.com/download/win)
 
-## Instalacion
+## Instalacion 
 
-- Clonar repositorio y abrir .sln con Visual Studio
+### Nivel Basico
+
+- Instalar software requerido
+- Clonar repositorio ejecutando comando git clone
 > git clone https://github.com/lucasquintanilla/Voxed.git
+- Agregar archivos ejecutable FFmpeg en wwwroot\ffmpeg (o tambien podes editar el path en appsetting.json)
+- Abrir archivo Voxed.sln con Visual Studio
+- Configurar Sqlite como proveedor de base de datos en archivo appsettings.json Ejemplo -> "Provider": "Sqlite" 
+- Ejectuar Voxed.WebApp desde Visual Studio
 
-## Configuracion
+### Nivel Avanzado
 
-- Seleccionar que tipo de base de datos utilizar desde appsettings.json (Mysql o Sqlite) 
-- Ejectuar Voxed.WebApp
+- Instalar software requerido y crear instancia de MySql
+- Clonar repositorio ejecutando comando git clone
+> git clone https://github.com/lucasquintanilla/Voxed.git
+- Agregar archivos ejecutable FFmpeg en wwwroot\ffmpeg (o tambien podes editar el path en appsetting.json)
+- Abrir archivo Voxed.sln con Visual Studio
+- Configurar MySql como proveedor de base de datos en archivo appsettings.json -> "Provider": "MySql"
+- Configurar ConnectionString en appsettings.json. Ejemplo -> "MySql": "Server=localhost;Database=voxed;Uid=root;Pwd=EstaEsMiPassword;Allow User Variables=true;"
+- Ejectuar Voxed.WebApp desde Visual Studio
 
 ## Contribucion
 
@@ -60,6 +81,7 @@ tutorial https://swimburger.net/blog/azure/setting-up-cloudflare-full-universal-
 - SignalR
 - FFmpeg
 - Elastic Search
+- Telegram
 
 # Patrones
 
