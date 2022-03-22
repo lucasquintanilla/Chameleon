@@ -151,7 +151,7 @@ namespace Voxed.WebApp.Controllers
                 Hash = new Hash().NewHash(7),
                 VoxID = GuidConverter.FromShortString(id),
                 UserID = user.Id,
-                Content = request.Content == null ? null : _formateadorService.Parse(request.Content),
+                Content = _formateadorService.Parse(request.Content),
                 Style = StyleService.GetRandomCommentStyle(),
                 IpAddress = UserIpAddress,
                 UserAgent = UserAgent

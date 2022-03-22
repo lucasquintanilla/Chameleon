@@ -28,7 +28,6 @@ namespace Voxed.WebApp.Controllers
         private readonly SignInManager<User> _signInManager;
         private readonly FormateadorService _formatterService;
         private readonly IHubContext<VoxedHub, INotificationHub> _notificationHub;
-        private User _anonUser;
         private readonly ILogger<VoxController> _logger;
         private readonly TelegramService _telegramService;
 
@@ -242,7 +241,7 @@ namespace Voxed.WebApp.Controllers
                 {
                     ID = Guid.NewGuid(),
                     State = VoxState.Normal,
-                    User = user ?? GetAnonymousUser(),
+                    User = user,
                     Hash = new Hash().NewHash(),
                     Title = request.Title,
                     Content = _formatterService.Parse(request.Content),
@@ -364,11 +363,6 @@ namespace Voxed.WebApp.Controllers
         private IEnumerable<VoxResponse> ConvertToViewModel(IEnumerable<Vox> voxs)
         {
             return voxs.Select(ConvertoToVoxResponse);
-        }
-
-        private User GetAnonymousUser()
-        {
-            return _anonUser ??= _userManager.Users.FirstOrDefault(x => x.UserType == Core.Entities.UserType.Anonymous);
-        }
+        }        
     }
 }

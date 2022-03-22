@@ -20,6 +20,11 @@ namespace Core.Shared
 
         public string Parse(string contenido)
         {
+            if (contenido == null)
+            {
+                return null;
+            }
+
             var tags = new List<string>();
 
             var x = contenido

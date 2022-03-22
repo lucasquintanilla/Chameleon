@@ -81,7 +81,7 @@ namespace Core.Data.EF
                 UserType = UserType.Administrator
             };
 
-            var result = await _userManager.CreateAsync(administrator, "Admin007");
+            var result = await _userManager.CreateAsync(administrator, "Admin1234");
             if (result.Succeeded)
             {
                 await _userManager.AddToRoleAsync(administrator, nameof(RoleType.Administrator));
@@ -94,7 +94,7 @@ namespace Core.Data.EF
                 UserType = UserType.Anonymous
             };
 
-            result = await _userManager.CreateAsync(anonymus, "Anonimo007");
+            result = await _userManager.CreateAsync(anonymus, "Anonimo1234");
             if (result.Succeeded)
             {
                 await _userManager.AddToRoleAsync(anonymus, nameof(RoleType.Anonymous));
