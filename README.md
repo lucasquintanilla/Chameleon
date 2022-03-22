@@ -30,7 +30,8 @@ Es un proyecto de codigo abierto escrito en ASP .NET Core 3.1
 > git clone https://github.com/lucasquintanilla/Voxed.git
 - Agregar archivos ejecutable FFmpeg en wwwroot\ffmpeg (o tambien podes editar el path en appsetting.json)
 - Abrir archivo Voxed.sln con Visual Studio
-- Configurar Sqlite como proveedor de base de datos en archivo appsettings.json Ejemplo -> "Provider": "Sqlite" 
+- Configurar Sqlite como proveedor de base de datos en archivo appsettings.json
+> "Provider": "Sqlite" 
 - Ejectuar Voxed.WebApp desde Visual Studio
 
 ### Nivel Avanzado
@@ -40,8 +41,10 @@ Es un proyecto de codigo abierto escrito en ASP .NET Core 3.1
 > git clone https://github.com/lucasquintanilla/Voxed.git
 - Agregar archivos ejecutable FFmpeg en wwwroot\ffmpeg (o tambien podes editar el path en appsetting.json)
 - Abrir archivo Voxed.sln con Visual Studio
-- Configurar MySql como proveedor de base de datos en archivo appsettings.json -> "Provider": "MySql"
-- Configurar ConnectionString en appsettings.json. Ejemplo -> "MySql": "Server=localhost;Database=voxed;Uid=root;Pwd=EstaEsMiPassword;Allow User Variables=true;"
+- Configurar MySql como proveedor de base de datos en archivo appsettings.json
+> "Provider": "MySql"
+- Configurar ConnectionString en appsettings.json.
+> "MySql": "Server=localhost;Database=voxed;Uid=root;Pwd=Password;Allow User Variables=true;"
 - Ejectuar Voxed.WebApp desde Visual Studio
 
 ## Contribucion
