@@ -59,8 +59,8 @@ namespace Voxed.WebApp
 
             #region Repositories
 
-            services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            services.AddTransient<IVoxRepository, VoxRepository>();
+            //services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            //services.AddTransient<IVoxRepository, VoxRepository>();
             services.AddTransient<IVoxedRepository, VoxedRepository>();
 
             #endregion
