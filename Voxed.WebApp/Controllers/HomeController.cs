@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,6 +19,7 @@ namespace Voxed.WebApp.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IVoxedRepository _voxedRepository;
+        private static IEnumerable<Vox> _lastestVoxs = new List<Vox>();
 
         public HomeController(ILogger<HomeController> logger, 
             IVoxedRepository voxedRepository)
@@ -28,9 +31,13 @@ namespace Voxed.WebApp.Controllers
         [HttpGet("v1/voxs")]
         public async Task<IActionResult> Voxs()
         {
-            var voxs = await _voxedRepository.Voxs.GetLastestAsync();
+            if (!_lastestVoxs.Any())
+            {
+                _lastestVoxs = await _voxedRepository.Voxs.GetLastestAsync();
+            }
+            
 
-            var voxsList = voxs.Select(vox => new VoxResponse()
+            var voxsList = _lastestVoxs.Select(vox => new VoxResponse()
             {
                 Hash = GuidConverter.ToShortString(vox.ID),
                 //Hash = x.Hash,

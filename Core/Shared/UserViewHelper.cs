@@ -12,8 +12,9 @@ namespace Core.Shared
                 UserType.Anonymous => "Anonimo",
                 UserType.Administrator => user.UserName,
                 UserType.Moderator => user.UserName,
-                UserType.Account => user.UserName,
+                UserType.Account => "Anonimo",
                 UserType.AnonymousAccount => "Anonimo",
+                UserType.Developer => "Anonimo",
                 _ => throw new NotImplementedException("Tipo de usuario no contemplado"),
             };
         }

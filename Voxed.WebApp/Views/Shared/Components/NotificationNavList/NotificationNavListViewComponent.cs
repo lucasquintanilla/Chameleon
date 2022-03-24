@@ -2,9 +2,7 @@
 using Core.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Voxed.WebApp.Hubs;
@@ -16,7 +14,7 @@ namespace Voxed.WebApp.Views.Shared.Components.NotificationNavList
         private readonly IVoxedRepository _voxedRepository;
         private readonly UserManager<User> _userManager;
 
-        public NotificationNavListViewComponent(IVoxedRepository voxedRepository, 
+        public NotificationNavListViewComponent(IVoxedRepository voxedRepository,
             UserManager<User> userManager)
         {
             _voxedRepository = voxedRepository;
@@ -67,7 +65,7 @@ namespace Voxed.WebApp.Views.Shared.Components.NotificationNavList
                 case NotificationType.Reply:
                     return "Nueva respuesta";
                 default:
-                    return "Nuevo notificacion"; 
+                    return "Nuevo notificacion";
             }
         }
     }

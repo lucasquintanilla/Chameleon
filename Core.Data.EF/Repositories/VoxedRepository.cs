@@ -1,4 +1,5 @@
 ﻿using Core.Data.Repositories;
+using System;
 using System.Threading.Tasks;
 
 namespace Core.Data.EF.Repositories
@@ -6,8 +7,10 @@ namespace Core.Data.EF.Repositories
     public class VoxedRepository : IVoxedRepository
     {
         private readonly VoxedContext _context;
+
         public VoxedRepository(VoxedContext context)
         {
+            //context.Database.Log = Console.Write;
             _context = context;
             Voxs = new VoxRepository(context);
             Categories = new CategoryRepository(context);

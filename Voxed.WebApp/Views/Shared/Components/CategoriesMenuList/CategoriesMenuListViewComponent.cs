@@ -1,17 +1,15 @@
 ﻿using Core.Data.Repositories;
+using Core.Entities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-//using Voxed.WebApp.Data;
 
 namespace Voxed.WebApp.Views.Shared.Components.CategoriesMenuList
 {
     public class CategoriesMenuListViewComponent : ViewComponent
     {
         private readonly IVoxedRepository voxedRepository;
+        private static IEnumerable<Category> _categories;
 
         public CategoriesMenuListViewComponent(
             IVoxedRepository voxedRepository)
@@ -21,9 +19,12 @@ namespace Voxed.WebApp.Views.Shared.Components.CategoriesMenuList
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var categories = await voxedRepository.Categories.GetAll();
-            return View(categories);
-            //return View();
+            if (_categories == null)
+            {
+                _categories = await voxedRepository.Categories.GetAll();
+            }
+
+            return View(_categories);
         }
     }
 }
