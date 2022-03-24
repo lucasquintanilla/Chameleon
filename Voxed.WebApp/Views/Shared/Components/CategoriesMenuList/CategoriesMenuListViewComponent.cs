@@ -8,20 +8,20 @@ namespace Voxed.WebApp.Views.Shared.Components.CategoriesMenuList
 {
     public class CategoriesMenuListViewComponent : ViewComponent
     {
-        private readonly IVoxedRepository voxedRepository;
+        private readonly IVoxedRepository _voxedRepository;
         private static IEnumerable<Category> _categories;
 
         public CategoriesMenuListViewComponent(
             IVoxedRepository voxedRepository)
         {
-            this.voxedRepository = voxedRepository;
+            _voxedRepository = voxedRepository;
         }
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
             if (_categories == null)
             {
-                _categories = await voxedRepository.Categories.GetAll();
+                _categories = await _voxedRepository.Categories.GetAll();
             }
 
             return View(_categories);

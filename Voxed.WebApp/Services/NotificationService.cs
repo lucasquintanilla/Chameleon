@@ -17,6 +17,7 @@ namespace Voxed.WebApp.Services
         private readonly IVoxedRepository _voxedRepository;
         private readonly IHubContext<VoxedHub, INotificationHub> _notificationHub;
         private readonly FormateadorService _formateadorService;
+        private readonly int[] _hiddenCategories = { 2, 3 };
 
         public NotificationService(
             IVoxedRepository voxedRepository,
@@ -96,6 +97,11 @@ namespace Voxed.WebApp.Services
 
         public async Task SendCommentLiveUpdate(Comment comment, Vox vox, Models.CommentRequest request)
         {
+            if (_hiddenCategories.Contains(vox.CategoryID))
+            {
+                return;
+            }
+
             var commentNotification = new CommentLiveUpdate()
             {
                 UniqueId = null, //si es unique id puede tener colores unicos

@@ -30,6 +30,7 @@ namespace Voxed.WebApp.Controllers
         private readonly IHubContext<VoxedHub, INotificationHub> _notificationHub;
         private readonly ILogger<VoxController> _logger;
         private readonly TelegramService _telegramService;
+        private readonly int[] _hiddenCategories = { 2, 3 };
 
         public VoxController(
             TelegramService telegramService,
@@ -143,7 +144,6 @@ namespace Voxed.WebApp.Controllers
                     Swal = "Hubo un error al enviar tu denuncia"
                 };
             }
-
         }
 
         [HttpGet("vox/{hash}")]
@@ -194,8 +194,6 @@ namespace Voxed.WebApp.Controllers
                 //    AvatarText = Core.Shared.UserTypeDictionary.GetDescription(x.User.UserType).ToUpper(),
                 //    IsOp = x.
                 //}).ToList(),
-
-
             };
 
             return View(voxViewModel);
@@ -266,8 +264,12 @@ namespace Voxed.WebApp.Controllers
 
                 //disparo notificacion del vox
                 vox = await _voxedRepository.Voxs.GetById(vox.ID); // Ver si se puede remover
-                var voxToHub = ConvertoToVoxResponse(vox);
-                await _notificationHub.Clients.All.Vox(voxToHub);
+
+                if (!_hiddenCategories.Contains(vox.CategoryID))
+                {
+                    var voxToHub = ConvertoToVoxResponse(vox);
+                    await _notificationHub.Clients.All.Vox(voxToHub);
+                }               
 
                 response.VoxHash = GuidConverter.ToShortString(vox.ID);
                 response.Status = true;
@@ -293,7 +295,6 @@ namespace Voxed.WebApp.Controllers
         [HttpPost]
         public async Task<ListResponse> List([FromForm] ListRequest request)
         {
-
             var skipList = JsonConvert.DeserializeObject<IEnumerable<string>>(request?.Ignore);
 
             var skipIdList = skipList.Select(x => GuidConverter.FromShortString(x)).ToList();

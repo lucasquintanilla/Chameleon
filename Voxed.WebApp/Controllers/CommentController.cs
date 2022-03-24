@@ -4,11 +4,9 @@ using Core.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
-using Voxed.WebApp.Hubs;
 using Voxed.WebApp.Models;
 using Voxed.WebApp.Services;
 
@@ -50,7 +48,7 @@ namespace Voxed.WebApp.Controllers
 
         [HttpPost]
         [Route("comment/nuevo/{id}")]
-        public async Task<Models.CommentResponse> Create([FromForm] CommentRequest request, [FromRoute] string id)
+        public async Task<CommentResponse> Create([FromForm] CommentRequest request, [FromRoute] string id)
         {
             if (!ModelState.IsValid)
                 return new CommentResponse()
@@ -76,18 +74,15 @@ namespace Voxed.WebApp.Controllers
 
                 var comment = await ProcessComment(request, id);
 
-                //Detectar Tag >HIDE
-                //if (!comentario.Contenido.ToLower().Contains("gt;hide"))
-                //{
-                //    await db.Query("Hilos")
-                //        .Where("Id", comentario.HiloId)
-                //        .UpdateAsync(new { Bump = DateTimeOffset.Now });
-                //}
-
                 //cambiar para buscar vox con el id de la request
                 await _voxedRepository.Comments.Add(comment);
                 var vox = await _voxedRepository.Voxs.GetById(comment.VoxID);
-                vox.Bump = DateTimeOffset.Now;
+
+                if (!comment.Content.ToLower().Contains("&gt;hide"))
+                {
+                    vox.Bump = DateTimeOffset.Now;
+                }
+
                 await _voxedRepository.SaveChangesAsync();
 
                 // Manejar guardado de y envio de notificaciones en threads separados en background
