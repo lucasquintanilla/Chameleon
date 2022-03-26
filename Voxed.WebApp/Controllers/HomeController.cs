@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Voxed.WebApp.Extensions;
 using Voxed.WebApp.Models;
 
 namespace Voxed.WebApp.Controllers
@@ -20,6 +21,7 @@ namespace Voxed.WebApp.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IVoxedRepository _voxedRepository;
         private static IEnumerable<Vox> _lastestVoxs = new List<Vox>();
+        private readonly int[] _excludedCategories = { 2, 3 };
 
         public HomeController(ILogger<HomeController> logger, 
             IVoxedRepository voxedRepository)
@@ -33,7 +35,7 @@ namespace Voxed.WebApp.Controllers
         {
             if (!_lastestVoxs.Any())
             {
-                _lastestVoxs = await _voxedRepository.Voxs.GetLastestAsync();
+                _lastestVoxs = await _voxedRepository.Voxs.GetLastestAsync(_excludedCategories);
             }
             
 
@@ -41,7 +43,8 @@ namespace Voxed.WebApp.Controllers
             {
                 Hash = GuidConverter.ToShortString(vox.ID),
                 //Hash = x.Hash,
-                Status = "1",
+                //Status = "1",
+                Status = true,
                 Niche = "20",
                 Title = vox.Title,
                 Comments = vox.Comments.Count().ToString(),
@@ -53,7 +56,7 @@ namespace Voxed.WebApp.Controllers
                 Id = "20",
                 Slug = vox.Category.ShortName.ToUpper(),
                 VoxId = GuidConverter.ToShortString(vox.ID),
-                New = vox.CreatedOn.Date == DateTime.Now.Date,
+                New = vox.CreatedOn.IsNew(),
                 ThumbnailUrl = vox.Media?.ThumbnailUrl
             }).ToList();
 
@@ -90,12 +93,13 @@ namespace Voxed.WebApp.Controllers
 
             //var x = Request.Headers.TryGetValue("CF-IPCountry", out var result);
 
-            var voxs = await _voxedRepository.Voxs.GetLastestAsync();
+            var voxs = await _voxedRepository.Voxs.GetLastestAsync(_excludedCategories);
 
             var voxsList = voxs.Select(vox => new VoxResponse()
             {
                 Hash = GuidConverter.ToShortString(vox.ID),
-                Status = "1",
+                //Status = "1",
+                Status = true,
                 Niche = "20",
                 Title = vox.Title,
                 Comments = vox.Comments.Count().ToString(),
@@ -107,7 +111,7 @@ namespace Voxed.WebApp.Controllers
                 Id = "20",
                 Slug = vox.Category.ShortName.ToUpper(),
                 VoxId = GuidConverter.ToShortString(vox.ID),
-                New = vox.CreatedOn.Date == DateTime.Now.Date,
+                New = vox.CreatedOn.IsNew(),
                 ThumbnailUrl = vox.Media?.ThumbnailUrl
             }).ToList();
 

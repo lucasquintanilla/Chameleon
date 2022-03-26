@@ -30,7 +30,7 @@ namespace Voxed.WebApp.Controllers
         private readonly IHubContext<VoxedHub, INotificationHub> _notificationHub;
         private readonly ILogger<VoxController> _logger;
         private readonly TelegramService _telegramService;
-        private readonly int[] _hiddenCategories = { 2, 3 };
+        private readonly int[] _excludedCategories = { 2, 3 };
 
         public VoxController(
             TelegramService telegramService,
@@ -55,12 +55,14 @@ namespace Voxed.WebApp.Controllers
         }
 
         [HttpPost("account/message")]
-        public async Task<FavoriteResponse> SendGlobalMessage(GlobalMessageFormViewModel messageForm)
+        public async Task<GlobalMessageResponse> SendGlobalMessage(GlobalMessageFormViewModel form)
         {
+            var response = new GlobalMessageResponse();
+
             try
             {
-                var message = new GlobalMessage() { Content = messageForm.Content, };
-                switch (messageForm.Type)
+                var message = new GlobalMessage() { Content = form.Content, };
+                switch (form.Type)
                 {
                     case GlobalMessageFormViewModel.GlobalMessageType.TenMinutes:
                         message.DueDate = DateTime.UtcNow.AddMinutes(10);
@@ -92,13 +94,16 @@ namespace Voxed.WebApp.Controllers
 
                 GlobalMessageService.AddMessage(message);
 
-                return new FavoriteResponse() { Status = true, Swal = $"Mensaje global agregado!" };
+                response.Status = true;
+                response.Swal = $"Mensaje global agregado!";
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                return new FavoriteResponse() { Status = false, Swal = $"Hubo un error al agregar tu mensaje global" };
+                response.Swal = $"Hubo un error al agregar tu mensaje global";
             }
+
+            return await Task.FromResult(response);
         }
 
         [HttpPost("meta/{id}/toggle")]
@@ -219,7 +224,6 @@ namespace Voxed.WebApp.Controllers
 
             if (!ModelState.IsValid)
             {
-                response.Status = false;
                 response.Swal = "error";
                 return response;
             }
@@ -265,7 +269,7 @@ namespace Voxed.WebApp.Controllers
                 //disparo notificacion del vox
                 vox = await _voxedRepository.Voxs.GetById(vox.ID); // Ver si se puede remover
 
-                if (!_hiddenCategories.Contains(vox.CategoryID))
+                if (!_excludedCategories.Contains(vox.CategoryID))
                 {
                     var voxToHub = ConvertoToVoxResponse(vox);
                     await _notificationHub.Clients.All.Vox(voxToHub);
@@ -273,23 +277,19 @@ namespace Voxed.WebApp.Controllers
 
                 response.VoxHash = GuidConverter.ToShortString(vox.ID);
                 response.Status = true;
-
-                return response;
             }
             catch (NotImplementedException e)
             {
-                response.Status = false;
                 response.Swal = e.Message;
-                return response;
             }
             catch (Exception e)
             {
                 _logger.LogError(e.Message);
 
-                response.Status = false;
                 response.Swal = "error";
-                return response;
             }
+
+            return response;
         }
 
         [HttpPost]
@@ -301,7 +301,7 @@ namespace Voxed.WebApp.Controllers
 
             var lastVox = await _voxedRepository.Voxs.GetLastVoxBump(skipIdList);
 
-            var voxs = await _voxedRepository.Voxs.GetLastestAsync(skipIdList, lastVox.Bump);
+            var voxs = await _voxedRepository.Voxs.GetLastestAsync(skipIdList, lastVox.Bump, _excludedCategories);
 
             var voxsList = ConvertToViewModel(voxs);
 
@@ -344,7 +344,8 @@ namespace Voxed.WebApp.Controllers
             return new VoxResponse()
             {
                 Hash = GuidConverter.ToShortString(vox.ID),
-                Status = "1",
+                //Status = "1",
+                Status = true,
                 Niche = "20",
                 Title = vox.Title,
                 Comments = vox.Comments.Count().ToString(),
@@ -356,7 +357,7 @@ namespace Voxed.WebApp.Controllers
                 Id = "20",
                 Slug = vox.Category.ShortName.ToUpper(),
                 VoxId = vox.ID.ToString(),
-                New = vox.CreatedOn.Date == DateTime.Now.Date,
+                New = vox.CreatedOn.IsNew(),
                 ThumbnailUrl = vox.Media?.ThumbnailUrl
             };
         }

@@ -61,29 +61,6 @@ namespace Voxed.WebApp.Extensions
             throw new NotImplementedException("Formato archivo no implementado");
         }
 
-        public static ImageFormat GetImageFormat(this Image image)
-        {
-            if (image.RawFormat.Equals(ImageFormat.Jpeg))
-            {
-                return ImageFormat.Jpeg;
-            }
-
-            if (image.RawFormat.Equals(ImageFormat.Gif))
-            {
-                return ImageFormat.Gif;
-            }
-            if (image.RawFormat.Equals(ImageFormat.Png))
-            {
-                return ImageFormat.Png;
-            }
-            if (image.RawFormat.Equals(ImageFormat.Bmp))
-            {
-                return ImageFormat.Bmp;
-            }
-
-            throw new NotImplementedException("Formato archivo no implementado");
-        }
-
         public static string GetFileExtension(this IFormFile file)
         {
             return Path.GetExtension(file.FileName).ToLowerInvariant();
@@ -91,5 +68,10 @@ namespace Voxed.WebApp.Extensions
 
         public static bool IsGif(this IFormFile file)
             => file.ContentType == MediaTypeNames.Image.Gif;
+
+        public static bool IsNew(this DateTimeOffset dateTime)
+        {
+            return dateTime.Date == DateTime.Now.Date;
+        }
     }
 }

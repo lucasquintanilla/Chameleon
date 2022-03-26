@@ -10,7 +10,7 @@ Es un proyecto de codigo abierto escrito en ASP .NET Core 3.1
 
 - [Visual Studio](https://visualstudio.microsoft.com/downloads/)
 - [Dbrowser (Sqlite)](https://sqlitebrowser.org/dl/) (opcional)
-- [FFmpeg](https://ffmpeg.org/download.html) Descargar archivos ejectuables (.exe)
+- [FFmpeg](https://ffmpeg.org/download.html) Descargar archivos ejectuables (.exe) (Ya no es mas requerido)
 - [Git](https://git-scm.com/download/win)
 
 ### Nivel Avanzado
@@ -28,7 +28,7 @@ Es un proyecto de codigo abierto escrito en ASP .NET Core 3.1
 - Instalar software requerido
 - Clonar repositorio ejecutando comando git clone
 > git clone https://github.com/lucasquintanilla/Voxed.git
-- Agregar archivos ejecutable FFmpeg en wwwroot\ffmpeg (o tambien podes editar el path en appsetting.json)
+- Agregar archivos ejecutable FFmpeg en wwwroot\ffmpeg  (Ya no es mas requerido)
 - Abrir archivo Voxed.sln con Visual Studio
 - Configurar Sqlite como proveedor de base de datos en archivo appsettings.json
 > "Provider": "Sqlite" 
@@ -39,7 +39,7 @@ Es un proyecto de codigo abierto escrito en ASP .NET Core 3.1
 - Instalar software requerido, crear instancia de MySql y base de datos
 - Clonar repositorio ejecutando comando git clone
 > git clone https://github.com/lucasquintanilla/Voxed.git
-- Agregar archivos ejecutable FFmpeg en wwwroot\ffmpeg (o tambien podes editar el path en appsetting.json)
+- Agregar archivos ejecutable FFmpeg en wwwroot\ffmpeg  (Ya no es mas requerido)
 - Abrir archivo Voxed.sln con Visual Studio
 - Configurar MySql como proveedor de base de datos en archivo appsettings.json
 > "Provider": "MySql"
@@ -57,7 +57,7 @@ openssl pkcs12 -inkey voxed.club.key -in voxed.club.pem -export -out voxed.club.
 
 tutorial https://swimburger.net/blog/azure/setting-up-cloudflare-full-universal-ssl-with-an-azure-app-services
 
-## To fix
+## To Do
 
 - [ ] Doble envio de noticacion al OP cuando responden etiquetandolo en un comentario del propio post
 - [x] Fix buscador
@@ -75,6 +75,8 @@ tutorial https://swimburger.net/blog/azure/setting-up-cloudflare-full-universal-
 - [ ] Implementar hosting de imagenes en servicios externos
 - [ ] Fix Light Mode
 - [ ] Implementar >hide
+- [ ] Migrar a .NET 6
+- [ ] Agregar tests
 
 # Tecnologias
 

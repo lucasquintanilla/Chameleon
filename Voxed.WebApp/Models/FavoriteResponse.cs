@@ -1,8 +1,7 @@
 ﻿namespace Voxed.WebApp.Models
 {
-    public class FavoriteResponse
+    public class FavoriteResponse : BaseResponse
     {
-        public bool Status { get; set; }
-        public string Swal { get; set; }
+
     }
 }

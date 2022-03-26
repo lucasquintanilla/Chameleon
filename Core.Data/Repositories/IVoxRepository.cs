@@ -7,10 +7,10 @@ namespace Core.Data.Repositories
 {
     public interface IVoxRepository : IGenericRepository<Vox>
     {
-        Task<IEnumerable<Vox>> GetLastestAsync();
+        Task<IEnumerable<Vox>> GetLastestAsync(ICollection<int> excludedCategories);
         Task<IEnumerable<Vox>> GetByCategoryShortNameAsync(string shortName);
         Task<IEnumerable<Vox>> SearchAsync(string search);
         Task<Vox> GetLastVoxBump(IEnumerable<Guid> idsSkip);
-        Task<IEnumerable<Vox>> GetLastestAsync(IEnumerable<Guid> idSkipList, DateTimeOffset LastBump);
+        Task<IEnumerable<Vox>> GetLastestAsync(IEnumerable<Guid> idSkipList, DateTimeOffset LastBump, ICollection<int> excludedCategories);
     }
 }

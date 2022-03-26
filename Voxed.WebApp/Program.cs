@@ -43,7 +43,7 @@ namespace Voxed.WebApp
                     var context = services.GetRequiredService<VoxedContext>();
                     var userManager = services.GetRequiredService<UserManager<User>>();
                     var roleManager = services.GetRequiredService<RoleManager<Role>>();
-                    await new DbInitializer(context, userManager, roleManager).Initialize();
+                    await new DataInitializer(context, userManager, roleManager).Initialize();
 
                     //switch (context.Database.ProviderName)
                     //{

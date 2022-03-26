@@ -1,8 +1,6 @@
 ﻿namespace Voxed.WebApp.Models
 {
-    public class ReportResponse
+    public class ReportResponse : BaseResponse
     {
-        public bool Status { get; set; }
-        public string Swal { get; set; }
     }
 }

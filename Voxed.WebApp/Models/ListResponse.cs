@@ -2,9 +2,8 @@
 
 namespace Voxed.WebApp.Models
 {
-    public class ListResponse
+    public class ListResponse : BaseResponse
     {
-        public bool Status { get; set; }
         public List List { get; set; }
     }
 

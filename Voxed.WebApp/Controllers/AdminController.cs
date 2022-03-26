@@ -30,52 +30,57 @@ namespace Voxed.WebApp.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<Response> Delete([FromForm] Request request)
+        public async Task<DeleteResponse> Delete([FromForm] DeleteRequest request)
         {
             try
             {
-                //comment
-                if (request.ContentType == "0")
+                switch (request.ContentType)
                 {
-                    var comment = await _voxedRepository.Comments.GetById(new Guid(request.ContentId));
-                    if (comment == null)
-                    {
-                        NotFound();
-                    }
+                    case "0":
 
-                    comment.State = CommentState.Deleted;
+                        var comment = await _voxedRepository.Comments.GetById(new Guid(request.ContentId));
+                        if (comment == null)
+                        {
+                            NotFound();
+                        }
 
-                    if (comment.MediaID.HasValue)
-                    {
-                        await BanMedia(comment.MediaID.Value);
-                    }
+                        comment.State = CommentState.Deleted;
 
-                    await UpdateVoxLastBump(comment);
+                        if (comment.MediaID.HasValue)
+                        {
+                            await BanMedia(comment.MediaID.Value);
+                        }
 
-                    await _voxedRepository.SaveChangesAsync();
+                        await UpdateVoxLastBump(comment);
+
+                        await _voxedRepository.SaveChangesAsync();
+
+                        break;
+                    case "1":
+
+                        var vox = await _voxedRepository.Voxs.GetById(new Guid(request.ContentId));
+                        if (vox == null)
+                        {
+                            NotFound();
+                        }
+
+                        await BanMedia(vox.MediaID);
+
+                        vox.State = VoxState.Deleted;
+                        await _voxedRepository.SaveChangesAsync();
+
+                        break;
+                    default:
+                        break;
                 }
 
-                if (request.ContentType == "1")
-                {
-                    var vox = await _voxedRepository.Voxs.GetById(new Guid(request.ContentId));
-                    if (vox == null)
-                    {
-                        NotFound();
-                    }
-
-                    await BanMedia(vox.MediaID);
-
-                    vox.State = Core.Entities.VoxState.Deleted;
-                    await _voxedRepository.SaveChangesAsync();
-                }
+                return new DeleteResponse() { Value = "OK" };
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
+                return new DeleteResponse() { Value = "Error" };
             }
-           
-
-            return new Response() { Value = "OK" };
         }
 
         private async Task UpdateVoxLastBump(Comment comment)
@@ -91,14 +96,17 @@ namespace Voxed.WebApp.Controllers
                 .Where(x => x.State == CommentState.Normal)
                 .OrderByDescending(x => x.CreatedOn)
                 .Select(x => x.CreatedOn)
-                .First();
+                .FirstOrDefault();
 
             vox.Bump = lastBump;
         }
 
         private async Task BanMedia(Guid mediaId)
         {
+
             var media = await _voxedRepository.Media.GetById(mediaId);
+
+            if (media == null) return;
 
             if (media.MediaType == MediaType.Image)
             {
@@ -117,13 +125,13 @@ namespace Voxed.WebApp.Controllers
         }
     }
 
-    public class Request
+    public class DeleteRequest
     {
         public string ContentType { get; set; } //puede ser 0:comment o 1
         public string ContentId { get; set; }
     }
 
-    public class Response
+    public class DeleteResponse
     {
         public string Value { get; set; }
     }

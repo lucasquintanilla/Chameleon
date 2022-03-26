@@ -1,6 +1,6 @@
 ﻿namespace Voxed.WebApp.Models
 {
-    public class VoxResponse
+    public class VoxResponse : BaseResponse
     {   
         //{
         //        "hash": "LVsFqy15CYaRdNXsv5jR",
@@ -18,8 +18,7 @@
         //        "voxId": "405371",
         //        "new": false
         //}
-        public string Hash { get; set; }
-        public string Status { get; set; }
+        public string Hash { get; set; }        
         public string Niche { get; set; }
         public string Title { get; set; }
         public string Comments { get; set; }

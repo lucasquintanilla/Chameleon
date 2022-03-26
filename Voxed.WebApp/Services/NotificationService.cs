@@ -30,7 +30,7 @@ namespace Voxed.WebApp.Services
             _formateadorService = formateadorService;
         }
 
-        public async Task ManageReplyNotifications(Vox vox, Comment comment, Models.CommentRequest request)
+        public async Task ManageReplyNotifications(Vox vox, Comment comment, Models.CreateCommentRequest request)
         {
             var replyNotifications = await CreateReplyNotifications(vox, comment, request);
 
@@ -63,7 +63,7 @@ namespace Voxed.WebApp.Services
             return notification;
         }
 
-        private async Task<List<Notification>> CreateReplyNotifications(Vox vox, Comment comment, Models.CommentRequest request)
+        private async Task<List<Notification>> CreateReplyNotifications(Vox vox, Comment comment, Models.CreateCommentRequest request)
         {
             var notifications = new List<Notification>();
 
@@ -95,7 +95,7 @@ namespace Voxed.WebApp.Services
 
         }
 
-        public async Task SendCommentLiveUpdate(Comment comment, Vox vox, Models.CommentRequest request)
+        public async Task SendCommentLiveUpdate(Comment comment, Vox vox, Models.CreateCommentRequest request)
         {
             if (_hiddenCategories.Contains(vox.CategoryID))
             {

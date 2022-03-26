@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace Core.Data.EF
 {
-    public class DbInitializer
+    public class DataInitializer
     {
         private readonly VoxedContext _context;
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
 
-        public DbInitializer(VoxedContext context,
+        public DataInitializer(VoxedContext context,
             UserManager<User> userManager,
             RoleManager<Role> roleManager)
         {
@@ -24,7 +24,7 @@ namespace Core.Data.EF
 
         public async Task Initialize()
         {
-            await InitializeDataBase();
+            await InitializeTables();
 
             await InitializeCategories();
 
@@ -37,7 +37,7 @@ namespace Core.Data.EF
             //InitializeComments();
         }
 
-        private async Task InitializeDataBase()
+        private async Task InitializeTables()
         {
             // Using this method you will not able to use Migrations
             //await _context.Database.EnsureCreatedAsync();

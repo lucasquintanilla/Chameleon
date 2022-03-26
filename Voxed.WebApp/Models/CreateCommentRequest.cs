@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Voxed.WebApp.Models
 {
-    public class CommentRequest
+    public class CreateCommentRequest
     {
         [StringLength(3000, ErrorMessage = "El comentario no puede superar los {1} caracteres.")]
         public string Content { get; set; }
@@ -20,9 +20,10 @@ namespace Voxed.WebApp.Models
         {
             return JsonConvert.DeserializeObject<UploadData>(UploadData);
         }
+
+        public bool HasInvalidContent()
+        {
+            return Content == null && File == null && GetUploadData()?.Extension == null;
+        }
     }
-
-
-
-
 }

@@ -48,28 +48,22 @@ namespace Voxed.WebApp.Controllers
 
         [HttpPost]
         [Route("comment/nuevo/{id}")]
-        public async Task<CommentResponse> Create([FromForm] CommentRequest request, [FromRoute] string id)
+        public async Task<CreateCommentResponse> Create([FromForm] CreateCommentRequest request, [FromRoute] string id)
         {
+            var response = new CreateCommentResponse(id);
+
             if (!ModelState.IsValid)
-                return new CommentResponse()
-                {
-                    Hash = id,
-                    Status = false,
-                    Error = "",
-                    Swal = "Formato de comentario invalido",
-                };
+            {
+                response.Swal = "Formato de comentario invalido";
+                return response;
+            }
 
             try
             {
-                if (request.Content == null && request.File == null && request.GetUploadData()?.Extension == null)
+                if (request.HasInvalidContent())
                 {
-                    return new CommentResponse()
-                    {
-                        Hash = id,
-                        Status = false,
-                        Error = "",
-                        Swal = "Debes ingresar un contenido",
-                    };
+                    response.Swal = "Debes ingresar un contenido";
+                    return response;
                 }
 
                 var comment = await ProcessComment(request, id);
@@ -95,39 +89,33 @@ namespace Voxed.WebApp.Controllers
 
                 await _notificationService.SendCommentLiveUpdate(comment, vox, request);
 
-                var response = new CommentResponse()
-                {
-                    Hash = comment.Hash,
-                    Status = true,
-                };
+                response.Hash = comment.Hash;
+                response.Status = true;
 
                 return response;
             }
             catch (NotImplementedException e)
             {
-                return new CommentResponse()
-                {
-                    Hash = "",
-                    Status = false,
-                    Error = "",
-                    Swal = e.Message,
-                };
+                response.Swal = e.Message;
+                return response;
             }
             catch (Exception e)
             {
                 _logger.LogError(e.Message);
 
-                return new CommentResponse()
-                {
-                    Hash = "",
-                    Status = false,
-                    Error = "",
-                    Swal = "Hubo un error",
-                };
+                response.Swal = "Hubo un error";
+                return response;
             }
         }
 
-        private async Task<Comment> ProcessComment(CommentRequest request, string id)
+        [HttpPost]
+        [Route("comment/sticky")]
+        public async Task Sticky(string request)
+        {
+            //a.append("contentType", t), a.append("contentId", n), a.append("vox", e),/ comment/sticky
+        }
+
+        private async Task<Comment> ProcessComment(CreateCommentRequest request, string id)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
 

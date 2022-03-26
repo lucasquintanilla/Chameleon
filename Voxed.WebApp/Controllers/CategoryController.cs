@@ -1,13 +1,9 @@
-﻿using Core.Data.EF.MySql;
-using Core.Data.EF.Sqlite;
-using Core.Data.Repositories;
-using Core.Entities;
+﻿using Core.Data.Repositories;
 using Core.Shared;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Voxed.WebApp.Extensions;
 
 namespace Voxed.WebApp.Controllers
 {
@@ -42,7 +38,8 @@ namespace Voxed.WebApp.Controllers
             var voxsList = voxs.Select(x => new Models.VoxResponse()
             {
                 Hash = GuidConverter.ToShortString(x.ID),
-                Status = "1",
+                //Status = "1",
+                Status = true,
                 Niche = "20",
                 Title = x.Title,
                 Comments = x.Comments.Count().ToString(),
@@ -54,7 +51,7 @@ namespace Voxed.WebApp.Controllers
                 Id = "20",
                 Slug = x.Category.ShortName.ToUpper(),
                 VoxId = GuidConverter.ToShortString(x.ID),
-                New = x.CreatedOn.Date == DateTime.Now.Date,
+                New = x.CreatedOn.IsNew(),
                 ThumbnailUrl = x.Media?.ThumbnailUrl,
                 Category = x.Category.Name
             }).ToList();

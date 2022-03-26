@@ -19,6 +19,7 @@ namespace Voxed.WebApp.Controllers.V1
     public class VoxController : ControllerBase
     {
         private readonly IVoxedRepository _voxedRepository;
+        private readonly int[] _hiddenCategories = { 2, 3 };
 
         public VoxController(IVoxedRepository voxedRepository)
         {
@@ -47,14 +48,15 @@ namespace Voxed.WebApp.Controllers.V1
         [HttpGet]
         public async Task<IActionResult> GetLastest()
         {
-            var voxs = await _voxedRepository.Voxs.GetLastestAsync();
+            var voxs = await _voxedRepository.Voxs.GetLastestAsync(_hiddenCategories);
 
             var voxsList = voxs.Select(vox => new Models.VoxResponse()
             {
                 //Hash = GuidConverter.ToShortString(vox.ID),
                 Hash = vox.ID.ToString("N"),
                 //Hash = x.Hash,
-                Status = "1",
+                //Status = "1",
+                Status = true,
                 Niche = "20",
                 Title = vox.Title,
                 Comments = vox.Comments.Count().ToString(),
@@ -67,7 +69,7 @@ namespace Voxed.WebApp.Controllers.V1
                 Slug = vox.Category.ShortName.ToUpper(),
                 //VoxId = GuidConverter.ToShortString(vox.ID),
                 VoxId = vox.ID.ToString("N"),
-                New = vox.CreatedOn.Date == DateTime.Now.Date,
+                New = vox.CreatedOn.IsNew(),
                 ThumbnailUrl = vox.Media?.ThumbnailUrl
             }).ToList();
 

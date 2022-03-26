@@ -377,7 +377,7 @@
 
                     @foreach (var comment in Model.Comments.OrderByDescending(x => x.CreatedOn))
                     {
-                        <div class="comment   " id="@comment.Hash" data-id="@comment.Hash">
+                        <div class="comment   " id="@comment.Hash" data-id="@comment.ID">
                             <div class="commentAvatar">
                                 <div class="unselect avatarColor  @comment.Style.ToString().ToLower()">
                                         <span class="avatarText">@Core.Shared.UserTypeDictionary.GetDescription(comment.User.UserType).ToUpper()</span>
@@ -428,7 +428,7 @@
 
                                             @if (userId == Model.UserId || User.IsInRole(nameof(Core.Data.EF.RoleType.Administrator)))
                                             {
-                                                <span class="commentTag pointer" data-delete data-contenttype="0" data-contentid="@comment.Hash"><i class="fas fa-times" data-parent></i></span>
+                                                <span class="commentTag pointer" data-delete data-contenttype="0" data-contentid="@comment.ID"><i class="fas fa-times" data-parent></i></span>
                                             }
                                         }
 
@@ -439,6 +439,7 @@
                                         @*<span class="commentTag ">@comment.User?.UserType.ToString().ToLower() </span>*@
 
                                         <span class="commentTag pointer" data-tag="@comment.Hash">@comment.Hash</span>
+                                        @*<span class="commentTagBg commentSticky">Destacado</span>*@
                                     </div>
                                     <div class="commentMetaRight">
                                         <div class="commentCreatedAt">@comment.CreatedOn.DateTime.ToTimeAgo()</div>
