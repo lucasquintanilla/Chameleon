@@ -31,6 +31,7 @@ namespace Voxed.WebApp.Controllers
         private readonly ILogger<VoxController> _logger;
         private readonly TelegramService _telegramService;
         private readonly int[] _excludedCategories = { 2, 3 };
+        private readonly int[] _defaultCategories = { 1, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 30, 16, 14, 13, 12, 11, 10, 9, 8, 15, 7, 31, 6, 5, 4 };
 
         public VoxController(
             TelegramService telegramService,
@@ -127,7 +128,7 @@ namespace Voxed.WebApp.Controllers
                         break;
 
                     case 1:
-                        message = $"NUEVA DENUNCIA \n Reason: {request.Reason}. \n https://voxed.club/vox/{GuidConverter.ToShortString(new Guid(request.ContentId))}";
+                        message = $"NUEVA DENUNCIA \n Reason: {request.Reason}. \n https://voxed.club/vox/{request.ContentId}";
                         break;
                 }
 
@@ -273,7 +274,7 @@ namespace Voxed.WebApp.Controllers
                 {
                     var voxToHub = ConvertoToVoxResponse(vox);
                     await _notificationHub.Clients.All.Vox(voxToHub);
-                }               
+                }
 
                 response.VoxHash = GuidConverter.ToShortString(vox.ID);
                 response.Status = true;
@@ -295,13 +296,14 @@ namespace Voxed.WebApp.Controllers
         [HttpPost]
         public async Task<ListResponse> List([FromForm] ListRequest request)
         {
+            //HttpContext.Request.Cookies.TryGetValue("categoriasFavoritas", out string categoriasActivas);
             var skipList = JsonConvert.DeserializeObject<IEnumerable<string>>(request?.Ignore);
-
+            
             var skipIdList = skipList.Select(x => GuidConverter.FromShortString(x)).ToList();
 
             var lastVox = await _voxedRepository.Voxs.GetLastVoxBump(skipIdList);
 
-            var voxs = await _voxedRepository.Voxs.GetLastestAsync(skipIdList, lastVox.Bump, _excludedCategories);
+            var voxs = await _voxedRepository.Voxs.GetLastestAsync(skipIdList, lastVox.Bump, GetSubscriptionCategories(request));
 
             var voxsList = ConvertToViewModel(voxs);
 
@@ -316,6 +318,26 @@ namespace Voxed.WebApp.Controllers
             };
 
             return response;
+        }
+
+        private ICollection<int> GetSubscriptionCategories(ListRequest request)
+        {
+            try
+            {
+                var subscriptions = JsonConvert.DeserializeObject<IEnumerable<string>>(request?.Suscriptions);
+
+                if (subscriptions == null)
+                {
+                    return _defaultCategories;
+                }
+
+                return subscriptions.Select(x => int.Parse(x)).ToList();
+
+            }
+            catch (Exception e)
+            {
+                return _defaultCategories;
+            }
         }
 
         private async Task<User> CreateAnonymousUser()
@@ -365,6 +387,6 @@ namespace Voxed.WebApp.Controllers
         private IEnumerable<VoxResponse> ConvertToViewModel(IEnumerable<Vox> voxs)
         {
             return voxs.Select(ConvertoToVoxResponse);
-        }        
+        }
     }
 }

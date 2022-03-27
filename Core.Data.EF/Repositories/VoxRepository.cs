@@ -27,9 +27,9 @@ namespace Core.Data.EF.Repositories
                 .Include(x => x.User)
                 .FirstOrDefaultAsync(m => m.ID == id);
 
-        public async Task<IEnumerable<Vox>> GetLastestAsync(ICollection<int> excludedCategories) =>
+        public async Task<IEnumerable<Vox>> GetLastestAsync(ICollection<int> includedCategories) =>
             await _context.Voxs
-                .Where(x => x.State == VoxState.Normal && !excludedCategories.Contains(x.CategoryID))
+                .Where(x => x.State == VoxState.Normal && includedCategories.Contains(x.CategoryID))
                 .Include(x => x.Media)
                 .Include(x => x.Category)
                 .Include(x => x.Comments.Where(c => c.State == CommentState.Normal))
@@ -72,13 +72,13 @@ namespace Core.Data.EF.Repositories
             return await Task.FromResult(voxs);
         }
 
-        public async Task<IEnumerable<Vox>> GetLastestAsync(IEnumerable<Guid> idSkipList, DateTimeOffset lastBump, ICollection<int> excludedCategories) =>
+        public async Task<IEnumerable<Vox>> GetLastestAsync(IEnumerable<Guid> idSkipList, DateTimeOffset lastBump, ICollection<int> includedCategories) =>
             await _context.Voxs
                     .Where(x => x.State == VoxState.Normal
                                 //&& x.Type == VoxType.Normal
                                 && !idSkipList.Contains(x.ID)
                                 && x.Bump < lastBump
-                                && !excludedCategories.Contains(x.CategoryID))
+                                && includedCategories.Contains(x.CategoryID))
                     .OrderByDescending(x => x.Bump)
                     .Include(x => x.Media)
                     .Include(x => x.Category)

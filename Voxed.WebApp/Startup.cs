@@ -18,6 +18,7 @@ using System;
 using Core.Services.Telegram;
 using Voxed.WebApp.Hubs;
 using Voxed.WebApp.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace Voxed.WebApp
 {
@@ -151,7 +152,7 @@ namespace Voxed.WebApp
             services.ConfigureApplicationCookie(options =>
             {
                 // Cookie settings
-                options.Cookie.HttpOnly = true;
+                //options.Cookie.HttpOnly = true;
                 options.ExpireTimeSpan = TimeSpan.FromDays(30);
 
                 options.LoginPath = "/Identity/Account/Login";
@@ -197,7 +198,16 @@ namespace Voxed.WebApp
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
+            //app.UseStaticFiles();
+            var cacheMaxAgeOneWeek = (60 * 60 * 24 * 7).ToString();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                OnPrepareResponse = ctx =>
+                {
+                    ctx.Context.Response.Headers.Append(
+                         "Cache-Control", $"public, max-age={cacheMaxAgeOneWeek}");
+                }
+            });
 
             app.UseRouting();
 

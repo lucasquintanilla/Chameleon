@@ -4182,7 +4182,17 @@
         i = n(1);
     class o {
         suscriptions() {
+            //test
+            //const n = ["1", "2", "3"];
+            //(new r.CookieService).create("suscriptions", encodeURIComponent(JSON.stringify(n)), 365e3)
+            //endtest
             let e = (new r.CookieService).get("suscriptions");
+            //if (!e) {
+            //    const n = ["1", "2", "3"];
+            //    (new r.CookieService).create("suscriptions", encodeURIComponent(JSON.stringify(n)), 365e3)
+            //    e = (new r.CookieService).get("suscriptions");
+            //}
+
             return !!e && JSON.parse("" + e)
         }
         getSuscriptions() {
@@ -4208,7 +4218,10 @@
                 n = this.suscriptions(),
                 a = document.getElementById("category-" + e),
                 i = a.classList.contains("disabledNiche");
-            a.classList.toggle("disabledNiche"), a.querySelector(".followNiche").textContent = i ? "Dejar se seguir" : "Seguir", n.includes(e) ? n = n.filter(t => t != e) : n.push(e), t.create("suscriptions", encodeURIComponent(JSON.stringify(n)), 365e3)
+            a.classList.toggle("disabledNiche"),
+            a.querySelector(".followNiche").textContent = i ? "Dejar se seguir" : "Seguir",
+            n.includes(e) ? n = n.filter(t => t != e) : n.push(e),
+            t.create("suscriptions", encodeURIComponent(JSON.stringify(n)), 365e3)
         }
     }
     t.NicheService = o;
@@ -15730,7 +15743,7 @@
             })
         }
         toggleConfig() {
-            let e = new u.ConfigService;
+            let e = new u.ConfigService;            
             document.querySelectorAll("[data-toggleconfig]").forEach(t => {
                 t.addEventListener("click", () => {
                     let n = t.dataset.toggleconfig,

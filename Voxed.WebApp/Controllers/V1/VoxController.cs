@@ -19,7 +19,9 @@ namespace Voxed.WebApp.Controllers.V1
     public class VoxController : ControllerBase
     {
         private readonly IVoxedRepository _voxedRepository;
-        private readonly int[] _hiddenCategories = { 2, 3 };
+        //private readonly int[] _hiddenCategories = { 2, 3 };
+        private readonly int[] _defaultCategories = { 1, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 30, 16, 14, 13, 12, 11, 10, 9, 8, 15, 7, 31, 6, 5, 4 };
+
 
         public VoxController(IVoxedRepository voxedRepository)
         {
@@ -48,7 +50,7 @@ namespace Voxed.WebApp.Controllers.V1
         [HttpGet]
         public async Task<IActionResult> GetLastest()
         {
-            var voxs = await _voxedRepository.Voxs.GetLastestAsync(_hiddenCategories);
+            var voxs = await _voxedRepository.Voxs.GetLastestAsync(_defaultCategories);
 
             var voxsList = voxs.Select(vox => new Models.VoxResponse()
             {
