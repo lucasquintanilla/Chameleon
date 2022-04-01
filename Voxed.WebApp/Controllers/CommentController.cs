@@ -72,7 +72,7 @@ namespace Voxed.WebApp.Controllers
                 await _voxedRepository.Comments.Add(comment);
                 var vox = await _voxedRepository.Voxs.GetById(comment.VoxID);
 
-                if (!comment.Content.ToLower().Contains("&gt;hide"))
+                if (comment.Content != null && !comment.Content.ToLower().Contains("&gt;hide"))
                 {
                     vox.Bump = DateTimeOffset.Now;
                 }
@@ -109,7 +109,7 @@ namespace Voxed.WebApp.Controllers
         }
 
         [HttpPost]
-        [Route("comment/sticky")]
+        //[Route("comment/sticky")]
         public async Task Sticky(string request)
         {
             //a.append("contentType", t), a.append("contentId", n), a.append("vox", e),/ comment/sticky

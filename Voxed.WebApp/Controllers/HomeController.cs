@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Voxed.WebApp.Constants;
 using Voxed.WebApp.Extensions;
 using Voxed.WebApp.Models;
 
@@ -130,13 +131,13 @@ namespace Voxed.WebApp.Controllers
 
         private ICollection<int> GetCategorySubscriptions()
         {
-            var cookieName = "suscriptions";
-            HttpContext.Request.Cookies.TryGetValue(cookieName, out string subscriptionsCookie);
+            
+            HttpContext.Request.Cookies.TryGetValue(CookieName.Subscriptions, out string subscriptionsCookie);
 
             if (subscriptionsCookie == null)
             {
                 var result = JsonConvert.SerializeObject(_defaultCategories.Select(category => category.ToString()), new JsonSerializerSettings() { StringEscapeHandling = StringEscapeHandling.EscapeHtml });
-                HttpContext.Response.Cookies.Append(cookieName, result, new Microsoft.AspNetCore.Http.CookieOptions()
+                HttpContext.Response.Cookies.Append(CookieName.Subscriptions, result, new Microsoft.AspNetCore.Http.CookieOptions()
                 {
                     Expires = DateTimeOffset.MaxValue
                 });
@@ -151,7 +152,7 @@ namespace Voxed.WebApp.Controllers
 
         private IEnumerable<string> GetHiddenWords()
         {
-            if (HttpContext.Request.Cookies.TryGetValue("hiddenWords", out var hiddenWordsCookie))
+            if (HttpContext.Request.Cookies.TryGetValue(CookieName.HiddenWords, out var hiddenWordsCookie))
             {
                 var words = hiddenWordsCookie.Split(',');
                 return words.Select(word => word.Trim());

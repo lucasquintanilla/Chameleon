@@ -11,6 +11,7 @@ using Voxed.WebApp.Hubs;
 
 namespace Voxed.WebApp.Controllers
 {
+    [Route("notification")]
     public class NotificationController : BaseController
     {
         private IVoxedRepository _voxedRepository;
@@ -18,8 +19,8 @@ namespace Voxed.WebApp.Controllers
         private readonly IHubContext<VoxedHub, INotificationHub> _notificationHub;
 
         public NotificationController(IVoxedRepository voxedRepository,
-            UserManager<User> userManager, 
-            IHubContext<VoxedHub, 
+            UserManager<User> userManager,
+            IHubContext<VoxedHub,
             INotificationHub> notificationHub,
             IHttpContextAccessor accessor) : base(accessor)
         {
@@ -29,15 +30,14 @@ namespace Voxed.WebApp.Controllers
         }
 
         [AllowAnonymous]
-        [Route("notification/{id}")]
-        public async Task<IActionResult> Index(Guid id)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(Guid id)
         {
             var notification = await _voxedRepository.Notifications.GetById(id);
+            if (notification == null) { return Redirect($"/"); }
 
-            if (notification == null)
-            {
-                return Redirect($"/");
-            }
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            if (user.Id != notification.UserId) return Redirect("/");
 
             var voxHash = Core.Shared.GuidConverter.ToShortString(notification.VoxId);
             var commentHash = notification.Comment.Hash;
@@ -48,17 +48,17 @@ namespace Voxed.WebApp.Controllers
                 .User(notification.UserId.ToString())
                 .RemoveNotification(new RemoveNotificationModel() { Id = notification.Id.ToString() });
 
-            
+
             await _voxedRepository.Notifications.Remove(notification);
             await _voxedRepository.SaveChangesAsync();
-            
+
 
             return Redirect($"~/vox/{voxHash}#{commentHash}");
         }
 
         [AllowAnonymous]
-        [Route("notification/delete")]
-        public async Task<IActionResult> Delete()
+        [Route("delete")]
+        public async Task<IActionResult> DeleteAll()
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
 

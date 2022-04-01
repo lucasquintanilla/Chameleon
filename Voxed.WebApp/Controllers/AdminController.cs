@@ -8,6 +8,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Voxed.WebApp.Constants;
 
 namespace Voxed.WebApp.Controllers
 {
@@ -36,7 +37,7 @@ namespace Voxed.WebApp.Controllers
             {
                 switch (request.ContentType)
                 {
-                    case "0":
+                    case ContentType.Comment:
 
                         var comment = await _voxedRepository.Comments.GetById(new Guid(request.ContentId));
                         if (comment == null)
@@ -56,7 +57,7 @@ namespace Voxed.WebApp.Controllers
                         await _voxedRepository.SaveChangesAsync();
 
                         break;
-                    case "1":
+                    case ContentType.Vox:
 
                         var vox = await _voxedRepository.Voxs.GetById(new Guid(request.ContentId));
                         if (vox == null)

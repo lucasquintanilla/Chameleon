@@ -44,16 +44,6 @@ namespace Voxed.WebApp
                     var userManager = services.GetRequiredService<UserManager<User>>();
                     var roleManager = services.GetRequiredService<RoleManager<Role>>();
                     await new DataInitializer(context, userManager, roleManager).Initialize();
-
-                    //switch (context.Database.ProviderName)
-                    //{
-                    //    case "Microsoft.EntityFrameworkCore.Sqlite":
-                    //        await SqliteInitialize(services);
-                    //        break;
-                    //    case "Pomelo.EntityFrameworkCore.MySql":
-                    //        await MySqlInitialize(services);
-                    //        break;
-                    //}
                 }
                 catch (Exception ex)
                 {
