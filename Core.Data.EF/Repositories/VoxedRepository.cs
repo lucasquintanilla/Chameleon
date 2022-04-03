@@ -10,7 +10,7 @@ namespace Core.Data.EF.Repositories
 
         public VoxedRepository(VoxedContext context)
         {
-            //context.Database.Log = Console.Write;
+            //context.Database.Log = Console.Write; // .NET6 feature
             _context = context;
             Voxs = new VoxRepository(context);
             Categories = new CategoryRepository(context);
@@ -18,6 +18,7 @@ namespace Core.Data.EF.Repositories
             Media = new MediaRepository(context);
             Polls = new PollRepository(context);
             Notifications = new NotificationRepository(context);
+            UserVoxActions = new UserVoxActionRepository(context);
         }
 
         public IVoxRepository Voxs { get; }
@@ -26,6 +27,7 @@ namespace Core.Data.EF.Repositories
         public ICommentRepository Comments { get; }
         public IPollRepository Polls { get; }
         public INotificationRepository Notifications { get; }
+        public IUserVoxActionRepository UserVoxActions { get; }
 
         public async Task<int> SaveChangesAsync()
         {

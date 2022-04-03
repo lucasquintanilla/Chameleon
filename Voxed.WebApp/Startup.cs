@@ -5,20 +5,19 @@ using Core.Data.EF.Sqlite;
 using Core.Data.Repositories;
 using Core.Entities;
 using Core.Services.ImxtoService;
+using Core.Services.Telegram;
 using Core.Shared;
-using Elastic.Apm.NetCoreAll;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using Core.Services.Telegram;
 using Voxed.WebApp.Hubs;
 using Voxed.WebApp.Services;
-using Microsoft.AspNetCore.Http;
 
 namespace Voxed.WebApp
 {
@@ -66,57 +65,31 @@ namespace Voxed.WebApp
 
             #endregion
 
-            if (Core.Utilities.Utilities.IsDebug())
-            {
-                //https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/providers?tabs=dotnet-core-cli
+            //https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/providers?tabs=dotnet-core-cli
 
-                var provider = Configuration.GetValue("Provider", nameof(SqlProvider.MySql));
-                services.AddDbContext<VoxedContext>(
-                    options => _ = provider switch
-                    {
-                        nameof(SqlProvider.Sqlite) => options.UseSqlite(
-                            Configuration.GetConnectionString(nameof(SqlProvider.Sqlite)),
-                            x => x.MigrationsAssembly(typeof(SqliteVoxedContext).Assembly.GetName().Name)),
+            var provider = Configuration.GetValue("Provider", nameof(SqlProvider.MySql));
+            services.AddDbContext<VoxedContext>(
+                options => _ = provider switch
+                {
+                    nameof(SqlProvider.Sqlite) => options.UseSqlite(
+                        Configuration.GetConnectionString(nameof(SqlProvider.Sqlite)),
+                        x => x.MigrationsAssembly(typeof(SqliteVoxedContext).Assembly.GetName().Name)),
 
-                        nameof(SqlProvider.MySql) => options.UseMySql(
-                            Configuration.GetConnectionString(nameof(SqlProvider.MySql)),
-                            ServerVersion.AutoDetect(Configuration.GetConnectionString(nameof(SqlProvider.MySql))),
-                    x => x.MigrationsAssembly(typeof(MySqlVoxedContext).Assembly.GetName().Name)),
+                    nameof(SqlProvider.MySql) => options.UseMySql(
+                        Configuration.GetConnectionString(nameof(SqlProvider.MySql)),
+                        ServerVersion.AutoDetect(Configuration.GetConnectionString(nameof(SqlProvider.MySql))),
+                x => x.MigrationsAssembly(typeof(MySqlVoxedContext).Assembly.GetName().Name)),
 
-                        _ => throw new Exception($"Unsupported provider: {provider}")
-                    });
+                    _ => throw new Exception($"Unsupported provider: {provider}")
+                });
 
-            }
-            else
-            {
-                services.AddDbContext<MySqlVoxedContext>(options =>
-                    options.UseMySql(Configuration.GetConnectionString(nameof(SqlProvider.MySql)),
-                        ServerVersion.AutoDetect(Configuration.GetConnectionString(nameof(SqlProvider.MySql)))));
-
-                var provider = Configuration.GetValue("Provider", nameof(SqlProvider.MySql));
-                services.AddDbContext<VoxedContext>(
-                    options => _ = provider switch
-                    {
-                        nameof(SqlProvider.Sqlite) => options.UseSqlite(
-                            Configuration.GetConnectionString(nameof(SqlProvider.Sqlite)),
-                            x => x.MigrationsAssembly(typeof(SqliteVoxedContext).Assembly.GetName().Name)),
-
-                        nameof(SqlProvider.MySql) => options.UseMySql(
-                            Configuration.GetConnectionString(nameof(SqlProvider.MySql)),
-                            ServerVersion.AutoDetect(Configuration.GetConnectionString(nameof(SqlProvider.MySql))),
-                            x => x.MigrationsAssembly(typeof(MySqlVoxedContext).Assembly.GetName().Name)),
-
-                        _ => throw new Exception($"Unsupported provider: {provider}")
-                    });
-            }
-
-            services.AddDefaultIdentity<User>(options => 
+            services.AddDefaultIdentity<User>(options =>
                     options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<Role>()
                 .AddEntityFrameworkStores<VoxedContext>()
                 .AddErrorDescriber<SpanishIdentityErrorDescriber>();
 
-            
+
             services.AddTransient<NotificationService>();
             services.AddSingleton<FormateadorService>();
             services.AddSingleton<FileUploadService>();
@@ -126,7 +99,7 @@ namespace Voxed.WebApp
             services.AddSingleton<TelegramService>();
             services.AddSingleton<YoutubeService>();
             //services.AddSingleton<GlobalMessageService>();
-            
+
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -229,7 +202,8 @@ namespace Voxed.WebApp
         }
     }
 
-    public enum SqlProvider{
+    public enum SqlProvider
+    {
         MySql,
         Sqlite,
         SqlServer

@@ -18,6 +18,7 @@ namespace Core.Data.EF
         public DbSet<Media> Media { get; set; }
         public DbSet<Poll> Polls { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<UserVoxAction> UserVoxActions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -30,6 +31,7 @@ namespace Core.Data.EF
             new CategoryEntityTypeConfiguration().Configure(modelBuilder.Entity<Category>());
             new VoxEntityTypeConfiguration().Configure(modelBuilder.Entity<Vox>());
             new CommentEntityTypeConfiguration().Configure(modelBuilder.Entity<Comment>());
+            new UserVoxActionEntityConfiguration().Configure(modelBuilder.Entity<UserVoxAction>());
 
             if (Database.ProviderName == "Microsoft.EntityFrameworkCore.Sqlite")
             {
