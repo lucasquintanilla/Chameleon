@@ -7,7 +7,7 @@ namespace Core.Data.Repositories
 {
     public interface IVoxRepository : IGenericRepository<Vox>
     {
-        Task<IEnumerable<Vox>> GetLastestAsync(ICollection<int> includedCategories);
+        Task<IEnumerable<Vox>> GetLastestAsync(ICollection<int> includedCategories, IEnumerable<Guid> idSkipList);
         Task<IEnumerable<Vox>> GetByCategoryShortNameAsync(string shortName);
         Task<IEnumerable<Vox>> SearchAsync(string search);
         Task<Vox> GetLastVoxBump(IEnumerable<Guid> idsSkip);

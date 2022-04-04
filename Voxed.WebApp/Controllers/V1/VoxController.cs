@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Voxed.WebApp.Extensions;
+using Voxed.WebApp.Mappers;
 
 namespace Voxed.WebApp.Controllers.V1
 {
@@ -50,32 +51,32 @@ namespace Voxed.WebApp.Controllers.V1
         [HttpGet]
         public async Task<IActionResult> GetLastest()
         {
-            var voxs = await _voxedRepository.Voxs.GetLastestAsync(_defaultCategories);
+            var voxs = await _voxedRepository.Voxs.GetLastestAsync(_defaultCategories, new List<Guid>());
 
-            var voxsList = voxs.Select(vox => new Models.VoxResponse()
-            {
-                //Hash = GuidConverter.ToShortString(vox.ID),
-                Hash = vox.ID.ToString("N"),
-                //Hash = x.Hash,
-                //Status = "1",
-                Status = true,
-                Niche = "20",
-                Title = vox.Title,
-                Comments = vox.Comments.Count().ToString(),
-                Extension = "",
-                Sticky = vox.IsSticky ? "1" : "0",
-                CreatedAt = vox.CreatedOn.ToString(),
-                PollOne = "",
-                PollTwo = "",
-                Id = "20",
-                Slug = vox.Category.ShortName.ToUpper(),
-                //VoxId = GuidConverter.ToShortString(vox.ID),
-                VoxId = vox.ID.ToString("N"),
-                New = vox.CreatedOn.IsNew(),
-                ThumbnailUrl = vox.Media?.ThumbnailUrl
-            }).ToList();
+            //var voxsList = voxs.Select(vox => new Models.VoxResponse()
+            //{
+            //    //Hash = GuidConverter.ToShortString(vox.ID),
+            //    Hash = vox.ID.ToString("N"),
+            //    //Hash = x.Hash,
+            //    //Status = "1",
+            //    Status = true,
+            //    Niche = "20",
+            //    Title = vox.Title,
+            //    Comments = vox.Comments.Count().ToString(),
+            //    Extension = "",
+            //    Sticky = vox.IsSticky ? "1" : "0",
+            //    CreatedAt = vox.CreatedOn.ToString(),
+            //    PollOne = "",
+            //    PollTwo = "",
+            //    Id = vox.ID.ToString(),
+            //    Slug = vox.Category.ShortName.ToUpper(),
+            //    //VoxId = GuidConverter.ToShortString(vox.ID),
+            //    VoxId = vox.ID.ToString("N"),
+            //    New = vox.CreatedOn.IsNew(),
+            //    ThumbnailUrl = vox.Media?.ThumbnailUrl
+            //}).ToList();
 
-            return Ok(voxsList);
+            return Ok(VoxedMapper.Map(voxs));
         }
 
         private ApiVoxResponse ConvertToVoxResponse(Vox vox)

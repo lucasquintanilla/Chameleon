@@ -2,6 +2,7 @@
 using Core.Entities;
 using Core.Shared;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -11,7 +12,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Voxed.WebApp.Constants;
-using Voxed.WebApp.Extensions;
+using Voxed.WebApp.Mappers;
 using Voxed.WebApp.Models;
 
 namespace Voxed.WebApp.Controllers
@@ -23,13 +24,17 @@ namespace Voxed.WebApp.Controllers
         private readonly IVoxedRepository _voxedRepository;
         private static IEnumerable<Vox> _lastestVoxs = new List<Vox>();
         private readonly int[] _defaultCategories = { 1, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 30, 16, 14, 13, 12, 11, 10, 9, 8, 15, 7, 31, 6, 5, 4 };
+        private readonly UserManager<User> _userManager;
 
 
-        public HomeController(ILogger<HomeController> logger,
-            IVoxedRepository voxedRepository)
+        public HomeController(
+            ILogger<HomeController> logger,
+            IVoxedRepository voxedRepository, 
+            UserManager<User> userManager)
         {
             _logger = logger;
             _voxedRepository = voxedRepository;
+            _userManager = userManager;
         }
 
         [HttpGet("v1/voxs")]
@@ -37,32 +42,10 @@ namespace Voxed.WebApp.Controllers
         {
             if (!_lastestVoxs.Any())
             {
-                _lastestVoxs = await _voxedRepository.Voxs.GetLastestAsync(_defaultCategories);
+                _lastestVoxs = await _voxedRepository.Voxs.GetLastestAsync(_defaultCategories, new List<Guid>());
             }
 
-
-            var voxsList = _lastestVoxs.Select(vox => new VoxResponse()
-            {
-                Hash = GuidConverter.ToShortString(vox.ID),
-                //Hash = x.Hash,
-                //Status = "1",
-                Status = true,
-                Niche = "20",
-                Title = vox.Title,
-                Comments = vox.Comments.Count().ToString(),
-                Extension = "",
-                Sticky = vox.IsSticky ? "1" : "0",
-                CreatedAt = vox.CreatedOn.ToString(),
-                PollOne = "",
-                PollTwo = "",
-                Id = "20",
-                Slug = vox.Category.ShortName.ToUpper(),
-                VoxId = GuidConverter.ToShortString(vox.ID),
-                New = vox.CreatedOn.IsNew(),
-                ThumbnailUrl = vox.Media?.ThumbnailUrl
-            }).ToList();
-
-            return Ok(voxsList);
+            return Ok(VoxedMapper.Map(_lastestVoxs));
         }
 
         [HttpGet("v1/vox/{hash}")]
@@ -70,7 +53,7 @@ namespace Voxed.WebApp.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
             var voxId = GuidConverter.FromShortString(id);
@@ -102,36 +85,39 @@ namespace Voxed.WebApp.Controllers
             //        Expires = DateTimeOffset.MaxValue
             //    });
 
-            //var x = Request.Headers.TryGetValue("CF-IPCountry", out var resulto);            
-            
-            var voxs = await _voxedRepository.Voxs.GetLastestAsync(GetCategorySubscriptions());
+            //var x = Request.Headers.TryGetValue("CF-IPCountry", out var resulto);
 
-            var voxsList = voxs.Select(vox => new VoxResponse()
+
+            var hiddenVoxIds = await GetHiddenVoxIds();
+            var voxs = await _voxedRepository.Voxs.GetLastestAsync(GetCategorySubscriptions(), hiddenVoxIds);
+            return View(VoxedMapper.Map(voxs));
+        }
+
+        private async Task<List<Guid>> GetHiddenVoxIds()
+        {
+            var list = new List<Guid>();
+
+            try
             {
-                Hash = GuidConverter.ToShortString(vox.ID),
-                //Status = "1",
-                Status = true,
-                Niche = "20",
-                Title = vox.Title,
-                Comments = vox.Comments.Count().ToString(),
-                Extension = "",
-                Sticky = vox.IsSticky ? "1" : "0",
-                CreatedAt = vox.CreatedOn.ToString(),
-                PollOne = "",
-                PollTwo = "",
-                Id = "20",
-                Slug = vox.Category.ShortName.ToUpper(),
-                VoxId = GuidConverter.ToShortString(vox.ID),
-                New = vox.CreatedOn.IsNew(),
-                ThumbnailUrl = vox.Media?.ThumbnailUrl
-            }).ToList();
+                var user = await _userManager.GetUserAsync(HttpContext.User);
+                if (user != null)
+                {
+                    var userVoxActions = await _voxedRepository.UserVoxActions.Find(x => x.UserId == user.Id && x.IsHidden);
+                    var hiddenVoxIds = userVoxActions.Select(x => x.VoxId).ToList();
+                    list.AddRange(hiddenVoxIds);
+                }
+            }
+            catch (Exception e)
+            {
 
-            return View(voxsList);
+            }
+
+            return list;
         }
 
         private ICollection<int> GetCategorySubscriptions()
         {
-            
+
             HttpContext.Request.Cookies.TryGetValue(CookieName.Subscriptions, out string subscriptionsCookie);
 
             if (subscriptionsCookie == null)

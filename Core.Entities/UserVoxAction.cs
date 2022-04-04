@@ -6,9 +6,9 @@ namespace Core.Entities
     {
         public Guid UserId { get; set; }
         public Guid VoxId { get; set; }
-        public bool Follow { get; set; }
-        public bool Favorite { get; set; }
-        public bool Hide { get; set; }
+        public bool IsFollowed { get; set; }
+        public bool IsFavorite { get; set; }
+        public bool IsHidden { get; set; }
         public virtual User User { get; set; }
         public virtual Vox Vox { get; set; }
     }

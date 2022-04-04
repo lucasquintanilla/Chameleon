@@ -3,11 +3,11 @@ using Microsoft.Extensions.Configuration;
 
 namespace Core.Data.EF.MySql
 {
-    public class MySqlVoxedContext : VoxedContext
+    public class MySqlVoxedContext
     {
         protected readonly IConfiguration Configuration;
 
-        public MySqlVoxedContext(DbContextOptions<VoxedContext> options, IConfiguration configuration) : base(options)
+        public MySqlVoxedContext(DbContextOptions<VoxedContext> options, IConfiguration configuration)
         {
             Configuration = configuration;
         }

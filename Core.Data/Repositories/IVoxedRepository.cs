@@ -10,6 +10,7 @@ namespace Core.Data.Repositories
         IMediaRepository Media { get; }
         ICommentRepository Comments { get; }
         INotificationRepository Notifications { get; }
+        IUserVoxActionRepository UserVoxActions { get; }
         Task<int> SaveChangesAsync();
     }
 }

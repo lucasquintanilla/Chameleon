@@ -2,6 +2,7 @@
 {
     public class FavoriteResponse : BaseResponse
     {
+        public string Action { get; set; }
 
     }
 }

@@ -27,9 +27,10 @@ namespace Core.Data.EF.Repositories
                 .Include(x => x.User)
                 .FirstOrDefaultAsync(m => m.ID == id);
 
-        public async Task<IEnumerable<Vox>> GetLastestAsync(ICollection<int> includedCategories) =>
+        public async Task<IEnumerable<Vox>> GetLastestAsync(ICollection<int> includedCategories, IEnumerable<Guid> idSkipList) =>
             await _context.Voxs
-                .Where(x => x.State == VoxState.Normal && includedCategories.Contains(x.CategoryID))
+                .Where(x => x.State == VoxState.Normal && 
+                    includedCategories.Contains(x.CategoryID) && !idSkipList.Contains(x.ID))
                 .Include(x => x.Media)
                 .Include(x => x.Category)
                 .Include(x => x.Comments.Where(c => c.State == CommentState.Normal))

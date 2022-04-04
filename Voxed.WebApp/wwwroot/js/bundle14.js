@@ -3892,8 +3892,10 @@
                             }
                             switch (window.ACTUAL_PAGE) {
                                 case "home":
-                                    if (document.getElementById(n).classList.remove("actionMode"), "hide" == e) return document.getElementById(n).classList.add("remove"), !1;
-                                    s.swal(!0, `${l} el ${r[t]} ${d} tu lista de ${i[e]}`)
+                                    if (document.getElementById(n).classList.remove("actionMode"), "hide" == e)
+                                    return document.getElementById(n).classList.add("remove"), !1;
+
+                                s.swal(!0, `${l} el ${r[t]} ${d} tu lista de ${i[e]}`)
                             }
                         }
                     } else s.swal(!1, a.swal)

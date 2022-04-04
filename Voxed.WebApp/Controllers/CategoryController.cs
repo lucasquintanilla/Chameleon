@@ -1,9 +1,7 @@
 ﻿using Core.Data.Repositories;
-using Core.Shared;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 using System.Threading.Tasks;
-using Voxed.WebApp.Extensions;
+using Voxed.WebApp.Mappers;
 
 namespace Voxed.WebApp.Controllers
 {
@@ -26,6 +24,7 @@ namespace Voxed.WebApp.Controllers
                 return NotFound();
             }
 
+            // chaear las categorias y luego buscar los vox por categoryId
             var exists = await _voxedRepository.Categories.Exists(shortName);
 
             if (!exists)
@@ -34,29 +33,7 @@ namespace Voxed.WebApp.Controllers
             }
 
             var voxs = await _voxedRepository.Voxs.GetByCategoryShortNameAsync(shortName);
-
-            var voxsList = voxs.Select(x => new Models.VoxResponse()
-            {
-                Hash = GuidConverter.ToShortString(x.ID),
-                //Status = "1",
-                Status = true,
-                Niche = "20",
-                Title = x.Title,
-                Comments = x.Comments.Count().ToString(),
-                Extension = "",
-                Sticky = x.IsSticky ? "1" : "0",
-                CreatedAt = x.CreatedOn.ToString(),
-                PollOne = "",
-                PollTwo = "",
-                Id = "20",
-                Slug = x.Category.ShortName.ToUpper(),
-                VoxId = GuidConverter.ToShortString(x.ID),
-                New = x.CreatedOn.IsNew(),
-                ThumbnailUrl = x.Media?.ThumbnailUrl,
-                Category = x.Category.Name
-            }).ToList();
-
-            return View(voxsList);
+            return View(VoxedMapper.Map(voxs));
         }
     }
 }

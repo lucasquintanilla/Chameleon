@@ -3,11 +3,11 @@ using Microsoft.Extensions.Configuration;
 
 namespace Core.Data.EF.Sqlite
 {
-    public class SqliteVoxedContext : VoxedContext
+    public class SqliteVoxedContext
     {
         protected readonly IConfiguration Configuration;
 
-        public SqliteVoxedContext(DbContextOptions<VoxedContext> options, IConfiguration configuration) : base(options)
+        public SqliteVoxedContext(DbContextOptions<VoxedContext> options, IConfiguration configuration)
         {
             Configuration = configuration;
         }

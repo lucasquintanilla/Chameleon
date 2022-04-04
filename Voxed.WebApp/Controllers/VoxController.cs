@@ -14,6 +14,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Voxed.WebApp.Extensions;
 using Voxed.WebApp.Hubs;
+using Voxed.WebApp.Mappers;
 using Voxed.WebApp.Models;
 using Voxed.WebApp.Services;
 using Voxed.WebApp.ViewModels;
@@ -108,14 +109,74 @@ namespace Voxed.WebApp.Controllers
         }
 
         [HttpPost("meta/{id}/toggle")]
-        public async Task<FavoriteResponse> Favorite(FavoriteRequest request, string id)
+        public async Task<FavoriteResponse> Toggle(FavoriteRequest request, string id)
         {
-            return new FavoriteResponse() { Status = false, Swal = $"Funcion {id} en desarrollo" };
+            var response = new FavoriteResponse();
+
+            try
+            {
+                var user = await _userManager.GetUserAsync(HttpContext.User);
+                if (user == null)
+                {
+                    response.Swal = $"Debe iniciar sesion o crear una comentando o creando un post";
+                    return response;
+                }
+
+                var action = await _voxedRepository.UserVoxActions.GetByUserIdVoxId(user.Id, request.ContentId);
+                if (action == null)
+                {
+                    action = new UserVoxAction()
+                    {
+                        UserId = user.Id,
+                        VoxId = request.ContentId
+                    };
+
+                    SetAction(action, id);
+                    await _voxedRepository.UserVoxActions.Add(action);
+                }
+                else
+                {
+                    SetAction(action, id);
+                }
+
+                await _voxedRepository.SaveChangesAsync();
+
+                response.Status = true;
+                response.Swal = $"Accion {id} aplicada con exito";
+                response.Action = "create";
+            }
+            catch (Exception e)
+            {
+                response.Status = false;
+                response.Swal = $"Hubo un error al aplicar la accion {id}";
+            }
+
+            return response;
+        }
+
+        private void SetAction(UserVoxAction userVoxAction, string action)
+        {
+            switch (action)
+            {
+                case Actions.Hide:
+                    userVoxAction.IsHidden = true;
+                    break;
+                case Actions.Favorite:
+                    userVoxAction.IsFavorite = true;
+                    break;
+                case Actions.Follow:
+                    userVoxAction.IsFollowed = true;
+                    break;
+                default:
+                    break;
+            }
         }
 
         [HttpPost("report")]
         public async Task<ReportResponse> Report(ReportRequest request)
         {
+            var response = new ReportResponse();
+
             try
             {
                 string message = null;
@@ -123,33 +184,31 @@ namespace Voxed.WebApp.Controllers
                 switch (request.ContentType)
                 {
                     case 0:
-                        var comment = _voxedRepository.Comments.Find(x => x.Hash == request.ContentId).Result.FirstOrDefault();
+                        //var comment = await _voxedRepository.Comments.GetById(new Guid(request.ContentId));
+                        var comment = await _voxedRepository.Comments.GetByHash(request.ContentId);
                         message = $"NUEVA DENUNCIA \n Reason: {request.Reason}. \n https://voxed.club/vox/{GuidConverter.ToShortString(comment.VoxID)}#{comment.Hash}";
                         break;
 
                     case 1:
-                        message = $"NUEVA DENUNCIA \n Reason: {request.Reason}. \n https://voxed.club/vox/{request.ContentId}";
+                        message = $"NUEVA DENUNCIA \n Reason: {request.Reason}. \n https://voxed.club/vox/{GuidConverter.ToShortString(new Guid(request.ContentId))}";
                         break;
                 }
 
                 await _telegramService.SendMessage(message);
 
-                return new ReportResponse()
-                {
-                    Status = true,
-                    Swal = "Gracias por enviarnos tu denuncia"
-                };
+                response.Status = true;
+                response.Swal = "Gracias por enviarnos tu denuncia";
+
             }
             catch (Exception e)
             {
                 _logger.LogError(e.Message);
 
-                return new ReportResponse()
-                {
-                    Status = false,
-                    Swal = "Hubo un error al enviar tu denuncia"
-                };
+                response.Status = false;
+                response.Swal = "Hubo un error al enviar tu denuncia";
             }
+
+            return response;
         }
 
         [HttpGet("vox/{hash}")]
@@ -206,15 +265,12 @@ namespace Voxed.WebApp.Controllers
         }
 
         [HttpGet("search/{value}")]
-        public async Task<IActionResult> Index(string value)
+        public async Task<IActionResult> Search(string value)
         {
             if (string.IsNullOrWhiteSpace(value)) return BadRequest();
 
             var voxs = await _voxedRepository.Voxs.SearchAsync(value);
-
-            var voxsList = ConvertToViewModel(voxs);
-
-            return View(voxsList);
+            return View(VoxedMapper.Map(voxs));
         }
 
         [HttpPost]
@@ -272,7 +328,8 @@ namespace Voxed.WebApp.Controllers
 
                 if (!_excludedCategories.Contains(vox.CategoryID))
                 {
-                    var voxToHub = ConvertoToVoxResponse(vox);
+                    //var voxToHub = ConvertoToVoxResponse(vox);
+                    var voxToHub = VoxedMapper.Map(vox);
                     await _notificationHub.Clients.All.Vox(voxToHub);
                 }
 
@@ -298,25 +355,23 @@ namespace Voxed.WebApp.Controllers
         {
             //HttpContext.Request.Cookies.TryGetValue("categoriasFavoritas", out string categoriasActivas);
             var skipList = JsonConvert.DeserializeObject<IEnumerable<string>>(request?.Ignore);
-            
             var skipIdList = skipList.Select(x => GuidConverter.FromShortString(x)).ToList();
+            //var skipIdList = JsonConvert.DeserializeObject<List<Guid>>(request?.Ignore);
 
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            if (user != null)
+            {
+                var userVoxActions = await _voxedRepository.UserVoxActions.Find(x => x.UserId == user.Id && x.IsHidden);
+                var hiddenVoxIds = userVoxActions.Select(x => x.VoxId).ToList();   
+                skipIdList.AddRange(hiddenVoxIds);
+            }
+
+            
             var lastVox = await _voxedRepository.Voxs.GetLastVoxBump(skipIdList);
 
             var voxs = await _voxedRepository.Voxs.GetLastestAsync(skipIdList, lastVox.Bump, GetSubscriptionCategories(request));
 
-            var voxsList = ConvertToViewModel(voxs);
-
-            var response = new ListResponse
-            {
-                Status = voxsList.Any(),
-                List = new List()
-                {
-                    Page = "category-sld",
-                    Voxs = voxsList
-                }
-            };
-
+            var response = new ListResponse(VoxedMapper.Map(voxs));
             return response;
         }
 
@@ -360,33 +415,12 @@ namespace Voxed.WebApp.Controllers
 
             throw new Exception("Usuario no pudo ser creado");
         }
+    }
 
-        private VoxResponse ConvertoToVoxResponse(Vox vox)
-        {
-            return new VoxResponse()
-            {
-                Hash = GuidConverter.ToShortString(vox.ID),
-                //Status = "1",
-                Status = true,
-                Niche = "20",
-                Title = vox.Title,
-                Comments = vox.Comments.Count().ToString(),
-                Extension = string.Empty,
-                Sticky = vox.IsSticky ? "1" : "0",
-                CreatedAt = vox.CreatedOn.ToString(),
-                PollOne = string.Empty,
-                PollTwo = string.Empty,
-                Id = "20",
-                Slug = vox.Category.ShortName.ToUpper(),
-                VoxId = vox.ID.ToString(),
-                New = vox.CreatedOn.IsNew(),
-                ThumbnailUrl = vox.Media?.ThumbnailUrl
-            };
-        }
-
-        private IEnumerable<VoxResponse> ConvertToViewModel(IEnumerable<Vox> voxs)
-        {
-            return voxs.Select(ConvertoToVoxResponse);
-        }
+    public class Actions
+    {
+        public const string Hide = "hide";
+        public const string Favorite = "follow";
+        public const string Follow = "favorite";
     }
 }

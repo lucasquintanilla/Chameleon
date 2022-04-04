@@ -1,5 +1,9 @@
 ﻿using Core.Data.Repositories;
 using Core.Entities;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Core.Data.EF.Repositories
 {
@@ -11,5 +15,10 @@ namespace Core.Data.EF.Repositories
         {
             _context = context;
         }
+
+        public async Task<UserVoxAction> GetByUserIdVoxId(Guid userId, Guid voxId)
+         => await _context.UserVoxActions
+            .Where(x => x.UserId == userId && x.VoxId == voxId)            
+            .SingleOrDefaultAsync();
     }
 }
