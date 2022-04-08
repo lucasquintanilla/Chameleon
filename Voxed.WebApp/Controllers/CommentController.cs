@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Voxed.WebApp.Models;
 using Voxed.WebApp.Services;
@@ -79,33 +80,26 @@ namespace Voxed.WebApp.Controllers
 
                 await _voxedRepository.SaveChangesAsync();
 
-                // Manejar guardado de y envio de notificaciones en threads separados en background
-                await _notificationService.ManageReplyNotifications(vox, comment, request);
+                await _notificationService.ManageNotifications(vox, comment);
 
-                if (vox.User.UserType != UserType.Anonymous && vox.UserID != comment.UserID)
-                {
-                    await _notificationService.ManageOpNotification(vox, comment);
-                }
-
-                await _notificationService.SendCommentLiveUpdate(comment, vox, request);
+                // SendBoardUpdate and add comment in vox
+                await _notificationService.SendBoardUpdate(comment, vox, request);
 
                 response.Hash = comment.Hash;
                 response.Status = true;
-
-                return response;
             }
             catch (NotImplementedException e)
             {
                 response.Swal = e.Message;
-                return response;
             }
             catch (Exception e)
             {
                 _logger.LogError(e.Message);
 
                 response.Swal = "Hubo un error";
-                return response;
             }
+
+            return response;
         }
 
         [HttpPost]

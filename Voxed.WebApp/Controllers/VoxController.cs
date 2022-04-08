@@ -214,7 +214,7 @@ namespace Voxed.WebApp.Controllers
         [HttpGet("vox/{hash}")]
         public async Task<IActionResult> Details(string hash)
         {
-            if (hash == null) return NotFound();
+            if (hash == null) return BadRequest();
 
             var voxId = GuidConverter.FromShortString(hash);
 

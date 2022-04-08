@@ -9,5 +9,6 @@ namespace Core.Data.Repositories
     public interface IUserVoxActionRepository : IGenericRepository<UserVoxAction>
     {
         Task<UserVoxAction> GetByUserIdVoxId(Guid userId, Guid voxId);
+        Task<IList<Guid>> GetVoxSubscriberUserIds(Guid voxId);
     }
 }

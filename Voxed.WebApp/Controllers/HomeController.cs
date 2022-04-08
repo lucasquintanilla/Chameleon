@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Voxed.WebApp.Constants;
 using Voxed.WebApp.Mappers;
@@ -87,13 +88,12 @@ namespace Voxed.WebApp.Controllers
 
             //var x = Request.Headers.TryGetValue("CF-IPCountry", out var resulto);
 
-
-            var hiddenVoxIds = await GetHiddenVoxIds();
-            var voxs = await _voxedRepository.Voxs.GetLastestAsync(GetCategorySubscriptions(), hiddenVoxIds);
+            var hiddenVoxIds = await GetUserHiddenVoxIds();
+            var voxs = await _voxedRepository.Voxs.GetLastestAsync(GetUserCategorySubscriptions(), hiddenVoxIds);
             return View(VoxedMapper.Map(voxs));
         }
 
-        private async Task<List<Guid>> GetHiddenVoxIds()
+        private async Task<List<Guid>> GetUserHiddenVoxIds()
         {
             var list = new List<Guid>();
 
@@ -115,7 +115,7 @@ namespace Voxed.WebApp.Controllers
             return list;
         }
 
-        private ICollection<int> GetCategorySubscriptions()
+        private ICollection<int> GetUserCategorySubscriptions()
         {
 
             HttpContext.Request.Cookies.TryGetValue(CookieName.Subscriptions, out string subscriptionsCookie);

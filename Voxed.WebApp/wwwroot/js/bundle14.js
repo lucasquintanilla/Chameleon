@@ -5307,7 +5307,8 @@
     "use strict";
     Object.defineProperty(t, "__esModule", {
         value: !0
-    }), t.AdminService = void 0;
+    }),
+        t.AdminService = void 0;
     const a = n(2),
         r = n(3),
         i = n(18),
@@ -5392,7 +5393,9 @@
                                 document.querySelector(`[data-reactive][data-contenttype="0"][data-contentid="${t}"]`).classList.remove("hide");
                                 break;
                             case 1:
-                                "vox" == window.ACTUAL_PAGE && (document.querySelector('[data-delete][data-contenttype="1"]').classList.add("hide"), document.querySelector('[data-reactive][data-contenttype="1"]').classList.remove("hide")), "panel" == window.ACTUAL_PAGE && document.getElementById("reportData-" + t).remove()
+                                "vox" == window.ACTUAL_PAGE && (document.querySelector('[data-delete][data-contenttype="1"]').classList.add("hide"),
+                                    document.querySelector('[data-reactive][data-contenttype="1"]').classList.remove("hide")),
+                                    "panel" == window.ACTUAL_PAGE && document.getElementById("reportData-" + t).remove()
                         }
                     }
                 }), console.log(n.value)
@@ -15654,7 +15657,7 @@
             }))
         }
     }
-}, , function (e, t, n) {
+}, , function (e, t, n) { 
     "use strict";
     Object.defineProperty(t, "__esModule", {
         value: !0

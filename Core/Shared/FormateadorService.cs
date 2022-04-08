@@ -105,17 +105,28 @@ namespace Core.Shared
 
         public List<string> GetRepliedHash(string content)
         {
+            var list = new List<string>();
+
             if (string.IsNullOrWhiteSpace(content))
             {
-                return new List<string>();
+                return list;
             }
 
-            var hashLength = 7;
+            //var hashLength = 7;
 
-            return Regex.Matches(content, @">>([A-Z0-9]{7})") // {7} is hash lenght
+            //return Regex.Matches(content, @">>([A-Z0-9]{7})") // {7} is hash lenght
+            //    .Select(m => m.Groups[1].Value)
+            //    .Distinct()
+            //    .ToList();
+
+            var hashes = Regex.Matches(content, @"&gt;&gt;([A-Z0-9]{7})") // {7} is the hash lenght
                 .Select(m => m.Groups[1].Value)
                 .Distinct()
                 .ToList();
+
+            list.AddRange(hashes);
+
+            return list;
         }
         //public class FormateadorService
         //{
