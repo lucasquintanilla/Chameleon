@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System;
 using Voxed.WebApp.Hubs;
 using Voxed.WebApp.Services;
@@ -71,14 +72,18 @@ namespace Voxed.WebApp
             services.AddDbContext<VoxedContext>(
                 options => _ = provider switch
                 {
-                    nameof(SqlProvider.Sqlite) => options.UseSqlite(
-                        Configuration.GetConnectionString(nameof(SqlProvider.Sqlite)),
-                        x => x.MigrationsAssembly(typeof(SqliteVoxedContext).Assembly.GetName().Name)),
+                    nameof(SqlProvider.Sqlite) => options
+                        .UseSqlite(
+                            Configuration.GetConnectionString(nameof(SqlProvider.Sqlite)),
+                            x => x.MigrationsAssembly(typeof(SqliteVoxedContext).Assembly.GetName().Name))
+                        .UseLoggerFactory(ContextLoggerFactory),
 
-                    nameof(SqlProvider.MySql) => options.UseMySql(
+                    nameof(SqlProvider.MySql) => options
+                    .UseMySql(
                         Configuration.GetConnectionString(nameof(SqlProvider.MySql)),
                         ServerVersion.AutoDetect(Configuration.GetConnectionString(nameof(SqlProvider.MySql))),
-                x => x.MigrationsAssembly(typeof(MySqlVoxedContext).Assembly.GetName().Name)),
+                        x => x.MigrationsAssembly(typeof(MySqlVoxedContext).Assembly.GetName().Name))
+                    .UseLoggerFactory(ContextLoggerFactory),
 
                     _ => throw new Exception($"Unsupported provider: {provider}")
                 });
@@ -143,6 +148,9 @@ namespace Voxed.WebApp
 
             services.AddSignalR();
         }
+
+        private static ILoggerFactory ContextLoggerFactory
+            => LoggerFactory.Create(builder => builder.AddConsole());
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -81,6 +81,7 @@ tutorial https://swimburger.net/blog/azure/setting-up-cloudflare-full-universal-
 # Tecnologias
 
 - ASP .NET Core 3.1
+- Entity Framework Core
 - MySQL
 - Sqlite
 - SignalR
@@ -97,4 +98,12 @@ tutorial https://swimburger.net/blog/azure/setting-up-cloudflare-full-universal-
 
 - [Id Unico](https://web.archive.org/web/20201020000307/https://www.voxed.net/off/R6X0nNN0BA6ySYDQa8EU)
 
+# EntityFramework Migrations
 
+### Add Migration
+
+1. Select data base provider from appsettings.json
+2. Desde command console seleccionar Assembly donde guardar las migraciones
+2. Ejecutar comando migracion 
+
+> add-migration NombreDeMigracion

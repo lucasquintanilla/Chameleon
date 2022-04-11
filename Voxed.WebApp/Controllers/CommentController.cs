@@ -9,6 +9,7 @@ using System;
 using System.Threading.Tasks;
 using Voxed.WebApp.Models;
 using Voxed.WebApp.Services;
+using static Voxed.WebApp.Models.CommentStickyResponse;
 
 namespace Voxed.WebApp.Controllers
 {
@@ -100,9 +101,32 @@ namespace Voxed.WebApp.Controllers
         }
 
         [HttpPost]
-        public async Task Sticky(string request)
+        public async Task<CommentStickyResponse> Sticky(CommentStickyRequest request)
         {
             //a.append("contentType", t), a.append("contentId", n), a.append("vox", e),/ comment/sticky
+            // add class list COMMENT_STICKY
+            var response = new CommentStickyResponse() { Type = CommentStickyType.CommentSticky };
+
+            try
+            {
+                var comment = await _voxedRepository.Comments.GetById(request.ContentId);
+
+                if (comment == null)
+                {
+                    NotFound(response);
+                }
+
+                comment.IsSticky = true;
+                response.Id = request.ContentId;
+
+                await _voxedRepository.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                
+            }
+
+            return response;
         }
 
         private async Task<Comment> ProcessComment(CreateCommentRequest request, string id)

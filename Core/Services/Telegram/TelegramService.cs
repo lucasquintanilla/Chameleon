@@ -14,13 +14,11 @@ namespace Core.Services.Telegram
     {
         private readonly TelegramConfiguration _config;
         private readonly TelegramBotClient _client;
-        private readonly string _chatId;
 
         public TelegramService(IOptions<TelegramConfiguration> options)
         {
             _config = options.Value;
             _client = new TelegramBotClient(_config.Token);
-            _chatId = _config.ChatId;
 
             using var cts = new CancellationTokenSource();
 
@@ -30,18 +28,18 @@ namespace Core.Services.Telegram
                 AllowedUpdates = { } // receive all update types
             };
 
-            _client.StartReceiving(
-                HandleUpdateAsync,
-                HandleErrorAsync,
-                receiverOptions,
-                cancellationToken: cts.Token);
+            //_client.StartReceiving(
+            //    HandleUpdateAsync,
+            //    HandleErrorAsync,
+            //    receiverOptions,
+            //    cancellationToken: cts.Token);
         }
 
         public async Task<Message> SendMessage(string message)
         {
             try
             {
-                return await _client.SendTextMessageAsync(_chatId, message);
+                return await _client.SendTextMessageAsync(_config.ChatId, message);
             }
             catch (Exception e)
             {
@@ -83,7 +81,5 @@ namespace Core.Services.Telegram
             Console.WriteLine(ErrorMessage);
             return Task.CompletedTask;
         }
-
-
     }
 }

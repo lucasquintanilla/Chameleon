@@ -70,6 +70,9 @@ namespace Core.Data.EF.MySql.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
+                    b.Property<bool>("IsSticky")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<Guid?>("MediaID")
                         .IsUnicode(true)
                         .HasColumnType("char(36)");
