@@ -375,9 +375,9 @@
             <div class="commentList" id="commentList">
                 <div class="commentContainer">
 
-                    @foreach (var comment in Model.Comments.OrderByDescending(x => x.CreatedOn))
+                    @foreach (var comment in Model.Comments.OrderByDescending(x => x.IsSticky).ThenBy(x => x.CreatedOn))
                     {
-                        <div class="comment   " id="@comment.Hash" data-id="@comment.ID">
+                        <div class="comment @(comment.IsSticky ? "COMMENT_STICKY" : string.Empty)" id="@comment.Hash" data-id="@comment.ID">
                             <div class="commentAvatar">
                                 <div class="unselect avatarColor  @comment.Style.ToString().ToLower()">
                                     <span class="avatarText">@Core.Shared.UserTypeDictionary.GetDescription(comment.User.UserType).ToUpper()</span>

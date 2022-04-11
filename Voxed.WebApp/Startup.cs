@@ -75,15 +75,15 @@ namespace Voxed.WebApp
                     nameof(SqlProvider.Sqlite) => options
                         .UseSqlite(
                             Configuration.GetConnectionString(nameof(SqlProvider.Sqlite)),
-                            x => x.MigrationsAssembly(typeof(SqliteVoxedContext).Assembly.GetName().Name))
-                        .UseLoggerFactory(ContextLoggerFactory),
+                            x => x.MigrationsAssembly(typeof(SqliteVoxedContext).Assembly.GetName().Name)),
+                        //.UseLoggerFactory(ContextLoggerFactory),
 
                     nameof(SqlProvider.MySql) => options
                     .UseMySql(
                         Configuration.GetConnectionString(nameof(SqlProvider.MySql)),
                         ServerVersion.AutoDetect(Configuration.GetConnectionString(nameof(SqlProvider.MySql))),
-                        x => x.MigrationsAssembly(typeof(MySqlVoxedContext).Assembly.GetName().Name))
-                    .UseLoggerFactory(ContextLoggerFactory),
+                        x => x.MigrationsAssembly(typeof(MySqlVoxedContext).Assembly.GetName().Name)),
+                    //.UseLoggerFactory(ContextLoggerFactory),
 
                     _ => throw new Exception($"Unsupported provider: {provider}")
                 });
