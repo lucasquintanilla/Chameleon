@@ -207,7 +207,6 @@ namespace Voxed.WebApp.Controllers
                 switch (request.ContentType)
                 {
                     case 0:
-                        //var comment = await _voxedRepository.Comments.GetById(new Guid(request.ContentId));
                         var comment = await _voxedRepository.Comments.GetByHash(request.ContentId);
                         message = $"NUEVA DENUNCIA \n Reason: {request.Reason}. \n https://voxed.club/vox/{GuidConverter.ToShortString(comment.VoxID)}#{comment.Hash}";
                         break;
@@ -264,7 +263,7 @@ namespace Voxed.WebApp.Controllers
                 UserName = vox.User.UserName,
                 UserType = (ViewModels.UserType)(int)vox.User.UserType,
                 CreatedOn = vox.CreatedOn.DateTime.ToTimeAgo(),
-                Comments = vox.Comments,
+
                 Media = new MediaViewModel()
                 {
                     ThumbnailUrl = vox.Media.ThumbnailUrl,
@@ -272,19 +271,32 @@ namespace Voxed.WebApp.Controllers
                     MediaType = (ViewModels.MediaType)(int)vox.Media.MediaType,
                     ExtensionData = vox.Media?.Url.Split('=')[(vox.Media?.Url.Split('=').Length - 1).Value]
                 },
+
                 IsFavorite = actions.IsFavorite,
                 IsFollowed = actions.IsFollowed,
                 IsHidden = actions.IsHidden,
 
-                //Comments = vox.Comments.Select(x => new CommentViewModel()
-                //{
-                //    Id = x.ID,
-                //    Content = x.Content,
-                //    Hash = x.Hash,
-                //    AvatarColor = x.Style.ToString().ToLower(),
-                //    AvatarText = Core.Shared.UserTypeDictionary.GetDescription(x.User.UserType).ToUpper(),
-                //    IsOp = x.
-                //}).ToList(),
+                Comments = vox.Comments.OrderByDescending(x => x.IsSticky).ThenByDescending(x => x.CreatedOn).Select(x => new CommentViewModel()
+                {
+                    ID = x.ID,
+                    Content = x.Content,
+                    Hash = x.Hash,
+                    AvatarColor = x.Style.ToString().ToLower(),
+                    AvatarText = UserTypeDictionary.GetDescription(x.User.UserType).ToUpper(),
+                    IsOp = x.UserID == vox.UserID,
+                    Media = x.Media == null ? null : new MediaViewModel()
+                    {
+                        Url = x.Media?.Url,
+                        MediaType= (ViewModels.MediaType)(int)x.Media?.MediaType,
+                        ExtensionData= x.Media?.Url.Split('=')[(vox.Media?.Url.Split('=').Length - 1).Value],
+                        ThumbnailUrl = x.Media?.ThumbnailUrl,
+                    },
+                    IsSticky = x.IsSticky,
+                    CreatedOn = x.CreatedOn,
+                    Style = x.Style.ToString().ToLower(),
+                    User = x.User,
+
+                }).ToList(),
             };
 
             return View(voxViewModel);
@@ -292,17 +304,17 @@ namespace Voxed.WebApp.Controllers
 
         private async Task<UserVoxAction> GetUserVoxActions(Guid voxId)
         {
-            var action = new UserVoxAction();
+            var userVoxAction = new UserVoxAction();
             var userId = User.GetLoggedInUserId<Guid?>();
             if (userId == null)
             {
-                return action;
+                return userVoxAction;
             }
 
             var actions = await _voxedRepository.UserVoxActions.GetByUserIdVoxId(userId.Value, voxId);
             if (actions == null)
             {
-                return action;
+                return userVoxAction;
             }
 
             return actions;

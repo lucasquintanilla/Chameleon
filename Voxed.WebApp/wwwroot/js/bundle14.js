@@ -3944,7 +3944,8 @@
         let h = new FormData(this),
             m = document.getElementById("commentPoll"),
             f = m.classList.contains("hide");
-        f || h.append("poll", "true"), h.append("uploadData", JSON.stringify(window.uploadData[0])), l.ajax({
+        f || h.append("poll", "true"), h.append("uploadData", JSON.stringify(window.uploadData[0])),
+            l.ajax({
             //url: "/comment/" + window.VOX_HASH,
             url: "/comment/nuevo/" + window.VOX_ID,
             type: "POST",

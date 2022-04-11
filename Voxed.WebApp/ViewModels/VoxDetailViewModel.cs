@@ -24,8 +24,8 @@ namespace Voxed.WebApp.ViewModels
         public string CreatedOn { get; set; }
         public string CommentTag { get; set; }
         public MediaViewModel Media { get; set; }
-        //public ICollection<CommentViewModel> Comments { get; set; }
-        public ICollection<Comment> Comments { get; set; }
+        public ICollection<CommentViewModel> Comments { get; set; }
+        //public ICollection<Comment> Comments { get; set; }
 
         // Actions
         public bool IsFollowed { get; set; }

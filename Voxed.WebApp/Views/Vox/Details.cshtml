@@ -311,7 +311,8 @@
                     {
                         switch (comment.Media.MediaType)
                         {
-                            case Core.Entities.MediaType.Image:
+                            @*case Core.Entities.MediaType.Image:*@
+                            case MediaType.Image:
 
                                 <div class="attach">
                                     <img class="lazyload"
@@ -322,7 +323,7 @@
                                 </div>
                                 break;
 
-                            case Core.Entities.MediaType.YouTube:
+                            case MediaType.YouTube:
 
                                 <div class="attach">
                                     <img class="lazyload"
@@ -334,7 +335,7 @@
 
                                 break;
 
-                            case Core.Entities.MediaType.Video:
+                            case MediaType.Video:
 
                                 <figure class="commentAttach">
                                     <div class="commentAttachContainer">
@@ -375,7 +376,7 @@
             <div class="commentList" id="commentList">
                 <div class="commentContainer">
 
-                    @foreach (var comment in Model.Comments.OrderByDescending(x => x.IsSticky).ThenBy(x => x.CreatedOn))
+                    @foreach (var comment in Model.Comments)
                     {
                         <div class="comment @(comment.IsSticky ? "COMMENT_STICKY" : string.Empty)" id="@comment.Hash" data-id="@comment.ID">
                             <div class="commentAvatar">
@@ -391,7 +392,7 @@
                                             <span class="commentTagBg commentSticky">Destacado</span>
                                         }
 
-                                        @if (comment.UserID == Model.UserId)
+                                        @if (comment.IsOp)
                                         {
                                             <span class="commentTagBg op">OP</span>
                                         }
@@ -413,19 +414,6 @@
                                             <span class="commentTag hide adminTag" data-reactive data-contenttype="0" data-contentid="@comment.ID">Reactivar</span>
                                         }
 
-                                        @*@if (comment.User.UserType == Core.Entities.UserType.Anonymous ||
-                                            comment.User.UserType == Core.Entities.UserType.Account)
-                                            {
-                                            <span class="author   " style="">@comment.User?.UserName</span>
-                                            <span class="commentTag ">anon </span>
-                                            }
-
-                                            @if (comment.User.UserType == Core.Entities.UserType.AnonymousAccount)
-                                            {
-                                            <span class="author   " style="">Anonimo</span>
-                                            <span class="commentTag ">anon </span>
-                                            }*@
-
                                         @if (User.Identity.IsAuthenticated)
                                         {
                                             var userId = Guid.Parse(UserManager.GetUserId(User));
@@ -441,14 +429,7 @@
                                             }
                                         }
 
-
-                                        @*<span class="author   " style="">@comment.User?.UserName</span>*@
-                                        @*<span class="author   " style="">Anonimo</span>*@
-                                        @*<span class="commentTag ">@comment.User?.UserType.ToString().ToLower() </span>*@
-
                                         <span class="commentTag pointer" data-tag="@comment.Hash">@comment.Hash</span>
-
-
 
                                     </div>
                                     <div class="commentMetaRight">
@@ -459,9 +440,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="commentReply">
-                                    @*<a href="#2LFOFDG" data-quote="2LFOFDG">&gt;&gt;2LFOFDG(OP)</a>*@
-                                </div>
+                                <div class="commentReply"></div>
                                 <div class="commentData ">
 
                                     @*<span class="greentext">&gt;judio</span><br>*@
@@ -470,7 +449,7 @@
                                     {
                                         switch (comment.Media.MediaType)
                                         {
-                                            case Core.Entities.MediaType.Image:
+                                            case MediaType.Image:
 
                                                 <figure class="commentAttach">
                                                     <div class="commentAttachContainer">
@@ -483,7 +462,7 @@
                                                 </figure>
                                                 break;
 
-                                            case Core.Entities.MediaType.Gif:
+                                            case MediaType.Gif:
 
                                                 <figure class="commentAttach">
                                                     <div class="commentAttachContainer">
@@ -496,7 +475,7 @@
                                                 </figure>
                                                 break;
 
-                                            case Core.Entities.MediaType.YouTube:
+                                            case MediaType.YouTube:
 
                                                 <figure class="commentAttach">
                                                     <div class="commentAttachContainer">
@@ -517,7 +496,7 @@
 
                                                 break;
 
-                                            case Core.Entities.MediaType.Video:
+                                            case MediaType.Video:
 
                                                 @*<figure class="commentAttach">
                                                     <div class="commentAttachContainer">
