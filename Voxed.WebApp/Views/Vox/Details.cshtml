@@ -35,15 +35,15 @@
                         <i class="fas fa-flag" data-parent></i>
                         <span class="voxOptionText" data-parent>Denunciar</span>
                     </div>
-                    <div class="voxOption " data-meta="favorite" data-contenttype="1" data-contentid="@Model.Id">
+                    <div class="voxOption @(Model.IsFavorite ? "metaSelectedOption": string.Empty)" data-meta="favorite" data-contenttype="1" data-contentid="@Model.Id">
                         <i data-parent class="fas fa-star"></i>
                         <span data-parent class="voxOptionText">Favorito</span>
                     </div>
-                    <div class="voxOption " data-meta="follow" data-contenttype="1" data-contentid="@Model.Id">
+                    <div class="voxOption @(Model.IsFollowed ? "metaSelectedOption": string.Empty)" data-meta="follow" data-contenttype="1" data-contentid="@Model.Id">
                         <i data-parent class="fas fa-thumbtack"></i>
                         <span data-parent class="voxOptionText">Seguir</span>
                     </div>
-                    <div class="voxOption " data-meta="hide" data-contenttype="1" data-contentid="@Model.Id">
+                    <div class="voxOption @(Model.IsHidden ? "metaSelectedOption": string.Empty)" data-meta="hide" data-contenttype="1" data-contentid="@Model.Id">
                         <i data-parent class="fas fa-lock"></i>
                         <span data-parent class="voxOptionText">Ocultar</span>
                     </div>

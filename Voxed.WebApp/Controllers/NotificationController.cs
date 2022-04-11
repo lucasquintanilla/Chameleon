@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Threading.Tasks;
+using Voxed.WebApp.Extensions;
 using Voxed.WebApp.Hubs;
 
 namespace Voxed.WebApp.Controllers
@@ -36,8 +37,9 @@ namespace Voxed.WebApp.Controllers
             var notification = await _voxedRepository.Notifications.GetById(id);
             if (notification == null) { return Redirect($"/"); }
 
-            var user = await _userManager.GetUserAsync(HttpContext.User);
-            if (user.Id != notification.UserId) return Redirect("/");
+            //var user = await _userManager.GetUserAsync(HttpContext.User);
+            var userId = User.GetLoggedInUserId<Guid?>();
+            if (userId != notification.UserId) return Redirect("/");
 
             var voxHash = Core.Shared.GuidConverter.ToShortString(notification.VoxId);
             var commentHash = notification.Comment.Hash;
@@ -60,9 +62,15 @@ namespace Voxed.WebApp.Controllers
         [Route("delete")]
         public async Task<IActionResult> DeleteAll()
         {
-            var user = await _userManager.GetUserAsync(HttpContext.User);
+            //var user = await _userManager.GetUserAsync(HttpContext.User);
+            var userId = User.GetLoggedInUserId<Guid?>();
 
-            var notifications = await _voxedRepository.Notifications.GetByUserId(user.Id);
+            if (userId == null)
+            {
+                return BadRequest();
+            }
+
+            var notifications = await _voxedRepository.Notifications.GetByUserId(userId.Value);
 
             await _voxedRepository.Notifications.RemoveRange(notifications);
             await _voxedRepository.SaveChangesAsync();

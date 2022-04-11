@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 using Voxed.WebApp.Models;
 using Voxed.WebApp.Services;
@@ -81,8 +80,6 @@ namespace Voxed.WebApp.Controllers
                 await _voxedRepository.SaveChangesAsync();
 
                 await _notificationService.ManageNotifications(vox, comment);
-
-                // SendBoardUpdate and add comment in vox
                 await _notificationService.SendBoardUpdate(comment, vox, request);
 
                 response.Hash = comment.Hash;
@@ -103,7 +100,6 @@ namespace Voxed.WebApp.Controllers
         }
 
         [HttpPost]
-        //[Route("comment/sticky")]
         public async Task Sticky(string request)
         {
             //a.append("contentType", t), a.append("contentId", n), a.append("vox", e),/ comment/sticky
@@ -118,7 +114,6 @@ namespace Voxed.WebApp.Controllers
                 user = await CreateAnonymousUser();
 
                 await _signInManager.SignInAsync(user, true);
-
                 //Crear una notificacion para el nuevo usuario anonimo
             }
 
@@ -127,7 +122,7 @@ namespace Voxed.WebApp.Controllers
                 ID = Guid.NewGuid(),
                 Hash = new Hash().NewHash(7),
                 VoxID = GuidConverter.FromShortString(id),
-                UserID = user.Id,
+                User = user,
                 Content = _formateadorService.Parse(request.Content),
                 Style = StyleService.GetRandomCommentStyle(),
                 IpAddress = UserIpAddress,

@@ -2,10 +2,12 @@
 using Core.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Voxed.WebApp.Hubs;
+using Voxed.WebApp.Extensions;
 
 namespace Voxed.WebApp.Views.Shared.Components.NotificationNavList
 {
@@ -23,14 +25,14 @@ namespace Voxed.WebApp.Views.Shared.Components.NotificationNavList
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var user = await _userManager.GetUserAsync(HttpContext.User);
-
-            if (user == null)
+            //var user = await _userManager.GetUserAsync(HttpContext.User.I);
+            var userId = HttpContext.User.GetLoggedInUserId<Guid?>();
+            if (userId == null)
             {
                 return View(new List<UserNotification>());
             }
 
-            var notifications = await _voxedRepository.Notifications.GetByUserId(user.Id);
+            var notifications = await _voxedRepository.Notifications.GetByUserId(userId.Value);
 
             if (notifications.Count() > 0)
             {

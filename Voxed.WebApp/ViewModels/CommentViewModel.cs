@@ -11,6 +11,5 @@ namespace Voxed.WebApp.ViewModels
         public string AvatarText { get; set; }
         public MediaViewModel Media { get; set; }
         public bool IsOp { get; set; }
-
     }
 }

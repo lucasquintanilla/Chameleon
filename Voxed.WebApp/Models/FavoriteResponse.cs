@@ -2,7 +2,6 @@
 {
     public class FavoriteResponse : BaseResponse
     {
-        public string Action { get; set; }
-
+        public string Action { get; set; } //create, delete
     }
 }

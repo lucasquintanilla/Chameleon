@@ -13,6 +13,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Voxed.WebApp.Constants;
+using Voxed.WebApp.Extensions;
 using Voxed.WebApp.Mappers;
 using Voxed.WebApp.Models;
 
@@ -99,10 +100,10 @@ namespace Voxed.WebApp.Controllers
 
             try
             {
-                var user = await _userManager.GetUserAsync(HttpContext.User);
-                if (user != null)
+                var userId = User.GetLoggedInUserId<Guid?>();
+                if (userId != null)
                 {
-                    var userVoxActions = await _voxedRepository.UserVoxActions.Find(x => x.UserId == user.Id && x.IsHidden);
+                    var userVoxActions = await _voxedRepository.UserVoxActions.Find(x => x.UserId == userId.Value && x.IsHidden);
                     var hiddenVoxIds = userVoxActions.Select(x => x.VoxId).ToList();
                     list.AddRange(hiddenVoxIds);
                 }

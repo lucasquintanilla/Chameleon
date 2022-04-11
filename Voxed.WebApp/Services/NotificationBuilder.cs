@@ -67,7 +67,7 @@ namespace Voxed.WebApp.Services
 
             if (!usersId.Any()) return this;
 
-            _notifications.AddRange(usersId
+            var replyNotifications = usersId
                 .Select(userId => new Notification()
                 {
                     CommentId = _comment.ID,
@@ -75,16 +75,21 @@ namespace Voxed.WebApp.Services
                     UserId = userId,
                     Type = NotificationType.Reply,
                 })
-                .ToList());
+                .ToList();
+
+            _notifications.AddRange(replyNotifications);
 
             return this;
         }
 
         public NotificationBuilder AddVoxSusbcriberNotifications()
         {
-            var voxFollowersUserIds = _voxedRepository.UserVoxActions.GetVoxSubscriberUserIds(_vox.ID).GetAwaiter().GetResult();
+            var voxSubscriberUserIds = _voxedRepository.UserVoxActions
+                .GetVoxSubscriberUserIds(_vox.ID, ignoreUserIds: new List<Guid>() { _comment.UserID, _vox.UserID })
+                .GetAwaiter()
+                .GetResult();
 
-            var notifications = voxFollowersUserIds
+            var subscriberNotifications = voxSubscriberUserIds
                   .Select(userId => new Notification()
                   {
                       CommentId = _comment.ID,
@@ -94,7 +99,7 @@ namespace Voxed.WebApp.Services
                   })
                   .ToList();
 
-            _notifications.AddRange(notifications);
+            _notifications.AddRange(subscriberNotifications);
             return this;
         }
 

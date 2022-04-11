@@ -17,14 +17,15 @@ namespace Core.Data.EF.Repositories
             _context = context;
         }
 
-        public async Task<UserVoxAction> GetByUserIdVoxId(Guid userId, Guid voxId)
-         => await _context.UserVoxActions
-            .Where(x => x.UserId == userId && x.VoxId == voxId)            
-            .SingleOrDefaultAsync();
+        public async Task<UserVoxAction> GetByUserIdVoxId(Guid userId, Guid voxId) 
+            => await _context.UserVoxActions
+                .Where(x => x.UserId == userId && x.VoxId == voxId)
+                .SingleOrDefaultAsync();
 
-        public async Task<IList<Guid>> GetVoxSubscriberUserIds(Guid voxId)
-        {
-            return await _context.UserVoxActions.Where(x => x.VoxId == voxId && x.IsFollowed).Select(x => x.UserId).ToListAsync();
-        }
+        public async Task<IList<Guid>> GetVoxSubscriberUserIds(Guid voxId, List<Guid> ignoreUserIds)
+            => await _context.UserVoxActions
+                .Where(x => x.VoxId == voxId && x.IsFollowed && !ignoreUserIds.Contains(x.UserId))
+                .Select(x => x.UserId)
+                .ToListAsync();
     }
 }

@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Voxed.WebApp.Models
 {
-    public class CommentFormViewModel
+    public class CreateCommentFormViewModel
     {
         public Guid VoxID { get; set; }
         public Guid UserID { get; set; }

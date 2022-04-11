@@ -3,11 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Threading.Tasks;
+using Voxed.WebApp.Models;
 
 namespace Voxed.WebApp.Controllers
 {
@@ -16,8 +13,8 @@ namespace Voxed.WebApp.Controllers
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
 
-        public AccountController(SignInManager<User> signInManager, 
-            UserManager<User> userManager, 
+        public AccountController(SignInManager<User> signInManager,
+            UserManager<User> userManager,
             IHttpContextAccessor accessor) : base(accessor)
         {
             _signInManager = signInManager;
@@ -55,7 +52,8 @@ namespace Voxed.WebApp.Controllers
                 //}
             }
 
-            return new LoginResponse() { 
+            return new LoginResponse()
+            {
                 Status = false,
                 Swal = "Hubo un error"
             };
@@ -68,10 +66,10 @@ namespace Voxed.WebApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new User 
-                { 
-                    UserName = request.UserName,  
-                    EmailConfirmed = true, 
+                var user = new User
+                {
+                    UserName = request.UserName,
+                    EmailConfirmed = true,
                     UserType = UserType.Account,
                     IpAddress = UserIpAddress,
                     UserAgent = UserAgent
@@ -137,69 +135,5 @@ namespace Voxed.WebApp.Controllers
 
             return RedirectToAction("Index", "Home");
         }
-    }
-
-    public class RegisterRequest
-    {
-        [Required]
-        [DataType(DataType.Text)]
-        [Display(Name = "UserName")]
-        public string UserName { get; set; }
-
-        [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
-        [DataType(DataType.Password)]
-        [Display(Name = "Password")]
-        public string Password { get; set; }
-
-        [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-        public string ConfirmPassword { get; set; }
-    }
-    public class RegisterResponse
-    {
-        public bool Status { get; set; }
-        public string Token { get; set; }
-        public string MaxAge { get; set; }
-        public string Swal { get; set; }
-    }
-
-
-
-    public class LoginRequest
-    {
-        public string UserName { get; set; }
-        public string Password { get; set; }
-    }
-
-    public class LoginResponse
-    {
-        public bool Status { get; set; }
-        public string Token { get; set; }
-        public string MaxAge { get; set; }
-        public string Swal { get; set; }
-    }
-
-    public class SweetAlert
-    {
-        public string Title { get; set; }
-        public string Text { get; set; }
-        public string Type { get; set; }
-        public bool ShowCancelButton { get; set; }
-        public string CancelButtonText { get; set; }
-        public string ConfirmButtonText { get; set; }
-
-
-        //SweetAlert = new SweetAlert()
-        //{
-        //    Title = "Buenasssss",
-        //    Text = "como le baillaaa",
-        //    ShowCancelButton = true,
-        //    CancelButtonText = "CAncelar",
-        //    ConfirmButtonText = "de unaaa",
-        //    Type = "Warning"
-        //}
-
     }
 }

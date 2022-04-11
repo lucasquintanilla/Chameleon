@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Voxed.WebApp.Constants;
 using Voxed.WebApp.Extensions;
 using Voxed.WebApp.Hubs;
 using Voxed.WebApp.Mappers;
@@ -115,35 +116,18 @@ namespace Voxed.WebApp.Controllers
 
             try
             {
-                var user = await _userManager.GetUserAsync(HttpContext.User);
-                if (user == null)
+                var userId = User.GetLoggedInUserId<Guid?>();
+                if (userId == null)
                 {
-                    response.Swal = $"Debe iniciar sesion o crear una comentando o creando un post";
+                    response.Swal = $"Debe iniciar sesion, crear un post o comentario";
                     return response;
                 }
 
-                var action = await _voxedRepository.UserVoxActions.GetByUserIdVoxId(user.Id, request.ContentId);
-                if (action == null)
-                {
-                    action = new UserVoxAction()
-                    {
-                        UserId = user.Id,
-                        VoxId = request.ContentId
-                    };
-
-                    SetAction(action, id);
-                    await _voxedRepository.UserVoxActions.Add(action);
-                }
-                else
-                {
-                    SetAction(action, id);
-                }
-
-                await _voxedRepository.SaveChangesAsync();
+                var actionResult = await ManageUserVoxAction(userId.Value, request.ContentId, id);
 
                 response.Status = true;
                 response.Swal = $"Accion {id} aplicada con exito";
-                response.Action = "create";
+                response.Action = actionResult;
             }
             catch (Exception e)
             {
@@ -154,21 +138,60 @@ namespace Voxed.WebApp.Controllers
             return response;
         }
 
-        private void SetAction(UserVoxAction userVoxAction, string action)
+        private async Task<string> ManageUserVoxAction(Guid userId, Guid voxId, string action)
+        {
+            string actionResult;
+            var userVoxAction = await _voxedRepository.UserVoxActions.GetByUserIdVoxId(userId, voxId);
+            if (userVoxAction == null)
+            {
+                userVoxAction = new UserVoxAction()
+                {
+                    UserId = userId,
+                    VoxId = voxId
+                };
+
+                actionResult = SetAction(userVoxAction, action);
+                await _voxedRepository.UserVoxActions.Add(userVoxAction);
+            }
+            else
+            {
+                actionResult = SetAction(userVoxAction, action);
+            }
+
+            await _voxedRepository.SaveChangesAsync();
+            return actionResult;
+        }
+
+        private string SetAction(UserVoxAction userVoxAction, string action)
         {
             switch (action)
             {
                 case Actions.Hide:
+                    if (userVoxAction.IsHidden)
+                    {
+                        userVoxAction.IsHidden = false;
+                        return "delete";
+                    }
                     userVoxAction.IsHidden = true;
-                    break;
+                    return "create";
                 case Actions.Favorite:
+                    if (userVoxAction.IsFavorite)
+                    {
+                        userVoxAction.IsFavorite = false;
+                        return "delete";
+                    }
                     userVoxAction.IsFavorite = true;
-                    break;
+                    return "create";
                 case Actions.Follow:
+                    if (userVoxAction.IsFollowed)
+                    {
+                        userVoxAction.IsFollowed = false;
+                        return "delete";
+                    }
                     userVoxAction.IsFollowed = true;
-                    break;
+                    return "create";
                 default:
-                    break;
+                    throw new Exception($"Invalid {nameof(action)}");
             }
         }
 
@@ -220,9 +243,9 @@ namespace Voxed.WebApp.Controllers
 
             var vox = await _voxedRepository.Voxs.GetById(voxId);
 
-            if (vox == null) return NotFound();
+            if (vox == null || vox.State == VoxState.Deleted) return NotFound();
 
-            if (vox.State == VoxState.Deleted) return NotFound();
+            var actions = await GetUserVoxActions(voxId);
 
             var voxViewModel = new VoxDetailViewModel()
             {
@@ -248,7 +271,10 @@ namespace Voxed.WebApp.Controllers
                     Url = vox.Media.Url,
                     MediaType = (ViewModels.MediaType)(int)vox.Media.MediaType,
                     ExtensionData = vox.Media?.Url.Split('=')[(vox.Media?.Url.Split('=').Length - 1).Value]
-                }
+                },
+                IsFavorite = actions.IsFavorite,
+                IsFollowed = actions.IsFollowed,
+                IsHidden = actions.IsHidden,
 
                 //Comments = vox.Comments.Select(x => new CommentViewModel()
                 //{
@@ -262,6 +288,24 @@ namespace Voxed.WebApp.Controllers
             };
 
             return View(voxViewModel);
+        }
+
+        private async Task<UserVoxAction> GetUserVoxActions(Guid voxId)
+        {
+            var action = new UserVoxAction();
+            var userId = User.GetLoggedInUserId<Guid?>();
+            if (userId == null)
+            {
+                return action;
+            }
+
+            var actions = await _voxedRepository.UserVoxActions.GetByUserIdVoxId(userId.Value, voxId);
+            if (actions == null)
+            {
+                return action;
+            }
+
+            return actions;
         }
 
         [HttpGet("search/{value}")]
@@ -287,11 +331,13 @@ namespace Voxed.WebApp.Controllers
 
             try
             {
-                var user = await _userManager.GetUserAsync(HttpContext.User);
-                if (user == null)
+                var userId = User.GetLoggedInUserId<Guid?>();
+                //var user = await _userManager.GetUserAsync(HttpContext.User);
+                if (userId == null)
                 {
-                    user = await CreateAnonymousUser();
+                    var user = await CreateAnonymousUser();
                     await _signInManager.SignInAsync(user, true);
+                    userId = user.Id;
 
                     //TODO: Crear una notificacion para el nuevo usuario anonimo
                 }
@@ -300,7 +346,7 @@ namespace Voxed.WebApp.Controllers
                 {
                     ID = Guid.NewGuid(),
                     State = VoxState.Normal,
-                    User = user,
+                    UserID = userId.Value,
                     Hash = new Hash().NewHash(),
                     Title = request.Title,
                     Content = _formatterService.Parse(request.Content),
@@ -358,19 +404,19 @@ namespace Voxed.WebApp.Controllers
             var skipIdList = skipList.Select(x => GuidConverter.FromShortString(x)).ToList();
             //var skipIdList = JsonConvert.DeserializeObject<List<Guid>>(request?.Ignore);
 
-            var user = await _userManager.GetUserAsync(HttpContext.User);
-            if (user != null)
+            //var user = await _userManager.GetUserAsync(HttpContext.User);
+            var userId = User.GetLoggedInUserId<Guid?>();
+            if (userId != null)
             {
-                var userVoxActions = await _voxedRepository.UserVoxActions.Find(x => x.UserId == user.Id && x.IsHidden);
-                var hiddenVoxIds = userVoxActions.Select(x => x.VoxId).ToList();   
+                var userVoxActions = await _voxedRepository.UserVoxActions.Find(x => x.UserId == userId.Value && x.IsHidden);
+                var hiddenVoxIds = userVoxActions.Select(x => x.VoxId).ToList();
                 skipIdList.AddRange(hiddenVoxIds);
             }
 
-            
+
             var lastVox = await _voxedRepository.Voxs.GetLastVoxBump(skipIdList);
 
             var voxs = await _voxedRepository.Voxs.GetLastestAsync(skipIdList, lastVox.Bump, GetSubscriptionCategories(request));
-
             var response = new ListResponse(VoxedMapper.Map(voxs));
             return response;
         }
@@ -415,12 +461,5 @@ namespace Voxed.WebApp.Controllers
 
             throw new Exception("Usuario no pudo ser creado");
         }
-    }
-
-    public class Actions
-    {
-        public const string Hide = "hide";
-        public const string Favorite = "follow";
-        public const string Follow = "favorite";
     }
 }

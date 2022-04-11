@@ -13,7 +13,7 @@ namespace Voxed.WebApp.Views.Shared.Components.CommentForm
 
         public async Task<IViewComponentResult> InvokeAsync(Guid voxID, Guid userID)
         {
-            var commentForm = new CommentFormViewModel() 
+            var commentForm = new CreateCommentFormViewModel() 
             { 
                 VoxID = voxID, 
                 UserID = userID 
