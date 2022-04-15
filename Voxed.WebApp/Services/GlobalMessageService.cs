@@ -11,6 +11,8 @@ namespace Voxed.WebApp.Services
         public int Color { get; set; } // 50 = gris, 4000 = multi, 
         public DateTimeOffset CreatedOn { get; set; } = DateTimeOffset.Now;
         public DateTimeOffset DueDate { get; set; }
+        public string UserIpAddress { get; set; }
+        public string UserAgent { get; set; }
     }
 
     public static class GlobalMessageService
@@ -24,7 +26,7 @@ namespace Voxed.WebApp.Services
 
         public static List<GlobalMessage> GetActiveMessages()
         {
-            return _messages.Where(x => x.DueDate > DateTimeOffset.Now).ToList();
+            return _messages.Where(x => x.DueDate > DateTimeOffset.Now && !string.IsNullOrWhiteSpace(x.Content)).Take(5).ToList();
         }
     }
 }

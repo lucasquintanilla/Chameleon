@@ -20,10 +20,11 @@ namespace Core.Entities
         public CommentType Type { get; set; }
         public CommentStyle Style { get; set; }
         public bool IsSticky { get; set; }
-        public Media Media { get; set; }
-        public User User { get; set; }
         public string UserAgent { get; set; }
         public string IpAddress { get; set; }
+        public Media Media { get; set; }
+        public User User { get; set; }
+        
         //public string Country { get; set; }
         //public ICollection<Comment> Replies { get; set; }
     }

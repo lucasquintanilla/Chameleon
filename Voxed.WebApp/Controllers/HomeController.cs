@@ -75,6 +75,8 @@ namespace Voxed.WebApp.Controllers
             return Ok(vox);
         }
 
+        
+
         public async Task<IActionResult> Index()
         {
             //if (HttpContext.Request.Cookies.TryGetValue("config", out string configCookie))

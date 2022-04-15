@@ -18,12 +18,13 @@ namespace Core.Entities
         public bool IsSticky { get; set; }
         public DateTimeOffset CreatedOn { get; set; } = DateTimeOffset.Now;
         public DateTimeOffset Bump { get; set; } = DateTimeOffset.Now;
-        public Media Media { get; set; }
-        public Category Category { get; set; }
-        public virtual User User { get; set; }
-        public Poll Poll { get; set; }
-        public ICollection<Comment> Comments { get; set; } = new List<Comment>();
         public string UserAgent { get; set; }
         public string IpAddress { get; set; }
+        public virtual Media Media { get; set; }
+        public virtual Category Category { get; set; }
+        public virtual User User { get; set; }
+        public virtual Poll Poll { get; set; }
+        public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
+        
     }
 }

@@ -27,6 +27,30 @@ namespace Core.Data.EF.Repositories
                 .Include(x => x.User)
                 .FirstOrDefaultAsync(m => m.ID == id);
 
+        public async Task<IEnumerable<Vox>> GetFavoritesAsync(Guid userId) =>
+            await _context.Voxs
+                .Where(x => x.State == VoxState.Normal && _context.UserVoxActions.Where(u => u.UserId == userId && u.IsFavorite).Select(v=> v.VoxId).Contains(x.ID))
+                .Include(x => x.Media)
+                .Include(x => x.Category)
+                .Include(x => x.Comments.Where(c => c.State == CommentState.Normal))
+                .OrderByDescending(x => x.IsSticky).ThenByDescending(x => x.Bump)
+                .Skip(0)
+                .Take(36)
+                .AsNoTracking()
+                .ToListAsync();
+
+        public async Task<IEnumerable<Vox>> GetHiddenAsync(Guid userId) =>
+            await _context.Voxs
+                .Where(x => x.State == VoxState.Normal && _context.UserVoxActions.Where(u => u.UserId == userId && u.IsHidden).Select(v => v.VoxId).Contains(x.ID))
+                .Include(x => x.Media)
+                .Include(x => x.Category)
+                .Include(x => x.Comments.Where(c => c.State == CommentState.Normal))
+                .OrderByDescending(x => x.IsSticky).ThenByDescending(x => x.Bump)
+                .Skip(0)
+                .Take(36)
+                .AsNoTracking()
+                .ToListAsync();
+
         public async Task<IEnumerable<Vox>> GetLastestAsync(ICollection<int> includedCategories, IEnumerable<Guid> idSkipList) =>
             await _context.Voxs
                 .Where(x => x.State == VoxState.Normal && 

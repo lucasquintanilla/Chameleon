@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using System;
+using System.Diagnostics;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -7,6 +9,7 @@ using Telegram.Bot.Exceptions;
 using Telegram.Bot.Extensions.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.InputFiles;
 
 namespace Core.Services.Telegram
 {
@@ -80,6 +83,12 @@ namespace Core.Services.Telegram
 
             Console.WriteLine(ErrorMessage);
             return Task.CompletedTask;
+        }
+
+        public async Task UploadFile(Stream file)
+        {
+            var msg = await _client.SendDocumentAsync(_config.ChatId, new InputOnlineFile(file, "img.jpg"));
+            Debug.WriteLine(msg.Document.FileId);
         }
     }
 }

@@ -12,5 +12,7 @@ namespace Core.Data.Repositories
         Task<IEnumerable<Vox>> SearchAsync(string search);
         Task<Vox> GetLastVoxBump(IEnumerable<Guid> idsSkip);
         Task<IEnumerable<Vox>> GetLastestAsync(IEnumerable<Guid> idSkipList, DateTimeOffset LastBump, ICollection<int> excludedCategories);
+        Task<IEnumerable<Vox>> GetFavoritesAsync(Guid userId);
+        Task<IEnumerable<Vox>> GetHiddenAsync(Guid userId);
     }
 }

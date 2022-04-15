@@ -64,7 +64,8 @@ namespace Voxed.WebApp.Controllers
 
             try
             {
-                var message = new GlobalMessage() { Content = form.Content, };
+                var message = new GlobalMessage() { Content = form.Content, UserIpAddress = UserIpAddress, UserAgent = UserAgent};
+
                 switch (form.Type)
                 {
                     case GlobalMessageFormViewModel.GlobalMessageType.TenMinutes:
@@ -329,6 +330,36 @@ namespace Voxed.WebApp.Controllers
             return View(VoxedMapper.Map(voxs));
         }
 
+        [HttpGet]
+        [Route("favoritos")]
+        public async Task<IActionResult> Favorites()
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return BadRequest();
+            }
+
+            var userId = User.GetLoggedInUserId<Guid?>();
+
+            var voxs = await _voxedRepository.Voxs.GetFavoritesAsync(userId.Value);
+            return View(VoxedMapper.Map(voxs));
+        }
+
+        [HttpGet]
+        [Route("ocultos")]
+        public async Task<IActionResult> Hidden()
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return BadRequest();
+            }
+
+            var userId = User.GetLoggedInUserId<Guid?>();
+
+            var voxs = await _voxedRepository.Voxs.GetHiddenAsync(userId.Value);
+            return View(VoxedMapper.Map(voxs));
+        }
+
         [HttpPost]
         [Route("anon/vox")]
         public async Task<CreateVoxResponse> Create(CreateVoxRequest request)
@@ -343,6 +374,8 @@ namespace Voxed.WebApp.Controllers
 
             try
             {
+                //await _telegramService.UploadFile(request.File.OpenReadStream());
+
                 var userId = User.GetLoggedInUserId<Guid?>();
                 //var user = await _userManager.GetUserAsync(HttpContext.User);
                 if (userId == null)
@@ -411,6 +444,7 @@ namespace Voxed.WebApp.Controllers
         [HttpPost]
         public async Task<ListResponse> List([FromForm] ListRequest request)
         {
+            // Page: home, category-anm, vox, favorites, hidden, search
             //HttpContext.Request.Cookies.TryGetValue("categoriasFavoritas", out string categoriasActivas);
             var skipList = JsonConvert.DeserializeObject<IEnumerable<string>>(request?.Ignore);
             var skipIdList = skipList.Select(x => GuidConverter.FromShortString(x)).ToList();
