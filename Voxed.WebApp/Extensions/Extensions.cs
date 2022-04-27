@@ -39,28 +39,6 @@ namespace Voxed.WebApp.Extensions
             return "Ahora";
         }
 
-        public static string GetFileExtension(this Image image)
-        {
-            if (image.RawFormat.Equals(ImageFormat.Jpeg))
-            {
-                return ".jpg";
-            }
-            if (image.RawFormat.Equals(ImageFormat.Gif))
-            {
-                return ".gif";
-            }
-            if (image.RawFormat.Equals(ImageFormat.Png))
-            {
-                return ".png";
-            }
-            if (image.RawFormat.Equals(ImageFormat.Bmp))
-            {
-                return ".bmp";
-            }
-
-            throw new NotImplementedException("Formato archivo no implementado");
-        }
-
         public static string GetFileExtension(this IFormFile file)
         {
             return Path.GetExtension(file.FileName).ToLowerInvariant();
@@ -71,7 +49,7 @@ namespace Voxed.WebApp.Extensions
 
         public static bool IsNew(this DateTimeOffset dateTime)
         {
-            return dateTime.Date == DateTime.Now.Date;
+            return dateTime.Date > DateTime.Now.Date.AddHours(-24);
         }
     }
 }
