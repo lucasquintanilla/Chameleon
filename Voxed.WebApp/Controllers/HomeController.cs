@@ -1,4 +1,5 @@
-﻿using Core.Data.Repositories;
+﻿using Core.Data.Filters;
+using Core.Data.Repositories;
 using Core.Entities;
 using Core.Shared;
 using Microsoft.AspNetCore.Authorization;
@@ -10,7 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Voxed.WebApp.Constants;
 using Voxed.WebApp.Extensions;
@@ -26,17 +26,13 @@ namespace Voxed.WebApp.Controllers
         private readonly IVoxedRepository _voxedRepository;
         private static IEnumerable<Vox> _lastestVoxs = new List<Vox>();
         private readonly int[] _defaultCategories = { 1, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 30, 16, 14, 13, 12, 11, 10, 9, 8, 15, 7, 31, 6, 5, 4 };
-        private readonly UserManager<User> _userManager;
-
 
         public HomeController(
             ILogger<HomeController> logger,
-            IVoxedRepository voxedRepository, 
-            UserManager<User> userManager)
+            IVoxedRepository voxedRepository)
         {
             _logger = logger;
             _voxedRepository = voxedRepository;
-            _userManager = userManager;
         }
 
         [HttpGet("v1/voxs")]
@@ -44,7 +40,8 @@ namespace Voxed.WebApp.Controllers
         {
             if (!_lastestVoxs.Any())
             {
-                _lastestVoxs = await _voxedRepository.Voxs.GetLastestAsync(_defaultCategories, new List<Guid>());
+                var filter = new VoxFilter() { Categories = _defaultCategories.ToList() };
+                _lastestVoxs = await _voxedRepository.Voxs.GetByFilterAsync(filter);
             }
 
             return Ok(VoxedMapper.Map(_lastestVoxs));
@@ -75,7 +72,7 @@ namespace Voxed.WebApp.Controllers
             return Ok(vox);
         }
 
-        
+
 
         public async Task<IActionResult> Index()
         {
@@ -91,34 +88,23 @@ namespace Voxed.WebApp.Controllers
 
             //var x = Request.Headers.TryGetValue("CF-IPCountry", out var resulto);
 
-            var hiddenVoxIds = await GetUserHiddenVoxIds();
-            var voxs = await _voxedRepository.Voxs.GetLastestAsync(GetUserCategorySubscriptions(), hiddenVoxIds);
+            //var hiddenVoxIds = await GetUserHiddenVoxIds();
+
+            //var voxs = await _voxedRepository.Voxs.GetLastestAsync(GetUserCategorySubscriptions(), hiddenVoxIds);
+
+            var filter = new VoxFilter()
+            {
+                UserId = User.GetLoggedInUserId<Guid?>(),
+                Categories = GetUserCategorySubscriptions(),
+                IncludeHidden = false,
+                HiddenWords = GetHiddenWords()
+            };
+
+            var voxs = await _voxedRepository.Voxs.GetByFilterAsync(filter);
             return View(VoxedMapper.Map(voxs));
         }
 
-        private async Task<List<Guid>> GetUserHiddenVoxIds()
-        {
-            var list = new List<Guid>();
-
-            try
-            {
-                var userId = User.GetLoggedInUserId<Guid?>();
-                if (userId != null)
-                {
-                    var userVoxActions = await _voxedRepository.UserVoxActions.Find(x => x.UserId == userId.Value && x.IsHidden);
-                    var hiddenVoxIds = userVoxActions.Select(x => x.VoxId).ToList();
-                    list.AddRange(hiddenVoxIds);
-                }
-            }
-            catch (Exception e)
-            {
-
-            }
-
-            return list;
-        }
-
-        private ICollection<int> GetUserCategorySubscriptions()
+        private List<int> GetUserCategorySubscriptions()
         {
 
             HttpContext.Request.Cookies.TryGetValue(CookieName.Subscriptions, out string subscriptionsCookie);
@@ -131,7 +117,7 @@ namespace Voxed.WebApp.Controllers
                     Expires = DateTimeOffset.MaxValue
                 });
 
-                return _defaultCategories;
+                return _defaultCategories.ToList();
             }
 
             var subscriptions = JsonConvert.DeserializeObject<List<int>>(subscriptionsCookie);
@@ -139,15 +125,15 @@ namespace Voxed.WebApp.Controllers
 
         }
 
-        private IEnumerable<string> GetHiddenWords()
+        private List<string> GetHiddenWords()
         {
             if (HttpContext.Request.Cookies.TryGetValue(CookieName.HiddenWords, out var hiddenWordsCookie))
             {
                 var words = hiddenWordsCookie.Split(',');
-                return words.Select(word => word.Trim());
+                return words.Select(word => word.Trim()).ToList();
             }
 
-            return new string[0];
+            return new List<string>();
         }
 
         public IActionResult Privacy()

@@ -1,4 +1,5 @@
 ﻿using Core.Data.EF.Extensions;
+using Core.Data.Filters;
 using Core.Data.Repositories;
 using Core.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -27,118 +28,78 @@ namespace Core.Data.EF.Repositories
                 .Include(x => x.User)
                 .FirstOrDefaultAsync(m => m.ID == id);
 
-        public async Task<IEnumerable<Vox>> GetFavoritesAsync(Guid userId) =>
-            await _context.Voxs
-                .Where(x => x.State == VoxState.Normal && _context.UserVoxActions.Where(u => u.UserId == userId && u.IsFavorite).Select(v=> v.VoxId).Contains(x.ID))
-                .Include(x => x.Media)
-                .Include(x => x.Category)
-                .Include(x => x.Comments.Where(c => c.State == CommentState.Normal))
-                .OrderByDescending(x => x.IsSticky).ThenByDescending(x => x.Bump)
-                .Skip(0)
-                .Take(36)
-                .AsNoTracking()
-                .ToListAsync();
-
-        public async Task<IEnumerable<Vox>> GetHiddenAsync(Guid userId) =>
-            await _context.Voxs
-                .Where(x => x.State == VoxState.Normal && _context.UserVoxActions.Where(u => u.UserId == userId && u.IsHidden).Select(v => v.VoxId).Contains(x.ID))
-                .Include(x => x.Media)
-                .Include(x => x.Category)
-                .Include(x => x.Comments.Where(c => c.State == CommentState.Normal))
-                .OrderByDescending(x => x.IsSticky).ThenByDescending(x => x.Bump)
-                .Skip(0)
-                .Take(36)
-                .AsNoTracking()
-                .ToListAsync();
-
-        public async Task<IEnumerable<Vox>> GetLastestAsync(ICollection<int> includedCategories, IEnumerable<Guid> idSkipList) =>
-            await _context.Voxs
-                .Where(x => x.State == VoxState.Normal && 
-                    includedCategories.Contains(x.CategoryID) && !idSkipList.Contains(x.ID))
-                .Include(x => x.Media)
-                .Include(x => x.Category)
-                .Include(x => x.Comments.Where(c => c.State == CommentState.Normal))
-                .OrderByDescending(x => x.IsSticky).ThenByDescending(x => x.Bump)
-                .Skip(0)
-                .Take(36)
-                .AsNoTracking()
-                .ToListAsync();
-
-        public override async Task<IEnumerable<Vox>> GetAll()
-            => await _context.Voxs
-                   .Include(x => x.Media)
-                   .Include(x => x.Category)
-                   .Include(x => x.Comments)
-                   .Include(x => x.User)
-                   .ToListAsync();
-
-        public async Task<IEnumerable<Vox>> SearchAsync(string search)
+        public async Task<List<Vox>> GetByFilterAsync(VoxFilter filter)
         {
-            HashSet<string> keywords = new HashSet<string>(search.ToLower().Split(' '));
+            var query = _context.Voxs.AsNoTracking();
 
-            var predicateTitle = keywords.Select(k => (Expression<Func<Vox, bool>>)(x => x.Title.Contains(k))).ToArray();
-            //var predicateContent = keywords.Select(k => (Expression<Func<Vox, bool>>)(x => x.Content.Contains(k))).ToArray();            
+            query = query.Where(x => x.State == VoxState.Normal)
+                       .Include(x => x.Media)
+                       .Include(x => x.Category)
+                       .Include(x => x.Comments.Where(c => c.State == CommentState.Normal));
 
-            var voxs = _context.Voxs
-                .Include(x => x.Media)
-                .Include(x => x.Category)
-                .Include(x => x.Comments)
-                .Where(x => x.State == VoxState.Normal)
-                //.Where(vox => keywords.Any(keyword => vox.Title.Contains(keyword)))
-                //.Where(vox => keywords.Any(keyword => vox.Content.Contains(keyword)))
-                .WhereAny(predicateTitle)
-                //.WhereAny(predicateContent)                
-                .OrderByDescending(x => x.Bump)
-                .Skip(0)
-                .Take(36)
-                .AsNoTracking()
-                .ToList(); // WhereAny() No funciona con llamadas Async()
+            if (filter.UserId.HasValue)
+            {
+                if (filter.IncludeHidden)
+                {
+                    query = query.Where(x => _context.UserVoxActions.AsNoTracking().Where(u => u.UserId == filter.UserId.Value && u.IsHidden).Select(v => v.VoxId).Contains(x.ID));
+                }
+                else
+                {
+                    query = query.Where(x => !_context.UserVoxActions.AsNoTracking().Where(x => x.UserId == filter.UserId.Value && x.IsHidden).Select(x => x.VoxId).Contains(x.ID));
+                }
 
-            return await Task.FromResult(voxs);
+                if (filter.IncludeFavorites)
+                {
+                    query = query.Where(x => _context.UserVoxActions.AsNoTracking().Where(u => u.UserId == filter.UserId.Value && u.IsFavorite).Select(v => v.VoxId).Contains(x.ID));
+                }
+            }
+
+            if (filter.IgnoreVoxIds.Any())
+            {
+                query = query.Where(x => !filter.IgnoreVoxIds.Contains(x.ID));
+
+                var lastVox = await GetLastVoxBump(filter.IgnoreVoxIds);
+                query = query.Where(x => x.Bump < lastVox.Bump);
+            }
+
+            if (filter.Categories.Any())
+            {
+                query = query.Where(x => filter.Categories.Contains(x.CategoryID));
+            }
+
+            if (!string.IsNullOrEmpty(filter.Search))
+            {
+                var keywords = filter.Search.ToLower().Split(' ').Distinct();
+
+                var predicateTitle = keywords.Select(k => (Expression<Func<Vox, bool>>)(x => x.Title.Contains(k))).ToArray();
+                //var predicateContent = keywords.Select(k => (Expression<Func<Vox, bool>>)(x => x.Content.Contains(k))).ToArray();      
+                query = query.WhereAny(predicateTitle);
+            }
+
+            if (filter.HiddenWords.Any())
+            {
+                var hiddenWords = filter.HiddenWords.Distinct();
+
+                var predicateTitle = hiddenWords.Select(k => (Expression<Func<Vox, bool>>)(x => !x.Title.Contains(k))).ToArray();
+                //var predicateContent = keywords.Select(k => (Expression<Func<Vox, bool>>)(x => x.Content.Contains(k))).ToArray();      
+                query = query.WhereAny(predicateTitle);
+            }
+
+            query = query
+                       .OrderByDescending(x => x.IsSticky).ThenByDescending(x => x.Bump)
+                       .Skip(0)
+                       .Take(36);
+
+            var result = query.ToList();
+
+            return await Task.FromResult(result);
         }
 
-        public async Task<IEnumerable<Vox>> GetLastestAsync(IEnumerable<Guid> idSkipList, DateTimeOffset lastBump, ICollection<int> includedCategories) =>
-            await _context.Voxs
-                    .Where(x => x.State == VoxState.Normal
-                                //&& x.Type == VoxType.Normal
-                                && !idSkipList.Contains(x.ID)
-                                && x.Bump < lastBump
-                                && includedCategories.Contains(x.CategoryID))
-                    .OrderByDescending(x => x.Bump)
-                    .Include(x => x.Media)
-                    .Include(x => x.Category)
-                    .Include(x => x.Comments.Where(c => c.State == CommentState.Normal))
-                    //.Skip(idSkipList.Count()) // esto estab incluido peor no se porque
-                    .Skip(0)
-                    .Take(36)
-                    .AsNoTracking()
-                    .ToListAsync();
-
-        public async Task<IEnumerable<Vox>> GetByCategoryShortNameAsync(string shortName)
-            => await _context.Voxs
-                        .Where(x => x.Category.ShortName == shortName && x.State == VoxState.Normal)
-                        .Include(x => x.Media)
-                        .Include(x => x.Category)
-                        .Include(x => x.Comments)
-                        .OrderByDescending(x => x.Bump)
-                        .Skip(0)
-                        .Take(100)
-                        .AsNoTracking()
-                        .ToListAsync();
-        //agregar as no tracking
-
-        //public async Task<Vox> GetLastVoxBump(IEnumerable<string> hash)
-        // => await _context.Voxs
-        //    .Where(x => hash.Contains(x.Hash))
-        //    .OrderBy(x => x.Bump)
-        //    .FirstAsync();
-
-        public async Task<Vox> GetLastVoxBump(IEnumerable<Guid> skipIds)
+        private async Task<Vox> GetLastVoxBump(IEnumerable<Guid> skipIds)
          => await _context.Voxs
             .Where(x => skipIds.Contains(x.ID))
             .OrderBy(x => x.Bump)
             .AsNoTracking()
             .FirstAsync();
-        //agregar as no tracking
     }
 }

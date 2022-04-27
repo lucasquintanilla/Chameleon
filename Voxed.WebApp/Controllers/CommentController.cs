@@ -103,8 +103,6 @@ namespace Voxed.WebApp.Controllers
         [HttpPost]
         public async Task<CommentStickyResponse> Sticky(CommentStickyRequest request)
         {
-            //a.append("contentType", t), a.append("contentId", n), a.append("vox", e),/ comment/sticky
-            // add class list COMMENT_STICKY
             var response = new CommentStickyResponse() { Type = CommentStickyType.CommentSticky };
 
             try
@@ -123,7 +121,7 @@ namespace Voxed.WebApp.Controllers
             }
             catch (Exception ex)
             {
-                
+                _logger.LogError(ex.Message);
             }
 
             return response;

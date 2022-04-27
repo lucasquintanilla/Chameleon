@@ -1,5 +1,7 @@
-﻿using Core.Data.Repositories;
+﻿using Core.Data.Filters;
+using Core.Data.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Voxed.WebApp.Mappers;
 
@@ -21,18 +23,19 @@ namespace Voxed.WebApp.Controllers
         {
             if (shortName == null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            // chaear las categorias y luego buscar los vox por categoryId
-            var exists = await _voxedRepository.Categories.Exists(shortName);
+            var category = await _voxedRepository.Categories.GetByShortName(shortName);
 
-            if (!exists)
+            if (category == null)
             {
                 return NotFound();
             }
 
-            var voxs = await _voxedRepository.Voxs.GetByCategoryShortNameAsync(shortName);
+            var filter = new VoxFilter() { Categories = new List<int>() { category.ID } };
+
+            var voxs = await _voxedRepository.Voxs.GetByFilterAsync(filter);
             return View(VoxedMapper.Map(voxs));
         }
     }

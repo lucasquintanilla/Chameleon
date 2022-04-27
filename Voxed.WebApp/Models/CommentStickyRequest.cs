@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 
 namespace Voxed.WebApp.Models
 {
@@ -6,6 +7,7 @@ namespace Voxed.WebApp.Models
     {
         public string ContentType { get; set; }
         public Guid ContentId { get; set; }
-        public string Vox { get; set; }
+        [JsonProperty("vox")]
+        public string VoxId { get; set; }
     }
 }

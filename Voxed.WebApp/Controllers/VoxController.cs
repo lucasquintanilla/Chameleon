@@ -1,4 +1,5 @@
-﻿using Core.Data.Repositories;
+﻿using Core.Data.Filters;
+using Core.Data.Repositories;
 using Core.Entities;
 using Core.Services.Telegram;
 using Core.Shared;
@@ -64,7 +65,7 @@ namespace Voxed.WebApp.Controllers
 
             try
             {
-                var message = new GlobalMessage() { Content = form.Content, UserIpAddress = UserIpAddress, UserAgent = UserAgent};
+                var message = new GlobalMessage() { Content = form.Content, UserIpAddress = UserIpAddress, UserAgent = UserAgent };
 
                 switch (form.Type)
                 {
@@ -288,8 +289,8 @@ namespace Voxed.WebApp.Controllers
                     Media = x.Media == null ? null : new MediaViewModel()
                     {
                         Url = x.Media?.Url,
-                        MediaType= (ViewModels.MediaType)(int)x.Media?.MediaType,
-                        ExtensionData= x.Media?.Url.Split('=')[(vox.Media?.Url.Split('=').Length - 1).Value],
+                        MediaType = (ViewModels.MediaType)(int)x.Media?.MediaType,
+                        ExtensionData = x.Media?.Url.Split('=')[(vox.Media?.Url.Split('=').Length - 1).Value],
                         ThumbnailUrl = x.Media?.ThumbnailUrl,
                     },
                     IsSticky = x.IsSticky,
@@ -326,7 +327,9 @@ namespace Voxed.WebApp.Controllers
         {
             if (string.IsNullOrWhiteSpace(value)) return BadRequest();
 
-            var voxs = await _voxedRepository.Voxs.SearchAsync(value);
+            var filter = new VoxFilter() { Search = value };
+
+            var voxs = await _voxedRepository.Voxs.GetByFilterAsync(filter);
             return View(VoxedMapper.Map(voxs));
         }
 
@@ -339,9 +342,13 @@ namespace Voxed.WebApp.Controllers
                 return BadRequest();
             }
 
-            var userId = User.GetLoggedInUserId<Guid?>();
+            var filter = new VoxFilter()
+            {
+                UserId = User.GetLoggedInUserId<Guid?>(),
+                IncludeFavorites = true
+            };
 
-            var voxs = await _voxedRepository.Voxs.GetFavoritesAsync(userId.Value);
+            var voxs = await _voxedRepository.Voxs.GetByFilterAsync(filter);
             return View(VoxedMapper.Map(voxs));
         }
 
@@ -354,9 +361,13 @@ namespace Voxed.WebApp.Controllers
                 return BadRequest();
             }
 
-            var userId = User.GetLoggedInUserId<Guid?>();
+            var filter = new VoxFilter()
+            {
+                UserId = User.GetLoggedInUserId<Guid?>(),
+                IncludeHidden = true
+            };
 
-            var voxs = await _voxedRepository.Voxs.GetHiddenAsync(userId.Value);
+            var voxs = await _voxedRepository.Voxs.GetByFilterAsync(filter);
             return View(VoxedMapper.Map(voxs));
         }
 
@@ -448,34 +459,28 @@ namespace Voxed.WebApp.Controllers
             //HttpContext.Request.Cookies.TryGetValue("categoriasFavoritas", out string categoriasActivas);
             var skipList = JsonConvert.DeserializeObject<IEnumerable<string>>(request?.Ignore);
             var skipIdList = skipList.Select(x => GuidConverter.FromShortString(x)).ToList();
-            //var skipIdList = JsonConvert.DeserializeObject<List<Guid>>(request?.Ignore);
 
-            //var user = await _userManager.GetUserAsync(HttpContext.User);
-            var userId = User.GetLoggedInUserId<Guid?>();
-            if (userId != null)
+            var filter = new VoxFilter()
             {
-                var userVoxActions = await _voxedRepository.UserVoxActions.Find(x => x.UserId == userId.Value && x.IsHidden);
-                var hiddenVoxIds = userVoxActions.Select(x => x.VoxId).ToList();
-                skipIdList.AddRange(hiddenVoxIds);
-            }
+                UserId = User.GetLoggedInUserId<Guid?>(),
+                IgnoreVoxIds = skipIdList,
+                Categories = GetSubscriptionCategories(request)
+            };
 
-
-            var lastVox = await _voxedRepository.Voxs.GetLastVoxBump(skipIdList);
-
-            var voxs = await _voxedRepository.Voxs.GetLastestAsync(skipIdList, lastVox.Bump, GetSubscriptionCategories(request));
+            var voxs = await _voxedRepository.Voxs.GetByFilterAsync(filter);
             var response = new ListResponse(VoxedMapper.Map(voxs));
             return response;
         }
 
-        private ICollection<int> GetSubscriptionCategories(ListRequest request)
+        private List<int> GetSubscriptionCategories(ListRequest request)
         {
             try
             {
-                var subscriptions = JsonConvert.DeserializeObject<IEnumerable<string>>(request?.Suscriptions);
+                var subscriptions = JsonConvert.DeserializeObject<List<string>>(request?.Suscriptions);
 
                 if (subscriptions == null)
                 {
-                    return _defaultCategories;
+                    return _defaultCategories.ToList();
                 }
 
                 return subscriptions.Select(x => int.Parse(x)).ToList();
@@ -483,7 +488,7 @@ namespace Voxed.WebApp.Controllers
             }
             catch (Exception e)
             {
-                return _defaultCategories;
+                return _defaultCategories.ToList();
             }
         }
 

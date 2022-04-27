@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Core.Data.Filters;
 using Core.Data.Repositories;
 using Core.Entities;
 using Core.Shared;
@@ -51,7 +52,8 @@ namespace Voxed.WebApp.Controllers.V1
         [HttpGet]
         public async Task<IActionResult> GetLastest()
         {
-            var voxs = await _voxedRepository.Voxs.GetLastestAsync(_defaultCategories, new List<Guid>());
+            var filter = new VoxFilter() { Categories = _defaultCategories.ToList()};
+            var voxs = await _voxedRepository.Voxs.GetByFilterAsync(filter);
 
             //var voxsList = voxs.Select(vox => new Models.VoxResponse()
             //{

@@ -11,7 +11,7 @@ namespace Core.Shared
             {
                 UserType.Anonymous => "Anonimo",
                 UserType.Administrator => user.UserName,
-                UserType.Moderator => user.UserName,
+                UserType.Moderator => "Anonimo",
                 UserType.Account => "Anonimo",
                 UserType.AnonymousAccount => "Anonimo",
                 UserType.Developer => "Anonimo",
