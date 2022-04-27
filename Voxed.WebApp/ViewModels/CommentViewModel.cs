@@ -17,7 +17,6 @@ namespace Voxed.WebApp.ViewModels
         public int UserType { get; set; }
         public string Style { get; set; }
         public MediaViewModel Media { get; set; }
-
         public User User { get; set; }
 
     }

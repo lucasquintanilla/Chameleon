@@ -322,54 +322,7 @@ namespace Voxed.WebApp.Controllers
             return actions;
         }
 
-        [HttpGet("search/{value}")]
-        public async Task<IActionResult> Search(string value)
-        {
-            if (string.IsNullOrWhiteSpace(value)) return BadRequest();
-
-            var filter = new VoxFilter() { Search = value };
-
-            var voxs = await _voxedRepository.Voxs.GetByFilterAsync(filter);
-            return View(VoxedMapper.Map(voxs));
-        }
-
-        [HttpGet]
-        [Route("favoritos")]
-        public async Task<IActionResult> Favorites()
-        {
-            if (!User.Identity.IsAuthenticated)
-            {
-                return BadRequest();
-            }
-
-            var filter = new VoxFilter()
-            {
-                UserId = User.GetLoggedInUserId<Guid?>(),
-                IncludeFavorites = true
-            };
-
-            var voxs = await _voxedRepository.Voxs.GetByFilterAsync(filter);
-            return View(VoxedMapper.Map(voxs));
-        }
-
-        [HttpGet]
-        [Route("ocultos")]
-        public async Task<IActionResult> Hidden()
-        {
-            if (!User.Identity.IsAuthenticated)
-            {
-                return BadRequest();
-            }
-
-            var filter = new VoxFilter()
-            {
-                UserId = User.GetLoggedInUserId<Guid?>(),
-                IncludeHidden = true
-            };
-
-            var voxs = await _voxedRepository.Voxs.GetByFilterAsync(filter);
-            return View(VoxedMapper.Map(voxs));
-        }
+        
 
         [HttpPost]
         [Route("anon/vox")]

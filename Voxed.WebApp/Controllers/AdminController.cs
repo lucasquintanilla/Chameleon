@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Voxed.WebApp.Constants;
+using Voxed.WebApp.Models;
 
 namespace Voxed.WebApp.Controllers
 {
@@ -124,16 +125,5 @@ namespace Voxed.WebApp.Controllers
                 }
             }
         }
-    }
-
-    public class DeleteRequest
-    {
-        public string ContentType { get; set; } //puede ser 0:comment o 1
-        public string ContentId { get; set; }
-    }
-
-    public class DeleteResponse
-    {
-        public string Value { get; set; }
     }
 }

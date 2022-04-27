@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Voxed.WebApp.Models
+﻿namespace Voxed.WebApp.Models
 {
     public class ListRequest
     {

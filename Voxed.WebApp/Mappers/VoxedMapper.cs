@@ -34,7 +34,7 @@ namespace Voxed.WebApp.Mappers
             };
         }
 
-        public static IList<VoxResponse> Map(IEnumerable<Vox> voxs)
+        public static List<VoxResponse> Map(IEnumerable<Vox> voxs)
         {
             return voxs.Select(vox => Map(vox)).ToList();
         }
