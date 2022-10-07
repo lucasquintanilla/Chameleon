@@ -4,7 +4,7 @@ using Core.Services.ImxtoService;
 using Core.Shared.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -19,7 +19,7 @@ namespace Core.Shared
 {
     public class FileUploadService
     {
-        private IWebHostEnvironment _env;
+        private readonly IWebHostEnvironment _env;
         private readonly FileUploadServiceConfiguration _configuration;
         private readonly ImxtoService _imxtoService;
         private readonly CopService _cop;
@@ -27,13 +27,13 @@ namespace Core.Shared
 
         public FileUploadService(
             IWebHostEnvironment env,
-            IConfiguration configuration,
             ImxtoService imxtoService,
-            YoutubeService youtubeService
+            YoutubeService youtubeService,
+            IOptions<FileUploadServiceConfiguration> options
             )
         {
             _env = env;
-            _configuration = configuration.GetSection("FileUploadService").Get<FileUploadServiceConfiguration>();
+            _configuration = options.Value;
             _imxtoService = imxtoService;
             _cop = new CopService(Path.Combine(_env.WebRootPath, "media", "banned"));
             _youtubeService = youtubeService;

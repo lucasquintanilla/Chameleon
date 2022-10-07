@@ -4,6 +4,7 @@ using Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using System.Linq;
@@ -16,11 +17,16 @@ namespace Voxed.WebApp.Controllers
     [Authorize(Roles = nameof(RoleType.Administrator))]
     public class AdminController : Controller
     {
+        private readonly ILogger<AdminController> _logger;
         private readonly IVoxedRepository _voxedRepository;
         private readonly IWebHostEnvironment _env;
 
-        public AdminController(IVoxedRepository voxedRepository, IWebHostEnvironment env)
+        public AdminController(
+            IVoxedRepository voxedRepository, 
+            IWebHostEnvironment env, 
+            ILogger<AdminController> logger)
         {
+            _logger = logger;
             _voxedRepository = voxedRepository;
             _env = env;
         }
@@ -41,10 +47,7 @@ namespace Voxed.WebApp.Controllers
                     case ContentType.Comment:
 
                         var comment = await _voxedRepository.Comments.GetById(new Guid(request.ContentId));
-                        if (comment == null)
-                        {
-                            NotFound();
-                        }
+                        if (comment == null) NotFound();                        
 
                         comment.State = CommentState.Deleted;
 
@@ -80,7 +83,7 @@ namespace Voxed.WebApp.Controllers
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                _logger.LogError(e.Message);
                 return new DeleteResponse() { Value = "Error" };
             }
         }
@@ -89,10 +92,7 @@ namespace Voxed.WebApp.Controllers
         {
             var vox = await _voxedRepository.Voxs.GetById(comment.VoxID);
 
-            if (vox == null)
-            {
-                return;
-            }
+            if (vox == null) return;            
 
             var lastBump = vox.Comments
                 .Where(x => x.State == CommentState.Normal)

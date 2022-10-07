@@ -4,6 +4,7 @@ using Core.Data.EF.Repositories;
 using Core.Data.EF.Sqlite;
 using Core.Data.Repositories;
 using Core.Entities;
+using Core.Services.FileUploadService;
 using Core.Services.ImxtoService;
 using Core.Services.Telegram;
 using Core.Shared;
@@ -128,6 +129,7 @@ namespace Voxed.WebApp
             services.AddSingleton<ImxtoService>();
 
             services.Configure<TelegramConfiguration>(_configuration.GetSection(TelegramConfiguration.SectionName));
+            services.Configure<FileUploadServiceConfiguration>(_configuration.GetSection(FileUploadServiceConfiguration.SectionName));
             services.AddSingleton<TelegramService>();
             services.AddSingleton<YoutubeService>();
             //services.AddSingleton<GlobalMessageService>();
@@ -148,7 +150,7 @@ namespace Voxed.WebApp
                     nameof(SqlProvider.MySql) => options
                     .UseMySql(
                         _configuration.GetConnectionString(nameof(SqlProvider.MySql)),
-                        ServerVersion.AutoDetect(_configuration.GetConnectionString(nameof(SqlProvider.MySql))),
+                        ServerVersion.AutoDetect(Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb")),
                         x => x.MigrationsAssembly(typeof(MySqlVoxedContext).Assembly.GetName().Name)),
                     //.UseLoggerFactory(ContextLoggerFactory),
 

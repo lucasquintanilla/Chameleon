@@ -50,24 +50,15 @@ namespace Voxed.WebApp.Controllers
         [HttpGet("v1/vox/{hash}")]
         public async Task<IActionResult> Vox(string id)
         {
-            if (id == null)
-            {
-                return BadRequest();
-            }
+            if (id == null) return BadRequest();
 
             var voxId = GuidConverter.FromShortString(id);
 
             var vox = await _voxedRepository.Voxs.GetById(voxId);
 
-            if (vox == null)
-            {
-                return NotFound();
-            }
+            if (vox == null) return NotFound();
 
-            if (vox.State == VoxState.Deleted)
-            {
-                return NotFound();
-            }
+            if (vox.State == VoxState.Deleted) return NotFound();
 
             return Ok(vox);
         }
@@ -110,10 +101,7 @@ namespace Voxed.WebApp.Controllers
         [Route("favoritos")]
         public async Task<IActionResult> Favorites()
         {
-            if (!User.Identity.IsAuthenticated)
-            {
-                return BadRequest();
-            }
+            if (!User.Identity.IsAuthenticated) return BadRequest();
 
             var filter = new VoxFilter()
             {
@@ -137,10 +125,7 @@ namespace Voxed.WebApp.Controllers
         [Route("ocultos")]
         public async Task<IActionResult> Hidden()
         {
-            if (!User.Identity.IsAuthenticated)
-            {
-                return BadRequest();
-            }
+            if (!User.Identity.IsAuthenticated) return BadRequest();
 
             var filter = new VoxFilter()
             {
@@ -163,17 +148,11 @@ namespace Voxed.WebApp.Controllers
         [Route("/{shortName}")]
         public async Task<IActionResult> Category(string shortName)
         {
-            if (shortName == null)
-            {
-                return BadRequest();
-            }
+            if (shortName == null) return BadRequest();
 
             var category = await _voxedRepository.Categories.GetByShortName(shortName);
 
-            if (category == null)
-            {
-                return NotFound();
-            }
+            if (category == null) return NotFound();
 
             var filter = new VoxFilter() { Categories = new List<int>() { category.ID } };
 

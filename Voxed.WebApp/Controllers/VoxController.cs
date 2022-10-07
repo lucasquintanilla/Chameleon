@@ -299,17 +299,12 @@ namespace Voxed.WebApp.Controllers
         private async Task<UserVoxAction> GetUserVoxActions(Guid voxId)
         {
             var userVoxAction = new UserVoxAction();
+
             var userId = User.GetLoggedInUserId<Guid?>();
-            if (userId == null)
-            {
-                return userVoxAction;
-            }
+            if (userId == null) return userVoxAction;            
 
             var actions = await _voxedRepository.UserVoxActions.GetByUserIdVoxId(userId.Value, voxId);
-            if (actions == null)
-            {
-                return userVoxAction;
-            }
+            if (actions == null) return userVoxAction;
 
             return actions;
         }

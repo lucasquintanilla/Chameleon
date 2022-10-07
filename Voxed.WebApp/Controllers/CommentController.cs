@@ -106,10 +106,7 @@ namespace Voxed.WebApp.Controllers
             {
                 var comment = await _voxedRepository.Comments.GetById(request.ContentId);
 
-                if (comment == null)
-                {
-                    NotFound(response);
-                }
+                if (comment == null) NotFound(response);                
 
                 comment.IsSticky = true;
                 response.Id = request.ContentId;

@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Core.Data.Filters;
+﻿using Core.Data.Filters;
 using Core.Data.Repositories;
 using Core.Entities;
 using Core.Shared;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Voxed.WebApp.Extensions;
 using Voxed.WebApp.Mappers;
 
@@ -21,9 +20,7 @@ namespace Voxed.WebApp.Controllers.V1
     public class VoxController : ControllerBase
     {
         private readonly IVoxedRepository _voxedRepository;
-        //private readonly int[] _hiddenCategories = { 2, 3 };
         private readonly int[] _defaultCategories = { 1, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 30, 16, 14, 13, 12, 11, 10, 9, 8, 15, 7, 31, 6, 5, 4 };
-
 
         public VoxController(IVoxedRepository voxedRepository)
         {
@@ -36,15 +33,7 @@ namespace Voxed.WebApp.Controllers.V1
         {
             var vox = await _voxedRepository.Voxs.GetById(id);
 
-            if (vox == null)
-            {
-                return NotFound();
-            }
-
-            if (vox.State == VoxState.Deleted)
-            {
-                return NotFound();
-            }
+            if (vox == null || vox.State == VoxState.Deleted) return NotFound();
 
             return Ok(ConvertToVoxResponse(vox));
         }
@@ -52,32 +41,8 @@ namespace Voxed.WebApp.Controllers.V1
         [HttpGet]
         public async Task<IActionResult> GetLastest()
         {
-            var filter = new VoxFilter() { Categories = _defaultCategories.ToList()};
+            var filter = new VoxFilter() { Categories = _defaultCategories.ToList() };
             var voxs = await _voxedRepository.Voxs.GetByFilterAsync(filter);
-
-            //var voxsList = voxs.Select(vox => new Models.VoxResponse()
-            //{
-            //    //Hash = GuidConverter.ToShortString(vox.ID),
-            //    Hash = vox.ID.ToString("N"),
-            //    //Hash = x.Hash,
-            //    //Status = "1",
-            //    Status = true,
-            //    Niche = "20",
-            //    Title = vox.Title,
-            //    Comments = vox.Comments.Count().ToString(),
-            //    Extension = "",
-            //    Sticky = vox.IsSticky ? "1" : "0",
-            //    CreatedAt = vox.CreatedOn.ToString(),
-            //    PollOne = "",
-            //    PollTwo = "",
-            //    Id = vox.ID.ToString(),
-            //    Slug = vox.Category.ShortName.ToUpper(),
-            //    //VoxId = GuidConverter.ToShortString(vox.ID),
-            //    VoxId = vox.ID.ToString("N"),
-            //    New = vox.CreatedOn.IsNew(),
-            //    ThumbnailUrl = vox.Media?.ThumbnailUrl
-            //}).ToList();
-
             return Ok(VoxedMapper.Map(voxs));
         }
 
