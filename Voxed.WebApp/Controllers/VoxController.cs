@@ -124,6 +124,7 @@ namespace Voxed.WebApp.Controllers
             }
             catch (Exception e)
             {
+                _logger.LogError(e.StackTrace);
                 response.Status = false;
                 response.Swal = $"Hubo un error al aplicar la accion {id}";
             }

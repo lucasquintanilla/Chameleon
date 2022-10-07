@@ -127,7 +127,7 @@ namespace Voxed.WebApp
             services.AddSingleton<FileUploadService>();
             services.AddSingleton<ImxtoService>();
 
-            services.Configure<TelegramConfiguration>(_configuration.GetSection(TelegramConfiguration.Telegram));
+            services.Configure<TelegramConfiguration>(_configuration.GetSection(TelegramConfiguration.SectionName));
             services.AddSingleton<TelegramService>();
             services.AddSingleton<YoutubeService>();
             //services.AddSingleton<GlobalMessageService>();
