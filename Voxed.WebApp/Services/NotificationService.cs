@@ -4,22 +4,29 @@ using Core.Shared;
 using Core.Shared.Models;
 using Microsoft.AspNetCore.SignalR;
 using System;
-using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Voxed.WebApp.Extensions;
 using Voxed.WebApp.Hubs;
+using Voxed.WebApp.Mappers;
 using Voxed.WebApp.Models;
 
 namespace Voxed.WebApp.Services
 {
-    public class NotificationService
+    public interface INotificationService
+    {
+        Task NotifyClients(Guid voxId);
+        Task ManageNotifications(Vox vox, Comment comment);
+        Task SendBoardUpdate(Comment comment, Vox vox, CreateCommentRequest request);
+    }
+
+    public class NotificationService : INotificationService
     {
         private readonly IVoxedRepository _voxedRepository;
         private readonly IHubContext<VoxedHub, INotificationHub> _notificationHub;
         private readonly FormateadorService _formateadorService;
         private readonly int[] _hiddenCategories = { 2, 3 };
+        private readonly int[] _excludedCategories = { 2, 3 };
 
         public NotificationService(
             IVoxedRepository voxedRepository,
@@ -30,6 +37,19 @@ namespace Voxed.WebApp.Services
             _voxedRepository = voxedRepository;
             _notificationHub = notificationHub;
             _formateadorService = formateadorService;
+        }
+
+        public async Task NotifyClients(Guid voxId)
+        {
+            //disparo notificacion del vox
+            var vox = await _voxedRepository.Voxs.GetById(voxId); // Ver si se puede remover
+
+            if (!_excludedCategories.Contains(vox.CategoryID))
+            {
+                //var voxToHub = ConvertoToVoxResponse(vox);
+                var voxToHub = VoxedMapper.Map(vox);
+                await _notificationHub.Clients.All.Vox(voxToHub);
+            }
         }
 
         public async Task ManageNotifications(Vox vox, Comment comment)

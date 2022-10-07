@@ -831,7 +831,6 @@
 
     @RenderSection("Scripts", required: false)
 
-    @*<script src="https://hcaptcha.com/1/api.js" async defer></script>*@
     <script>
 
         window.openNotifications = () => {
@@ -848,40 +847,5 @@
 
         gtag('config', 'G-EVXRV5V095');
     </script>
-    @*
-        <script> let touchstartX = 0;
-        let touchstartY = 0;
-        let touchendX = 0;
-        let touchendY = 0;
-
-        function handleGesture(touchstartX, touchstartY, touchendX, touchendY) {
-        const delx = touchendX - touchstartX;
-        const dely = touchendY - touchstartY;
-        if(Math.abs(delx) > Math.abs(dely)){
-        if(delx > 0) return "right"
-        else return "left"
-        }
-        else if(Math.abs(delx) < Math.abs(dely)){
-        if(dely > 0) return "down"
-        else return "up"
-        }
-        else return "tap"
-        }
-
-        //const gestureZone = document.getElementById('main');
-        const gestureZone = document.getElementsByTagName('body')[0];
-        gestureZone.addEventListener('touchstart', function(event) {
-        touchstartX = event.changedTouches[0].screenX;
-        touchstartY = event.changedTouches[0].screenY;
-        }, false);
-
-        gestureZone.addEventListener('touchend', function(event) {
-        touchendX = event.changedTouches[0].screenX;
-        touchendY = event.changedTouches[0].screenY;
-        //alert(handleGesture(touchstartX, touchstartY, touchendX, touchendY))
-        if (handleGesture(touchstartX, touchstartY, touchendX, touchendY) == "right") {
-        window.location.href = '/home/privacy';
-        }
-        }, false); </script>*@
 </body>
 </html>

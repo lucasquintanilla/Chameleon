@@ -321,8 +321,7 @@ namespace Voxed.WebApp.Controllers
 
             return actions;
         }
-
-        
+                
 
         [HttpPost]
         [Route("anon/vox")]

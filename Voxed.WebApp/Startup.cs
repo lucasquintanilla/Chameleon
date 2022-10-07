@@ -15,7 +15,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using System;
 using Voxed.WebApp.Hubs;
 using Voxed.WebApp.Services;
@@ -24,14 +23,13 @@ namespace Voxed.WebApp
 {
     public class Startup
     {
+        private readonly IConfiguration _configuration;
         private const string myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            _configuration = configuration;
         }
-
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -60,33 +58,13 @@ namespace Voxed.WebApp
 
             #region Repositories
 
-            //services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            //services.AddTransient<IVoxRepository, VoxRepository>();
             services.AddTransient<IVoxedRepository, VoxedRepository>();
 
             #endregion
 
             //https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/providers?tabs=dotnet-core-cli
 
-            var provider = Configuration.GetValue("Provider", nameof(SqlProvider.MySql));
-            services.AddDbContext<VoxedContext>(
-                options => _ = provider switch
-                {
-                    nameof(SqlProvider.Sqlite) => options
-                        .UseSqlite(
-                            Configuration.GetConnectionString(nameof(SqlProvider.Sqlite)),
-                            x => x.MigrationsAssembly(typeof(SqliteVoxedContext).Assembly.GetName().Name)),
-                        //.UseLoggerFactory(ContextLoggerFactory),
-
-                    nameof(SqlProvider.MySql) => options
-                    .UseMySql(
-                        Configuration.GetConnectionString(nameof(SqlProvider.MySql)),
-                        ServerVersion.AutoDetect(Configuration.GetConnectionString(nameof(SqlProvider.MySql))),
-                        x => x.MigrationsAssembly(typeof(MySqlVoxedContext).Assembly.GetName().Name)),
-                    //.UseLoggerFactory(ContextLoggerFactory),
-
-                    _ => throw new Exception($"Unsupported provider: {provider}")
-                });
+            RegisterInfrastrutureServices(services);
 
             services.AddDefaultIdentity<User>(options =>
                     options.SignIn.RequireConfirmedAccount = true)
@@ -94,16 +72,8 @@ namespace Voxed.WebApp
                 .AddEntityFrameworkStores<VoxedContext>()
                 .AddErrorDescriber<SpanishIdentityErrorDescriber>();
 
+            RegisterServices(services);
 
-            services.AddTransient<NotificationService>();
-            services.AddSingleton<FormateadorService>();
-            services.AddSingleton<FileUploadService>();
-            services.AddSingleton<ImxtoService>();
-
-            services.Configure<TelegramConfiguration>(Configuration.GetSection(TelegramConfiguration.Telegram));
-            services.AddSingleton<TelegramService>();
-            services.AddSingleton<YoutubeService>();
-            //services.AddSingleton<GlobalMessageService>();
 
 
             services.Configure<IdentityOptions>(options =>
@@ -149,8 +119,42 @@ namespace Voxed.WebApp
             services.AddSignalR();
         }
 
-        private static ILoggerFactory ContextLoggerFactory
-            => LoggerFactory.Create(builder => builder.AddConsole());
+        private void RegisterServices(IServiceCollection services)
+        {
+            services.AddTransient<INotificationService, NotificationService>();
+            services.AddTransient<IVoxService, VoxService>();
+            services.AddSingleton<FormateadorService>();
+            services.AddSingleton<FileUploadService>();
+            services.AddSingleton<ImxtoService>();
+
+            services.Configure<TelegramConfiguration>(_configuration.GetSection(TelegramConfiguration.Telegram));
+            services.AddSingleton<TelegramService>();
+            services.AddSingleton<YoutubeService>();
+            //services.AddSingleton<GlobalMessageService>();
+        }
+
+        private void RegisterInfrastrutureServices(IServiceCollection services)
+        {
+            var provider = _configuration.GetValue("Provider", nameof(SqlProvider.MySql));
+            services.AddDbContext<VoxedContext>(
+                options => _ = provider switch
+                {
+                    nameof(SqlProvider.Sqlite) => options
+                        .UseSqlite(
+                            _configuration.GetConnectionString(nameof(SqlProvider.Sqlite)),
+                            x => x.MigrationsAssembly(typeof(SqliteVoxedContext).Assembly.GetName().Name)),
+                    //.UseLoggerFactory(ContextLoggerFactory),
+
+                    nameof(SqlProvider.MySql) => options
+                    .UseMySql(
+                        _configuration.GetConnectionString(nameof(SqlProvider.MySql)),
+                        ServerVersion.AutoDetect(_configuration.GetConnectionString(nameof(SqlProvider.MySql))),
+                        x => x.MigrationsAssembly(typeof(MySqlVoxedContext).Assembly.GetName().Name)),
+                    //.UseLoggerFactory(ContextLoggerFactory),
+
+                    _ => throw new Exception($"Unsupported provider: {provider}")
+                });
+        }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -204,6 +208,8 @@ namespace Voxed.WebApp
                     pattern: "{controller=Home}/{action=Index}/{id?}");
 
                 endpoints.MapRazorPages();
+                //endpoints.MapBlazorHub();
+
 
                 endpoints.MapHub<VoxedHub>("/hubs/notifications");
             });

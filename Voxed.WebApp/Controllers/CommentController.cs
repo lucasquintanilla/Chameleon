@@ -22,10 +22,10 @@ namespace Voxed.WebApp.Controllers
         private readonly SignInManager<User> _signInManager;
         private readonly ILogger<HomeController> _logger;
         //private readonly ILogger _logger;
-        private readonly NotificationService _notificationService;
+        private readonly INotificationService _notificationService;
 
         public CommentController(
-            NotificationService notificationService,
+            INotificationService notificationService,
             FormateadorService formateadorService,
             FileUploadService fileUploadService,
             IVoxedRepository voxedRepository,

@@ -1,7 +1,5 @@
 //using Microsoft.Extensions.Logging;
 using Core.Data.EF;
-using Core.Data.EF.MySql;
-using Core.Data.EF.Sqlite;
 using Core.Entities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -11,26 +9,16 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using System;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging.AzureAppServices;
 
 namespace Voxed.WebApp
 {
     public class Program
     {
-        public static async Task<int> Main(string[] args)
+        public static async Task Main(string[] args)
         {
-            try
-            {
-                var host = CreateHostBuilder(args).Build();
-                await CreateDbIfNotExists(host);
-                await host.RunAsync();
-
-                return 0;
-            }
-            catch (Exception)
-            {
-                return 1;
-            }
+            var host = CreateHostBuilder(args).Build();
+            await CreateDbIfNotExists(host);
+            await host.RunAsync();
         }
 
         private static async Task CreateDbIfNotExists(IHost host)
@@ -97,7 +85,7 @@ namespace Voxed.WebApp
                         .ReadFrom.Configuration(context.Configuration);
                 })
                 ;
-        
+
         //private static async Task SqliteInitialize(IServiceProvider services)
         //{
         //    var context = services.GetRequiredService<VoxedContext>();
