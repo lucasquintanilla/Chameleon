@@ -6,7 +6,6 @@ using Core.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
@@ -15,7 +14,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Voxed.WebApp.Constants;
 using Voxed.WebApp.Extensions;
-using Voxed.WebApp.Hubs;
 using Voxed.WebApp.Mappers;
 using Voxed.WebApp.Models;
 using Voxed.WebApp.Services;
@@ -25,35 +23,28 @@ namespace Voxed.WebApp.Controllers
 {
     public class VoxController : BaseController
     {
-        private readonly FileUploadService _fileUploadService;
+        private readonly ILogger<VoxController> _logger;
         private readonly IVoxedRepository _voxedRepository;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
-        private readonly FormateadorService _formatterService;
-        private readonly IHubContext<VoxedHub, INotificationHub> _notificationHub;
-        private readonly ILogger<VoxController> _logger;
+        private readonly IVoxService _voxService;
         private readonly TelegramService _telegramService;
-        private readonly int[] _excludedCategories = { 2, 3 };
         private readonly int[] _defaultCategories = { 1, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 30, 16, 14, 13, 12, 11, 10, 9, 8, 15, 7, 31, 6, 5, 4 };
 
         public VoxController(
             TelegramService telegramService,
             ILogger<VoxController> logger,
-            FileUploadService fileUploadService,
             IVoxedRepository voxedRepository,
             UserManager<User> userManager,
-            FormateadorService formatterService,
-            IHubContext<VoxedHub, INotificationHub> notificationHub,
             SignInManager<User> signInManager,
-            IHttpContextAccessor accessor
-            ) : base(accessor)
+            IHttpContextAccessor accessor,
+            IVoxService voxService
+            ) : base(accessor, userManager)
         {
-            _fileUploadService = fileUploadService;
             _voxedRepository = voxedRepository;
             _userManager = userManager;
-            _formatterService = formatterService;
-            _notificationHub = notificationHub;
             _signInManager = signInManager;
+            _voxService = voxService;
             _logger = logger;
             _telegramService = telegramService;
         }
@@ -321,7 +312,6 @@ namespace Voxed.WebApp.Controllers
 
             return actions;
         }
-                
 
         [HttpPost]
         [Route("anon/vox")]
@@ -350,54 +340,11 @@ namespace Voxed.WebApp.Controllers
                     //TODO: Crear una notificacion para el nuevo usuario anonimo
                 }
 
-                var vox = new Vox()
-                {
-                    ID = Guid.NewGuid(),
-                    State = VoxState.Normal,
-                    UserID = userId.Value,
-                    Hash = new Hash().NewHash(),
-                    Title = request.Title,
-                    Content = _formatterService.Parse(request.Content),
-                    CategoryID = request.Niche,
-                    IpAddress = UserIpAddress,
-                    UserAgent = UserAgent
-                };
-
-                if (request.PollOne != null && request.PollTwo != null)
-                {
-                    vox.Poll = new Poll()
-                    {
-                        OptionADescription = request.PollOne,
-                        OptionBDescription = request.PollTwo,
-                    };
-                }
-
-                await _fileUploadService.ProcessAttachment(request.GetUploadData(), request.File, vox);
-
-                await _voxedRepository.Voxs.Add(vox);
-                await _voxedRepository.SaveChangesAsync();
-
-                //disparo notificacion del vox
-                vox = await _voxedRepository.Voxs.GetById(vox.ID); // Ver si se puede remover
-
-                if (!_excludedCategories.Contains(vox.CategoryID))
-                {
-                    //var voxToHub = ConvertoToVoxResponse(vox);
-                    var voxToHub = VoxedMapper.Map(vox);
-                    await _notificationHub.Clients.All.Vox(voxToHub);
-                }
-
-                response.VoxHash = GuidConverter.ToShortString(vox.ID);
-                response.Status = true;
-            }
-            catch (NotImplementedException e)
-            {
-                response.Swal = e.Message;
+                return await _voxService.CreateVox(request, userId.Value);
             }
             catch (Exception e)
             {
                 _logger.LogError(e.Message);
-
                 response.Swal = "error";
             }
 
@@ -442,27 +389,6 @@ namespace Voxed.WebApp.Controllers
             {
                 return _defaultCategories.ToList();
             }
-        }
-
-        private async Task<User> CreateAnonymousUser()
-        {
-            var user = new User
-            {
-                UserName = UserNameGenerator.NewAnonymousUserName(),
-                EmailConfirmed = true,
-                UserType = Core.Entities.UserType.AnonymousAccount,
-                IpAddress = UserIpAddress.ToString(),
-                UserAgent = UserAgent,
-                Token = TokenGenerator.NewToken()
-            };
-
-            var result = await _userManager.CreateAsync(user);
-            if (result.Succeeded)
-            {
-                return user;
-            }
-
-            throw new Exception("Usuario no pudo ser creado");
         }
     }
 }

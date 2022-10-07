@@ -21,7 +21,7 @@ namespace Voxed.WebApp.Models
             return JsonConvert.DeserializeObject<UploadData>(UploadData);
         }
 
-        public bool HasInvalidContent()
+        public bool HasEmptyContent()
         {
             return Content == null && File == null && GetUploadData()?.Extension == null;
         }

@@ -15,33 +15,30 @@ namespace Voxed.WebApp.Controllers
 {
     public class CommentController : BaseController
     {
+        private readonly ILogger<CommentController> _logger;
         private readonly FormateadorService _formateadorService;
         private readonly FileUploadService _fileUploadService;
         private readonly IVoxedRepository _voxedRepository;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
-        private readonly ILogger<HomeController> _logger;
-        //private readonly ILogger _logger;
         private readonly INotificationService _notificationService;
 
         public CommentController(
+            ILogger<CommentController> logger,
             INotificationService notificationService,
             FormateadorService formateadorService,
             FileUploadService fileUploadService,
             IVoxedRepository voxedRepository,
             UserManager<User> userManager,
-            ILogger<HomeController> logger,
-            //ILoggerFactory loggerFactory,
             SignInManager<User> signInManager,
             IHttpContextAccessor accessor
-            ) : base(accessor)
+            ) : base(accessor, userManager)
         {
             _formateadorService = formateadorService;
             _fileUploadService = fileUploadService;
             _voxedRepository = voxedRepository;
             _userManager = userManager;
             _logger = logger;
-            //_logger = loggerFactory.CreateLogger(nameof(CommentController));
             _signInManager = signInManager;
             _notificationService = notificationService;
         }
@@ -61,7 +58,7 @@ namespace Voxed.WebApp.Controllers
 
             try
             {
-                if (request.HasInvalidContent())
+                if (request.HasEmptyContent())
                 {
                     response.Swal = "Debes ingresar un contenido";
                     return response;
@@ -154,27 +151,6 @@ namespace Voxed.WebApp.Controllers
             await _fileUploadService.ProcessAttachment(request.GetUploadData(), request.File, comment);
 
             return comment;
-        }
-
-        private async Task<User> CreateAnonymousUser()
-        {
-            var user = new User
-            {
-                UserName = UserNameGenerator.NewAnonymousUserName(),
-                EmailConfirmed = true,
-                UserType = UserType.AnonymousAccount,
-                IpAddress = UserIpAddress,
-                UserAgent = UserAgent,
-                Token = TokenGenerator.NewToken()
-            };
-
-            var result = await _userManager.CreateAsync(user);
-            if (result.Succeeded)
-            {
-                return user;
-            }
-
-            throw new Exception("Error al crear usuario anonimo");
         }
     }
 }

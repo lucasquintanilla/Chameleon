@@ -13,9 +13,11 @@ namespace Voxed.WebApp.Controllers
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
 
-        public AccountController(SignInManager<User> signInManager,
+        public AccountController(
+            SignInManager<User> signInManager,
             UserManager<User> userManager,
-            IHttpContextAccessor accessor) : base(accessor)
+            IHttpContextAccessor accessor) 
+            : base(accessor, userManager)
         {
             _signInManager = signInManager;
             _userManager = userManager;

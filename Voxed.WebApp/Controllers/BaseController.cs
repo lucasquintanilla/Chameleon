@@ -1,27 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
+﻿using Core.Entities;
+using Core.Shared;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Voxed.WebApp.Extensions;
-using Voxed.WebApp.Services;
+using System;
+using System.Threading.Tasks;
 
 namespace Voxed.WebApp.Controllers
 {
     //[ServiceFilter(typeof(TraceIPAttribute))]
     public class BaseController : Controller
     {
+        private readonly UserManager<User> _userManager;
         private readonly IHttpContextAccessor _accessor;
         private static string[] bannedIpList = {
             "198.41.231.163",
             "198.41.231.229"
         };
 
-        public BaseController(IHttpContextAccessor accessor)
+        public BaseController(IHttpContextAccessor accessor, UserManager<User> userManager)
         {
             _accessor = accessor;
+            _userManager = userManager;
         }
 
         protected string UserAgent => Request.Headers.ContainsKey("User-Agent") ? Request.Headers["User-Agent"].ToString() : String.Empty;
@@ -32,6 +32,28 @@ namespace Voxed.WebApp.Controllers
         protected void RetringBannedIps()
         {
 
+        }
+
+
+        internal async Task<User> CreateAnonymousUser()
+        {
+            var user = new User
+            {
+                UserName = UserNameGenerator.NewAnonymousUserName(),
+                EmailConfirmed = true,
+                UserType = UserType.AnonymousAccount,
+                IpAddress = UserIpAddress,
+                UserAgent = UserAgent,
+                Token = TokenGenerator.NewToken()
+            };
+
+            var result = await _userManager.CreateAsync(user);
+            if (result.Succeeded)
+            {
+                return user;
+            }
+
+            throw new Exception("Error al crear usuario anonimo");
         }
     }
 

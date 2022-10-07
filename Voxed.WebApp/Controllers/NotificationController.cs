@@ -15,18 +15,16 @@ namespace Voxed.WebApp.Controllers
     [Route("notification")]
     public class NotificationController : BaseController
     {
-        private IVoxedRepository _voxedRepository;
-        private readonly UserManager<User> _userManager;
+        private readonly IVoxedRepository _voxedRepository;
         private readonly IHubContext<VoxedHub, INotificationHub> _notificationHub;
 
-        public NotificationController(IVoxedRepository voxedRepository,
+        public NotificationController(
             UserManager<User> userManager,
-            IHubContext<VoxedHub,
-            INotificationHub> notificationHub,
-            IHttpContextAccessor accessor) : base(accessor)
+            IVoxedRepository voxedRepository,
+            IHubContext<VoxedHub,INotificationHub> notificationHub,
+            IHttpContextAccessor accessor) : base(accessor, userManager)
         {
             _voxedRepository = voxedRepository;
-            _userManager = userManager;
             _notificationHub = notificationHub;
         }
 
@@ -65,10 +63,7 @@ namespace Voxed.WebApp.Controllers
             //var user = await _userManager.GetUserAsync(HttpContext.User);
             var userId = User.GetLoggedInUserId<Guid?>();
 
-            if (userId == null)
-            {
-                return BadRequest();
-            }
+            if (userId == null) return BadRequest();
 
             var notifications = await _voxedRepository.Notifications.GetByUserId(userId.Value);
 
