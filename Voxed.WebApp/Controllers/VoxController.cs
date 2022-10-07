@@ -386,7 +386,7 @@ namespace Voxed.WebApp.Controllers
                 return subscriptions.Select(x => int.Parse(x)).ToList();
 
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return _defaultCategories.ToList();
             }
