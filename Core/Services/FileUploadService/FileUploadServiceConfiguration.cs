@@ -12,5 +12,6 @@ namespace Core.Services.FileUploadService
         public string FFmpegPath { get; set; }
         public int ThumbnailQuality { get; set; }
         public bool UseImxto { get; set; }
+        public string WebRootPath { get; set; }
     }
 }

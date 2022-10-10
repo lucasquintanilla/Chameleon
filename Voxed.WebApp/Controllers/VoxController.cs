@@ -14,7 +14,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Voxed.WebApp.Constants;
 using Voxed.WebApp.Extensions;
-using Voxed.WebApp.Mappers;
 using Voxed.WebApp.Models;
 using Voxed.WebApp.Services;
 using Voxed.WebApp.ViewModels;
@@ -25,11 +24,11 @@ namespace Voxed.WebApp.Controllers
     {
         private readonly ILogger<VoxController> _logger;
         private readonly IVoxedRepository _voxedRepository;
-        private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IVoxService _voxService;
         private readonly TelegramService _telegramService;
-        private readonly int[] _defaultCategories = { 1, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 30, 16, 14, 13, 12, 11, 10, 9, 8, 15, 7, 31, 6, 5, 4 };
+        private readonly IUserVoxActionService _userVoxActionService;
+        private readonly IContentReportService _contentReportService;
 
         public VoxController(
             TelegramService telegramService,
@@ -38,15 +37,18 @@ namespace Voxed.WebApp.Controllers
             UserManager<User> userManager,
             SignInManager<User> signInManager,
             IHttpContextAccessor accessor,
-            IVoxService voxService
-            ) : base(accessor, userManager)
+            IVoxService voxService,
+            IUserVoxActionService userVoxActionService,
+            IContentReportService contentReportService) 
+            : base(accessor, userManager)
         {
             _voxedRepository = voxedRepository;
-            _userManager = userManager;
             _signInManager = signInManager;
             _voxService = voxService;
             _logger = logger;
             _telegramService = telegramService;
+            _userVoxActionService = userVoxActionService;
+            _contentReportService = contentReportService;
         }
 
         [HttpPost("account/message")]
@@ -112,15 +114,13 @@ namespace Voxed.WebApp.Controllers
                 var userId = User.GetLoggedInUserId<Guid?>();
                 if (userId == null)
                 {
-                    response.Swal = $"Debe iniciar sesion, crear un post o comentario";
+                    response.Swal = $"Debe iniciar sesion o crear un post o un comentario";
                     return response;
                 }
 
-                var actionResult = await ManageUserVoxAction(userId.Value, request.ContentId, id);
-
-                response.Status = true;
+                response.Action = await _userVoxActionService.ManageUserVoxAction(userId.Value, request.ContentId, id);
                 response.Swal = $"Accion {id} aplicada con exito";
-                response.Action = actionResult;
+                response.Status = true;
             }
             catch (Exception e)
             {
@@ -130,101 +130,12 @@ namespace Voxed.WebApp.Controllers
             }
 
             return response;
-        }
-
-        private async Task<string> ManageUserVoxAction(Guid userId, Guid voxId, string action)
-        {
-            string actionResult;
-            var userVoxAction = await _voxedRepository.UserVoxActions.GetByUserIdVoxId(userId, voxId);
-            if (userVoxAction == null)
-            {
-                userVoxAction = new UserVoxAction()
-                {
-                    UserId = userId,
-                    VoxId = voxId
-                };
-
-                actionResult = SetAction(userVoxAction, action);
-                await _voxedRepository.UserVoxActions.Add(userVoxAction);
-            }
-            else
-            {
-                actionResult = SetAction(userVoxAction, action);
-            }
-
-            await _voxedRepository.SaveChangesAsync();
-            return actionResult;
-        }
-
-        private string SetAction(UserVoxAction userVoxAction, string action)
-        {
-            switch (action)
-            {
-                case Actions.Hide:
-                    if (userVoxAction.IsHidden)
-                    {
-                        userVoxAction.IsHidden = false;
-                        return "delete";
-                    }
-                    userVoxAction.IsHidden = true;
-                    return "create";
-                case Actions.Favorite:
-                    if (userVoxAction.IsFavorite)
-                    {
-                        userVoxAction.IsFavorite = false;
-                        return "delete";
-                    }
-                    userVoxAction.IsFavorite = true;
-                    return "create";
-                case Actions.Follow:
-                    if (userVoxAction.IsFollowed)
-                    {
-                        userVoxAction.IsFollowed = false;
-                        return "delete";
-                    }
-                    userVoxAction.IsFollowed = true;
-                    return "create";
-                default:
-                    throw new Exception($"Invalid {nameof(action)}");
-            }
-        }
+        }        
 
         [HttpPost("report")]
         public async Task<ReportResponse> Report(ReportRequest request)
         {
-            var response = new ReportResponse();
-
-            try
-            {
-                string message = null;
-
-                switch (request.ContentType)
-                {
-                    case 0:
-                        var comment = await _voxedRepository.Comments.GetByHash(request.ContentId);
-                        message = $"NUEVA DENUNCIA \n Reason: {request.Reason}. \n https://voxed.club/vox/{GuidConverter.ToShortString(comment.VoxID)}#{comment.Hash}";
-                        break;
-
-                    case 1:
-                        message = $"NUEVA DENUNCIA \n Reason: {request.Reason}. \n https://voxed.club/vox/{GuidConverter.ToShortString(new Guid(request.ContentId))}";
-                        break;
-                }
-
-                await _telegramService.SendMessage(message);
-
-                response.Status = true;
-                response.Swal = "Gracias por enviarnos tu denuncia";
-
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e.Message);
-
-                response.Status = false;
-                response.Swal = "Hubo un error al enviar tu denuncia";
-            }
-
-            return response;
+            return await _contentReportService.Report(request);
         }
 
         [HttpGet("vox/{hash}")]
@@ -238,7 +149,9 @@ namespace Voxed.WebApp.Controllers
 
             if (vox == null || vox.State == VoxState.Deleted) return NotFound();
 
-            var actions = await GetUserVoxActions(voxId);
+            var userId = User.GetLoggedInUserId<Guid?>();
+
+            var actions = await _userVoxActionService.GetUserVoxActions(voxId, userId);
 
             var voxViewModel = new VoxDetailViewModel()
             {
@@ -296,19 +209,6 @@ namespace Voxed.WebApp.Controllers
             return View(voxViewModel);
         }
 
-        private async Task<UserVoxAction> GetUserVoxActions(Guid voxId)
-        {
-            var userVoxAction = new UserVoxAction();
-
-            var userId = User.GetLoggedInUserId<Guid?>();
-            if (userId == null) return userVoxAction;            
-
-            var actions = await _voxedRepository.UserVoxActions.GetByUserIdVoxId(userId.Value, voxId);
-            if (actions == null) return userVoxAction;
-
-            return actions;
-        }
-
         [HttpPost]
         [Route("anon/vox")]
         public async Task<CreateVoxResponse> Create(CreateVoxRequest request)
@@ -362,9 +262,7 @@ namespace Voxed.WebApp.Controllers
                 Categories = GetSubscriptionCategories(request)
             };
 
-            var voxs = await _voxedRepository.Voxs.GetByFilterAsync(filter);
-            var response = new ListResponse(VoxedMapper.Map(voxs));
-            return response;
+            return await _voxService.GetByFilter(filter);
         }
 
         private List<int> GetSubscriptionCategories(ListRequest request)
@@ -375,7 +273,7 @@ namespace Voxed.WebApp.Controllers
 
                 if (subscriptions == null)
                 {
-                    return _defaultCategories.ToList();
+                    return Categories.DefaultCategories.ToList();
                 }
 
                 return subscriptions.Select(x => int.Parse(x)).ToList();
@@ -383,7 +281,7 @@ namespace Voxed.WebApp.Controllers
             }
             catch (Exception)
             {
-                return _defaultCategories.ToList();
+                return Categories.DefaultCategories.ToList();
             }
         }
     }

@@ -1,6 +1,6 @@
 ﻿namespace Voxed.WebApp.Constants
 {
-    public class Actions
+    public class Action
     {
         public const string Hide = "hide";
         public const string Favorite = "favorite";

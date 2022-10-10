@@ -1,9 +1,11 @@
-﻿using Core.Data.Repositories;
+﻿using Core.Data.Filters;
+using Core.Data.Repositories;
 using Core.Entities;
 using Core.Shared;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
+using Voxed.WebApp.Mappers;
 using Voxed.WebApp.Models;
 
 namespace Voxed.WebApp.Services
@@ -11,6 +13,7 @@ namespace Voxed.WebApp.Services
     public interface IVoxService
     {
         Task<CreateVoxResponse> CreateVox(CreateVoxRequest request, Guid userId);
+        Task<ListResponse> GetByFilter(VoxFilter filter);
     }
 
     public class VoxService : IVoxService
@@ -84,6 +87,12 @@ namespace Voxed.WebApp.Services
             }
 
             return response;
+        }
+
+        public async Task<ListResponse> GetByFilter(VoxFilter filter)
+        {
+            var voxs = await _voxedRepository.Voxs.GetByFilterAsync(filter);
+            return new ListResponse(VoxedMapper.Map(voxs));
         }
     }
 }

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Voxed.WebApp.Constants;
 using Voxed.WebApp.Extensions;
 using Voxed.WebApp.Hubs;
 using Voxed.WebApp.Mappers;
@@ -25,8 +26,6 @@ namespace Voxed.WebApp.Services
         private readonly IVoxedRepository _voxedRepository;
         private readonly IHubContext<VoxedHub, INotificationHub> _notificationHub;
         private readonly FormateadorService _formateadorService;
-        private readonly int[] _hiddenCategories = { 2, 3 };
-        private readonly int[] _excludedCategories = { 2, 3 };
 
         public NotificationService(
             IVoxedRepository voxedRepository,
@@ -44,7 +43,7 @@ namespace Voxed.WebApp.Services
             //disparo notificacion del vox
             var vox = await _voxedRepository.Voxs.GetById(voxId); // Ver si se puede remover
 
-            if (!_excludedCategories.Contains(vox.CategoryID))
+            if (!Categories.HiddenCategories.Contains(vox.CategoryID))
             {
                 //var voxToHub = ConvertoToVoxResponse(vox);
                 var voxToHub = VoxedMapper.Map(vox);
@@ -85,10 +84,7 @@ namespace Voxed.WebApp.Services
 
         public async Task SendBoardUpdate(Comment comment, Vox vox, CreateCommentRequest request)
         {
-            if (_hiddenCategories.Contains(vox.CategoryID))
-            {
-                return;
-            }
+            if (Categories.HiddenCategories.Contains(vox.CategoryID)) return;            
 
             var commentUpdate = new CommentLiveUpdate()
             {

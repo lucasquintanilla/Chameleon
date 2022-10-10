@@ -127,6 +127,8 @@ namespace Voxed.WebApp
             services.AddSingleton<FormateadorService>();
             services.AddSingleton<FileUploadService>();
             services.AddSingleton<ImxtoService>();
+            services.AddTransient<IUserVoxActionService, UserVoxActionService>();
+            services.AddTransient<IContentReportService, ContentReportService>();
 
             services.Configure<TelegramConfiguration>(_configuration.GetSection(TelegramConfiguration.SectionName));
             services.Configure<FileUploadServiceConfiguration>(_configuration.GetSection(FileUploadServiceConfiguration.SectionName));
@@ -135,8 +137,11 @@ namespace Voxed.WebApp
             //services.AddSingleton<GlobalMessageService>();
         }
 
+
+
         private void RegisterInfrastrutureServices(IServiceCollection services)
         {
+            var mysqlconnectionString = Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb") ?? _configuration.GetConnectionString(nameof(SqlProvider.MySql));
             var provider = _configuration.GetValue("Provider", nameof(SqlProvider.MySql));
             services.AddDbContext<VoxedContext>(
                 options => _ = provider switch
@@ -149,8 +154,8 @@ namespace Voxed.WebApp
 
                     nameof(SqlProvider.MySql) => options
                     .UseMySql(
-                        _configuration.GetConnectionString(nameof(SqlProvider.MySql)),
-                        ServerVersion.AutoDetect(Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb")),
+                        mysqlconnectionString,
+                        ServerVersion.AutoDetect(mysqlconnectionString),
                         x => x.MigrationsAssembly(typeof(MySqlVoxedContext).Assembly.GetName().Name)),
                     //.UseLoggerFactory(ContextLoggerFactory),
 
