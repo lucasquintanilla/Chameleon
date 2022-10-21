@@ -95,7 +95,7 @@ namespace Voxed.WebApp.Controllers
             if (vox == null) return;            
 
             var lastBump = vox.Comments
-                .Where(x => x.State == CommentState.Normal)
+                .Where(x => x.State == CommentState.Active)
                 .OrderByDescending(x => x.CreatedOn)
                 .Select(x => x.CreatedOn)
                 .FirstOrDefault();
