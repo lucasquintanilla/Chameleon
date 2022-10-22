@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using System.Threading.Tasks;
 using Voxed.WebApp.Models;
 
@@ -16,7 +17,7 @@ namespace Voxed.WebApp.Controllers
         public AccountController(
             SignInManager<User> signInManager,
             UserManager<User> userManager,
-            IHttpContextAccessor accessor) 
+            IHttpContextAccessor accessor)
             : base(accessor, userManager)
         {
             _signInManager = signInManager;
@@ -66,67 +67,66 @@ namespace Voxed.WebApp.Controllers
         //[ValidateAntiForgeryToken]
         public async Task<RegisterResponse> Register(RegisterRequest request)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid is false)
             {
-                var user = new User
+                return new RegisterResponse()
                 {
-                    UserName = request.UserName,
-                    EmailConfirmed = true,
-                    UserType = UserType.Account,
-                    IpAddress = UserIpAddress,
-                    UserAgent = UserAgent
+                    Status = false,
+                    Swal = ModelState.Root.Children
+                    .Where(x => x.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid)
+                    .First().Errors.FirstOrDefault().ErrorMessage
                 };
+            }
+            var user = new User
+            {
+                UserName = request.UserName,
+                EmailConfirmed = true,
+                UserType = UserType.Account,
+                IpAddress = UserIpAddress,
+                UserAgent = UserAgent
+            };
 
-                var result = await _userManager.CreateAsync(user, request.Password);
-                if (result.Succeeded)
+            var result = await _userManager.CreateAsync(user, request.Password);
+            if (result.Succeeded)
+            {
+                ////_logger.LogInformation("User created a new account with password.");
+
+                //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                //code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                //var callbackUrl = Url.Page(
+                //    "/Account/ConfirmEmail",
+                //    pageHandler: null,
+                //    values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
+                //    protocol: Request.Scheme);
+
+                //await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                //    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+                //if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                //{
+                //    return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+                //}
+                //else
+                //{
+                //    await _signInManager.SignInAsync(user, isPersistent: false);
+                //    return LocalRedirect(returnUrl);
+                //}
+
+                await _signInManager.SignInAsync(user, isPersistent: false);
+                //return LocalRedirect(returnUrl);
+
+                return new RegisterResponse()
                 {
-                    ////_logger.LogInformation("User created a new account with password.");
-
-                    //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    //code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    //var callbackUrl = Url.Page(
-                    //    "/Account/ConfirmEmail",
-                    //    pageHandler: null,
-                    //    values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
-                    //    protocol: Request.Scheme);
-
-                    //await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                    //    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-                    //if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                    //{
-                    //    return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
-                    //}
-                    //else
-                    //{
-                    //    await _signInManager.SignInAsync(user, isPersistent: false);
-                    //    return LocalRedirect(returnUrl);
-                    //}
-
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    //return LocalRedirect(returnUrl);
-
-                    return new RegisterResponse()
-                    {
-                        Status = true,
-                    };
-                }
-                foreach (var error in result.Errors)
-                {
-                    //ModelState.AddModelError(string.Empty, error.Description);
-                    return new RegisterResponse()
-                    {
-                        Status = false,
-                        Swal = error.Description
-                    };
-                }
+                    Status = true,
+                };
             }
 
             return new RegisterResponse()
             {
                 Status = false,
-                Swal = "Ups"
+                Swal = result.Errors.FirstOrDefault().Description
             };
+
         }
 
         [HttpGet]

@@ -25,7 +25,6 @@ namespace Voxed.WebApp.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IVoxedRepository _voxedRepository;
         private static IEnumerable<Vox> _lastestVoxs = new List<Vox>();
-        private readonly int[] _defaultCategories = { 1, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 30, 16, 14, 13, 12, 11, 10, 9, 8, 15, 7, 31, 6, 5, 4 };
 
         public HomeController(
             ILogger<HomeController> logger,
@@ -40,7 +39,7 @@ namespace Voxed.WebApp.Controllers
         {
             if (!_lastestVoxs.Any())
             {
-                var filter = new VoxFilter() { Categories = _defaultCategories.ToList() };
+                var filter = new VoxFilter() { Categories = Categories.DefaultCategories };
                 _lastestVoxs = await _voxedRepository.Voxs.GetByFilterAsync(filter);
             }
 
@@ -186,20 +185,20 @@ namespace Voxed.WebApp.Controllers
             return View("board", board);
         }
 
-        private List<int> GetUserCategorySubscriptions()
+        private IEnumerable<int> GetUserCategorySubscriptions()
         {
 
             HttpContext.Request.Cookies.TryGetValue(CookieName.Subscriptions, out string subscriptionsCookie);
 
             if (subscriptionsCookie == null)
             {
-                var result = JsonConvert.SerializeObject(_defaultCategories.Select(category => category.ToString()), new JsonSerializerSettings() { StringEscapeHandling = StringEscapeHandling.EscapeHtml });
+                var result = JsonConvert.SerializeObject(Categories.DefaultCategories.Select(category => category.ToString()), new JsonSerializerSettings() { StringEscapeHandling = StringEscapeHandling.EscapeHtml });
                 HttpContext.Response.Cookies.Append(CookieName.Subscriptions, result, new Microsoft.AspNetCore.Http.CookieOptions()
                 {
                     Expires = DateTimeOffset.MaxValue
                 });
 
-                return _defaultCategories.ToList();
+                return Categories.DefaultCategories;
             }
 
             var subscriptions = JsonConvert.DeserializeObject<List<int>>(subscriptionsCookie);

@@ -26,12 +26,10 @@ namespace Voxed.WebApp.Controllers
         private readonly IVoxedRepository _voxedRepository;
         private readonly SignInManager<User> _signInManager;
         private readonly IVoxService _voxService;
-        private readonly TelegramService _telegramService;
         private readonly IUserVoxActionService _userVoxActionService;
         private readonly IContentReportService _contentReportService;
 
         public VoxController(
-            TelegramService telegramService,
             ILogger<VoxController> logger,
             IVoxedRepository voxedRepository,
             UserManager<User> userManager,
@@ -46,7 +44,6 @@ namespace Voxed.WebApp.Controllers
             _signInManager = signInManager;
             _voxService = voxService;
             _logger = logger;
-            _telegramService = telegramService;
             _userVoxActionService = userVoxActionService;
             _contentReportService = contentReportService;
         }
@@ -55,6 +52,17 @@ namespace Voxed.WebApp.Controllers
         public async Task<GlobalMessageResponse> SendGlobalMessage(GlobalMessageFormViewModel form)
         {
             var response = new GlobalMessageResponse();
+
+            if (ModelState.IsValid is false)
+            {
+                return new GlobalMessageResponse()
+                {
+                    Status = false,
+                    Swal = ModelState.Root.Children
+                    .Where(x => x.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid)
+                    .First().Errors.FirstOrDefault().ErrorMessage
+                };
+            }
 
             try
             {
@@ -215,10 +223,15 @@ namespace Voxed.WebApp.Controllers
         {
             var response = new CreateVoxResponse();
 
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid is false)
             {
-                response.Swal = "error";
-                return response;
+                return new CreateVoxResponse()
+                {
+                    Status = false,
+                    Swal = ModelState.Root.Children
+                    .Where(x => x.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid)
+                    .First().Errors.FirstOrDefault().ErrorMessage
+                };
             }
 
             try
