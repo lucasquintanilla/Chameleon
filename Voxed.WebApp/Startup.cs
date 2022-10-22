@@ -75,7 +75,11 @@ namespace Voxed.WebApp
 
             RegisterServices(services);
 
-
+            services.AddAuthentication().AddGoogle(googleOptions =>
+            {
+                googleOptions.ClientId = "921895924714-26f3feivedthc93e7jnnvaf2nkf497hk.apps.googleusercontent.com";
+                googleOptions.ClientSecret = "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";
+            });
 
             services.Configure<IdentityOptions>(options =>
             {

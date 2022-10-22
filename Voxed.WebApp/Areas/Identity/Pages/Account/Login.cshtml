@@ -7,7 +7,7 @@
 
 <h1>@ViewData["Title"]</h1>
 <div class="row">
-    <div class="col-md-4">
+    @*<div class="col-md-4">
         <section>
             <form id="account" method="post">
                 <h4>Use a local account to log in.</h4>
@@ -67,15 +67,40 @@
                                 @foreach (var provider in Model.ExternalLogins)
                                 {
                                     <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                                    
+
                                 }
+
+                                <div id="buttonDiv"></div> 
                             </p>
                         </div>
                     </form>
                 }
             }
         </section>
-    </div>
+    </div>*@
+
+    <div id="buttonDiv"></div> 
 </div>
+
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+      <script>
+        function handleCredentialResponse(response) {
+          console.log("Encoded JWT ID token: " + response.credential);
+        }
+        window.onload = function () {
+          google.accounts.id.initialize({
+            client_id: "921895924714-26f3feivedthc93e7jnnvaf2nkf497hk.apps.googleusercontent.com",
+            callback: handleCredentialResponse
+          });
+          google.accounts.id.renderButton(
+            document.getElementById("buttonDiv"),
+            { theme: "outline", size: "large" }  // customization attributes
+          );
+          google.accounts.id.prompt(); // also display the One Tap dialog
+        }
+    </script>
+
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
