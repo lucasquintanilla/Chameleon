@@ -35,7 +35,7 @@ namespace Voxed.WebApp.Services
 
         public NotificationBuilder AddOPNotification()
         {
-            if (_vox.User.UserType != UserType.Anonymous && _vox.UserId != _comment.UserId)
+            if (_vox.Owner.UserType != UserType.Anonymous && _vox.UserId != _comment.UserId)
             {
                 var notification = new Notification()
                 {

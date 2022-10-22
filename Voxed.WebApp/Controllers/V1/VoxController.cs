@@ -55,10 +55,10 @@ namespace Voxed.WebApp.Controllers.V1
                 Content = vox.Content,
                 CategoryName = vox.Category.Name,
                 CategoryShortName = vox.Category.ShortName,
-                CategoryThumbnailUrl = vox.Category.Media.ThumbnailUrl,
+                CategoryThumbnailUrl = vox.Category.Attachment.ThumbnailUrl,
                 CreatedOn = vox.CreatedOn.DateTime.ToTimeAgo(),
-                UserName = UserViewHelper.GetUserName(vox.User),
-                UserTag = UserViewHelper.GetUserTypeTag(vox.User.UserType),
+                UserName = UserViewHelper.GetUserName(vox.Owner),
+                UserTag = UserViewHelper.GetUserTypeTag(vox.Owner.UserType),
                 CommentsCount = vox.Comments.Count().ToString(),
                 Comments = vox.Comments.Select(comment => new CommentNotification()
                 {
@@ -70,16 +70,16 @@ namespace Voxed.WebApp.Controllers.V1
                     Hash = comment.Hash,
                     VoxHash = vox.Hash,
                     AvatarColor = comment.Style.ToString().ToLower(),
-                    IsOp = vox.UserId == comment.UserId && vox.User.UserType != UserType.Anonymous, //probar cambiarlo cuando solo pruedan craer los usuarios.
-                    Tag = UserViewHelper.GetUserTypeTag(comment.User.UserType), //admin o dev               
+                    IsOp = vox.UserId == comment.UserId && vox.Owner.UserType != UserType.Anonymous, //probar cambiarlo cuando solo pruedan craer los usuarios.
+                    Tag = UserViewHelper.GetUserTypeTag(comment.Owner.UserType), //admin o dev               
                     Content = comment.Content ?? string.Empty,
-                    Name = UserViewHelper.GetUserName(comment.User),
+                    Name = UserViewHelper.GetUserName(comment.Owner),
                     CreatedAt = comment.CreatedOn.DateTime.ToTimeAgo(),
                     Poll = null, //aca va una opcion respondida
 
                     //Media
-                    MediaUrl = comment.Media?.Url,
-                    MediaThumbnailUrl = comment.Media?.ThumbnailUrl,
+                    MediaUrl = comment.Attachment?.Url,
+                    MediaThumbnailUrl = comment.Attachment?.ThumbnailUrl,
                     //Extension = request.GetUploadData()?.Extension == UploadDataExtension.Base64 ? GetFileExtensionFromUrl(comment.Media?.Url) : request.GetUploadData()?.Extension,
                     //ExtensionData = request.GetUploadData()?.ExtensionData,
                     //Via = request.GetUploadData()?.Extension == UploadDataExtension.Youtube ? comment.Media?.Url : null,

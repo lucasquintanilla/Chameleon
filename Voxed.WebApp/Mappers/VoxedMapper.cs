@@ -27,7 +27,7 @@ namespace Voxed.WebApp.Mappers
                 Slug = vox.Category.ShortName.ToUpper(),
                 VoxId = vox.Id.ToString(),
                 New = vox.CreatedOn.IsNew(),
-                ThumbnailUrl = vox.Media?.ThumbnailUrl,
+                ThumbnailUrl = vox.Attachment?.ThumbnailUrl,
                 Category = vox.Category.Name
             };
         }

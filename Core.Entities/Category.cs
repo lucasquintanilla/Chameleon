@@ -7,7 +7,7 @@ namespace Core.Entities
         public int Id { get; set; }
         public string Name { get; set; }
         public string ShortName { get; set; }
-        public Guid MediaID { get; set; }
-        public Media Media { get; set; }
+        public Guid AttachmentId { get; set; }
+        public Attachment Attachment { get; set; }
     }
 }

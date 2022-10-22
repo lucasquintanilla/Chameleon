@@ -110,10 +110,10 @@ namespace Voxed.WebApp.Controllers
 
             if (media == null) return;
 
-            if (media.MediaType == MediaType.Image)
+            if (media.Type == AttachmentType.Image)
             {
                 string destination = Path.Combine(_env.WebRootPath, "media", "banned");
-                var filename = Core.Utilities.Utilities.GetFileNameFromUrl(media.Url);
+                var filename = Core.Utilities.UrlUtility.GetFileNameFromUrl(media.Url);
 
                 try
                 {

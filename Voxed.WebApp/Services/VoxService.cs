@@ -19,21 +19,21 @@ namespace Voxed.WebApp.Services
     public class VoxService : IVoxService
     {
         private readonly ILogger<VoxService> _logger;
-        private readonly FileUploadService _fileUploadService;
+        private readonly AttachmentService _attachmentService;
         private readonly IVoxedRepository _voxedRepository;
         private readonly FormateadorService _formatterService;
         private readonly INotificationService _notificationService;
 
         public VoxService(
             ILogger<VoxService> logger,
-            FileUploadService fileUploadService,
+            AttachmentService attachmentService,
             IVoxedRepository voxedRepository,
             FormateadorService formatterService,
             INotificationService notificationService
             )
         {
             _logger = logger;
-            _fileUploadService = fileUploadService;
+            _attachmentService = attachmentService;
             _voxedRepository = voxedRepository;
             _formatterService = formatterService;
             _notificationService = notificationService;
@@ -66,7 +66,7 @@ namespace Voxed.WebApp.Services
                     };
                 }
 
-                await _fileUploadService.ProcessAttachment(request.GetUploadData(), request.File, vox);
+                vox.Attachment = await _attachmentService.ProcessAttachment(request.GetUploadData(), request.File);
 
                 await _voxedRepository.Voxs.Add(vox);
                 await _voxedRepository.SaveChangesAsync();

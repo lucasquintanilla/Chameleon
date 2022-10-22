@@ -2,11 +2,11 @@
 
 namespace Core.Entities
 {
-    public enum CommentState { Active, Deleted }
+    public enum CommentState { Active, Deleted, Reported }
     public enum CommentType { Normal, Sticky }
     public enum CommentStyle { Black, Blue, Green, Multi, Red, White, Yellow } //invested
 
-    public class Comment : Entity, IAttachment
+    public class Comment : Entity, IHasAttachment
     {
         public string Hash { get; set; }
         public Guid VoxId { get; set; }
@@ -20,8 +20,8 @@ namespace Core.Entities
         public bool IsSticky { get; set; }
         public string UserAgent { get; set; }
         public string IpAddress { get; set; }
-        public Media Media { get; set; }
-        public User User { get; set; }
+        public Attachment Attachment { get; set; }
+        public User Owner { get; set; }
         
         //public string Country { get; set; }
         //public ICollection<Comment> Replies { get; set; }

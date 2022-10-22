@@ -33,12 +33,12 @@ namespace Core.Data.EF.EntityTypeConfigurations
             //  //.OnDelete(DeleteBehavior.Restrict)
             //  .HasForeignKey(x => x.VoxID);
 
-            builder.HasOne(x => x.Media)
+            builder.HasOne(x => x.Attachment)
               .WithMany()
               //.OnDelete(DeleteBehavior.Restrict)
               .HasForeignKey(x => x.MediaId);
 
-            builder.HasOne(x => x.User)
+            builder.HasOne(x => x.Owner)
               .WithMany()
               //.OnDelete(DeleteBehavior.Restrict)
               .HasForeignKey(x => x.UserId);

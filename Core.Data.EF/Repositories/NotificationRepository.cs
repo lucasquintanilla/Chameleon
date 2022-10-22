@@ -18,7 +18,7 @@ namespace Core.Data.EF.Repositories
                 .Where(x => x.UserId == userId)
                 .Include(x => x.Comment)
                 .Include(x => x.Vox)
-                .Include(x => x.Vox.Media)
+                .Include(x => x.Vox.Attachment)
                 .Include(x => x.Owner)
                 .ToListAsync();
         }

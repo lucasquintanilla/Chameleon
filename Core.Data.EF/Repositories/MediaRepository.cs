@@ -3,7 +3,7 @@ using Core.Entities;
 
 namespace Core.Data.EF.Repositories
 {
-    public class MediaRepository : GenericRepository<Media>, IMediaRepository
+    public class MediaRepository : GenericRepository<Attachment>, IMediaRepository
     {
         private readonly VoxedContext _context;
         public MediaRepository(VoxedContext context) : base(context)

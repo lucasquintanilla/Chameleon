@@ -17,13 +17,37 @@ namespace Core.Data.EF.MySql.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
                 .HasAnnotation("ProductVersion", "5.0.6");
 
+            modelBuilder.Entity("Core.Entities.Attachment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("ThumbnailUrl")
+                        .IsUnicode(true)
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Url")
+                        .IsUnicode(true)
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Media");
+                });
+
             modelBuilder.Entity("Core.Entities.Category", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<Guid>("MediaID")
+                    b.Property<Guid>("AttachmentId")
                         .IsUnicode(true)
                         .HasColumnType("char(36)");
 
@@ -41,7 +65,7 @@ namespace Core.Data.EF.MySql.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MediaID");
+                    b.HasIndex("AttachmentId");
 
                     b.ToTable("Categories");
                 });
@@ -109,30 +133,6 @@ namespace Core.Data.EF.MySql.Migrations
                     b.HasIndex("VoxId");
 
                     b.ToTable("Comments");
-                });
-
-            modelBuilder.Entity("Core.Entities.Media", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("char(36)");
-
-                    b.Property<DateTimeOffset>("CreatedOn")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("MediaType")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ThumbnailUrl")
-                        .IsUnicode(true)
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Url")
-                        .IsUnicode(true)
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Media");
                 });
 
             modelBuilder.Entity("Core.Entities.Notification", b =>
@@ -514,22 +514,22 @@ namespace Core.Data.EF.MySql.Migrations
 
             modelBuilder.Entity("Core.Entities.Category", b =>
                 {
-                    b.HasOne("Core.Entities.Media", "Media")
+                    b.HasOne("Core.Entities.Attachment", "Attachment")
                         .WithMany()
-                        .HasForeignKey("MediaID")
+                        .HasForeignKey("AttachmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Media");
+                    b.Navigation("Attachment");
                 });
 
             modelBuilder.Entity("Core.Entities.Comment", b =>
                 {
-                    b.HasOne("Core.Entities.Media", "Media")
+                    b.HasOne("Core.Entities.Attachment", "Attachment")
                         .WithMany()
                         .HasForeignKey("MediaId");
 
-                    b.HasOne("Core.Entities.User", "User")
+                    b.HasOne("Core.Entities.User", "Owner")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -541,9 +541,9 @@ namespace Core.Data.EF.MySql.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Media");
+                    b.Navigation("Attachment");
 
-                    b.Navigation("User");
+                    b.Navigation("Owner");
                 });
 
             modelBuilder.Entity("Core.Entities.Notification", b =>
@@ -600,7 +600,7 @@ namespace Core.Data.EF.MySql.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Core.Entities.Media", "Media")
+                    b.HasOne("Core.Entities.Attachment", "Attachment")
                         .WithMany()
                         .HasForeignKey("MediaId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -610,19 +610,19 @@ namespace Core.Data.EF.MySql.Migrations
                         .WithMany()
                         .HasForeignKey("PollId");
 
-                    b.HasOne("Core.Entities.User", "User")
+                    b.HasOne("Core.Entities.User", "Owner")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Attachment");
+
                     b.Navigation("Category");
 
-                    b.Navigation("Media");
+                    b.Navigation("Owner");
 
                     b.Navigation("Poll");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>

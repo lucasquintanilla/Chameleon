@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Core.Utilities
+﻿namespace Core.Utilities
 {
-    public static class Utilities
+    public static class UrlUtility
     {
         public static string GetFileExtensionFromUrl(string url)
         {
@@ -15,15 +11,6 @@ namespace Core.Utilities
         public static string GetFileNameFromUrl(string url)
         {
             return url.Split('/')[^1];
-        }
-
-        public static bool IsDebug()
-        {
-#if DEBUG
-            return true;
-#endif
-            return false;
-
         }
     }
 }

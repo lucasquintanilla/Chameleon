@@ -2,7 +2,7 @@
 
 namespace Core.Data.Repositories
 {
-    public interface IMediaRepository : IGenericRepository<Media>
+    public interface IMediaRepository : IGenericRepository<Attachment>
     {
     }
 }

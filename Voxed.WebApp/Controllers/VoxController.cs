@@ -169,22 +169,22 @@ namespace Voxed.WebApp.Controllers
                 Hash = vox.Hash,
                 UserId = vox.UserId,
 
-                CommentTag = UserTypeDictionary.GetDescription(vox.User.UserType).ToLower(),
+                CommentTag = UserTypeDictionary.GetDescription(vox.Owner.UserType).ToLower(),
                 CategoryName = vox.Category.Name,
                 CategoryShortName = vox.Category.ShortName,
-                CategoryThumbnailUrl = vox.Category.Media.ThumbnailUrl,
-                CommentsAttachmentCount = vox.Comments.Where(x => x.Media != null).Count(),
+                CategoryThumbnailUrl = vox.Category.Attachment.ThumbnailUrl,
+                CommentsAttachmentCount = vox.Comments.Where(x => x.Attachment != null).Count(),
                 CommentsCount = vox.Comments.Count(),
-                UserName = vox.User.UserName,
-                UserType = (ViewModels.UserType)(int)vox.User.UserType,
+                UserName = vox.Owner.UserName,
+                UserType = (ViewModels.UserType)(int)vox.Owner.UserType,
                 CreatedOn = vox.CreatedOn.DateTime.ToTimeAgo(),
 
                 Media = new MediaViewModel()
                 {
-                    ThumbnailUrl = vox.Media.ThumbnailUrl,
-                    Url = vox.Media.Url,
-                    MediaType = (ViewModels.MediaType)(int)vox.Media.MediaType,
-                    ExtensionData = vox.Media?.Url.Split('=')[(vox.Media?.Url.Split('=').Length - 1).Value]
+                    ThumbnailUrl = vox.Attachment.ThumbnailUrl,
+                    Url = vox.Attachment.Url,
+                    MediaType = (ViewModels.MediaType)(int)vox.Attachment.Type,
+                    ExtensionData = vox.Attachment?.Url.Split('=')[(vox.Attachment?.Url.Split('=').Length - 1).Value]
                 },
 
                 IsFavorite = actions.IsFavorite,
@@ -197,19 +197,19 @@ namespace Voxed.WebApp.Controllers
                     Content = x.Content,
                     Hash = x.Hash,
                     AvatarColor = x.Style.ToString().ToLower(),
-                    AvatarText = UserTypeDictionary.GetDescription(x.User.UserType).ToUpper(),
+                    AvatarText = UserTypeDictionary.GetDescription(x.Owner.UserType).ToUpper(),
                     IsOp = x.UserId == vox.UserId,
-                    Media = x.Media == null ? null : new MediaViewModel()
+                    Media = x.Attachment == null ? null : new MediaViewModel()
                     {
-                        Url = x.Media?.Url,
-                        MediaType = (ViewModels.MediaType)(int)x.Media?.MediaType,
-                        ExtensionData = x.Media?.Url.Split('=')[(vox.Media?.Url.Split('=').Length - 1).Value],
-                        ThumbnailUrl = x.Media?.ThumbnailUrl,
+                        Url = x.Attachment?.Url,
+                        MediaType = (ViewModels.MediaType)(int)x.Attachment?.Type,
+                        ExtensionData = x.Attachment?.Url.Split('=')[(vox.Attachment?.Url.Split('=').Length - 1).Value],
+                        ThumbnailUrl = x.Attachment?.ThumbnailUrl,
                     },
                     IsSticky = x.IsSticky,
                     CreatedOn = x.CreatedOn,
                     Style = x.Style.ToString().ToLower(),
-                    User = x.User,
+                    User = x.Owner,
 
                 }).ToList(),
             };

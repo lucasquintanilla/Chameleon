@@ -3,14 +3,16 @@ using System;
 using Core.Data.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Core.Data.EF.Sqlite.Migrations
 {
     [DbContext(typeof(VoxedContext))]
-    partial class VoxedContextModelSnapshot : ModelSnapshot
+    [Migration("20221022031020_AddChanges")]
+    partial class AddChanges
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -528,7 +530,7 @@ namespace Core.Data.EF.Sqlite.Migrations
                         .WithMany()
                         .HasForeignKey("MediaId");
 
-                    b.HasOne("Core.Entities.User", "Owner")
+                    b.HasOne("Core.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -542,7 +544,7 @@ namespace Core.Data.EF.Sqlite.Migrations
 
                     b.Navigation("Attachment");
 
-                    b.Navigation("Owner");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Core.Entities.Notification", b =>
@@ -609,7 +611,7 @@ namespace Core.Data.EF.Sqlite.Migrations
                         .WithMany()
                         .HasForeignKey("PollId");
 
-                    b.HasOne("Core.Entities.User", "Owner")
+                    b.HasOne("Core.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -619,9 +621,9 @@ namespace Core.Data.EF.Sqlite.Migrations
 
                     b.Navigation("Category");
 
-                    b.Navigation("Owner");
-
                     b.Navigation("Poll");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>

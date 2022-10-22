@@ -17,7 +17,7 @@ namespace Voxed.WebApp.Controllers
     {
         private readonly ILogger<CommentController> _logger;
         private readonly FormateadorService _formateadorService;
-        private readonly FileUploadService _fileUploadService;
+        private readonly AttachmentService _fileUploadService;
         private readonly IVoxedRepository _voxedRepository;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
@@ -27,7 +27,7 @@ namespace Voxed.WebApp.Controllers
             ILogger<CommentController> logger,
             INotificationService notificationService,
             FormateadorService formateadorService,
-            FileUploadService fileUploadService,
+            AttachmentService fileUploadService,
             IVoxedRepository voxedRepository,
             UserManager<User> userManager,
             SignInManager<User> signInManager,
@@ -137,14 +137,14 @@ namespace Voxed.WebApp.Controllers
             {
                 Hash = new Hash().NewHash(7),
                 VoxId = GuidConverter.FromShortString(id),
-                User = user,
+                Owner = user,
                 Content = _formateadorService.Parse(request.Content),
                 Style = StyleService.GetRandomCommentStyle(),
                 IpAddress = UserIpAddress,
                 UserAgent = UserAgent
             };
 
-            await _fileUploadService.ProcessAttachment(request.GetUploadData(), request.File, comment);
+            comment.Attachment = await _fileUploadService.ProcessAttachment(request.GetUploadData(), request.File);
 
             return comment;
         }

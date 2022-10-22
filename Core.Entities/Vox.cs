@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Core.Entities
 {
-    public enum VoxState { Active, Deleted }
+    public enum VoxState { Active, Deleted, Reported }
 
-    public class Vox : Entity, IAttachment
+    public class Vox : Entity, IHasAttachment
     {
         public string Hash { get; set; }
         public string Title { get; set; }
@@ -18,11 +18,10 @@ namespace Core.Entities
         public DateTimeOffset Bump { get; set; } = DateTimeOffset.Now;
         public string UserAgent { get; set; }
         public string IpAddress { get; set; }
-        public virtual Media Media { get; set; }
+        public virtual Attachment Attachment { get; set; }
         public virtual Category Category { get; set; }
-        public virtual User User { get; set; }
+        public virtual User Owner { get; set; }
         public virtual Poll Poll { get; set; }
-        public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
-        
+        public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();        
     }
 }

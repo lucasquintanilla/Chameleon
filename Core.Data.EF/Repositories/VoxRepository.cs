@@ -17,15 +17,15 @@ namespace Core.Data.EF.Repositories
 
         public override async Task<Vox> GetById(Guid id)
             => await _context.Voxs
-                .Include(x => x.Media)
+                .Include(x => x.Attachment)
                 .Include(x => x.Category)
-                .Include(x => x.Category.Media)
+                .Include(x => x.Category.Attachment)
                 .Include(x => x.Comments.Where(c => c.State == CommentState.Active)) //agregar order by descending
-                    .ThenInclude(c => c.Media)
+                    .ThenInclude(c => c.Attachment)
                 .Include(x => x.Comments.Where(c => c.State == CommentState.Active))
-                    .ThenInclude(c => c.User)
+                    .ThenInclude(c => c.Owner)
                 .Include(x => x.Poll)
-                .Include(x => x.User)
+                .Include(x => x.Owner)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
         public async Task<List<Vox>> GetByFilterAsync(VoxFilter filter)
@@ -33,7 +33,7 @@ namespace Core.Data.EF.Repositories
             var query = _context.Voxs.AsNoTracking();
 
             query = query.Where(x => x.State == VoxState.Active)
-                       .Include(x => x.Media)
+                       .Include(x => x.Attachment)
                        .Include(x => x.Category)
                        .Include(x => x.Comments.Where(c => c.State == CommentState.Active));
 

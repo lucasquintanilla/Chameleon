@@ -96,19 +96,19 @@ namespace Voxed.WebApp.Services
                 Hash = comment.Hash,
                 VoxHash = GuidConverter.ToShortString(vox.Id),
                 AvatarColor = comment.Style.ToString().ToLower(),
-                IsOp = vox.UserId == comment.UserId && vox.User.UserType != UserType.Anonymous, //probar cambiarlo cuando solo pruedan craer los usuarios.
-                Tag = UserViewHelper.GetUserTypeTag(comment.User.UserType), //admin o dev               
+                IsOp = vox.UserId == comment.UserId && vox.Owner.UserType != UserType.Anonymous, //probar cambiarlo cuando solo pruedan craer los usuarios.
+                Tag = UserViewHelper.GetUserTypeTag(comment.Owner.UserType), //admin o dev               
                 Content = comment.Content ?? String.Empty,
-                Name = UserViewHelper.GetUserName(comment.User),
+                Name = UserViewHelper.GetUserName(comment.Owner),
                 CreatedAt = comment.CreatedOn.DateTime.ToTimeAgo(),
                 Poll = null, //aca va una opcion respondida
 
                 //Media
-                MediaUrl = comment.Media?.Url,
-                MediaThumbnailUrl = comment.Media?.ThumbnailUrl,
-                Extension = request.GetUploadData()?.Extension == UploadDataExtension.Base64 ? Core.Utilities.Utilities.GetFileExtensionFromUrl(comment.Media?.Url) : request.GetUploadData()?.Extension,
+                MediaUrl = comment.Attachment?.Url,
+                MediaThumbnailUrl = comment.Attachment?.ThumbnailUrl,
+                Extension = request.GetUploadData()?.Extension == UploadDataExtension.Base64 ? Core.Utilities.UrlUtility.GetFileExtensionFromUrl(comment.Attachment?.Url) : request.GetUploadData()?.Extension,
                 ExtensionData = request.GetUploadData()?.ExtensionData,
-                Via = request.GetUploadData()?.Extension == UploadDataExtension.Youtube ? comment.Media?.Url : null,
+                Via = request.GetUploadData()?.Extension == UploadDataExtension.Youtube ? comment.Attachment?.Url : null,
             };
 
             await _notificationHub.Clients.All.Comment(commentUpdate);

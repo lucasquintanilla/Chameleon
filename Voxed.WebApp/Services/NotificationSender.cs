@@ -52,7 +52,7 @@ namespace Voxed.WebApp.Services
                         Count = "1",
                         ContentHash = _comment.Hash,
                         Id = notification.Id.ToString(),
-                        ThumbnailUrl = _vox.Media?.ThumbnailUrl
+                        ThumbnailUrl = _vox.Attachment?.ThumbnailUrl
                     }
                 };
 

@@ -17,15 +17,15 @@ using Xabe.FFmpeg;
 
 namespace Core.Shared
 {
-    public class FileUploadService
+    public class AttachmentService
     {
         private readonly IWebHostEnvironment _env;
-        private readonly FileUploadServiceConfiguration _configuration;
+        private readonly FileUploadServiceConfiguration _config;
         private readonly ImxtoService _imxtoService;
         private readonly CopService _cop;
         private readonly YoutubeService _youtubeService;
 
-        public FileUploadService(
+        public AttachmentService(
             IWebHostEnvironment env,
             ImxtoService imxtoService,
             YoutubeService youtubeService,
@@ -33,51 +33,49 @@ namespace Core.Shared
             )
         {
             _env = env;
-            _configuration = options.Value;
+            _config = options.Value;
             _imxtoService = imxtoService;
             _cop = new CopService(Path.Combine(_env.WebRootPath, "media", "banned"));
             _youtubeService = youtubeService;
             Initialize();
         }
 
-        public async Task ProcessAttachment(UploadData uploadData, IFormFile file, IAttachment entity)
+        public async Task<Attachment> ProcessAttachment(UploadData uploadData, IFormFile file)
         {
-            if (uploadData == null && file == null) return;
+            if (uploadData == null && file == null) return null;
 
             if (uploadData.HasData())
             {
-                entity.Media = uploadData.Extension switch
+                return uploadData.Extension switch
                 {
-                    UploadDataExtension.Youtube => await SaveFromYoutube(uploadData.ExtensionData, entity.Hash),
-                    UploadDataExtension.Base64 => SaveFromBase64(uploadData.ExtensionData, entity.Hash),
+                    UploadDataExtension.Youtube => await SaveFromYoutube(uploadData.ExtensionData),
+                    UploadDataExtension.Base64 => SaveFromBase64(uploadData.ExtensionData),
                     _ => throw new NotImplementedException("Invalid file extension"),
                 };
-
-                return;
             }
 
             if (file == null)
             {
-                return;
+                return null;
             }
 
             ValidateFile(file);
 
-            entity.Media = await SaveFromFile(file, entity.Hash);
+            return await SaveFromFile(file);
         }
 
         private void Initialize()
         {
-            FFmpeg.SetExecutablesPath(Path.Combine(_env.WebRootPath, _configuration.FFmpegPath));
+            FFmpeg.SetExecutablesPath(Path.Combine(_env.WebRootPath, _config.FFmpegPath));
 
-            Directory.CreateDirectory(Path.Combine(_env.WebRootPath, _configuration.MediaFolderName));
+            Directory.CreateDirectory(Path.Combine(_env.WebRootPath, _config.MediaFolderName));
         }
 
         private void ValidateFile(IFormFile file)
         {
             var fileExtension = file.GetFileExtension();
 
-            if (!_configuration.PermittedExtensions.Contains(fileExtension))
+            if (!_config.PermittedExtensions.Contains(fileExtension))
             {
                 throw new Exception("Formato de archivo no valido.");
             }
@@ -88,28 +86,28 @@ namespace Core.Shared
             }
         }
 
-        private async Task<Media> SaveFromFile(IFormFile file, string hash)
+        private async Task<Attachment> SaveFromFile(IFormFile file)
         {
             if (file == null) throw new ArgumentNullException(nameof(file));
 
-            if (_configuration.UseImxto)
+            if (_config.UseImxto)
             {
                 var imxtoFile = await _imxtoService.Upload(file.OpenReadStream());
 
-                return new Media()
+                return new Attachment()
                 {
-                    MediaType = MediaType.Image,
+                    Type = AttachmentType.Image,
                     ThumbnailUrl = imxtoFile.ThumbnailUrl,
                     Url = imxtoFile.OriginalUrl
                 };
             }
 
             //var originalFilename = GetNormalizedFileName(hash, file.GetFileExtension());
-            var originalFilename = GetNormalizedFileName(hash, ".jpg");
-            var originalFilePath = Path.Combine(_env.WebRootPath, _configuration.MediaFolderName, originalFilename);
+            var originalFilename = GetNormalizedFileName(".jpg");
+            var originalFilePath = Path.Combine(_env.WebRootPath, _config.MediaFolderName, originalFilename);
 
-            var thumbnailFilename = GetNormalizedFileName(hash, ".webp");
-            var thumbnailFilePath = Path.Combine(_env.WebRootPath, _configuration.MediaFolderName, thumbnailFilename);
+            var thumbnailFilename = GetNormalizedFileName(".webp");
+            var thumbnailFilePath = Path.Combine(_env.WebRootPath, _config.MediaFolderName, thumbnailFilename);
 
             if (file.IsGif())
             {
@@ -119,30 +117,30 @@ namespace Core.Shared
                 await SaveGifThumbnail(file, thumbnailFilePath);
                 await file.SaveAsync(originalFilePath);
 
-                return GetLocalMediaResponse(originalFilename, thumbnailFilename, MediaType.Gif);
+                return GetLocalMediaResponse(originalFilename, thumbnailFilename, AttachmentType.Gif);
             }
 
             file.SaveWEBPThumbnail(thumbnailFilePath);
             file.SaveJPEGCompressed(originalFilePath);
 
-            return GetLocalMediaResponse(originalFilename, thumbnailFilename, MediaType.Image);
+            return GetLocalMediaResponse(originalFilename, thumbnailFilename, AttachmentType.Image);
         }
 
 
 
-        private async Task<Media> SaveFromYoutube(string videoId, string hash)
+        private async Task<Attachment> SaveFromYoutube(string videoId)
         {
-            var thumbnailFilename = await GenerateYoutubeThumbnail(videoId, hash);
+            var thumbnailFilename = await GenerateYoutubeThumbnail(videoId);
 
-            return new Media()
+            return new Attachment()
             {
                 Url = $"https://www.youtube.com/watch?v={videoId}",
-                ThumbnailUrl = $"/{_configuration.MediaFolderName}/" + thumbnailFilename,
-                MediaType = MediaType.YouTube,
+                ThumbnailUrl = $"/{_config.MediaFolderName}/" + thumbnailFilename,
+                Type = AttachmentType.YouTube,
             };
         }
 
-        private Media SaveFromBase64(string base64, string hash)
+        private Attachment SaveFromBase64(string base64)
         {
             var image = base64.GetImageFromBase64();
 
@@ -152,22 +150,22 @@ namespace Core.Shared
             }
 
             //var originalFilename = GetNormalizedFileName(hash, image.GetFileExtension());
-            var originalFilename = GetNormalizedFileName(hash, ".jpg");
+            var originalFilename = GetNormalizedFileName(".jpg");
             var originalFilePath = GetFilePath(originalFilename);
 
-            var thumbnailFilename = GetNormalizedFileName(hash, ".webp");
+            var thumbnailFilename = GetNormalizedFileName(".webp");
             var thumbnailFilePath = GetFilePath(thumbnailFilename);
 
             image.SaveJPEGCompressed(originalFilePath);
 
             image.SaveWEBPThumbnail(thumbnailFilePath);
 
-            return GetLocalMediaResponse(originalFilename, thumbnailFilename, MediaType.Image);
+            return GetLocalMediaResponse(originalFilename, thumbnailFilename, AttachmentType.Image);
         }
 
         private string GetFilePath(string filename)
         {
-            return Path.Combine(_env.WebRootPath, _configuration.MediaFolderName, filename);
+            return Path.Combine(_env.WebRootPath, _config.MediaFolderName, filename);
         }
 
         private async Task<bool> SaveGifThumbnail(IFormFile file, string path)
@@ -211,7 +209,7 @@ namespace Core.Shared
 
 
             var command = string.Format($"-i {inputFilePath} -b:v 0 -crf 25 -loop 0 {outputFilePath}");
-            using (var process = Process.Start(_configuration.FFmpegPath, command))
+            using (var process = Process.Start(_config.FFmpegPath, command))
             {
                 process.WaitForExit();
                 if (process.ExitCode == 0)
@@ -252,31 +250,31 @@ namespace Core.Shared
             return tempPath;
         }
 
-        private async Task<string> GenerateYoutubeThumbnail(string videoId, string hash)
+        private async Task<string> GenerateYoutubeThumbnail(string videoId)
         {
             var stream = await _youtubeService.GetYoutubeThumbnailStream(videoId);
 
-            var thumbnailFilename = GetNormalizedFileName(hash, ".jpg");
-            var thumbnailFilePath = Path.Combine(_env.WebRootPath, _configuration.MediaFolderName, thumbnailFilename);
+            var thumbnailFilename = GetNormalizedFileName(".jpg");
+            var thumbnailFilePath = Path.Combine(_env.WebRootPath, _config.MediaFolderName, thumbnailFilename);
 
             stream.SaveJPEGThumbnail(thumbnailFilePath);
 
             return thumbnailFilename;
         }
 
-        private Media GetLocalMediaResponse(string originalFilename, string thumbnailFilename, MediaType mediaType)
+        private Attachment GetLocalMediaResponse(string originalFilename, string thumbnailFilename, AttachmentType mediaType)
         {
-            return new Media
+            return new Attachment
             {
-                Url = $"/{_configuration.MediaFolderName}/{originalFilename}",
-                ThumbnailUrl = $"/{_configuration.MediaFolderName}/{thumbnailFilename}",
-                MediaType = mediaType
+                Url = $"/{_config.MediaFolderName}/{originalFilename}",
+                ThumbnailUrl = $"/{_config.MediaFolderName}/{thumbnailFilename}",
+                Type = mediaType
             };
         }
 
-        private string GetNormalizedFileName(string hash, string fileExtension)
+        private string GetNormalizedFileName(string fileExtension)
         {
-            return $"{DateTime.Now:yyyyMMdd}-{hash}{fileExtension}";
+            return $"{DateTime.Now:yyyyMMdd}-{Guid.NewGuid()}{fileExtension}";
         }
     }
 }
