@@ -26801,7 +26801,8 @@
                     case "home":
                         /*console.log("home");*/
                         //let a = document.getElementById(t);
-                        let a = document.getElementById(t.voxHash);
+                        //let a = document.getElementById(t.voxHash);
+                        let a = document.getElementById(t.voxId);
                         if (!a) return !1;
                         let r = a.querySelector(".over"),
                             i = a.querySelector(".countComments");

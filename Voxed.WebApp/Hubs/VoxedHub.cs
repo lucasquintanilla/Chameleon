@@ -28,7 +28,7 @@ namespace Voxed.WebApp.Hubs
             await Clients.Users(user.Id.ToString()).Notification(notification);
         }
 
-        // Envia a la home un nuevo vox
+        // Push a la home el nuevo vox
         public async Task HomeNewVoxEvent(Models.VoxResponse notification)
         {
             await Clients.All.Vox(notification);
@@ -88,6 +88,7 @@ namespace Voxed.WebApp.Hubs
         public string Hash { get; set; }
         public string UniqueId { get; set; }
         public string VoxHash { get; set; }
+        public string VoxId { get; set; }
         public string AvatarColor { get; set; }
         public bool IsOp { get; set; }
         public string Tag { get; set; }

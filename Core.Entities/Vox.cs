@@ -7,9 +7,9 @@ namespace Core.Entities
 
     public class Vox : Entity, IHasAttachment
     {
-        public string Hash { get; set; }
         public string Title { get; set; }
         public string Content { get; set; }
+        public string Hash { get; set; }
         public int CategoryId { get; set; }
         public Guid UserId { get; set; }
         public Guid MediaId { get; set; }

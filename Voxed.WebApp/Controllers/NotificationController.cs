@@ -28,7 +28,7 @@ namespace Voxed.WebApp.Controllers
             _notificationHub = notificationHub;
         }
 
-        [AllowAnonymous]
+        //[AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(Guid id)
         {
@@ -56,7 +56,7 @@ namespace Voxed.WebApp.Controllers
             return Redirect($"~/vox/{voxHash}#{commentHash}");
         }
 
-        [AllowAnonymous]
+        //[AllowAnonymous]
         [Route("delete")]
         public async Task<IActionResult> DeleteAll()
         {

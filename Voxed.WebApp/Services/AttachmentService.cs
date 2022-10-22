@@ -126,8 +126,6 @@ namespace Core.Shared
             return GetLocalMediaResponse(originalFilename, thumbnailFilename, AttachmentType.Image);
         }
 
-
-
         private async Task<Attachment> SaveFromYoutube(string videoId)
         {
             var thumbnailFilename = await GenerateYoutubeThumbnail(videoId);
@@ -142,23 +140,21 @@ namespace Core.Shared
 
         private Attachment SaveFromBase64(string base64)
         {
-            var image = base64.GetImageFromBase64();
+            //var image = base64.GetImageFromBase64();
 
-            if (_cop.ShouldBeArrested(image))
-            {
-                throw new NotImplementedException("Llamando al 911...");
-            }
+            //if (_cop.ShouldBeArrested(image))
+            //{
+            //    throw new NotImplementedException("Llamando al 911...");
+            //}
 
-            //var originalFilename = GetNormalizedFileName(hash, image.GetFileExtension());
             var originalFilename = GetNormalizedFileName(".jpg");
             var originalFilePath = GetFilePath(originalFilename);
 
             var thumbnailFilename = GetNormalizedFileName(".webp");
             var thumbnailFilePath = GetFilePath(thumbnailFilename);
 
-            image.SaveJPEGCompressed(originalFilePath);
-
-            image.SaveWEBPThumbnail(thumbnailFilePath);
+            base64.SaveFromBase64(originalFilePath);
+            base64.SaveWEBPThumbnailFromBase64(thumbnailFilePath);
 
             return GetLocalMediaResponse(originalFilename, thumbnailFilename, AttachmentType.Image);
         }
