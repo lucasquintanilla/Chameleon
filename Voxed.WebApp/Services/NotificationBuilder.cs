@@ -35,13 +35,13 @@ namespace Voxed.WebApp.Services
 
         public NotificationBuilder AddOPNotification()
         {
-            if (_vox.User.UserType != UserType.Anonymous && _vox.UserID != _comment.UserID)
+            if (_vox.User.UserType != UserType.Anonymous && _vox.UserId != _comment.UserId)
             {
                 var notification = new Notification()
                 {
-                    CommentId = _comment.ID,
-                    VoxId = _vox.ID,
-                    UserId = _vox.UserID,
+                    CommentId = _comment.Id,
+                    VoxId = _vox.Id,
+                    UserId = _vox.UserId,
                     Type = NotificationType.NewComment,
                 };
 
@@ -63,15 +63,15 @@ namespace Voxed.WebApp.Services
 
             if (!hashList.Any()) return this;
 
-            var usersId = _voxedRepository.Comments.GetUsersByCommentHash(hashList, new Guid[] { _comment.UserID }).GetAwaiter().GetResult();
+            var usersId = _voxedRepository.Comments.GetUsersByCommentHash(hashList, new Guid[] { _comment.UserId }).GetAwaiter().GetResult();
 
             if (!usersId.Any()) return this;
 
             var replyNotifications = usersId
                 .Select(userId => new Notification()
                 {
-                    CommentId = _comment.ID,
-                    VoxId = _vox.ID,
+                    CommentId = _comment.Id,
+                    VoxId = _vox.Id,
                     UserId = userId,
                     Type = NotificationType.Reply,
                 })
@@ -85,15 +85,15 @@ namespace Voxed.WebApp.Services
         public NotificationBuilder AddVoxSusbcriberNotifications()
         {
             var voxSubscriberUserIds = _voxedRepository.UserVoxActions
-                .GetVoxSubscriberUserIds(_vox.ID, ignoreUserIds: new List<Guid>() { _comment.UserID, _vox.UserID })
+                .GetVoxSubscriberUserIds(_vox.Id, ignoreUserIds: new List<Guid>() { _comment.UserId, _vox.UserId })
                 .GetAwaiter()
                 .GetResult();
 
             var subscriberNotifications = voxSubscriberUserIds
                   .Select(userId => new Notification()
                   {
-                      CommentId = _comment.ID,
-                      VoxId = _vox.ID,
+                      CommentId = _comment.Id,
+                      VoxId = _vox.Id,
                       UserId = userId,
                       Type = NotificationType.NewComment,
                   })

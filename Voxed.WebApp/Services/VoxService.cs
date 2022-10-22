@@ -47,13 +47,12 @@ namespace Voxed.WebApp.Services
             {
                 var vox = new Vox()
                 {
-                    ID = Guid.NewGuid(),
-                    State = VoxState.Normal,
-                    UserID = userId,
+                    State = VoxState.Active,
+                    UserId = userId,
                     Hash = new Hash().NewHash(),
                     Title = request.Title,
                     Content = _formatterService.Parse(request.Content),
-                    CategoryID = request.Niche,
+                    CategoryId = request.Niche,
                     //IpAddress = UserIpAddress,
                     //UserAgent = UserAgent
                 };
@@ -71,9 +70,9 @@ namespace Voxed.WebApp.Services
 
                 await _voxedRepository.Voxs.Add(vox);
                 await _voxedRepository.SaveChangesAsync();
-                await _notificationService.NotifyClients(vox.ID);
+                await _notificationService.NotifyClients(vox.Id);
 
-                response.VoxHash = GuidConverter.ToShortString(vox.ID);
+                response.VoxHash = GuidConverter.ToShortString(vox.Id);
                 response.Status = true;
             }
             catch (NotImplementedException e)

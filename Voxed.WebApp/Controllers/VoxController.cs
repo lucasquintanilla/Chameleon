@@ -155,11 +155,11 @@ namespace Voxed.WebApp.Controllers
 
             var voxViewModel = new VoxDetailViewModel()
             {
-                Id = vox.ID,
+                Id = vox.Id,
                 Title = vox.Title,
                 Content = vox.Content,
                 Hash = vox.Hash,
-                UserId = vox.UserID,
+                UserId = vox.UserId,
 
                 CommentTag = UserTypeDictionary.GetDescription(vox.User.UserType).ToLower(),
                 CategoryName = vox.Category.Name,
@@ -185,12 +185,12 @@ namespace Voxed.WebApp.Controllers
 
                 Comments = vox.Comments.OrderByDescending(x => x.IsSticky).ThenByDescending(x => x.CreatedOn).Select(x => new CommentViewModel()
                 {
-                    ID = x.ID,
+                    ID = x.Id,
                     Content = x.Content,
                     Hash = x.Hash,
                     AvatarColor = x.Style.ToString().ToLower(),
                     AvatarText = UserTypeDictionary.GetDescription(x.User.UserType).ToUpper(),
-                    IsOp = x.UserID == vox.UserID,
+                    IsOp = x.UserId == vox.UserId,
                     Media = x.Media == null ? null : new MediaViewModel()
                     {
                         Url = x.Media?.Url,

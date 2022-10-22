@@ -36,7 +36,7 @@ namespace Voxed.WebApp.Services
                 {
                     case 0:
                         var comment = await _voxedRepository.Comments.GetByHash(request.ContentId);
-                        message = $"NUEVA DENUNCIA \n Reason: {request.Reason}. \n https://voxed.club/vox/{GuidConverter.ToShortString(comment.VoxID)}#{comment.Hash}";
+                        message = $"NUEVA DENUNCIA \n Reason: {request.Reason}. \n https://voxed.club/vox/{GuidConverter.ToShortString(comment.VoxId)}#{comment.Hash}";
                         break;
 
                     case 1:

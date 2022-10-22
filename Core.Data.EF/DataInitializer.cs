@@ -181,7 +181,7 @@ namespace Core.Data.EF
                         Url = "/img/categories/anm.jpg",
                         ThumbnailUrl = "/img/categories/anm.jpg",
                         MediaType = MediaType.Image
-                    }
+                    },
                 },
                 new Category{
                     Name = "Arte",
@@ -279,7 +279,7 @@ namespace Core.Data.EF
                     Media = new Media {
                         Url = "/img/categories/his.jpg",
                         ThumbnailUrl = "/img/categories/his.jpg",
-                        MediaType = MediaType.Image
+                        MediaType = MediaType.Image,
                     }
                 },
                 new Category{

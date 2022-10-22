@@ -68,7 +68,7 @@ namespace Voxed.WebApp.Controllers
 
                 //cambiar para buscar vox con el id de la request
                 await _voxedRepository.Comments.Add(comment);
-                var vox = await _voxedRepository.Voxs.GetById(comment.VoxID);
+                var vox = await _voxedRepository.Voxs.GetById(comment.VoxId);
 
                 if (comment.Content != null && !comment.Content.ToLower().Contains("&gt;hide"))
                 {
@@ -135,9 +135,8 @@ namespace Voxed.WebApp.Controllers
 
             var comment = new Comment()
             {
-                ID = Guid.NewGuid(),
                 Hash = new Hash().NewHash(7),
-                VoxID = GuidConverter.FromShortString(id),
+                VoxId = GuidConverter.FromShortString(id),
                 User = user,
                 Content = _formateadorService.Parse(request.Content),
                 Style = StyleService.GetRandomCommentStyle(),

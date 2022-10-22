@@ -13,7 +13,7 @@ namespace Voxed.WebApp.Mappers
         {
             return new VoxResponse()
             {
-                Hash = GuidConverter.ToShortString(vox.ID),
+                Hash = GuidConverter.ToShortString(vox.Id),
                 Status = true,
                 Niche = "20",
                 Title = vox.Title,
@@ -23,9 +23,9 @@ namespace Voxed.WebApp.Mappers
                 CreatedAt = vox.CreatedOn.ToString(),
                 PollOne = string.Empty,
                 PollTwo = string.Empty,
-                Id = vox.ID.ToString(),
+                Id = vox.Id.ToString(),
                 Slug = vox.Category.ShortName.ToUpper(),
-                VoxId = vox.ID.ToString(),
+                VoxId = vox.Id.ToString(),
                 New = vox.CreatedOn.IsNew(),
                 ThumbnailUrl = vox.Media?.ThumbnailUrl,
                 Category = vox.Category.Name

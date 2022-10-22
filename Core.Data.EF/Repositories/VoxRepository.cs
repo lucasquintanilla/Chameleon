@@ -26,13 +26,13 @@ namespace Core.Data.EF.Repositories
                     .ThenInclude(c => c.User)
                 .Include(x => x.Poll)
                 .Include(x => x.User)
-                .FirstOrDefaultAsync(m => m.ID == id);
+                .FirstOrDefaultAsync(m => m.Id == id);
 
         public async Task<List<Vox>> GetByFilterAsync(VoxFilter filter)
         {
             var query = _context.Voxs.AsNoTracking();
 
-            query = query.Where(x => x.State == VoxState.Normal)
+            query = query.Where(x => x.State == VoxState.Active)
                        .Include(x => x.Media)
                        .Include(x => x.Category)
                        .Include(x => x.Comments.Where(c => c.State == CommentState.Active));
@@ -41,22 +41,22 @@ namespace Core.Data.EF.Repositories
             {
                 if (filter.IncludeHidden)
                 {
-                    query = query.Where(x => _context.UserVoxActions.AsNoTracking().Where(u => u.UserId == filter.UserId.Value && u.IsHidden).Select(v => v.VoxId).Contains(x.ID));
+                    query = query.Where(x => _context.UserVoxActions.AsNoTracking().Where(u => u.UserId == filter.UserId.Value && u.IsHidden).Select(v => v.VoxId).Contains(x.Id));
                 }
                 else
                 {
-                    query = query.Where(x => !_context.UserVoxActions.AsNoTracking().Where(x => x.UserId == filter.UserId.Value && x.IsHidden).Select(x => x.VoxId).Contains(x.ID));
+                    query = query.Where(x => !_context.UserVoxActions.AsNoTracking().Where(x => x.UserId == filter.UserId.Value && x.IsHidden).Select(x => x.VoxId).Contains(x.Id));
                 }
 
                 if (filter.IncludeFavorites)
                 {
-                    query = query.Where(x => _context.UserVoxActions.AsNoTracking().Where(u => u.UserId == filter.UserId.Value && u.IsFavorite).Select(v => v.VoxId).Contains(x.ID));
+                    query = query.Where(x => _context.UserVoxActions.AsNoTracking().Where(u => u.UserId == filter.UserId.Value && u.IsFavorite).Select(v => v.VoxId).Contains(x.Id));
                 }
             }
 
             if (filter.IgnoreVoxIds.Any())
             {
-                query = query.Where(x => !filter.IgnoreVoxIds.Contains(x.ID));
+                query = query.Where(x => !filter.IgnoreVoxIds.Contains(x.Id));
 
                 var lastVox = await GetLastVoxBump(filter.IgnoreVoxIds);
                 query = query.Where(x => x.Bump < lastVox.Bump);
@@ -64,7 +64,7 @@ namespace Core.Data.EF.Repositories
 
             if (filter.Categories.Any())
             {
-                query = query.Where(x => filter.Categories.Contains(x.CategoryID));
+                query = query.Where(x => filter.Categories.Contains(x.CategoryId));
             }
 
             if (!string.IsNullOrEmpty(filter.Search))
@@ -97,7 +97,7 @@ namespace Core.Data.EF.Repositories
 
         private async Task<Vox> GetLastVoxBump(IEnumerable<Guid> skipIds)
          => await _context.Voxs
-            .Where(x => skipIds.Contains(x.ID))
+            .Where(x => skipIds.Contains(x.Id))
             .OrderBy(x => x.Bump)
             .AsNoTracking()
             .FirstAsync();

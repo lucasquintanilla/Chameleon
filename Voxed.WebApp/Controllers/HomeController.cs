@@ -154,7 +154,7 @@ namespace Voxed.WebApp.Controllers
 
             if (category == null) return NotFound();
 
-            var filter = new VoxFilter() { Categories = new List<int>() { category.ID } };
+            var filter = new VoxFilter() { Categories = new List<int>() { category.Id } };
 
             var voxs = await _voxedRepository.Voxs.GetByFilterAsync(filter);
             var board = new BoardViewModel()

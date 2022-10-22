@@ -3,20 +3,18 @@ using System.Collections.Generic;
 
 namespace Core.Entities
 {
-    public enum VoxState { Normal, Deleted }
+    public enum VoxState { Active, Deleted }
 
-    public class Vox : IAttachment
+    public class Vox : Entity, IAttachment
     {
-        public Guid ID { get; set; }
         public string Hash { get; set; }
         public string Title { get; set; }
         public string Content { get; set; }
-        public int CategoryID { get; set; }
-        public Guid UserID { get; set; }
-        public Guid MediaID { get; set; }
+        public int CategoryId { get; set; }
+        public Guid UserId { get; set; }
+        public Guid MediaId { get; set; }
         public VoxState State { get; set; }
         public bool IsSticky { get; set; }
-        public DateTimeOffset CreatedOn { get; set; } = DateTimeOffset.Now;
         public DateTimeOffset Bump { get; set; } = DateTimeOffset.Now;
         public string UserAgent { get; set; }
         public string IpAddress { get; set; }

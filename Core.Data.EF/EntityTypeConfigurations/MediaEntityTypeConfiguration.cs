@@ -8,7 +8,7 @@ namespace Core.Data.EF.EntityTypeConfigurations
     {
         public void Configure(EntityTypeBuilder<Media> builder)
         {
-            builder.HasKey(x => x.ID);
+            builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Url)
                .IsUnicode(true);

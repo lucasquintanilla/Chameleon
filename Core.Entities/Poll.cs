@@ -2,9 +2,8 @@
 
 namespace Core.Entities
 {
-    public class Poll
+    public class Poll : Entity
     {
-        public Guid ID { get; set; }
         public string OptionADescription { get; set; }
         public string OptionBDescription { get; set; }
         public int OptionAVotes { get; set; }

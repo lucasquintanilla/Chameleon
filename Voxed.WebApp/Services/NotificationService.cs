@@ -43,7 +43,7 @@ namespace Voxed.WebApp.Services
             //disparo notificacion del vox
             var vox = await _voxedRepository.Voxs.GetById(voxId); // Ver si se puede remover
 
-            if (!Categories.HiddenCategories.Contains(vox.CategoryID))
+            if (!Categories.HiddenCategories.Contains(vox.CategoryId))
             {
                 //var voxToHub = ConvertoToVoxResponse(vox);
                 var voxToHub = VoxedMapper.Map(vox);
@@ -84,7 +84,7 @@ namespace Voxed.WebApp.Services
 
         public async Task SendBoardUpdate(Comment comment, Vox vox, CreateCommentRequest request)
         {
-            if (Categories.HiddenCategories.Contains(vox.CategoryID)) return;            
+            if (Categories.HiddenCategories.Contains(vox.CategoryId)) return;            
 
             var commentUpdate = new CommentLiveUpdate()
             {
@@ -92,11 +92,11 @@ namespace Voxed.WebApp.Services
                 UniqueColor = null,
                 UniqueColorContrast = null,
 
-                Id = comment.ID.ToString(),
+                Id = comment.Id.ToString(),
                 Hash = comment.Hash,
-                VoxHash = GuidConverter.ToShortString(vox.ID),
+                VoxHash = GuidConverter.ToShortString(vox.Id),
                 AvatarColor = comment.Style.ToString().ToLower(),
-                IsOp = vox.UserID == comment.UserID && vox.User.UserType != UserType.Anonymous, //probar cambiarlo cuando solo pruedan craer los usuarios.
+                IsOp = vox.UserId == comment.UserId && vox.User.UserType != UserType.Anonymous, //probar cambiarlo cuando solo pruedan craer los usuarios.
                 Tag = UserViewHelper.GetUserTypeTag(comment.User.UserType), //admin o dev               
                 Content = comment.Content ?? String.Empty,
                 Name = UserViewHelper.GetUserName(comment.User),

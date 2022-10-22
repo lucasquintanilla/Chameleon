@@ -18,7 +18,7 @@ namespace Core.Data.EF.Repositories
 
         public async Task<bool> Exists(int id)
         {
-            return await _context.Categories.AnyAsync(c => c.ID == id);
+            return await _context.Categories.AnyAsync(c => c.Id == id);
         }
 
         public async Task<bool> Exists(string shortName)
@@ -44,7 +44,7 @@ namespace Core.Data.EF.Repositories
         {
             return await context.Categories
                 .Include(c => c.Media)
-                .FirstOrDefaultAsync(c => c.ID == id);
+                .FirstOrDefaultAsync(c => c.Id == id);
         }
     }
 }

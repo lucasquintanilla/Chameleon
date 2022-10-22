@@ -50,7 +50,7 @@ namespace Voxed.WebApp.Controllers.V1
         {
             return new ApiVoxResponse()
             {
-                Id = vox.ID.ToString("N"),
+                Id = vox.Id.ToString("N"),
                 Title = vox.Title,
                 Content = vox.Content,
                 CategoryName = vox.Category.Name,
@@ -66,11 +66,11 @@ namespace Voxed.WebApp.Controllers.V1
                     UniqueColor = null,
                     UniqueColorContrast = null,
 
-                    Id = comment.ID.ToString(),
+                    Id = comment.Id.ToString(),
                     Hash = comment.Hash,
                     VoxHash = vox.Hash,
                     AvatarColor = comment.Style.ToString().ToLower(),
-                    IsOp = vox.UserID == comment.UserID && vox.User.UserType != UserType.Anonymous, //probar cambiarlo cuando solo pruedan craer los usuarios.
+                    IsOp = vox.UserId == comment.UserId && vox.User.UserType != UserType.Anonymous, //probar cambiarlo cuando solo pruedan craer los usuarios.
                     Tag = UserViewHelper.GetUserTypeTag(comment.User.UserType), //admin o dev               
                     Content = comment.Content ?? string.Empty,
                     Name = UserViewHelper.GetUserName(comment.User),

@@ -8,19 +8,19 @@ namespace Core.Data.EF.EntityTypeConfigurations
     {
         public void Configure(EntityTypeBuilder<Comment> builder)
         {
-            builder.HasKey(x => x.ID);
+            builder.HasKey(x => x.Id);
 
             builder.HasIndex(x => x.Hash).IsUnique();
 
-            builder.Property(x => x.VoxID)
+            builder.Property(x => x.VoxId)
                .IsRequired(true)
                .IsUnicode(true);
 
-            builder.Property(x => x.MediaID)
+            builder.Property(x => x.MediaId)
               .IsRequired(false)
               .IsUnicode(true);
 
-            builder.Property(x => x.UserID)
+            builder.Property(x => x.UserId)
               .IsRequired(true)
               .IsUnicode(true);
 
@@ -36,12 +36,12 @@ namespace Core.Data.EF.EntityTypeConfigurations
             builder.HasOne(x => x.Media)
               .WithMany()
               //.OnDelete(DeleteBehavior.Restrict)
-              .HasForeignKey(x => x.MediaID);
+              .HasForeignKey(x => x.MediaId);
 
             builder.HasOne(x => x.User)
               .WithMany()
               //.OnDelete(DeleteBehavior.Restrict)
-              .HasForeignKey(x => x.UserID);
+              .HasForeignKey(x => x.UserId);
 
             builder.Property(x => x.IpAddress)
                .HasMaxLength(50);

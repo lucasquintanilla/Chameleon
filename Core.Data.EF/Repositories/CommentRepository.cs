@@ -23,8 +23,8 @@ namespace Core.Data.EF.Repositories
 
         public async Task<IEnumerable<Guid>> GetUsersByCommentHash(IEnumerable<string> hashList, ICollection<Guid> skipUserId)
             => await _context.Comments
-                .Where(x => hashList.Contains(x.Hash) && !skipUserId.Contains(x.UserID))
-                .Select(x => x.UserID)
+                .Where(x => hashList.Contains(x.Hash) && !skipUserId.Contains(x.UserId))
+                .Select(x => x.UserId)
                 .ToListAsync();
 
         //context.Counties.Where(x => EF.Functions.Like(x.Name, $"%{keyword}%")).ToList();
