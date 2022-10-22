@@ -48,12 +48,12 @@ namespace Core.Data.EF.Repositories
 
         public virtual async Task Remove(T entity)
         {
-            _context.Set<T>().Remove(entity);
+            await Task.Run(() => _context.Set<T>().Remove(entity));
         }
 
         public virtual async Task RemoveRange(IEnumerable<T> entities)
         {
-            _context.Set<T>().RemoveRange(entities);
+            await Task.Run(() => _context.Set<T>().RemoveRange(entities));
         }
     }
 }

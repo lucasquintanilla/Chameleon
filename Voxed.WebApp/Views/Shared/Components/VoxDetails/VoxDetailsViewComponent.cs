@@ -1,5 +1,6 @@
 ﻿using Core.Data.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Voxed.WebApp.Models;
@@ -17,6 +18,7 @@ namespace Voxed.WebApp.Views.Shared.Components.VoxDetails
 
         public async Task<IViewComponentResult> InvokeAsync(IEnumerable<VoxResponse> voxs)
         {
+            await Task.Run(() => Console.WriteLine());
             return View(voxs);
         }
     }

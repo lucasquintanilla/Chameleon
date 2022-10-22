@@ -1,9 +1,5 @@
 ﻿using Core.Entities;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Core.Services.AttachmentProcessors
 {
@@ -17,21 +13,22 @@ namespace Core.Services.AttachmentProcessors
         //    _youtubeService = youtubeService;
         //}
 
-        //public Attachment Process()
-        //{
-        //    var thumbnailFilename = await GenerateYoutubeThumbnail(videoId);
+        public Attachment Process()
+        {
+            throw new NotImplementedException();
+            //var thumbnailFilename = GenerateYoutubeThumbnail(videoId);
 
-        //    return new Attachment()
-        //    {
-        //        Url = $"https://www.youtube.com/watch?v={videoId}",
-        //        ThumbnailUrl = $"/{_config.MediaFolderName}/" + thumbnailFilename,
-        //        Type = AttachmentType.YouTube,
-        //    };
-        //}
+            //return new Attachment()
+            //{
+            //    Url = $"https://www.youtube.com/watch?v={videoId}",
+            //    ThumbnailUrl = $"/{_config.MediaFolderName}/" + thumbnailFilename,
+            //    Type = AttachmentType.YouTube,
+            //};
+        }
 
-        //private async Task<string> GenerateYoutubeThumbnail(string videoId)
+        //private string GenerateYoutubeThumbnail(string videoId)
         //{
-        //    var stream = await _youtubeService.GetYoutubeThumbnailStream(videoId);
+        //    var stream = _youtubeService.GetYoutubeThumbnailStream(videoId).GetAwaiter();
 
         //    var thumbnailFilename = GetNormalizedFileName(".jpg");
         //    var thumbnailFilePath = Path.Combine(_env.WebRootPath, _config.MediaFolderName, thumbnailFilename);
@@ -39,10 +36,6 @@ namespace Core.Services.AttachmentProcessors
         //    stream.SaveJPEGThumbnail(thumbnailFilePath);
 
         //    return thumbnailFilename;
-        public Attachment Process()
-        {
-            throw new NotImplementedException();
-        }
     }
 
     internal interface IAttachmentProcessor

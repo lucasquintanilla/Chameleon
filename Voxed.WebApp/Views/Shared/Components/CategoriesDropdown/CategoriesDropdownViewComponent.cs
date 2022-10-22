@@ -23,6 +23,7 @@ namespace Voxed.WebApp.Views.Shared.Components.CategoriesDropdown
         {
             //var categories = await voxedRepository.Categories.GetAll();
             //return View(categories);
+            await Task.Run(() => Console.WriteLine());
             return View();
 
         }

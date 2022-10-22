@@ -53,6 +53,7 @@ namespace Voxed.WebApp.Services
 
         public async Task ManageNotifications(Vox vox, Comment comment)
         {
+            await Task.Run(() => Console.WriteLine());
             //new Thread(async () =>
             //{
             //    Thread.CurrentThread.IsBackground = true;

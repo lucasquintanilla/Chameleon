@@ -5,11 +5,6 @@ namespace Core.Data.EF.Repositories
 {
     public class PollRepository : GenericRepository<Poll>, IPollRepository
     {
-        private readonly VoxedContext _context;
-
-        public PollRepository(VoxedContext context) : base(context)
-        {
-            _context = context;
-        }
+        public PollRepository(VoxedContext context) : base(context) { }
     }
 }

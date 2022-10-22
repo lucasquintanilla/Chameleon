@@ -10,14 +10,9 @@ namespace Core.Data.EF.Repositories
 {
     public class UserVoxActionRepository : GenericRepository<UserVoxAction>, IUserVoxActionRepository
     {
-        private readonly VoxedContext _context;
+        public UserVoxActionRepository(VoxedContext context) : base(context) { }
 
-        public UserVoxActionRepository(VoxedContext context) : base(context)
-        {
-            _context = context;
-        }
-
-        public async Task<UserVoxAction> GetByUserIdVoxId(Guid userId, Guid voxId) 
+        public async Task<UserVoxAction> GetByUserIdVoxId(Guid userId, Guid voxId)
             => await _context.UserVoxActions
                 .Where(x => x.UserId == userId && x.VoxId == voxId)
                 .SingleOrDefaultAsync();

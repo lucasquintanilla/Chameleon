@@ -1,5 +1,6 @@
 ﻿using Core.Data.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 //using Voxed.WebApp.Data;
 using Voxed.WebApp.Models;
@@ -19,6 +20,7 @@ namespace Voxed.WebApp.Views.Shared.Components.VoxForm
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
+            await Task.Run(() => Console.WriteLine());
             //var form = new VoxFormViewModel();
             var form = new CreateVoxRequest();
 
