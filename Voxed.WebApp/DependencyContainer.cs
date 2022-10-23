@@ -23,6 +23,7 @@ namespace Voxed.WebApp
         public static void RegisterInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
             //https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/providers?tabs=dotnet-core-cli
+            var mysqlConnectionString = configuration["MYSQLCONNSTR_localdb"];
             var mysqlconnectionString = Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb") ?? configuration.GetConnectionString(nameof(SqlProvider.MySql));
             var provider = configuration.GetValue("Provider", nameof(SqlProvider.MySql));
             services.AddDbContext<VoxedContext>(
@@ -36,13 +37,15 @@ namespace Voxed.WebApp
 
                     nameof(SqlProvider.MySql) => options
                     .UseMySql(
-                        mysqlconnectionString,
-                        ServerVersion.AutoDetect(mysqlconnectionString),
+                        mysqlConnectionString,
+                        ServerVersion.AutoDetect(mysqlConnectionString),
                         x => x.MigrationsAssembly(typeof(MySqlVoxedContext).Assembly.GetName().Name)),
                     //.UseLoggerFactory(ContextLoggerFactory),
 
                     _ => throw new Exception($"Unsupported provider: {provider}")
                 });
+
+            //services.AddDbContext<VoxedContext>(x=>x.UseMySql(ServerVersion.AutoDetect(mysqlConnectionString)));
         }
 
         public static void RegisterRepositories(this IServiceCollection services)

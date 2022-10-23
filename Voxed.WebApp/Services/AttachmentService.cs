@@ -120,8 +120,8 @@ namespace Core.Shared
                 return GetLocalMediaResponse(originalFilename, thumbnailFilename, AttachmentType.Gif);
             }
 
-            file.SaveWEBPThumbnail(thumbnailFilePath);
-            file.SaveJPEGCompressed(originalFilePath);
+            file.SaveThumbnailAsWebP(thumbnailFilePath);
+            file.SaveCompressedAsJpeg(originalFilePath);
 
             return GetLocalMediaResponse(originalFilename, thumbnailFilename, AttachmentType.Image);
         }
@@ -153,8 +153,8 @@ namespace Core.Shared
             var thumbnailFilename = GetNormalizedFileName(".webp");
             var thumbnailFilePath = GetFilePath(thumbnailFilename);
 
-            base64.SaveFromBase64(originalFilePath);
-            base64.SaveWEBPThumbnailFromBase64(thumbnailFilePath);
+            base64.SaveAsJpegFromBase64(originalFilePath);
+            base64.SaveThumbnailAsWebPFromBase64(thumbnailFilePath);
 
             return GetLocalMediaResponse(originalFilename, thumbnailFilename, AttachmentType.Image);
         }
@@ -253,7 +253,7 @@ namespace Core.Shared
             var thumbnailFilename = GetNormalizedFileName(".jpg");
             var thumbnailFilePath = Path.Combine(_env.WebRootPath, _config.MediaFolderName, thumbnailFilename);
 
-            stream.SaveJPEGThumbnail(thumbnailFilePath);
+            stream.SaveThumbnailAsJpeg(thumbnailFilePath);
 
             return thumbnailFilename;
         }

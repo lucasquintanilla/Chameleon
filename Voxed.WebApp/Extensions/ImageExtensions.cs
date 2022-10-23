@@ -11,7 +11,7 @@ namespace Voxed.WebApp.Extensions
     {
         const int size = 256;
 
-        public static void SaveJPEGThumbnail(this Stream stream, string outputPath)
+        public static void SaveThumbnailAsJpeg(this Stream stream, string outputPath)
         {
             using var image = Image.Load(stream);
             var options = new ResizeOptions
@@ -30,7 +30,7 @@ namespace Voxed.WebApp.Extensions
             await file.CopyToAsync(stream);
         }
 
-        public static void SaveWEBPThumbnail(this IFormFile file, string outputPath)
+        public static void SaveThumbnailAsWebP(this IFormFile file, string outputPath)
         {
             using var image = Image.Load(file.OpenReadStream());
             var options = new ResizeOptions
@@ -43,7 +43,7 @@ namespace Voxed.WebApp.Extensions
             image.SaveAsWebp(outputPath);
         }
 
-        public static void SaveJPEGCompressed(this IFormFile file, string outputPath)
+        public static void SaveCompressedAsJpeg(this IFormFile file, string outputPath)
         {
             using var image = Image.Load(file.OpenReadStream());
             var options = new ResizeOptions
@@ -56,7 +56,7 @@ namespace Voxed.WebApp.Extensions
             image.SaveAsJpeg(outputPath);
         }
 
-        public static void SaveWEBPThumbnailFromBase64(this string base64, string outputPath)
+        public static void SaveThumbnailAsWebPFromBase64(this string base64, string outputPath)
         {
             using var image = Image.Load(GetStreamFromBase64(base64));
             var options = new ResizeOptions
@@ -69,7 +69,7 @@ namespace Voxed.WebApp.Extensions
             image.SaveAsWebp(outputPath);
         }
 
-        public static void SaveFromBase64(this string base64, string outputPath)
+        public static void SaveAsJpegFromBase64(this string base64, string outputPath)
         {
             using var image = Image.Load(GetStreamFromBase64(base64));
             var options = new ResizeOptions

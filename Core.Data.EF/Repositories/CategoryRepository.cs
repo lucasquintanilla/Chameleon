@@ -9,11 +9,11 @@ namespace Core.Data.EF.Repositories
 {
     public class CategoryRepository : GenericRepository<Category>, ICategoryRepository
     {
-        private readonly VoxedContext context;
+        private readonly VoxedContext _context;
 
         public CategoryRepository(VoxedContext context) : base(context)
         {
-            this.context = context;
+            this._context = context;
         }
 
         public async Task<bool> Exists(int id)
@@ -33,7 +33,7 @@ namespace Core.Data.EF.Repositories
 
         public override async Task<IEnumerable<Category>> GetAll()
         {
-            return await context.Categories
+            return await _context.Categories
                 .OrderBy(c => c.Name)
                 .Include(c => c.Attachment)
                 .AsNoTracking()
@@ -42,7 +42,7 @@ namespace Core.Data.EF.Repositories
 
         public override async Task<Category> GetById(int id)
         {
-            return await context.Categories
+            return await _context.Categories
                 .Include(c => c.Attachment)
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
