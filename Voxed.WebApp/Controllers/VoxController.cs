@@ -1,6 +1,7 @@
 ﻿using Core.Data.Filters;
 using Core.Data.Repositories;
 using Core.Entities;
+using Core.Extensions;
 using Core.Services.Telegram;
 using Core.Shared;
 using Microsoft.AspNetCore.Http;

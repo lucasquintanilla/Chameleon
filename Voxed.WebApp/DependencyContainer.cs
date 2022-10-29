@@ -1,11 +1,10 @@
 ﻿using Core.Data.EF;
-using Core.Data.EF.MySql;
 using Core.Data.EF.Repositories;
 using Core.Data.EF.Sqlite;
 using Core.Data.Repositories;
 using Core.Entities;
+using Core.Services;
 using Core.Services.FileUploadService;
-using Core.Services.ImxtoService;
 using Core.Services.Telegram;
 using Core.Shared;
 using Microsoft.AspNetCore.Identity;
@@ -23,8 +22,8 @@ namespace Voxed.WebApp
         public static void RegisterInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
             //https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/providers?tabs=dotnet-core-cli
-            var mysqlConnectionString = configuration["MYSQLCONNSTR_localdb"];
-            var mysqlconnectionString = Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb") ?? configuration.GetConnectionString(nameof(SqlProvider.MySql));
+            //var mysqlConnectionString = configuration["MYSQLCONNSTR_localdb"];
+            //var mysqlconnectionString = Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb") ?? configuration.GetConnectionString(nameof(SqlProvider.MySql));
             var provider = configuration.GetValue("Provider", nameof(SqlProvider.MySql));
             services.AddDbContext<VoxedContext>(
                 options => _ = provider switch
@@ -35,12 +34,12 @@ namespace Voxed.WebApp
                             x => x.MigrationsAssembly(typeof(SqliteVoxedContext).Assembly.GetName().Name)),
                     //.UseLoggerFactory(ContextLoggerFactory),
 
-                    nameof(SqlProvider.MySql) => options
-                    .UseMySql(
-                        mysqlConnectionString,
-                        ServerVersion.AutoDetect(mysqlConnectionString),
-                        x => x.MigrationsAssembly(typeof(MySqlVoxedContext).Assembly.GetName().Name)),
-                    //.UseLoggerFactory(ContextLoggerFactory),
+                    //nameof(SqlProvider.MySql) => options
+                    //.UseMySql(
+                    //    mysqlConnectionString,
+                    //    ServerVersion.AutoDetect(mysqlConnectionString),
+                    //    x => x.MigrationsAssembly(typeof(MySqlVoxedContext).Assembly.GetName().Name)),
+                    ////.UseLoggerFactory(ContextLoggerFactory),
 
                     _ => throw new Exception($"Unsupported provider: {provider}")
                 });
@@ -95,13 +94,19 @@ namespace Voxed.WebApp
             services.AddTransient<INotificationService, NotificationService>();
             services.AddTransient<IVoxService, VoxService>();
             services.AddSingleton<FormateadorService>();
-            services.AddSingleton<AttachmentService>();
-            services.AddSingleton<ImxtoService>();
+            services.AddSingleton<IAttachmentService, AttachmentService>();
             services.AddTransient<IUserVoxActionService, UserVoxActionService>();
             services.AddTransient<IContentReportService, ContentReportService>();
 
             services.Configure<TelegramConfiguration>(configuration.GetSection(TelegramConfiguration.SectionName));
             services.Configure<FileUploadServiceConfiguration>(configuration.GetSection(FileUploadServiceConfiguration.SectionName));
+            //services.AddOptions<FileUploadServiceConfiguration>()
+            //    .Bind(configuration.GetSection(FileUploadServiceConfiguration.SectionName))
+            //    .Configure<IConfiguration>((options, config) =>
+            //    {
+            //        services
+            //        options.WebRootPath =
+            //    }); 
             services.AddSingleton<TelegramService>();
             services.AddSingleton<YoutubeService>();
             //services.AddSingleton<GlobalMessageService>();

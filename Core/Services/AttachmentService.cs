@@ -1,4 +1,5 @@
 ﻿using Core.Entities;
+using Core.Extensions;
 using Core.Services.FileUploadService;
 using Core.Services.ImxtoService;
 using Core.Shared.Models;
@@ -11,31 +12,26 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Voxed.WebApp.Extensions;
-using Voxed.WebApp.Services;
 using Xabe.FFmpeg;
 
-namespace Core.Shared
+namespace Core.Services
 {
-    public class AttachmentService
+    public interface IAttachmentService
     {
-        private readonly IWebHostEnvironment _env;
+        Task<Attachment> ProcessAttachment(UploadData uploadData, IFormFile file);
+    }
+
+    public class AttachmentService : IAttachmentService
+    {
         private readonly FileUploadServiceConfiguration _config;
-        private readonly ImxtoService _imxtoService;
-        private readonly CopService _cop;
         private readonly YoutubeService _youtubeService;
 
         public AttachmentService(
-            IWebHostEnvironment env,
-            ImxtoService imxtoService,
             YoutubeService youtubeService,
             IOptions<FileUploadServiceConfiguration> options
             )
         {
-            _env = env;
             _config = options.Value;
-            _imxtoService = imxtoService;
-            _cop = new CopService(Path.Combine(_env.WebRootPath, "media", "banned"));
             _youtubeService = youtubeService;
             Initialize();
         }
@@ -66,9 +62,9 @@ namespace Core.Shared
 
         private void Initialize()
         {
-            FFmpeg.SetExecutablesPath(Path.Combine(_env.WebRootPath, _config.FFmpegPath));
+            FFmpeg.SetExecutablesPath(Path.Combine(_config.WebRootPath, _config.FFmpegPath));
 
-            Directory.CreateDirectory(Path.Combine(_env.WebRootPath, _config.MediaFolderName));
+            Directory.CreateDirectory(Path.Combine(_config.WebRootPath, _config.MediaFolderName));
         }
 
         private void ValidateFile(IFormFile file)
@@ -79,35 +75,18 @@ namespace Core.Shared
             {
                 throw new Exception("Formato de archivo no valido.");
             }
-
-            if (_cop.ShouldBeArrested(Image.FromStream(file.OpenReadStream())))
-            {
-                throw new NotImplementedException("Llamando al 911...");
-            }
         }
 
         private async Task<Attachment> SaveFromFile(IFormFile file)
         {
             if (file == null) throw new ArgumentNullException(nameof(file));
 
-            if (_config.UseImxto)
-            {
-                var imxtoFile = await _imxtoService.Upload(file.OpenReadStream());
-
-                return new Attachment()
-                {
-                    Type = AttachmentType.Image,
-                    ThumbnailUrl = imxtoFile.ThumbnailUrl,
-                    Url = imxtoFile.OriginalUrl
-                };
-            }
-
             //var originalFilename = GetNormalizedFileName(hash, file.GetFileExtension());
             var originalFilename = GetNormalizedFileName(".jpg");
-            var originalFilePath = Path.Combine(_env.WebRootPath, _config.MediaFolderName, originalFilename);
+            var originalFilePath = Path.Combine(_config.WebRootPath, _config.MediaFolderName, originalFilename);
 
             var thumbnailFilename = GetNormalizedFileName(".webp");
-            var thumbnailFilePath = Path.Combine(_env.WebRootPath, _config.MediaFolderName, thumbnailFilename);
+            var thumbnailFilePath = Path.Combine(_config.WebRootPath, _config.MediaFolderName, thumbnailFilename);
 
             if (file.IsGif())
             {
@@ -140,13 +119,6 @@ namespace Core.Shared
 
         private Attachment SaveFromBase64(string base64)
         {
-            //var image = base64.GetImageFromBase64();
-
-            //if (_cop.ShouldBeArrested(image))
-            //{
-            //    throw new NotImplementedException("Llamando al 911...");
-            //}
-
             var originalFilename = GetNormalizedFileName(".jpg");
             var originalFilePath = GetFilePath(originalFilename);
 
@@ -161,7 +133,7 @@ namespace Core.Shared
 
         private string GetFilePath(string filename)
         {
-            return Path.Combine(_env.WebRootPath, _config.MediaFolderName, filename);
+            return Path.Combine(_config.WebRootPath, _config.MediaFolderName, filename);
         }
 
         private async Task<bool> SaveGifThumbnail(IFormFile file, string path)
@@ -251,7 +223,7 @@ namespace Core.Shared
             var stream = await _youtubeService.GetYoutubeThumbnailStream(videoId);
 
             var thumbnailFilename = GetNormalizedFileName(".jpg");
-            var thumbnailFilePath = Path.Combine(_env.WebRootPath, _config.MediaFolderName, thumbnailFilename);
+            var thumbnailFilePath = Path.Combine(_config.WebRootPath, _config.MediaFolderName, thumbnailFilename);
 
             stream.SaveThumbnailAsJpeg(thumbnailFilePath);
 

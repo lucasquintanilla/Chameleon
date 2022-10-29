@@ -1,5 +1,6 @@
 ﻿using Core.Data.Repositories;
 using Core.Entities;
+using Core.Services;
 using Core.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -17,7 +18,7 @@ namespace Voxed.WebApp.Controllers
     {
         private readonly ILogger<CommentController> _logger;
         private readonly FormateadorService _formateadorService;
-        private readonly AttachmentService _fileUploadService;
+        private readonly IAttachmentService _fileUploadService;
         private readonly IVoxedRepository _voxedRepository;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
@@ -27,7 +28,7 @@ namespace Voxed.WebApp.Controllers
             ILogger<CommentController> logger,
             INotificationService notificationService,
             FormateadorService formateadorService,
-            AttachmentService fileUploadService,
+            IAttachmentService fileUploadService,
             IVoxedRepository voxedRepository,
             UserManager<User> userManager,
             SignInManager<User> signInManager,

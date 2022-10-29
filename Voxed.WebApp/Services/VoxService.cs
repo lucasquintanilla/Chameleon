@@ -1,6 +1,7 @@
 ﻿using Core.Data.Filters;
 using Core.Data.Repositories;
 using Core.Entities;
+using Core.Services;
 using Core.Shared;
 using Microsoft.Extensions.Logging;
 using System;
@@ -19,14 +20,14 @@ namespace Voxed.WebApp.Services
     public class VoxService : IVoxService
     {
         private readonly ILogger<VoxService> _logger;
-        private readonly AttachmentService _attachmentService;
+        private readonly IAttachmentService _attachmentService;
         private readonly IVoxedRepository _voxedRepository;
         private readonly FormateadorService _formatterService;
         private readonly INotificationService _notificationService;
 
         public VoxService(
             ILogger<VoxService> logger,
-            AttachmentService attachmentService,
+            IAttachmentService attachmentService,
             IVoxedRepository voxedRepository,
             FormateadorService formatterService,
             INotificationService notificationService
@@ -57,17 +58,10 @@ namespace Voxed.WebApp.Services
                     //UserAgent = UserAgent
                 };
 
-                if (request.PollOne != null && request.PollTwo != null)
-                {
-                    vox.Poll = new Poll()
-                    {
-                        OptionADescription = request.PollOne,
-                        OptionBDescription = request.PollTwo,
-                    };
-                }
+                var attachment = await _attachmentService.ProcessAttachment(request.GetUploadData(), request.File);
+                await _voxedRepository.Media.Add(attachment);
 
-                vox.Attachment = await _attachmentService.ProcessAttachment(request.GetUploadData(), request.File);
-
+                vox.MediaId = attachment.Id;
                 await _voxedRepository.Voxs.Add(vox);
                 await _voxedRepository.SaveChangesAsync();
                 await _notificationService.NotifyClients(vox.Id);

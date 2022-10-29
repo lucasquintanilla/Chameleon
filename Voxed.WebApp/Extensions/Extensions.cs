@@ -39,17 +39,17 @@ namespace Voxed.WebApp.Extensions
             return "Ahora";
         }
 
-        public static string GetFileExtension(this IFormFile file)
-        {
-            return Path.GetExtension(file.FileName).ToLowerInvariant();
-        }
+        //public static string GetFileExtension(this IFormFile file)
+        //{
+        //    return Path.GetExtension(file.FileName).ToLowerInvariant();
+        //}
 
-        public static bool IsGif(this IFormFile file)
-            => file.ContentType == MediaTypeNames.Image.Gif;
+        //public static bool IsGif(this IFormFile file)
+        //    => file.ContentType == MediaTypeNames.Image.Gif;
 
-        public static bool IsNew(this DateTimeOffset dateTime)
-        {
-            return dateTime.Date > DateTime.Now.Date.AddHours(-24);
-        }
+        //public static bool IsNew(this DateTimeOffset dateTime)
+        //{
+        //    return dateTime.Date > DateTime.Now.Date.AddHours(-24);
+        //}
     }
 }
