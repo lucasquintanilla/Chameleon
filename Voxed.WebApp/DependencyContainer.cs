@@ -96,13 +96,7 @@ public static class DependencyContainer
 
         services.Configure<TelegramConfiguration>(configuration.GetSection(TelegramConfiguration.SectionName));
         services.Configure<AttachmentServiceConfiguration>(configuration.GetSection(AttachmentServiceConfiguration.SectionName));
-        //services.AddOptions<FileUploadServiceConfiguration>()
-        //    .Bind(configuration.GetSection(FileUploadServiceConfiguration.SectionName))
-        //    .Configure<IConfiguration>((options, config) =>
-        //    {
-        //        services
-        //        options.WebRootPath =
-        //    }); 
+        
         services.AddSingleton<TelegramService>();
         services.AddSingleton<YoutubeService>();
         //services.AddSingleton<GlobalMessageService>();
@@ -132,9 +126,6 @@ public static class DependencyContainer
         services.AddDistributedMemoryCache();
         services.AddSession();
         services.AddScoped<TraceIPAttribute>();
-
-
-
 
         services.ConfigureApplicationCookie(options =>
         {
