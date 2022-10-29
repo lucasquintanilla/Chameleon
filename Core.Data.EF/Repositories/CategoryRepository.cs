@@ -9,12 +9,7 @@ namespace Core.Data.EF.Repositories
 {
     public class CategoryRepository : GenericRepository<Category>, ICategoryRepository
     {
-        private readonly VoxedContext _context;
-
-        public CategoryRepository(VoxedContext context) : base(context)
-        {
-            this._context = context;
-        }
+        public CategoryRepository(VoxedContext context) : base(context) { }
 
         public async Task<bool> Exists(int id)
         {
