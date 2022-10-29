@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Linq;
-using Elastic.CommonSchema;
 using Voxed.WebApp.Models;
 
 namespace Voxed.WebApp.Services

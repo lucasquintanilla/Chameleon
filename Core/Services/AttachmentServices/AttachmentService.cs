@@ -1,20 +1,16 @@
 ﻿using Core.Entities;
 using Core.Extensions;
-using Core.Services.FileUploadService;
-using Core.Services.ImxtoService;
 using Core.Shared.Models;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using System;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Xabe.FFmpeg;
 
-namespace Core.Services
+namespace Core.Services.AttachmentServices
 {
     public interface IAttachmentService
     {
@@ -23,12 +19,12 @@ namespace Core.Services
 
     public class AttachmentService : IAttachmentService
     {
-        private readonly FileUploadServiceConfiguration _config;
+        private readonly AttachmentServiceConfiguration _config;
         private readonly YoutubeService _youtubeService;
 
         public AttachmentService(
             YoutubeService youtubeService,
-            IOptions<FileUploadServiceConfiguration> options
+            IOptions<AttachmentServiceConfiguration> options
             )
         {
             _config = options.Value;

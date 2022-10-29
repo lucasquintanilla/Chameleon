@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace Core.Services.FileUploadService
+namespace Core.Services.AttachmentServices
 {
-    public class FileUploadServiceConfiguration
+    public class AttachmentServiceConfiguration
     {
         public const string SectionName = "FileUploadService";
 

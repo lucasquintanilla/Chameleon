@@ -1,9 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Net.Mime;
+﻿using System;
 
 namespace Voxed.WebApp.Extensions
 {
@@ -38,18 +33,5 @@ namespace Voxed.WebApp.Extensions
                 return "Ahora";
             return "Ahora";
         }
-
-        //public static string GetFileExtension(this IFormFile file)
-        //{
-        //    return Path.GetExtension(file.FileName).ToLowerInvariant();
-        //}
-
-        //public static bool IsGif(this IFormFile file)
-        //    => file.ContentType == MediaTypeNames.Image.Gif;
-
-        //public static bool IsNew(this DateTimeOffset dateTime)
-        //{
-        //    return dateTime.Date > DateTime.Now.Date.AddHours(-24);
-        //}
     }
 }

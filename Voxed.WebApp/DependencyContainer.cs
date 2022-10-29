@@ -4,7 +4,7 @@ using Core.Data.EF.Sqlite;
 using Core.Data.Repositories;
 using Core.Entities;
 using Core.Services;
-using Core.Services.FileUploadService;
+using Core.Services.AttachmentServices;
 using Core.Services.Telegram;
 using Core.Shared;
 using Microsoft.AspNetCore.Identity;
@@ -99,7 +99,7 @@ namespace Voxed.WebApp
             services.AddTransient<IContentReportService, ContentReportService>();
 
             services.Configure<TelegramConfiguration>(configuration.GetSection(TelegramConfiguration.SectionName));
-            services.Configure<FileUploadServiceConfiguration>(configuration.GetSection(FileUploadServiceConfiguration.SectionName));
+            services.Configure<AttachmentServiceConfiguration>(configuration.GetSection(AttachmentServiceConfiguration.SectionName));
             //services.AddOptions<FileUploadServiceConfiguration>()
             //    .Bind(configuration.GetSection(FileUploadServiceConfiguration.SectionName))
             //    .Configure<IConfiguration>((options, config) =>
