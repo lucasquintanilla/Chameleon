@@ -111,6 +111,56 @@ namespace Voxed.WebApp
             services.AddSingleton<YoutubeService>();
             //services.AddSingleton<GlobalMessageService>();
         }
+
+        public static void RegisterWebServices(this IServiceCollection services, IConfiguration configuration)
+        {
+            string myAllowSpecificOrigins = "_myAllowSpecificOrigins";
+            // Cors Configuration must be before MVC / Razor Configuration
+            services.AddCors(options =>
+                {
+                    options.AddPolicy(name: myAllowSpecificOrigins,
+                                      builder =>
+                                      {
+                                      //builder.WithOrigins("http://localhost",
+                                      //                    "http://www.contoso.com");
+
+                                          builder.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost")
+                                          .AllowAnyHeader()
+                                          .AllowAnyMethod();
+                                      });
+                });
+
+            services.AddControllersWithViews();
+            services.AddRazorPages();
+
+            services.AddDistributedMemoryCache();
+            services.AddSession();
+            services.AddScoped<TraceIPAttribute>();
+
+
+
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                // Cookie settings
+                //options.Cookie.HttpOnly = true;
+                options.ExpireTimeSpan = TimeSpan.FromDays(30);
+
+                options.LoginPath = "/Identity/Account/Login";
+                options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+                options.SlidingExpiration = true;
+            });
+
+            //Por default necesita que estes autenticado para entrar a los controllers 
+            //services.AddAuthorization(options =>
+            //{
+            //    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+            //        .RequireAuthenticatedUser()
+            //        .Build();
+            //});
+
+            services.AddSignalR();
+        }
     }
 
     public enum SqlProvider
