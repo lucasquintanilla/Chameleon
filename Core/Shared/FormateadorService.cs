@@ -2,16 +2,13 @@
 using System.Linq;
 using System.Text.Encodings.Web;
 using System.Text.RegularExpressions;
-using Ganss.XSS;
+using Ganss.Xss;
 
 namespace Core.Shared
 {
     public class FormateadorService
     {
         private readonly HtmlEncoder encoder;
-        private readonly static HtmlSanitizer sanitizer =
-            new HtmlSanitizer("a span".Split(" "),
-            allowedAttributes: "href target class r-id".Split(" "));
 
         public FormateadorService(HtmlEncoder encoder)
         {
