@@ -1,8 +1,6 @@
 ﻿using Core.Data.Filters;
 using Core.Data.Repositories;
 using Core.Entities;
-using Core.Extensions;
-using Core.Services.Telegram;
 using Core.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -38,7 +36,7 @@ namespace Voxed.WebApp.Controllers
             IHttpContextAccessor accessor,
             IVoxService voxService,
             IUserVoxActionService userVoxActionService,
-            IContentReportService contentReportService) 
+            IContentReportService contentReportService)
             : base(accessor, userManager)
         {
             _voxedRepository = voxedRepository;
@@ -139,7 +137,7 @@ namespace Voxed.WebApp.Controllers
             }
 
             return response;
-        }        
+        }
 
         [HttpPost("report")]
         public async Task<ReportResponse> Report(ReportRequest request)
