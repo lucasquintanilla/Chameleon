@@ -1,6 +1,5 @@
 ﻿using Core.Data.Repositories;
 using Core.Entities;
-using Core.Extensions;
 using Core.Shared;
 using Core.Shared.Models;
 using Microsoft.AspNetCore.SignalR;
@@ -86,7 +85,7 @@ namespace Voxed.WebApp.Services
 
         public async Task SendBoardUpdate(Comment comment, Vox vox, CreateCommentRequest request)
         {
-            if (Categories.HiddenCategories.Contains(vox.CategoryId)) return;            
+            if (Categories.HiddenCategories.Contains(vox.CategoryId)) return;
 
             var commentUpdate = new CommentLiveUpdate()
             {
