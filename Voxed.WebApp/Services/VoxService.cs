@@ -22,14 +22,14 @@ namespace Voxed.WebApp.Services
         private readonly ILogger<VoxService> _logger;
         private readonly IAttachmentService _attachmentService;
         private readonly IVoxedRepository _voxedRepository;
-        private readonly FormateadorService _formatterService;
+        private readonly IContentFormatterService _formatterService;
         private readonly INotificationService _notificationService;
 
         public VoxService(
             ILogger<VoxService> logger,
             IAttachmentService attachmentService,
             IVoxedRepository voxedRepository,
-            FormateadorService formatterService,
+            IContentFormatterService formatterService,
             INotificationService notificationService
             )
         {
@@ -52,7 +52,7 @@ namespace Voxed.WebApp.Services
                     UserId = userId,
                     Hash = new Hash().NewHash(),
                     Title = request.Title,
-                    Content = _formatterService.Parse(request.Content),
+                    Content = _formatterService.Format(request.Content),
                     CategoryId = request.Niche,
                     //IpAddress = UserIpAddress,
                     //UserAgent = UserAgent

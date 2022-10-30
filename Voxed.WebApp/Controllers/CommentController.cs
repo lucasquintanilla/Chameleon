@@ -17,7 +17,7 @@ namespace Voxed.WebApp.Controllers
     public class CommentController : BaseController
     {
         private readonly ILogger<CommentController> _logger;
-        private readonly FormateadorService _formateadorService;
+        private readonly IContentFormatterService _formateadorService;
         private readonly IAttachmentService _fileUploadService;
         private readonly IVoxedRepository _voxedRepository;
         private readonly UserManager<User> _userManager;
@@ -27,7 +27,7 @@ namespace Voxed.WebApp.Controllers
         public CommentController(
             ILogger<CommentController> logger,
             INotificationService notificationService,
-            FormateadorService formateadorService,
+            IContentFormatterService formateadorService,
             IAttachmentService fileUploadService,
             IVoxedRepository voxedRepository,
             UserManager<User> userManager,
@@ -139,7 +139,7 @@ namespace Voxed.WebApp.Controllers
                 Hash = new Hash().NewHash(7),
                 VoxId = GuidConverter.FromShortString(id),
                 Owner = user,
-                Content = _formateadorService.Parse(request.Content),
+                Content = _formateadorService.Format(request.Content),
                 Style = StyleService.GetRandomCommentStyle(),
                 IpAddress = UserIpAddress,
                 UserAgent = UserAgent

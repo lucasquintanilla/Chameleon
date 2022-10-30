@@ -3,7 +3,6 @@ using Core.Entities;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
-using Voxed.WebApp.Constants;
 
 namespace Voxed.WebApp.Services
 {
@@ -60,9 +59,9 @@ namespace Voxed.WebApp.Services
             return actionResult;
         }
 
-        private string SetAction(UserVoxAction userVoxAction, string action)
+        private string SetAction(UserVoxAction userVoxAction, string actionId)
         {
-            switch (action)
+            switch (actionId)
             {
                 case Constants.Action.Hide:
                     if (userVoxAction.IsHidden)
@@ -89,10 +88,10 @@ namespace Voxed.WebApp.Services
                     userVoxAction.IsFollowed = true;
                     return "create";
                 default:
-                    throw new Exception($"Invalid {nameof(action)}");
+                    throw new Exception($"Invalid {nameof(actionId)}");
             }
         }
     }
 
-    
+
 }

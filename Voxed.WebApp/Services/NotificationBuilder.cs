@@ -13,7 +13,7 @@ namespace Voxed.WebApp.Services
         private Comment _comment;
         private List<Notification> _notifications = new List<Notification>();
         private IVoxedRepository _voxedRepository;
-        private FormateadorService _formateadorService;
+        private IContentFormatterService _formateadorService;
 
         public NotificationBuilder UseRepository(IVoxedRepository voxedRepository)
         {
@@ -51,7 +51,7 @@ namespace Voxed.WebApp.Services
             return this;
         }
 
-        public NotificationBuilder UseFormatter(FormateadorService formatter)
+        public NotificationBuilder UseFormatter(IContentFormatterService formatter)
         {
             _formateadorService = formatter;
             return this;

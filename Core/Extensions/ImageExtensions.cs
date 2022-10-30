@@ -82,11 +82,6 @@ namespace Core.Extensions
             image.SaveAsJpeg(outputPath);
         }
 
-        public static System.Drawing.Image GetImageFromBase64(this string base64)
-        {
-            return System.Drawing.Image.FromStream(base64.GetStreamFromBase64());
-        }
-
         public static Stream GetStreamFromBase64(this string base64)
         {
             // Example input:

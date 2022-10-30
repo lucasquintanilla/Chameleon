@@ -26,12 +26,12 @@ namespace Voxed.WebApp.Services
     {
         private readonly IVoxedRepository _voxedRepository;
         private readonly IHubContext<VoxedHub, INotificationHub> _notificationHub;
-        private readonly FormateadorService _formateadorService;
+        private readonly IContentFormatterService _formateadorService;
 
         public NotificationService(
             IVoxedRepository voxedRepository,
             IHubContext<VoxedHub, INotificationHub> notificationHub,
-            FormateadorService formateadorService
+            IContentFormatterService formateadorService
             )
         {
             _voxedRepository = voxedRepository;

@@ -89,7 +89,7 @@ public static class DependencyContainer
     {
         services.AddTransient<INotificationService, NotificationService>();
         services.AddTransient<IVoxService, VoxService>();
-        services.AddSingleton<FormateadorService>();
+        services.AddSingleton<IContentFormatterService, ContentFormatterService>();
         services.AddSingleton<IAttachmentService, AttachmentService>();
         services.AddTransient<IUserVoxActionService, UserVoxActionService>();
         services.AddTransient<IContentReportService, ContentReportService>();

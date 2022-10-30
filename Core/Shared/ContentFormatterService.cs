@@ -2,20 +2,25 @@
 using System.Linq;
 using System.Text.Encodings.Web;
 using System.Text.RegularExpressions;
-using Ganss.Xss;
 
 namespace Core.Shared
 {
-    public class FormateadorService
+    public interface IContentFormatterService
+    {
+        string Format(string content);
+        List<string> GetRepliedHash(string content);
+    }
+
+    public class ContentFormatterService : IContentFormatterService
     {
         private readonly HtmlEncoder encoder;
 
-        public FormateadorService(HtmlEncoder encoder)
+        public ContentFormatterService(HtmlEncoder encoder)
         {
             this.encoder = encoder;
         }
 
-        public string Parse(string contenido)
+        public string Format(string contenido)
         {
             if (contenido == null)
             {
