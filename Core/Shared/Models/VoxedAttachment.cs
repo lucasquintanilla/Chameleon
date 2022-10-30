@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Core.Shared.Models
+﻿namespace Core.Shared.Models
 {
-    public class UploadData
+    public class VoxedAttachment
     {
         public string Preview { get; set; }
         public string Extension { get; set; }

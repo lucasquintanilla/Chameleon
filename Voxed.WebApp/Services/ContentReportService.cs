@@ -8,16 +8,20 @@ using Voxed.WebApp.Models;
 
 namespace Voxed.WebApp.Services
 {
+    public interface IContentReportService
+    {
+        Task<ReportResponse> Report(ReportRequest request);
+    }
     public class ContentReportService : IContentReportService
     {
         private readonly ILogger<ContentReportService> _logger;
         private readonly IVoxedRepository _voxedRepository;
-        private readonly TelegramService _telegramService;
+        private readonly ITelegramService _telegramService;
 
         public ContentReportService(
             ILogger<ContentReportService> logger, 
-            IVoxedRepository voxedRepository, 
-            TelegramService telegramService)
+            IVoxedRepository voxedRepository,
+            ITelegramService telegramService)
         {
             _logger = logger;
             _voxedRepository = voxedRepository;
@@ -60,10 +64,5 @@ namespace Voxed.WebApp.Services
 
             return response;
         }
-    }
-
-    public interface IContentReportService
-    {
-        Task<ReportResponse> Report(ReportRequest request);
     }
 }

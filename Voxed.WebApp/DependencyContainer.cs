@@ -97,7 +97,7 @@ public static class DependencyContainer
         services.Configure<TelegramConfiguration>(configuration.GetSection(TelegramConfiguration.SectionName));
         services.Configure<AttachmentServiceConfiguration>(configuration.GetSection(AttachmentServiceConfiguration.SectionName));
         
-        services.AddSingleton<TelegramService>();
+        services.AddSingleton<ITelegramService, TelegramService>();
         services.AddSingleton<YoutubeService>();
         //services.AddSingleton<GlobalMessageService>();
     }

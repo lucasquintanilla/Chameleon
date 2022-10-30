@@ -30,9 +30,9 @@ namespace Voxed.WebApp.Models
         [JsonPropertyName("h-captcha-response")]
         public string HCaptcha { get; set; }
 
-        public UploadData GetUploadData()
+        public VoxedAttachment GetUploadData()
         {
-            return JsonConvert.DeserializeObject<UploadData>(UploadData);
+            return JsonConvert.DeserializeObject<VoxedAttachment>(UploadData);
         }
     }
 }

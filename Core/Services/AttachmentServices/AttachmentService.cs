@@ -14,7 +14,7 @@ namespace Core.Services.AttachmentServices
 {
     public interface IAttachmentService
     {
-        Task<Attachment> ProcessAttachment(UploadData uploadData, IFormFile file);
+        Task<Attachment> ProcessAttachment(VoxedAttachment uploadData, IFormFile file);
     }
 
     public class AttachmentService : IAttachmentService
@@ -32,7 +32,7 @@ namespace Core.Services.AttachmentServices
             Initialize();
         }
 
-        public async Task<Attachment> ProcessAttachment(UploadData uploadData, IFormFile file)
+        public async Task<Attachment> ProcessAttachment(VoxedAttachment uploadData, IFormFile file)
         {
             if (uploadData == null && file == null) return null;
 
@@ -40,8 +40,8 @@ namespace Core.Services.AttachmentServices
             {
                 return uploadData.Extension switch
                 {
-                    UploadDataExtension.Youtube => await SaveFromYoutube(uploadData.ExtensionData),
-                    UploadDataExtension.Base64 => SaveFromBase64(uploadData.ExtensionData),
+                    VoxedAttachmentExtension.Youtube => await SaveFromYoutube(uploadData.ExtensionData),
+                    VoxedAttachmentExtension.Base64 => SaveFromBase64(uploadData.ExtensionData),
                     _ => throw new NotImplementedException("Invalid file extension"),
                 };
             }

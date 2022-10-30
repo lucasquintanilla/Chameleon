@@ -16,9 +16,9 @@ namespace Voxed.WebApp.Models
         public IFormFile File { get; set; }
         public string UploadData { get; set; }
 
-        public UploadData GetUploadData()
+        public VoxedAttachment GetUploadData()
         {
-            return JsonConvert.DeserializeObject<UploadData>(UploadData);
+            return JsonConvert.DeserializeObject<VoxedAttachment>(UploadData);
         }
 
         public bool HasEmptyContent()

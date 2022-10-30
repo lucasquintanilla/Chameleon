@@ -13,7 +13,13 @@ using Telegram.Bot.Types.InputFiles;
 
 namespace Core.Services.Telegram
 {
-    public class TelegramService
+    public interface ITelegramService
+    {
+        Task<Message> SendMessage(string message);
+        Task UploadFile(Stream file);
+    }
+
+    public class TelegramService : ITelegramService
     {
         private readonly TelegramConfiguration _config;
         private readonly TelegramBotClient _client;
