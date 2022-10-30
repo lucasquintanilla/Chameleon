@@ -17,8 +17,8 @@ namespace Voxed.WebApp.Controllers
     public class CommentController : BaseController
     {
         private readonly ILogger<CommentController> _logger;
-        private readonly IContentFormatterService _formateadorService;
-        private readonly IAttachmentService _fileUploadService;
+        private readonly IContentFormatterService _formatter;
+        private readonly IAttachmentService _attachmentService;
         private readonly IVoxedRepository _voxedRepository;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
@@ -27,16 +27,16 @@ namespace Voxed.WebApp.Controllers
         public CommentController(
             ILogger<CommentController> logger,
             INotificationService notificationService,
-            IContentFormatterService formateadorService,
-            IAttachmentService fileUploadService,
+            IContentFormatterService formatter,
+            IAttachmentService attachmentService,
             IVoxedRepository voxedRepository,
             UserManager<User> userManager,
             SignInManager<User> signInManager,
             IHttpContextAccessor accessor
             ) : base(accessor, userManager)
         {
-            _formateadorService = formateadorService;
-            _fileUploadService = fileUploadService;
+            _formatter = formatter;
+            _attachmentService = attachmentService;
             _voxedRepository = voxedRepository;
             _userManager = userManager;
             _logger = logger;
@@ -107,7 +107,7 @@ namespace Voxed.WebApp.Controllers
             {
                 var comment = await _voxedRepository.Comments.GetById(request.ContentId);
 
-                if (comment == null) NotFound(response);                
+                if (comment == null) NotFound(response);
 
                 comment.IsSticky = true;
                 response.Id = request.ContentId;
@@ -139,13 +139,12 @@ namespace Voxed.WebApp.Controllers
                 Hash = new Hash().NewHash(7),
                 VoxId = GuidConverter.FromShortString(id),
                 Owner = user,
-                Content = _formateadorService.Format(request.Content),
+                Content = _formatter.Format(request.Content),
                 Style = StyleService.GetRandomCommentStyle(),
                 IpAddress = UserIpAddress,
-                UserAgent = UserAgent
+                UserAgent = UserAgent,
+                Attachment = await _attachmentService.ProcessAttachment(request.GetUploadData(), request.File)
             };
-
-            comment.Attachment = await _fileUploadService.ProcessAttachment(request.GetUploadData(), request.File);
 
             return comment;
         }

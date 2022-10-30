@@ -1,6 +1,5 @@
 ﻿using Core.Data.Repositories;
 using Core.Entities;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -21,14 +20,14 @@ namespace Voxed.WebApp.Controllers
         public NotificationController(
             UserManager<User> userManager,
             IVoxedRepository voxedRepository,
-            IHubContext<VoxedHub,INotificationHub> notificationHub,
+            IHubContext<VoxedHub, INotificationHub> notificationHub,
             IHttpContextAccessor accessor) : base(accessor, userManager)
         {
             _voxedRepository = voxedRepository;
             _notificationHub = notificationHub;
         }
 
-        //[AllowAnonymous]
+
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(Guid id)
         {
@@ -56,7 +55,7 @@ namespace Voxed.WebApp.Controllers
             return Redirect($"~/vox/{voxHash}#{commentHash}");
         }
 
-        //[AllowAnonymous]
+
         [Route("delete")]
         public async Task<IActionResult> DeleteAll()
         {
