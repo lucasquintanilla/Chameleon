@@ -11,7 +11,7 @@ namespace Core.Data.EF.EntityTypeConfigurations
         {
             builder.HasKey(x => x.Id);
 
-            builder.HasIndex(x => x.Hash).IsUnique();
+            //builder.HasIndex(x => x.Hash).IsUnique();
 
             builder.HasIndex(x => x.Bump);
 

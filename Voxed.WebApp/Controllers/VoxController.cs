@@ -165,7 +165,7 @@ namespace Voxed.WebApp.Controllers
                 Id = vox.Id,
                 Title = vox.Title,
                 Content = vox.Content,
-                Hash = vox.Hash,
+                Hash = GuidConverter.ToShortString(vox.Id),
                 UserId = vox.UserId,
 
                 CommentTag = UserTypeDictionary.GetDescription(vox.Owner.UserType).ToLower(),

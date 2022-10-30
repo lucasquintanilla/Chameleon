@@ -1,4 +1,5 @@
 ﻿using Core.Entities;
+using Core.Shared;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
@@ -46,7 +47,7 @@ namespace Voxed.WebApp.Services
                     Type = "new",
                     Content = new Content()
                     {
-                        VoxHash = _vox.Hash,
+                        VoxHash = GuidConverter.ToShortString(_vox.Id),
                         NotificationBold = GetNotificationBoldString(notification.Type),
                         NotificationText = _vox.Title,
                         Count = "1",

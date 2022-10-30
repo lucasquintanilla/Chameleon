@@ -50,7 +50,6 @@ namespace Voxed.WebApp.Services
                 {
                     State = VoxState.Active,
                     UserId = userId,
-                    Hash = new Hash().NewHash(),
                     Title = request.Title,
                     Content = _formatterService.Format(request.Content),
                     CategoryId = request.Niche,
