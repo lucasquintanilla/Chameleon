@@ -14,7 +14,7 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        services.RegisterWebServices(_configuration);
+        services.RegisterWebServices();
         services.RegisterInfrastructureServices(_configuration);
         services.RegisterRepositories();
         services.RegisterServices(_configuration);

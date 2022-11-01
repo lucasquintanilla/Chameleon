@@ -190,7 +190,7 @@ namespace Voxed.WebApp.Controllers
                 IsFollowed = actions.IsFollowed,
                 IsHidden = actions.IsHidden,
 
-                Comments = vox.Comments.OrderByDescending(x => x.IsSticky).ThenByDescending(x => x.CreatedOn).Select(x => new CommentViewModel()
+                Comments = vox.Comments.OrderByDescending(c => c.IsSticky).ThenByDescending(c => c.CreatedOn).Select(x => new CommentViewModel()
                 {
                     ID = x.Id,
                     Content = x.Content,
@@ -220,23 +220,17 @@ namespace Voxed.WebApp.Controllers
         [Route("anon/vox")]
         public async Task<CreateVoxResponse> Create(CreateVoxRequest request)
         {
-            var response = new CreateVoxResponse();
-
             if (ModelState.IsValid is false)
             {
-                return new CreateVoxResponse()
-                {
-                    Status = false,
-                    Swal = ModelState.Root.Children
+                var errorMessage = ModelState.Root.Children
                     .Where(x => x.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid)
-                    .First().Errors.FirstOrDefault().ErrorMessage
-                };
+                    .First().Errors.FirstOrDefault().ErrorMessage;
+
+                return CreateVoxResponse.Failure(errorMessage);
             }
 
             try
             {
-                //await _telegramService.UploadFile(request.File.OpenReadStream());
-
                 var userId = User.GetLoggedInUserId<Guid?>();
                 //var user = await _userManager.GetUserAsync(HttpContext.User);
                 if (userId == null)
@@ -248,15 +242,18 @@ namespace Voxed.WebApp.Controllers
                     //TODO: Crear una notificacion para el nuevo usuario anonimo
                 }
 
-                return await _voxService.CreateVox(request, userId.Value);
+                var voxId = await _voxService.CreateVox(request, userId.Value);
+                return CreateVoxResponse.Succesful(voxId);
+            }
+            catch (NotImplementedException e)
+            {
+                return CreateVoxResponse.Failure(e.Message);
             }
             catch (Exception e)
             {
                 _logger.LogError(e.Message);
-                response.Swal = "error";
+                return CreateVoxResponse.Failure("Error inesperado");
             }
-
-            return response;
         }
 
         [HttpPost]

@@ -13,7 +13,7 @@ namespace Voxed.WebApp.Services
 {
     public interface IVoxService
     {
-        Task<CreateVoxResponse> CreateVox(CreateVoxRequest request, Guid userId);
+        Task<Guid> CreateVox(CreateVoxRequest request, Guid userId);
         Task<ListResponse> GetByFilter(VoxFilter filter);
     }
 
@@ -40,45 +40,28 @@ namespace Voxed.WebApp.Services
             _notificationService = notificationService;
         }
 
-        public async Task<CreateVoxResponse> CreateVox(CreateVoxRequest request, Guid userId)
+        public async Task<Guid> CreateVox(CreateVoxRequest request, Guid userId)
         {
-            var response = new CreateVoxResponse();
+            var attachment = await _attachmentService.ProcessAttachment(request.GetUploadData(), request.File);
+            await _voxedRepository.Media.Add(attachment);
 
-            try
+            var vox = new Vox()
             {
-                var vox = new Vox()
-                {
-                    State = VoxState.Active,
-                    UserId = userId,
-                    Title = request.Title,
-                    Content = _formatterService.Format(request.Content),
-                    CategoryId = request.Niche,
-                    //IpAddress = UserIpAddress,
-                    //UserAgent = UserAgent
-                };
+                State = VoxState.Active,
+                UserId = userId,
+                Title = request.Title,
+                Content = _formatterService.Format(request.Content),
+                CategoryId = request.Niche,
+                MediaId = attachment.Id,
+                //IpAddress = UserIpAddress,
+                //UserAgent = UserAgent
+            };
 
-                var attachment = await _attachmentService.ProcessAttachment(request.GetUploadData(), request.File);
-                await _voxedRepository.Media.Add(attachment);
+            await _voxedRepository.Voxs.Add(vox);
+            await _voxedRepository.SaveChangesAsync();
+            await _notificationService.NotifyClients(vox.Id);
 
-                vox.MediaId = attachment.Id;
-                await _voxedRepository.Voxs.Add(vox);
-                await _voxedRepository.SaveChangesAsync();
-                await _notificationService.NotifyClients(vox.Id);
-
-                response.VoxHash = GuidConverter.ToShortString(vox.Id);
-                response.Status = true;
-            }
-            catch (NotImplementedException e)
-            {
-                response.Swal = e.Message;
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e.Message);
-                response.Swal = "error";
-            }
-
-            return response;
+            return vox.Id;
         }
 
         public async Task<ListResponse> GetByFilter(VoxFilter filter)

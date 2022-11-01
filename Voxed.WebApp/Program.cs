@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using SixLabors.ImageSharp.Web.DependencyInjection;
 using Voxed.WebApp;
 using Voxed.WebApp.Hubs;
 
@@ -57,4 +58,6 @@ app.UseEndpoints(endpoints =>
 
     endpoints.MapHub<VoxedHub>("/hubs/notifications");
 });
+
+app.UseImageSharp();
 app.Run();

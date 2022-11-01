@@ -12,6 +12,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SixLabors.ImageSharp.Web.DependencyInjection;
+using SixLabors.ImageSharp.Web.Providers;
+using SixLabors.ImageSharp.Web.Providers.AWS;
 using System;
 using Voxed.WebApp.Services;
 
@@ -96,13 +99,29 @@ public static class DependencyContainer
 
         services.Configure<TelegramConfiguration>(configuration.GetSection(TelegramConfiguration.SectionName));
         services.Configure<AttachmentServiceConfiguration>(configuration.GetSection(AttachmentServiceConfiguration.SectionName));
-        
+
         services.AddSingleton<ITelegramService, TelegramService>();
         services.AddSingleton<YoutubeService>();
         //services.AddSingleton<GlobalMessageService>();
+
+        services.AddImageSharp()
+            .Configure<AWSS3StorageImageProviderOptions>(options =>
+            {
+                // The "S3Buckets" collection allows registration of multiple buckets.
+                options.S3Buckets.Add(new AWSS3BucketClientOptions
+                {
+                    Endpoint = "AWS_ENDPOINT",
+                    BucketName = "AWS_BUCKET_NAME",
+                    AccessKey = "asdfsdf",
+                    AccessSecret = "asdfsdf",
+                    Region = "asdfsdf"
+                });
+            });
+            //.ClearProviders()
+            //.AddProvider<WebRootImageProvider>();
     }
 
-    public static void RegisterWebServices(this IServiceCollection services, IConfiguration configuration)
+    public static void RegisterWebServices(this IServiceCollection services)
     {
         string myAllowSpecificOrigins = "_myAllowSpecificOrigins";
         // Cors Configuration must be before MVC / Razor Configuration
@@ -111,8 +130,8 @@ public static class DependencyContainer
                 options.AddPolicy(name: myAllowSpecificOrigins,
                                   builder =>
                                   {
-                                  //builder.WithOrigins("http://localhost",
-                                  //                    "http://www.contoso.com");
+                                      //builder.WithOrigins("http://localhost",
+                                      //                    "http://www.contoso.com");
 
                                       builder.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost")
                                       .AllowAnyHeader()

@@ -26743,6 +26743,7 @@
         d = n(15),
         //u = n(192)(`https://${o.CONFIG[o.CONFIG.mode].socketIP}:${o.CONFIG[o.CONFIG.mode].socketPort}`),
         u = new signalR.HubConnectionBuilder()
+            .configureLogging(signalR.LogLevel.None)
             .withUrl("/hubs/notifications")
             .withAutomaticReconnect()
             .build(),
