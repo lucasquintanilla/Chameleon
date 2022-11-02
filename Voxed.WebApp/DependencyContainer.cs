@@ -25,6 +25,9 @@ public static class DependencyContainer
 {
     public static void RegisterInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
+        Console.WriteLine("Helper static" + Helpers.GetRDSConnectionString());
+        Console.WriteLine("Helper static isung iconfig" + Helpers.GetRDSConnectionString(configuration));
+
         //https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/providers?tabs=dotnet-core-cli
         var provider = configuration.GetValue("Provider", nameof(SqlProvider.MySql));
         services.AddDbContext<VoxedContext>(
@@ -42,11 +45,13 @@ public static class DependencyContainer
                 //    ServerVersion.AutoDetect(configuration.GetConnectionString(nameof(SqlProvider.MySql))),
                 //    x => x.MigrationsAssembly(typeof(MySqlVoxedContext).Assembly.GetName().Name)),
                 ////.UseLoggerFactory(ContextLoggerFactory),
-                
+
+               
+
                 nameof(SqlProvider.MySql) => options
                .UseMySql(
-                   Helpers.GetRDSConnectionString(),
-                   ServerVersion.AutoDetect(Helpers.GetRDSConnectionString()),
+                   Helpers.GetRDSConnectionString(configuration),
+                   ServerVersion.AutoDetect(Helpers.GetRDSConnectionString(configuration)),
                    x => x.MigrationsAssembly(typeof(MySqlVoxedContext).Assembly.GetName().Name)),
                 //.UseLoggerFactory(ContextLoggerFactory),
 
