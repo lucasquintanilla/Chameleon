@@ -36,11 +36,18 @@ public static class DependencyContainer
                         x => x.MigrationsAssembly(typeof(SqliteVoxedContext).Assembly.GetName().Name)),
                 //.UseLoggerFactory(ContextLoggerFactory),
 
+                //nameof(SqlProvider.MySql) => options
+                //.UseMySql(
+                //    configuration.GetConnectionString(nameof(SqlProvider.MySql)),
+                //    ServerVersion.AutoDetect(configuration.GetConnectionString(nameof(SqlProvider.MySql))),
+                //    x => x.MigrationsAssembly(typeof(MySqlVoxedContext).Assembly.GetName().Name)),
+                ////.UseLoggerFactory(ContextLoggerFactory),
+                
                 nameof(SqlProvider.MySql) => options
-                .UseMySql(
-                    configuration.GetConnectionString(nameof(SqlProvider.MySql)),
-                    ServerVersion.AutoDetect(configuration.GetConnectionString(nameof(SqlProvider.MySql))),
-                    x => x.MigrationsAssembly(typeof(MySqlVoxedContext).Assembly.GetName().Name)),
+               .UseMySql(
+                   Helpers.GetRDSConnectionString(),
+                   ServerVersion.AutoDetect(Helpers.GetRDSConnectionString()),
+                   x => x.MigrationsAssembly(typeof(MySqlVoxedContext).Assembly.GetName().Name)),
                 //.UseLoggerFactory(ContextLoggerFactory),
 
                 _ => throw new Exception($"Unsupported provider: {provider}")
