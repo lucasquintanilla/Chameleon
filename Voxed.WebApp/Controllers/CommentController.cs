@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Voxed.WebApp.Models;
 using Voxed.WebApp.Services;
@@ -49,11 +51,19 @@ namespace Voxed.WebApp.Controllers
         [Route("comment/nuevo/{id}")]
         public async Task<CreateCommentResponse> Create([FromForm] CreateCommentRequest request, [FromRoute] string id)
         {
+            _logger.LogWarning($"{nameof(CreateCommentRequest)} received.");
+            _logger.LogWarning(JsonConvert.SerializeObject(request));
+
             var response = new CreateCommentResponse(id);
 
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid is false)
             {
-                response.Swal = "Formato de comentario invalido";
+                var errorMessage = ModelState.Root.Children
+                    .Where(x => x.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid)
+                    .First().Errors.FirstOrDefault().ErrorMessage;
+
+                _logger.LogWarning($"Request received is not valid. Message: {errorMessage}");
+                response.Swal = errorMessage;
                 return response;
             }
 
@@ -61,6 +71,7 @@ namespace Voxed.WebApp.Controllers
             {
                 if (request.HasEmptyContent())
                 {
+                    _logger.LogWarning($"Request received has empty content");
                     response.Swal = "Debes ingresar un contenido";
                     return response;
                 }
@@ -86,15 +97,16 @@ namespace Voxed.WebApp.Controllers
             }
             catch (NotImplementedException e)
             {
+                _logger.LogWarning(e.Message);
                 response.Swal = e.Message;
             }
             catch (Exception e)
             {
                 _logger.LogError(e.Message);
-
                 response.Swal = "Hubo un error";
             }
 
+            _logger.LogWarning($"{nameof(CreateCommentResponse)}: {JsonConvert.SerializeObject(response)}");
             return response;
         }
 

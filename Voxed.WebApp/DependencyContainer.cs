@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using SixLabors.ImageSharp.Web.DependencyInjection;
 using SixLabors.ImageSharp.Web.Providers;
 using SixLabors.ImageSharp.Web.Providers.AWS;
@@ -49,6 +50,16 @@ public static class DependencyContainer
     public static void RegisterRepositories(this IServiceCollection services)
     {
         services.AddTransient<IVoxedRepository, VoxedRepository>();
+    }
+
+    public static void RegisterLogger(this IServiceCollection services)
+    {
+        services.AddLogging(logger =>
+        {
+            logger.AddFilter("Microsoft.EntityFrameworkCore", LogLevel.None);
+            logger.SetMinimumLevel(LogLevel.Debug);
+            logger.AddSimpleConsole();
+        });
     }
 
     public static void RegisterIdentity(this IServiceCollection services)
@@ -107,7 +118,6 @@ public static class DependencyContainer
         services.AddImageSharp()
             .Configure<AWSS3StorageImageProviderOptions>(options =>
             {
-                // The "S3Buckets" collection allows registration of multiple buckets.
                 options.S3Buckets.Add(new AWSS3BucketClientOptions
                 {
                     Endpoint = "AWS_ENDPOINT",
@@ -117,8 +127,6 @@ public static class DependencyContainer
                     Region = "asdfsdf"
                 });
             });
-            //.ClearProviders()
-            //.AddProvider<WebRootImageProvider>();
     }
 
     public static void RegisterWebServices(this IServiceCollection services)
