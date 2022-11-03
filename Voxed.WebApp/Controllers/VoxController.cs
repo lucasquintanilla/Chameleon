@@ -252,6 +252,7 @@ namespace Voxed.WebApp.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e.Message);
+                _logger.LogError(e.StackTrace);
                 return CreateVoxResponse.Failure("Error inesperado");
             }
         }

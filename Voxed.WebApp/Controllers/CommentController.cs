@@ -103,6 +103,7 @@ namespace Voxed.WebApp.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e.Message);
+                _logger.LogError(e.StackTrace);
                 response.Swal = "Hubo un error";
             }
 
@@ -126,9 +127,10 @@ namespace Voxed.WebApp.Controllers
 
                 await _voxedRepository.SaveChangesAsync();
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                _logger.LogError(ex.Message);
+                _logger.LogError(e.Message);
+                _logger.LogError(e.StackTrace);
             }
 
             return response;
