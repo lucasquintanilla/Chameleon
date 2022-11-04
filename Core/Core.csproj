@@ -12,6 +12,8 @@
 
   <ItemGroup>
     <PackageReference Include="AngleSharp" Version="0.17.1" />
+    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.7.2" />
+    <PackageReference Include="AWSSDK.S3" Version="3.7.101.8" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
     <PackageReference Include="HtmlSanitizer" Version="8.0.601" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />

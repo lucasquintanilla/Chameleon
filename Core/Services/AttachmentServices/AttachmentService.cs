@@ -21,15 +21,17 @@ namespace Core.Services.AttachmentServices
     {
         private readonly AttachmentServiceConfiguration _config;
         private readonly YoutubeService _youtubeService;
+        private readonly IStorageService _storageService;
 
         public AttachmentService(
             YoutubeService youtubeService,
-            IOptions<AttachmentServiceConfiguration> options
-            )
+            IOptions<AttachmentServiceConfiguration> options,
+            IStorageService storageService)
         {
             _config = options.Value;
             _youtubeService = youtubeService;
             Initialize();
+            _storageService = storageService;
         }
 
         public async Task<Attachment> ProcessAttachment(VoxedAttachment uploadData, IFormFile file)
@@ -98,6 +100,8 @@ namespace Core.Services.AttachmentServices
             file.SaveThumbnailAsWebP(thumbnailFilePath);
             file.SaveCompressedAsJpeg(originalFilePath);
 
+            //test
+            await _storageService.PutObject(file.OpenReadStream());
             return GetLocalMediaResponse(originalFilename, thumbnailFilename, AttachmentType.Image);
         }
 

@@ -75,7 +75,6 @@ namespace Voxed.WebApp.Controllers
             //    });
 
             //var x = Request.Headers.TryGetValue("CF-IPCountry", out var resulto);
-            _logger.LogWarning($"Home called");
             var filter = new VoxFilter()
             {
                 UserId = User.GetLoggedInUserId<Guid?>(),

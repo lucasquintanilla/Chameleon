@@ -1,4 +1,5 @@
-﻿using Core.Data.EF;
+﻿using Amazon.S3;
+using Core.Data.EF;
 using Core.Data.EF.MySql;
 using Core.Data.EF.Repositories;
 using Core.Data.EF.Sqlite;
@@ -25,7 +26,7 @@ public static class DependencyContainer
 {
     public static void RegisterInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
-        Console.WriteLine("Helper static" + Helpers.GetRDSConnectionString());
+        //Console.WriteLine("Helper static" + Helpers.GetRDSConnectionString());
         Console.WriteLine("Helper static isung iconfig" + Helpers.GetRDSConnectionString(configuration));
 
         //https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/providers?tabs=dotnet-core-cli
@@ -132,13 +133,20 @@ public static class DependencyContainer
             {
                 options.S3Buckets.Add(new AWSS3BucketClientOptions
                 {
-                    Endpoint = "AWS_ENDPOINT",
-                    BucketName = "AWS_BUCKET_NAME",
-                    AccessKey = "asdfsdf",
-                    AccessSecret = "asdfsdf",
-                    Region = "asdfsdf"
+                    Endpoint = "localhost",
+                    BucketName = "post-attachments",
+                    AccessKey = "AKIAT3LYSLSBEG32UEDZ",
+                    AccessSecret = "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",
+                    Region = "sa-east-1"
                 });
             });
+    }
+
+    public static void RegisterStorageServices(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddDefaultAWSOptions(configuration.GetAWSOptions());
+        services.AddAWSService<IAmazonS3>();
+        services.AddSingleton<IStorageService, StorageService>();
     }
 
     public static void RegisterWebServices(this IServiceCollection services)
