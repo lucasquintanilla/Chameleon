@@ -1,12 +1,10 @@
-﻿using Core.Shared.Models;
-using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace Voxed.WebApp.Models
 {
-    public class CreateVoxRequest
+    public class CreateVoxRequest : AttachmentRequest
     {
         [Required(ErrorMessage = "Debe ingresar un titulo")]
         [StringLength(120, ErrorMessage = "El titulo no puede superar los {1} caracteres.")]
@@ -18,10 +16,8 @@ namespace Voxed.WebApp.Models
 
         [Required(ErrorMessage = "Debe seleccionar una categoria.")]
         public int Niche { get; set; }
-        public IFormFile File { get; set; }
         public string PollOne { get; set; }
         public string PollTwo { get; set; }
-        public string UploadData { get; set; }
 
 
         [JsonPropertyName("g-recaptcha-response")]
@@ -29,10 +25,5 @@ namespace Voxed.WebApp.Models
 
         [JsonPropertyName("h-captcha-response")]
         public string HCaptcha { get; set; }
-
-        public VoxedAttachment GetUploadData()
-        {
-            return JsonConvert.DeserializeObject<VoxedAttachment>(UploadData);
-        }
     }
 }

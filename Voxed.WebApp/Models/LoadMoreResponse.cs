@@ -3,9 +3,9 @@ using System.Linq;
 
 namespace Voxed.WebApp.Models
 {
-    public class ListResponse : BaseResponse
+    public class LoadMoreResponse : BaseResponse
     {
-        public ListResponse(IList<VoxResponse> voxsList)
+        public LoadMoreResponse(IList<VoxResponse> voxsList)
         {
             Status = voxsList.Any();
             List = new List()

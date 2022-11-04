@@ -108,9 +108,9 @@ namespace Voxed.WebApp.Services
                 //Media
                 MediaUrl = comment.Attachment?.Url,
                 MediaThumbnailUrl = comment.Attachment?.ThumbnailUrl,
-                Extension = request.GetUploadData()?.Extension == VoxedAttachmentExtension.Base64 ? Core.Utilities.UrlUtility.GetFileExtensionFromUrl(comment.Attachment?.Url) : request.GetUploadData()?.Extension,
-                ExtensionData = request.GetUploadData()?.ExtensionData,
-                Via = request.GetUploadData()?.Extension == VoxedAttachmentExtension.Youtube ? comment.Attachment?.Url : null,
+                Extension = request.GetVoxedAttachment()?.Extension == VoxedAttachmentExtension.Base64 ? Core.Utilities.UrlUtility.GetFileExtensionFromUrl(comment.Attachment?.Url) : request.GetVoxedAttachment()?.Extension,
+                ExtensionData = request.GetVoxedAttachment()?.ExtensionData,
+                Via = request.GetVoxedAttachment()?.Extension == VoxedAttachmentExtension.Youtube ? comment.Attachment?.Url : null,
             };
 
             await _notificationHub.Clients.All.Comment(commentUpdate);

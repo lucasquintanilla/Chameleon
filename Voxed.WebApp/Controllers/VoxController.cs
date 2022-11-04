@@ -57,9 +57,7 @@ namespace Voxed.WebApp.Controllers
                 return new GlobalMessageResponse()
                 {
                     Status = false,
-                    Swal = ModelState.Root.Children
-                    .Where(x => x.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid)
-                    .First().Errors.FirstOrDefault().ErrorMessage
+                    Swal = ModelState.GetErrorMessage()
                 };
             }
 
@@ -220,14 +218,8 @@ namespace Voxed.WebApp.Controllers
         [Route("anon/vox")]
         public async Task<CreateVoxResponse> Create(CreateVoxRequest request)
         {
-            if (ModelState.IsValid is false)
-            {
-                var errorMessage = ModelState.Root.Children
-                    .Where(x => x.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid)
-                    .First().Errors.FirstOrDefault().ErrorMessage;
-
-                return CreateVoxResponse.Failure(errorMessage);
-            }
+            if (ModelState.IsValid is false)            
+                return CreateVoxResponse.Failure(ModelState.GetErrorMessage());
 
             try
             {
@@ -257,8 +249,8 @@ namespace Voxed.WebApp.Controllers
             }
         }
 
-        [HttpPost]
-        public async Task<ListResponse> List([FromForm] ListRequest request)
+        [HttpPost("vox/list")]
+        public async Task<LoadMoreResponse> LoadMore([FromForm] LoadMoreRequest request)
         {
             // Page: home, category-anm, vox, favorites, hidden, search
             //HttpContext.Request.Cookies.TryGetValue("categoriasFavoritas", out string categoriasActivas);
@@ -275,7 +267,7 @@ namespace Voxed.WebApp.Controllers
             return await _voxService.GetByFilter(filter);
         }
 
-        private List<int> GetSubscriptionCategories(ListRequest request)
+        private List<int> GetSubscriptionCategories(LoadMoreRequest request)
         {
             try
             {

@@ -1,6 +1,6 @@
 ﻿namespace Voxed.WebApp.Models
 {
-    public class ListRequest
+    public class LoadMoreRequest
     {
         public string Page { get; set; } //category-anm o home
         public int LoadMore { get; set; }

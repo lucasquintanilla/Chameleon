@@ -8,8 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
+using Voxed.WebApp.Extensions;
 using Voxed.WebApp.Models;
 using Voxed.WebApp.Services;
 using static Voxed.WebApp.Models.CommentStickyResponse;
@@ -58,9 +58,7 @@ namespace Voxed.WebApp.Controllers
 
             if (ModelState.IsValid is false)
             {
-                var errorMessage = ModelState.Root.Children
-                    .Where(x => x.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid)
-                    .First().Errors.FirstOrDefault().ErrorMessage;
+                var errorMessage = ModelState.GetErrorMessage();
 
                 _logger.LogWarning($"Request received is not valid. Message: {errorMessage}");
                 response.Swal = errorMessage;
@@ -157,7 +155,7 @@ namespace Voxed.WebApp.Controllers
                 Style = StyleService.GetRandomCommentStyle(),
                 IpAddress = UserIpAddress,
                 UserAgent = UserAgent,
-                Attachment = await _attachmentService.ProcessAttachment(request.GetUploadData(), request.File)
+                Attachment = await _attachmentService.ProcessAttachment(request.GetVoxedAttachment(), request.File)
             };
 
             return comment;

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System;
+using System.Linq;
 
 namespace Voxed.WebApp.Extensions
 {
@@ -32,6 +34,13 @@ namespace Voxed.WebApp.Extensions
             if (span.Seconds <= 0)
                 return "Ahora";
             return "Ahora";
+        }
+
+        public static string GetErrorMessage(this ModelStateDictionary model)
+        {
+            return model.Root.Children
+                    .Where(x => x.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid)
+                    .First().Errors.FirstOrDefault().ErrorMessage;
         }
     }
 }
