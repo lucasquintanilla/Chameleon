@@ -134,7 +134,6 @@ public static class DependencyContainer
             {
                 options.S3Buckets.Add(new AWSS3BucketClientOptions
                 {
-                    //Endpoint = "https://localhost:5001/",
                     BucketName = "post-attachments",
                     AccessKey = "AKIAT3LYSLSBEG32UEDZ",
                     AccessSecret = "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",
@@ -145,7 +144,6 @@ public static class DependencyContainer
             .AddProvider<AWSS3StorageImageProvider>()
             .Configure<AWSS3StorageCacheOptions>(options =>
             {
-                //options.Endpoint = { AWS_ENDPOINT};
                 options.BucketName = "post-attachments/cache";
                 options.AccessKey = "AKIAT3LYSLSBEG32UEDZ";
                 options.AccessSecret = "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";
