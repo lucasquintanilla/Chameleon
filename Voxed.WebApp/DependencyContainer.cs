@@ -36,27 +36,26 @@ public static class DependencyContainer
             options => _ = provider switch
             {
                 nameof(SqlProvider.Sqlite) => options
-                    .UseSqlite(
-                        configuration.GetConnectionString(nameof(SqlProvider.Sqlite)),
+                    .UseSqlite(configuration.GetConnectionString(nameof(SqlProvider.Sqlite)),
                         x => x.MigrationsAssembly(typeof(SqliteVoxedContext).Assembly.GetName().Name)),
                 //.UseLoggerFactory(ContextLoggerFactory),
 
 
-                nameof(SqlProvider.MySql) => options
-                .UseMySql(
-                    configuration.GetConnectionString(nameof(SqlProvider.MySql)),
-                    ServerVersion.AutoDetect(configuration.GetConnectionString(nameof(SqlProvider.MySql))),
-                    x => x.MigrationsAssembly(typeof(MySqlVoxedContext).Assembly.GetName().Name)),
-                //.UseLoggerFactory(ContextLoggerFactory),
-
-
-
-                // nameof(SqlProvider.MySql) => options
+                //nameof(SqlProvider.MySql) => options
                 //.UseMySql(
-                //    Helpers.GetRDSConnectionString(configuration),
-                //    ServerVersion.AutoDetect(Helpers.GetRDSConnectionString(configuration)),
+                //    configuration.GetConnectionString(nameof(SqlProvider.MySql)),
+                //    ServerVersion.AutoDetect(configuration.GetConnectionString(nameof(SqlProvider.MySql))),
                 //    x => x.MigrationsAssembly(typeof(MySqlVoxedContext).Assembly.GetName().Name)),
-                // //.UseLoggerFactory(ContextLoggerFactory),
+                ////.UseLoggerFactory(ContextLoggerFactory),
+
+
+
+                nameof(SqlProvider.MySql) => options
+               .UseMySql(
+                   Helpers.GetRDSConnectionString(configuration),
+                   ServerVersion.AutoDetect(Helpers.GetRDSConnectionString(configuration)),
+                   x => x.MigrationsAssembly(typeof(MySqlVoxedContext).Assembly.GetName().Name)),
+                //.UseLoggerFactory(ContextLoggerFactory),
 
                 _ => throw new Exception($"Unsupported provider: {provider}")
             });
@@ -217,5 +216,6 @@ public enum SqlProvider
 {
     MySql,
     Sqlite,
-    SqlServer
+    SqlServer,
+    PostgreSQL
 }
