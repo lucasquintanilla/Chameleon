@@ -7,7 +7,7 @@
         public string Url { get; set; }
         public string ThumbnailUrl { get; set; }
         public AttachmentType Type { get; set; }
-        //public string KeyName { get; set; }
+        //public string Key { get; set; }
         //public string ContentType { get; set; }
         //public string ExternalUrl { get; set; }
     }
