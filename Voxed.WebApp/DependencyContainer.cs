@@ -7,6 +7,7 @@ using Core.Data.Repositories;
 using Core.Entities;
 using Core.Services;
 using Core.Services.AttachmentServices;
+using Core.Services.Storage;
 using Core.Services.Telegram;
 using Core.Shared;
 using Microsoft.AspNetCore.Identity;
@@ -14,8 +15,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SixLabors.ImageSharp.Web.Caching.AWS;
 using SixLabors.ImageSharp.Web.DependencyInjection;
-using SixLabors.ImageSharp.Web.Providers;
 using SixLabors.ImageSharp.Web.Providers.AWS;
 using System;
 using Voxed.WebApp.Services;
@@ -47,7 +48,7 @@ public static class DependencyContainer
                 //    x => x.MigrationsAssembly(typeof(MySqlVoxedContext).Assembly.GetName().Name)),
                 ////.UseLoggerFactory(ContextLoggerFactory),
 
-               
+
 
                 nameof(SqlProvider.MySql) => options
                .UseMySql(
@@ -133,20 +134,34 @@ public static class DependencyContainer
             {
                 options.S3Buckets.Add(new AWSS3BucketClientOptions
                 {
-                    Endpoint = "localhost",
+                    //Endpoint = "https://localhost:5001/",
                     BucketName = "post-attachments",
                     AccessKey = "AKIAT3LYSLSBEG32UEDZ",
                     AccessSecret = "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",
                     Region = "sa-east-1"
                 });
-            });
+            })
+            .ClearProviders()
+            .AddProvider<AWSS3StorageImageProvider>()
+            .Configure<AWSS3StorageCacheOptions>(options =>
+            {
+                //options.Endpoint = { AWS_ENDPOINT};
+                options.BucketName = "post-attachments/cache";
+                options.AccessKey = "AKIAT3LYSLSBEG32UEDZ";
+                options.AccessSecret = "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";
+                options.Region = "sa-east-1";
+
+                // Optionally create the cache bucket on startup if not already created.
+                AWSS3StorageCache.CreateIfNotExists(options, S3CannedACL.Private);
+            })
+            .SetCache<AWSS3StorageCache>();
     }
 
     public static void RegisterStorageServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDefaultAWSOptions(configuration.GetAWSOptions());
         services.AddAWSService<IAmazonS3>();
-        services.AddSingleton<IStorageService, StorageService>();
+        services.AddSingleton<IStorageService, CloudStorageService>();
     }
 
     public static void RegisterWebServices(this IServiceCollection services)

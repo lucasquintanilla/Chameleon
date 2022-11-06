@@ -61,7 +61,7 @@ tutorial https://swimburger.net/blog/azure/setting-up-cloudflare-full-universal-
 
 - [ ] Doble envio de noticacion al OP cuando responden etiquetandolo en un comentario del propio post
 - [x] Fix buscador
-- [ ] Logs en Azure
+- [x] Logs en AWS
 - [ ] Mejorar performance home
 - [ ] Separar front del back
 - [ ] Implementar PWA
@@ -75,12 +75,12 @@ tutorial https://swimburger.net/blog/azure/setting-up-cloudflare-full-universal-
 - [ ] Implementar hosting de imagenes en servicios externos
 - [ ] Fix Light Mode
 - [ ] Implementar >hide
-- [ ] Migrar a .NET 6
+- [x] Migrar a .NET 6
 - [ ] Agregar tests
 
 # Tecnologias
 
-- ASP .NET Core 3.1
+- .NET 6
 - Entity Framework Core
 - MySQL
 - Sqlite
@@ -93,6 +93,7 @@ tutorial https://swimburger.net/blog/azure/setting-up-cloudflare-full-universal-
 
 - Coding First
 - Generic Repository Pattern
+- DI
 
 # Ejemplos voxed.net
 

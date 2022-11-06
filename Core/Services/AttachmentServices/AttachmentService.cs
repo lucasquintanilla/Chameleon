@@ -1,5 +1,6 @@
 ﻿using Core.Entities;
 using Core.Extensions;
+using Core.Services.Storage;
 using Core.Shared.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
@@ -34,16 +35,16 @@ namespace Core.Services.AttachmentServices
             _storageService = storageService;
         }
 
-        public async Task<Attachment> ProcessAttachment(VoxedAttachment uploadData, IFormFile file)
+        public async Task<Attachment> ProcessAttachment(VoxedAttachment voxedAttachment, IFormFile file)
         {
-            if (uploadData == null && file == null) return null;
+            if (voxedAttachment == null && file == null) return null;
 
-            if (uploadData.HasData())
+            if (voxedAttachment.HasData())
             {
-                return uploadData.Extension switch
+                return voxedAttachment.Extension switch
                 {
-                    VoxedAttachmentExtension.Youtube => await SaveFromYoutube(uploadData.ExtensionData),
-                    VoxedAttachmentExtension.Base64 => SaveFromBase64(uploadData.ExtensionData),
+                    VoxedAttachmentExtension.Youtube => await SaveFromYoutube(voxedAttachment.ExtensionData),
+                    VoxedAttachmentExtension.Base64 => SaveFromBase64(voxedAttachment.ExtensionData),
                     _ => throw new NotImplementedException("Invalid file extension"),
                 };
             }
@@ -53,7 +54,6 @@ namespace Core.Services.AttachmentServices
                 return null;
             }
 
-            ValidateFile(file);
 
             return await SaveFromFile(file);
         }
@@ -79,7 +79,6 @@ namespace Core.Services.AttachmentServices
         {
             if (file == null) throw new ArgumentNullException(nameof(file));
 
-            //var originalFilename = GetNormalizedFileName(hash, file.GetFileExtension());
             var originalFilename = GetNormalizedFileName(".jpg");
             var originalFilePath = Path.Combine(_config.WebRootPath, _config.MediaFolderName, originalFilename);
 
@@ -101,7 +100,7 @@ namespace Core.Services.AttachmentServices
             file.SaveCompressedAsJpeg(originalFilePath);
 
             //test
-            await _storageService.PutObject(file.OpenReadStream());
+            await _storageService.Upload(file.OpenReadStream());
             return GetLocalMediaResponse(originalFilename, thumbnailFilename, AttachmentType.Image);
         }
 

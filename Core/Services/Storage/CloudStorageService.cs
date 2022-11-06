@@ -4,18 +4,18 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Core.Services;
+namespace Core.Services.Storage;
 
-public class StorageService : IStorageService
+public class CloudStorageService : IStorageService
 {
     private readonly IAmazonS3 _s3Client;
 
-    public StorageService(IAmazonS3 s3Client)
+    public CloudStorageService(IAmazonS3 s3Client)
     {
         _s3Client = s3Client;
     }
 
-    public async Task PutObject(Stream stream)
+    public async Task Upload(Stream stream)
     {
         var request = new PutObjectRequest()
         {
@@ -30,5 +30,5 @@ public class StorageService : IStorageService
 
 public interface IStorageService
 {
-    Task PutObject(Stream stream);
+    Task Upload(Stream stream);
 }
