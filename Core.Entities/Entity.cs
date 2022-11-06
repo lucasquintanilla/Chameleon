@@ -8,5 +8,6 @@ namespace Core.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; init; } = Guid.NewGuid();
         public DateTimeOffset CreatedOn { get; init; } = DateTimeOffset.Now;
+        public DateTimeOffset UpdatedOn { get; set; } = DateTimeOffset.Now;
     }
 }

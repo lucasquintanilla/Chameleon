@@ -1,7 +1,5 @@
 ﻿using Core.Data.Filters;
 using Core.Data.Repositories;
-using Core.Entities;
-using Core.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -24,7 +22,6 @@ namespace Voxed.WebApp.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IVoxedRepository _voxedRepository;
-        private static IEnumerable<Vox> _lastestVoxs = new List<Vox>();
 
         public HomeController(
             ILogger<HomeController> logger,
@@ -32,34 +29,6 @@ namespace Voxed.WebApp.Controllers
         {
             _logger = logger;
             _voxedRepository = voxedRepository;
-        }
-
-        [HttpGet("v1/voxs")]
-        public async Task<IActionResult> Voxs()
-        {
-            if (!_lastestVoxs.Any())
-            {
-                var filter = new VoxFilter() { Categories = Categories.DefaultCategories };
-                _lastestVoxs = await _voxedRepository.Voxs.GetByFilterAsync(filter);
-            }
-
-            return Ok(VoxedMapper.Map(_lastestVoxs));
-        }
-
-        [HttpGet("v1/vox/{hash}")]
-        public async Task<IActionResult> Vox(string id)
-        {
-            if (id == null) return BadRequest();
-
-            var voxId = GuidConverter.FromShortString(id);
-
-            var vox = await _voxedRepository.Voxs.GetById(voxId);
-
-            if (vox == null) return NotFound();
-
-            if (vox.State == VoxState.Deleted) return NotFound();
-
-            return Ok(vox);
         }
 
         public async Task<IActionResult> Index()
@@ -188,20 +157,19 @@ namespace Voxed.WebApp.Controllers
 
             HttpContext.Request.Cookies.TryGetValue(CookieName.Subscriptions, out string subscriptionsCookie);
 
-            if (subscriptionsCookie == null)
+            if (subscriptionsCookie is not null)
             {
-                var result = JsonConvert.SerializeObject(Categories.DefaultCategories.Select(category => category.ToString()), new JsonSerializerSettings() { StringEscapeHandling = StringEscapeHandling.EscapeHtml });
-                HttpContext.Response.Cookies.Append(CookieName.Subscriptions, result, new Microsoft.AspNetCore.Http.CookieOptions()
-                {
-                    Expires = DateTimeOffset.MaxValue
-                });
-
-                return Categories.DefaultCategories;
+                return JsonConvert.DeserializeObject<List<int>>(subscriptionsCookie);
             }
 
-            var subscriptions = JsonConvert.DeserializeObject<List<int>>(subscriptionsCookie);
-            return subscriptions;
+            var userCategories = Categories.DefaultCategories;
+            var subscriptionsCookieValue = JsonConvert.SerializeObject(userCategories.Select(categoryId => categoryId.ToString()), new JsonSerializerSettings() { StringEscapeHandling = StringEscapeHandling.EscapeHtml });
+            HttpContext.Response.Cookies.Append(CookieName.Subscriptions, subscriptionsCookieValue, new Microsoft.AspNetCore.Http.CookieOptions()
+            {
+                Expires = DateTimeOffset.MaxValue
+            });
 
+            return userCategories;
         }
 
         private List<string> GetUserHiddenWords()

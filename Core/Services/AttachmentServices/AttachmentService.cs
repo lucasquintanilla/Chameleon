@@ -93,6 +93,7 @@ public class AttachmentService : IAttachmentService
             Url = $"https://www.youtube.com/watch?v={videoId}",
             ThumbnailUrl = $"/post-attachments/{thumbnail.Key}",
             Type = AttachmentType.YouTube,
+            ExternalUrl = $"https://www.youtube.com/watch?v={videoId}"
         };
     }
 

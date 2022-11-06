@@ -1,31 +1,29 @@
 ﻿using Core.Data.Repositories;
+using Core.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-//using Voxed.WebApp.Data;
 
 namespace Voxed.WebApp.Views.Shared.Components.CategoriesDropdown
 {
     public class CategoriesDropdownViewComponent : ViewComponent
     {
-        private readonly IVoxedRepository voxedRepository;
+        private readonly IVoxedRepository _voxedRepository;
+        private static IEnumerable<Category> _categories;
 
         public CategoriesDropdownViewComponent(
             IVoxedRepository voxedRepository)
         {
-            this.voxedRepository = voxedRepository;
+            _voxedRepository = voxedRepository;
         }
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            //var categories = await voxedRepository.Categories.GetAll();
-            //return View(categories);
-            await Task.Run(() => Console.WriteLine());
-            return View();
-
+            _categories = _categories ?? await _voxedRepository.Categories.GetAll();
+            return View(_categories);
         }
     }
 }

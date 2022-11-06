@@ -34,11 +34,17 @@ namespace Core.Data.EF.Sqlite.Migrations
                     b.Property<string>("Key")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("ThumbnailKey")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("ThumbnailUrl")
                         .IsUnicode(true)
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Type")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("UpdatedOn")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Url")
@@ -116,6 +122,9 @@ namespace Core.Data.EF.Sqlite.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Type")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("UpdatedOn")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("UserAgent")
@@ -196,6 +205,9 @@ namespace Core.Data.EF.Sqlite.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<int>("OptionBVotes")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("UpdatedOn")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -329,6 +341,9 @@ namespace Core.Data.EF.Sqlite.Migrations
                     b.Property<bool>("IsHidden")
                         .HasColumnType("INTEGER");
 
+                    b.Property<long>("UpdatedOn")
+                        .HasColumnType("INTEGER");
+
                     b.Property<Guid>("UserId")
                         .IsUnicode(true)
                         .HasColumnType("TEXT");
@@ -388,6 +403,9 @@ namespace Core.Data.EF.Sqlite.Migrations
                         .HasMaxLength(100)
                         .IsUnicode(true)
                         .HasColumnType("TEXT");
+
+                    b.Property<long>("UpdatedOn")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("UserAgent")
                         .HasMaxLength(500)

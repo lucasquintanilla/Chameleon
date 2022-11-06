@@ -22,8 +22,5 @@ namespace Core.Entities
         public string IpAddress { get; set; }
         public Attachment Attachment { get; set; }
         public User Owner { get; set; }
-        
-        //public string Country { get; set; }
-        //public ICollection<Comment> Replies { get; set; }
     }
 }

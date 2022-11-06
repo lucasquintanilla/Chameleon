@@ -31,10 +31,6 @@ namespace Core.Data.EF
             await InitiliazeRoles();
 
             await InitializeUsers();
-
-            //InitializeVoxs();
-
-            //InitializeComments();
         }
 
         private async Task InitializeTables()
@@ -102,75 +98,9 @@ namespace Core.Data.EF
             }
         }
 
-        private void InitializeComments()
-        {
-            //if (context.Comments.Any())
-            //{
-            //    return;   // DB has been seeded
-            //}
-
-            //var voxs = context.Voxs.ToList();
-
-            //foreach (var vox in voxs)
-            //{
-            //    vox.Comments.Add(new Comment
-            //    {
-            //        //Hash = 
-            //        Content = "Esto es un comentario a ver que onda",
-            //        Bump = DateTimeOffset.Now,
-            //        Media = new Media
-            //        {
-            //            Url = "http://web.archive.org/web/20200816001928im_/https://upload.voxed.net/thumb_8V4XHRrdXGrWaOtVhWnY.jpg",
-            //            ThumbnailUrl = "http://web.archive.org/web/20200816001928im_/https://upload.voxed.net/thumb_8V4XHRrdXGrWaOtVhWnY.jpg",
-            //            MediaType = MediaType.Image
-            //        },
-            //        UserID = vox.UserID
-            //    });
-            //}
-
-            //context.SaveChanges();
-        }
-
-        private void InitializeVoxs()
-        {
-            if (_context.Voxs.Any())
-            {
-                return;   // DB has been seeded
-            }
-
-            //var vox = new Vox
-            //{
-            //    Title = "¿Nuevo en Voxed?",
-            //    Content = "Contenido",
-            //    CategoryID = 1,
-            //    State = VoxState.Normal,
-            //    Media = new Media
-            //    {
-            //        Url = "http://web.archive.org/web/20200816001928im_/https://upload.voxed.net/thumb_8V4XHRrdXGrWaOtVhWnY.jpg",
-            //        MediaType = MediaType.Image
-            //    },
-            //    User = new User()
-            //    {
-            //        Username = "Anonimo"
-            //    }
-            //};
-
-            //var voxs = new List<Vox>() { vox };
-
-            //foreach (var item in voxs)
-            //{
-            //    context.Voxes.Add(item);
-            //}
-
-            //context.SaveChanges();
-        }
-
         private async Task InitializeCategories()
         {
-            if (await _context.Categories.AnyAsync())
-            {
-                return;   // DB has been seeded
-            }
+            if (await _context.Categories.AnyAsync()) return; // DB has been seeded
 
             var categories = new Category[]
             {

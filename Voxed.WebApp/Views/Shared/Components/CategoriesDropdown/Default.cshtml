@@ -1,50 +1,25 @@
-﻿@*@model IEnumerable<Voxed.WebApp.Models.Category>*@
+﻿@using Core.Entities
+@model IEnumerable<Category>
 
 @*<select name="CategoryId">
         <option value="" selected="selected" disabled="disabled">Elige una categoría</option>
 
-        @foreach (var item in Model)
+        @foreach (var category in Model)
         {
-            <option value="@item.ID">@item.Name</option>
+            <option value="@category.Id">@category.Name</option>
         }
-    </select>*@
+</select>*@
 
 <select name="niche">
-    <option disabled="disabled" selected="selected" value="0">Elige una categoría</option>
-    <option value="1">Anime</option>
-    <option value="29">Arte</option>
-    <option value="28">Autos y Motos</option>
-    <option value="27">Ciencia</option>
-    <option value="26">Cine</option>
-    <option value="25">Consejos</option>
-    <option value="24">Deportes</option>
-    <option value="23">Download</option>
-    <option value="22">Economia</option>
-    <option value="3">GTB</option>
-    <option value="21">Gastronomia</option>
-    <option value="20">General</option>
-    <option value="19">Historias</option>
-    <option value="18">Humanidad</option>
-    <option value="17">Humor</option>
-    <option value="30">Juegos</option>
-    <option value="16">Literatura</option>
-    <option value="14">Lugares</option>
-    <option value="13">Musica</option>
-    <option value="12">Noticias</option>
-    <option value="11">Paranormal</option>
-    <option value="10">Politica</option>
-    <option value="2">Porno</option>
-    <option value="9">Preguntas</option>
-    <option value="8">Programacion</option>
-    <option value="15">Random</option>
-    <option value="7">Salud</option>
-    <option value="31">Sexy</option>
-    <option value="6">Tecnologia</option>
-    <option value="5">Videos (webm)</option>
-    <option value="4">Youtubers</option>
+        <option disabled="disabled" selected="selected" value="0">Elige una categoría</option>
+
+        @foreach (var category in Model)
+        {
+            <option value="@category.Id">@category.Name</option>
+        }
 </select>
 
-@*<select data-val="true" data-val-required="Debe seleccionar una categoria." id="CategoryID" name="CategoryID">
+@*<select name="niche">
     <option disabled="disabled" selected="selected" value="0">Elige una categoría</option>
     <option value="1">Anime</option>
     <option value="29">Arte</option>
@@ -78,38 +53,3 @@
     <option value="5">Videos (webm)</option>
     <option value="4">Youtubers</option>
 </select>*@
-
-@*<select name="niche">
-        <option value="" selected="selected" disabled="disabled">Elige una categoría</option>
-        <option value="3">Anime</option>
-        <option value="4">Arte</option>
-        <option value="25">Autos y Motos</option>
-        <option value="18">Ciencia</option>
-        <option value="5">Cine y TV</option>
-        <option value="21">Consejos</option>
-        <option value="6">Deportes</option>
-        <option value="17">Descargas</option>
-        <option value="23">Economia</option>
-        <option value="24">Gastronomia</option>
-        <option value="2">General</option>
-        <option value="8">Historias</option>
-        <option value="16">Humanidades</option>
-        <option value="9">Humor</option>
-        <option value="7">Juegos</option>
-        <option value="22">Literatura</option>
-        <option value="19">Lugares</option>
-        <option value="10">Musica</option>
-        <option value="11">Noticias</option>
-        <option value="12">Paranormal</option>
-        <option value="13">Politica</option>
-        <option value="1">Preguntas</option>
-        <option value="32">Programacion</option>
-        <option value="20">Salud</option>
-        <option value="15">Tecnología</option>
-        <option value="33">Videos (webm)</option>
-        <option value="26">Youtubers</option>
-        <option value="30">GTB</option>
-        <option value="28">Porno</option>
-        <option value="29">Random</option>
-        <option value="31">Sexy</option>
-    </select>*@
