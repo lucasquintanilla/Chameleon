@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.Processing;
 using System;
 using System.IO;
@@ -22,6 +23,26 @@ namespace Core.Extensions
             image.Mutate(x => x.Resize(options));
             image.Metadata.ExifProfile = null;
             image.SaveAsJpeg(outputPath);
+        }
+
+        public static Stream GenerateThumbnail(this Stream stream)
+        {
+            using var image = Image.Load(stream);
+            var options = new ResizeOptions
+            {
+                Size = new Size(size, size),
+                Mode = ResizeMode.Max
+            };
+            image.Mutate(x => x.Resize(options));
+            image.Metadata.ExifProfile = null;
+            var output = new MemoryStream();
+
+            var encoder = new JpegEncoder()
+            {
+                Quality = 30 //Use variable to set between 5-30 based on your requirements
+            };
+            image.SaveAsync(output, encoder);
+            return output;
         }
 
         public static async Task SaveAsync(this IFormFile file, string path)

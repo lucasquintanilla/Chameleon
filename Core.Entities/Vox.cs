@@ -5,13 +5,13 @@ namespace Core.Entities
 {
     public enum VoxState { Active, Deleted, Reported }
 
-    public class Vox : Entity, IHasAttachment
+    public class Vox : Entity
     {
         public string Title { get; set; }
         public string Content { get; set; }
         public int CategoryId { get; set; }
         public Guid UserId { get; set; }
-        public Guid MediaId { get; set; }
+        public Guid AttachmentId { get; set; }
         public VoxState State { get; set; }
         public bool IsSticky { get; set; }
         public DateTimeOffset Bump { get; set; } = DateTimeOffset.Now;

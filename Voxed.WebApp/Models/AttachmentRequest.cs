@@ -22,23 +22,9 @@ namespace Voxed.WebApp.Models
             return JsonConvert.DeserializeObject<VoxedAttachment>(UploadData);
         }
 
-        public IFormFile GetFormFile()
+        public bool HasAttachment()
         {
-            if (File is not null)
-            {
-                return File;
-            }
-
-            var attachment = JsonConvert.DeserializeObject<VoxedAttachment>(UploadData);
-            var stream = attachment.ExtensionData.GetStreamFromBase64();
-            var dic = new Dictionary<string, StringValues>();
-            dic.Add("Content-Type", "image/jpg");
-            dic.Add("Content-Disposition", "form-data; name=\"file\"; filename=\"image.jpg\"");
-            return new FormFile(stream, 0, stream.Length, "file", $"{Guid.NewGuid()}.jpg")
-            {
-                Headers = new HeaderDictionary(dic),
-                ContentType = MediaTypeNames.Image.Jpeg
-            };
+            return GetVoxedAttachment().HasData() || File is not null;
         }
     }
 }

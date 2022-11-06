@@ -52,7 +52,7 @@ namespace Voxed.WebApp.Services
                 Title = request.Title,
                 Content = _formatterService.Format(request.Content),
                 CategoryId = request.Niche,
-                MediaId = attachment.Id,
+                AttachmentId = attachment.Id,
                 //IpAddress = UserIpAddress,
                 //UserAgent = UserAgent
             };

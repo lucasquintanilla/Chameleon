@@ -5,11 +5,7 @@ using Core.Shared.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using System;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
-using Xabe.FFmpeg;
 
 namespace Core.Services.AttachmentServices;
 
@@ -31,7 +27,6 @@ public class AttachmentService : IAttachmentService
     {
         _config = options.Value;
         _youtubeService = youtubeService;
-        Initialize();
         _storageService = storageService;
     }
 
@@ -39,62 +34,23 @@ public class AttachmentService : IAttachmentService
     {
         if (voxedAttachment == null && file == null) return null;
 
-        if (voxedAttachment.HasData())
+        return voxedAttachment.Extension switch
         {
-            return voxedAttachment.Extension switch
-            {
-                VoxedAttachmentExtension.Youtube => await SaveFromYoutube(voxedAttachment.ExtensionData),
-                VoxedAttachmentExtension.Base64 => SaveFromBase64(voxedAttachment.ExtensionData),
-                _ => throw new NotImplementedException("Invalid file extension"),
-            };
-        }
-
-        if (file == null)
-        {
-            return null;
-        }
-
-
-        return await SaveFromFile(file);
+            VoxedAttachmentExtension.Youtube => await SaveFromYoutube(voxedAttachment.ExtensionData),
+            VoxedAttachmentExtension.Base64 => await SaveFromBase64(voxedAttachment.ExtensionData),
+            VoxedAttachmentExtension.Gif => await SaveImageFromFile(file),
+            VoxedAttachmentExtension.Jpg => await SaveImageFromFile(file),
+            VoxedAttachmentExtension.Jpeg => await SaveImageFromFile(file),
+            VoxedAttachmentExtension.Png => await SaveImageFromFile(file),
+            VoxedAttachmentExtension.WebP => await SaveImageFromFile(file),
+            _ => throw new NotImplementedException("Invalid file extension"),
+        };
     }
 
-    private void Initialize()
+    private async Task<Attachment> SaveImageFromFile(IFormFile file)
     {
-        FFmpeg.SetExecutablesPath(Path.Combine(_config.WebRootPath, _config.FFmpegPath));
+        if (file == null) return null;
 
-        Directory.CreateDirectory(Path.Combine(_config.WebRootPath, _config.MediaFolderName));
-    }
-
-    private async Task<Attachment> SaveFromFile(IFormFile file)
-    {
-        if (file == null) throw new ArgumentNullException(nameof(file));
-
-        var originalFilename = GetNormalizedFileName(".jpg");
-        var originalFilePath = Path.Combine(_config.WebRootPath, _config.MediaFolderName, originalFilename);
-
-        var thumbnailFilename = GetNormalizedFileName(".webp");
-        var thumbnailFilePath = Path.Combine(_config.WebRootPath, _config.MediaFolderName, thumbnailFilename);
-
-        if (file.IsGif())
-        {
-            //CONVERT AND SAVE GIF TO WEBP
-            //ConvertoAndSaveToWebp(file, filePath);                
-
-            await SaveGifThumbnail(file, thumbnailFilePath);
-            await file.SaveAsync(originalFilePath);
-
-            return GetLocalMediaResponse(originalFilename, thumbnailFilename, AttachmentType.Gif);
-        }
-
-        file.SaveThumbnailAsWebP(thumbnailFilePath);
-        file.SaveCompressedAsJpeg(originalFilePath);
-
-        //test
-
-        //var att = new Attachment()
-        //{
-            
-        //}
         var original = new StorageObject()
         {
             Key = Guid.NewGuid() + file.GetFileExtension(),
@@ -103,155 +59,69 @@ public class AttachmentService : IAttachmentService
         };
         await _storageService.Save(original);
 
-        //return new Attachment
-        //{
-        //    Url = $"/post-attachments/{original.Key}",
-        //    ThumbnailUrl = $"/{_config.MediaFolderName}/{thumbnailFilename}",
-        //    Type = AttachmentType.Image,
-        //    //new
-        //    Key = original.Key,
-        //    ContentType = original.ContentType,
-        //};
-        return GetLocalMediaResponse(originalFilename, thumbnailFilename, AttachmentType.Image);
+        var thumbnail = new StorageObject()
+        {
+            Key = "thumbnails/" + Guid.NewGuid() + ".jpeg",
+            Stream = file.OpenReadStream().GenerateThumbnail(),
+            ContentType = file.ContentType
+        };
+        await _storageService.Save(thumbnail);
+
+        return new Attachment
+        {
+            Url = $"/post-attachments/{original.Key}",
+            ThumbnailUrl = $"/post-attachments/{thumbnail.Key}",
+            Type = AttachmentType.Image,
+            //new
+            Key = original.Key,
+            ContentType = original.ContentType,
+        };
     }
 
     private async Task<Attachment> SaveFromYoutube(string videoId)
     {
-        var thumbnailFilename = await GenerateYoutubeThumbnail(videoId);
+        var thumbnail = new StorageObject()
+        {
+            Key = "thumbnails/" + Guid.NewGuid() + ".jpeg",
+            Stream = await _youtubeService.GetYoutubeThumbnailStream(videoId),
+            ContentType = "image/jpeg"
+        };
+        await _storageService.Save(thumbnail);
 
-        return new Attachment()
+        return new Attachment
         {
             Url = $"https://www.youtube.com/watch?v={videoId}",
-            ThumbnailUrl = $"/{_config.MediaFolderName}/" + thumbnailFilename,
+            ThumbnailUrl = $"/post-attachments/{thumbnail.Key}",
             Type = AttachmentType.YouTube,
         };
     }
 
-    private Attachment SaveFromBase64(string base64)
+    private async Task<Attachment> SaveFromBase64(string base64)
     {
-        var originalFilename = GetNormalizedFileName(".jpg");
-        var originalFilePath = GetFilePath(originalFilename);
-
-        var thumbnailFilename = GetNormalizedFileName(".webp");
-        var thumbnailFilePath = GetFilePath(thumbnailFilename);
-
-        base64.SaveAsJpegFromBase64(originalFilePath);
-        base64.SaveThumbnailAsWebPFromBase64(thumbnailFilePath);
-
-        return GetLocalMediaResponse(originalFilename, thumbnailFilename, AttachmentType.Image);
-    }
-
-    private string GetFilePath(string filename)
-    {
-        return Path.Combine(_config.WebRootPath, _config.MediaFolderName, filename);
-    }
-
-    private async Task<bool> SaveGifThumbnail(IFormFile file, string path)
-    {
-        var tempPath = CreateTempAndClear();
-        var inputFilePath = SaveFile(file, tempPath);
-
-        var result = await FFmpeg.Conversions.FromSnippet.Snapshot(inputFilePath,
-                                           path,
-                                           TimeSpan.FromSeconds(0))
-                                            .Result.Start();
-
-        return true;
-
-        //var command = string.Format($"-i {inputFilePath} -vsync 0 {outputFilePath}");
-        //using (var process = Process.Start(ffmpegPath, command))
-        //{
-        //    process.WaitForExit();
-        //    if (process.ExitCode == 0)
-        //    {
-        //        return true;
-        //    }
-        //}
-
-        //throw new Exception("Error al guardar thumbnail.");
-    }
-
-    public bool ConvertoAndSaveToWebp(IFormFile gifFile, string outputFilePath)
-    {
-        var tempPath = CreateTempAndClear();
-        var inputFilePath = SaveFile(gifFile, tempPath);
-
-        //RESOURCES
-        //https://medium.com/pinterest-engineering/improving-gif-performance-on-pinterest-8dad74bf92f1
-        //ffmpeg -i $gifPath -movflags faststart -pix_fmt yuv420p -vf “scale=trunc(iw/2)*2:trunc(ih/2)*2” -c:v libx264 $videoPath
-
-        //https://web.dev/replace-gifs-with-videos/
-        //ffmpeg -i my-animation.gif -c vp9 -b:v 0 -crf 41 my-animation.webm
-
-        //var command = $"-i {inputFilePath} -vcodec libwebp -lossless 0 -qscale 75 -preset default -loop 0 -vf scale=320:-1,fps=15 -an -vsync 0 {outputFilePath}";
-
-
-        var command = string.Format($"-i {inputFilePath} -b:v 0 -crf 25 -loop 0 {outputFilePath}");
-        using (var process = Process.Start(_config.FFmpegPath, command))
+        var original = new StorageObject()
         {
-            process.WaitForExit();
-            if (process.ExitCode == 0)
-            {
-                return true;
-            }
-        }
+            Key = Guid.NewGuid() + ".jpeg",
+            Stream = base64.GetStreamFromBase64(),
+            ContentType = "image/jpeg"
+        };
+        await _storageService.Save(original);
 
-        return false;
-    }
-
-    private string SaveFile(IFormFile gifFile, string tempPath)
-    {
-        string inputFileName = "input.gif";
-        var inputFilePath = Path.Combine(tempPath, inputFileName); // Unique filename
-        using (var fileStream = gifFile.OpenReadStream())
-        using (var stream = new FileStream(inputFilePath, FileMode.CreateNew))
+        var thumbnail = new StorageObject()
         {
-            fileStream.CopyTo(stream);
-        }
-        return inputFilePath;
-    }
+            Key = "thumbnails/" + Guid.NewGuid() + ".jpeg",
+            Stream = base64.GetStreamFromBase64().GenerateThumbnail(),
+            ContentType = "image/jpeg"
+        };
+        await _storageService.Save(thumbnail);
 
-    private string CreateTempAndClear()
-    {
-        var tempPath = Path.Combine(Path.GetTempPath(), "GifConverter");
-        try
-        {
-            if (!Directory.Exists(tempPath))
-                Directory.CreateDirectory(tempPath);
-            foreach (var file in Directory.GetFiles(tempPath))
-                File.Delete(file);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("An error occurred: '{0}'", ex);
-        }
-        return tempPath;
-    }
-
-    private async Task<string> GenerateYoutubeThumbnail(string videoId)
-    {
-        var stream = await _youtubeService.GetYoutubeThumbnailStream(videoId);
-
-        var thumbnailFilename = GetNormalizedFileName(".jpg");
-        var thumbnailFilePath = Path.Combine(_config.WebRootPath, _config.MediaFolderName, thumbnailFilename);
-
-        stream.SaveThumbnailAsJpeg(thumbnailFilePath);
-
-        return thumbnailFilename;
-    }
-
-    private Attachment GetLocalMediaResponse(string originalFilename, string thumbnailFilename, AttachmentType mediaType)
-    {
         return new Attachment
         {
-            Url = $"/{_config.MediaFolderName}/{originalFilename}",
-            ThumbnailUrl = $"/{_config.MediaFolderName}/{thumbnailFilename}",
-            Type = mediaType
+            Url = $"/post-attachments/{original.Key}",
+            ThumbnailUrl = $"/post-attachments/{thumbnail.Key}",
+            Type = AttachmentType.Image,
+            //new
+            Key = original.Key,
+            ContentType = original.ContentType,
         };
-    }
-
-    private string GetNormalizedFileName(string fileExtension)
-    {
-        return $"{DateTime.Now:yyyyMMdd}-{Guid.NewGuid()}{fileExtension}";
     }
 }

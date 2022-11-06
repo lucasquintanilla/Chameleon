@@ -69,7 +69,7 @@ namespace Voxed.WebApp.Controllers
             {
                 if (request.HasEmptyContent())
                 {
-                    _logger.LogWarning($"Request received has empty content");
+                    _logger.LogWarning($"Comment request received has empty content");
                     response.Swal = "Debes ingresar un contenido";
                     return response;
                 }
@@ -155,7 +155,7 @@ namespace Voxed.WebApp.Controllers
                 Style = StyleService.GetRandomCommentStyle(),
                 IpAddress = UserIpAddress,
                 UserAgent = UserAgent,
-                Attachment = await _attachmentService.ProcessAttachment(request.GetVoxedAttachment(), request.File)
+                Attachment = request.HasAttachment() ? await _attachmentService.ProcessAttachment(request.GetVoxedAttachment(), request.File) : null,
             };
 
             return comment;

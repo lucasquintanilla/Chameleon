@@ -16,7 +16,7 @@ namespace Core.Data.EF.EntityTypeConfigurations
                .IsRequired(true)
                .IsUnicode(true);
 
-            builder.Property(x => x.MediaId)
+            builder.Property(x => x.AttachmentId)
               .IsRequired(false)
               .IsUnicode(true);
 
@@ -36,7 +36,7 @@ namespace Core.Data.EF.EntityTypeConfigurations
             builder.HasOne(x => x.Attachment)
               .WithMany()
               //.OnDelete(DeleteBehavior.Restrict)
-              .HasForeignKey(x => x.MediaId);
+              .HasForeignKey(x => x.AttachmentId);
 
             builder.HasOne(x => x.Owner)
               .WithMany()

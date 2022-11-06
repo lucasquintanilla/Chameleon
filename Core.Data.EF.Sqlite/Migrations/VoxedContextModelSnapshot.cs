@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
+#nullable disable
+
 namespace Core.Data.EF.Sqlite.Migrations
 {
     [DbContext(typeof(VoxedContext))]
@@ -13,16 +15,24 @@ namespace Core.Data.EF.Sqlite.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("ProductVersion", "5.0.6");
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.10");
 
             modelBuilder.Entity("Core.Entities.Attachment", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("ContentType")
+                        .HasColumnType("TEXT");
+
                     b.Property<long>("CreatedOn")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("ExternalUrl")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Key")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("ThumbnailUrl")
                         .IsUnicode(true)
@@ -74,6 +84,10 @@ namespace Core.Data.EF.Sqlite.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid?>("AttachmentId")
+                        .IsUnicode(true)
+                        .HasColumnType("TEXT");
+
                     b.Property<long>("Bump")
                         .HasColumnType("INTEGER");
 
@@ -94,10 +108,6 @@ namespace Core.Data.EF.Sqlite.Migrations
 
                     b.Property<bool>("IsSticky")
                         .HasColumnType("INTEGER");
-
-                    b.Property<Guid?>("MediaId")
-                        .IsUnicode(true)
-                        .HasColumnType("TEXT");
 
                     b.Property<int>("State")
                         .HasColumnType("INTEGER");
@@ -122,10 +132,10 @@ namespace Core.Data.EF.Sqlite.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AttachmentId");
+
                     b.HasIndex("Hash")
                         .IsUnique();
-
-                    b.HasIndex("MediaId");
 
                     b.HasIndex("UserId");
 
@@ -190,7 +200,7 @@ namespace Core.Data.EF.Sqlite.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Polls");
+                    b.ToTable("Polls", (string)null);
                 });
 
             modelBuilder.Entity("Core.Entities.Role", b =>
@@ -217,7 +227,7 @@ namespace Core.Data.EF.Sqlite.Migrations
                         .IsUnique()
                         .HasDatabaseName("RoleNameIndex");
 
-                    b.ToTable("AspNetRoles");
+                    b.ToTable("AspNetRoles", (string)null);
                 });
 
             modelBuilder.Entity("Core.Entities.User", b =>
@@ -299,7 +309,7 @@ namespace Core.Data.EF.Sqlite.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
-                    b.ToTable("AspNetUsers");
+                    b.ToTable("AspNetUsers", (string)null);
                 });
 
             modelBuilder.Entity("Core.Entities.UserVoxAction", b =>
@@ -342,6 +352,10 @@ namespace Core.Data.EF.Sqlite.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid>("AttachmentId")
+                        .IsUnicode(true)
+                        .HasColumnType("TEXT");
+
                     b.Property<long>("Bump")
                         .HasColumnType("INTEGER");
 
@@ -357,19 +371,12 @@ namespace Core.Data.EF.Sqlite.Migrations
                     b.Property<long>("CreatedOn")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Hash")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("IpAddress")
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsSticky")
                         .HasColumnType("INTEGER");
-
-                    b.Property<Guid>("MediaId")
-                        .IsUnicode(true)
-                        .HasColumnType("TEXT");
 
                     b.Property<Guid?>("PollId")
                         .HasColumnType("TEXT");
@@ -392,14 +399,11 @@ namespace Core.Data.EF.Sqlite.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AttachmentId");
+
                     b.HasIndex("Bump");
 
                     b.HasIndex("CategoryId");
-
-                    b.HasIndex("Hash")
-                        .IsUnique();
-
-                    b.HasIndex("MediaId");
 
                     b.HasIndex("PollId");
 
@@ -427,7 +431,7 @@ namespace Core.Data.EF.Sqlite.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetRoleClaims");
+                    b.ToTable("AspNetRoleClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
@@ -449,7 +453,7 @@ namespace Core.Data.EF.Sqlite.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserClaims");
+                    b.ToTable("AspNetUserClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
@@ -472,7 +476,7 @@ namespace Core.Data.EF.Sqlite.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserLogins");
+                    b.ToTable("AspNetUserLogins", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
@@ -487,7 +491,7 @@ namespace Core.Data.EF.Sqlite.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetUserRoles");
+                    b.ToTable("AspNetUserRoles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
@@ -508,7 +512,7 @@ namespace Core.Data.EF.Sqlite.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("AspNetUserTokens");
+                    b.ToTable("AspNetUserTokens", (string)null);
                 });
 
             modelBuilder.Entity("Core.Entities.Category", b =>
@@ -526,7 +530,7 @@ namespace Core.Data.EF.Sqlite.Migrations
                 {
                     b.HasOne("Core.Entities.Attachment", "Attachment")
                         .WithMany()
-                        .HasForeignKey("MediaId");
+                        .HasForeignKey("AttachmentId");
 
                     b.HasOne("Core.Entities.User", "Owner")
                         .WithMany()
@@ -593,15 +597,15 @@ namespace Core.Data.EF.Sqlite.Migrations
 
             modelBuilder.Entity("Core.Entities.Vox", b =>
                 {
-                    b.HasOne("Core.Entities.Category", "Category")
+                    b.HasOne("Core.Entities.Attachment", "Attachment")
                         .WithMany()
-                        .HasForeignKey("CategoryId")
+                        .HasForeignKey("AttachmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Core.Entities.Attachment", "Attachment")
+                    b.HasOne("Core.Entities.Category", "Category")
                         .WithMany()
-                        .HasForeignKey("MediaId")
+                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

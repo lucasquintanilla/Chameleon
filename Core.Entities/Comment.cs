@@ -6,12 +6,12 @@ namespace Core.Entities
     public enum CommentType { Normal, Sticky }
     public enum CommentStyle { Black, Blue, Green, Multi, Red, White, Yellow } //invested
 
-    public class Comment : Entity, IHasAttachment
+    public class Comment : Entity
     {
         public string Hash { get; set; }
         public Guid VoxId { get; set; }
         public Guid UserId { get; set; }
-        public Guid? MediaId { get; set; }
+        public Guid? AttachmentId { get; set; }
         public string Content { get; set; }
         public DateTimeOffset Bump { get; set; } = DateTimeOffset.Now;
         public CommentState State { get; set; }

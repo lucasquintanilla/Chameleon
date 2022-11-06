@@ -15,7 +15,7 @@ namespace Core.Data.EF.EntityTypeConfigurations
 
             builder.HasIndex(x => x.Bump);
 
-            builder.Property(x => x.MediaId)
+            builder.Property(x => x.AttachmentId)
              .IsRequired(true)
              .IsUnicode(true);
 
@@ -38,7 +38,7 @@ namespace Core.Data.EF.EntityTypeConfigurations
             builder.HasOne(x => x.Attachment)
               .WithMany()
               //.OnDelete(DeleteBehavior.Restrict)
-              .HasForeignKey(x => x.MediaId);
+              .HasForeignKey(x => x.AttachmentId);
 
             builder.HasOne(x => x.Owner)
               .WithMany()

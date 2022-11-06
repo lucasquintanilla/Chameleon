@@ -51,9 +51,9 @@ namespace Voxed.WebApp.Controllers
 
                         comment.State = CommentState.Deleted;
 
-                        if (comment.MediaId.HasValue)
+                        if (comment.AttachmentId.HasValue)
                         {
-                            await BanMedia(comment.MediaId.Value);
+                            await BanMedia(comment.AttachmentId.Value);
                         }
 
                         await UpdateVoxLastBump(comment);
@@ -69,7 +69,7 @@ namespace Voxed.WebApp.Controllers
                             NotFound();
                         }
 
-                        await BanMedia(vox.MediaId);
+                        await BanMedia(vox.AttachmentId);
 
                         vox.State = VoxState.Deleted;
                         await _voxedRepository.SaveChangesAsync();
