@@ -1,6 +1,6 @@
 # Voxed
 
-Es un proyecto de codigo abierto escrito en ASP .NET Core 3.1
+Es un proyecto de codigo abierto escrito en .NET 6
 
 > https://voxed.club
 
@@ -103,7 +103,7 @@ tutorial https://swimburger.net/blog/azure/setting-up-cloudflare-full-universal-
 
 ### Add Migration
 
-1. Select data base provider from appsettings.json
+1. Especificar database provider from appsettings.json
 2. Desde command console seleccionar Assembly donde guardar las migraciones
 2. Ejecutar comando migracion 
 

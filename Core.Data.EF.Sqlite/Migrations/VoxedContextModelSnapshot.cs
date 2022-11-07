@@ -72,6 +72,9 @@ namespace Core.Data.EF.Sqlite.Migrations
                         .IsUnicode(true)
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("Nsfw")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("ShortName")
                         .IsRequired()
                         .HasMaxLength(50)

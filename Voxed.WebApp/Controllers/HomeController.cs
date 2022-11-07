@@ -47,7 +47,7 @@ namespace Voxed.WebApp.Controllers
             var filter = new VoxFilter()
             {
                 UserId = User.GetLoggedInUserId<Guid?>(),
-                Categories = GetUserCategorySubscriptions(),
+                Categories = await GetUserCategorySubscriptions(),
                 IncludeHidden = false,
                 HiddenWords = GetUserHiddenWords()
             };
@@ -152,7 +152,7 @@ namespace Voxed.WebApp.Controllers
             return View("board", board);
         }
 
-        private IEnumerable<int> GetUserCategorySubscriptions()
+        private async Task<IEnumerable<int>> GetUserCategorySubscriptions()
         {
 
             HttpContext.Request.Cookies.TryGetValue(CookieName.Subscriptions, out string subscriptionsCookie);
@@ -163,13 +163,14 @@ namespace Voxed.WebApp.Controllers
             }
 
             var userCategories = Categories.DefaultCategories;
+            //var userCategories = (await _voxedRepository.Categories.Find(x => !x.Nsfw)).Select(x=>x.Id);
             var subscriptionsCookieValue = JsonConvert.SerializeObject(userCategories.Select(categoryId => categoryId.ToString()), new JsonSerializerSettings() { StringEscapeHandling = StringEscapeHandling.EscapeHtml });
             HttpContext.Response.Cookies.Append(CookieName.Subscriptions, subscriptionsCookieValue, new Microsoft.AspNetCore.Http.CookieOptions()
             {
                 Expires = DateTimeOffset.MaxValue
             });
 
-            return userCategories;
+            return await Task.FromResult(userCategories);
         }
 
         private List<string> GetUserHiddenWords()

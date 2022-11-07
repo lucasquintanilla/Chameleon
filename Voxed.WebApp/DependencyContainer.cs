@@ -41,21 +41,21 @@ public static class DependencyContainer
                 //.UseLoggerFactory(ContextLoggerFactory),
 
 
-                //nameof(SqlProvider.MySql) => options
-                //.UseMySql(
-                //    configuration.GetConnectionString(nameof(SqlProvider.MySql)),
-                //    ServerVersion.AutoDetect(configuration.GetConnectionString(nameof(SqlProvider.MySql))),
-                //    x => x.MigrationsAssembly(typeof(MySqlVoxedContext).Assembly.GetName().Name)),
-                ////.UseLoggerFactory(ContextLoggerFactory),
-
-
-
                 nameof(SqlProvider.MySql) => options
-               .UseMySql(
-                   Helpers.GetRDSConnectionString(configuration),
-                   ServerVersion.AutoDetect(Helpers.GetRDSConnectionString(configuration)),
-                   x => x.MigrationsAssembly(typeof(MySqlVoxedContext).Assembly.GetName().Name)),
+                .UseMySql(
+                    configuration.GetConnectionString(nameof(SqlProvider.MySql)),
+                    ServerVersion.AutoDetect(configuration.GetConnectionString(nameof(SqlProvider.MySql))),
+                    x => x.MigrationsAssembly(typeof(MySqlVoxedContext).Assembly.GetName().Name)),
                 //.UseLoggerFactory(ContextLoggerFactory),
+
+
+
+                // nameof(SqlProvider.MySql) => options
+                //.UseMySql(
+                //    Helpers.GetRDSConnectionString(configuration),
+                //    ServerVersion.AutoDetect(Helpers.GetRDSConnectionString(configuration)),
+                //    x => x.MigrationsAssembly(typeof(MySqlVoxedContext).Assembly.GetName().Name)),
+                // //.UseLoggerFactory(ContextLoggerFactory),
 
                 _ => throw new Exception($"Unsupported provider: {provider}")
             });
