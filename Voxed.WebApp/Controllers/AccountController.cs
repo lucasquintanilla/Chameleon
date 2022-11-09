@@ -126,7 +126,6 @@ namespace Voxed.WebApp.Controllers
                 Status = false,
                 Swal = result.Errors.FirstOrDefault().Description
             };
-
         }
 
         [HttpGet]

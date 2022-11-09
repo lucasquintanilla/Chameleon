@@ -54,7 +54,7 @@ public class AttachmentService : IAttachmentService
         var original = new StorageObject()
         {
             Key = Guid.NewGuid() + file.GetFileExtension(),
-            Stream = file.OpenReadStream(),
+            Stream = file.OpenReadStream().Compress(),
             ContentType = file.ContentType
         };
         await _storageService.Save(original);

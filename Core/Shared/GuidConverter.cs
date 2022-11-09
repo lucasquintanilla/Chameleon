@@ -2,9 +2,9 @@
 
 namespace Core.Shared
 {
-    public class GuidConverter
+    public static class GuidConverter
     {
-        public static string ToShortString(Guid guid)
+        public static string ToShortString(this Guid guid)
         {
             var base64Guid = Convert.ToBase64String(guid.ToByteArray());
 

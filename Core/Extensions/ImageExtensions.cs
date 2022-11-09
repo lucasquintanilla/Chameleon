@@ -1,36 +1,22 @@
-﻿using Microsoft.AspNetCore.Http;
-using SixLabors.ImageSharp;
+﻿using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.Processing;
 using System;
 using System.IO;
-using System.Threading.Tasks;
 
 namespace Core.Extensions
 {
     public static class ImageExtensions
     {
-        const int size = 256;
+        const int thumbnailSize = 256;
+        const int fullscreenSize = 1000;
 
-        public static void SaveThumbnailAsJpeg(this Stream stream, string outputPath)
+        public static Stream Compress(this Stream stream)
         {
             using var image = Image.Load(stream);
             var options = new ResizeOptions
             {
-                Size = new Size(size, size),
-                Mode = ResizeMode.Max
-            };
-            image.Mutate(x => x.Resize(options));
-            image.Metadata.ExifProfile = null;
-            image.SaveAsJpeg(outputPath);
-        }
-
-        public static Stream GenerateThumbnail(this Stream stream)
-        {
-            using var image = Image.Load(stream);
-            var options = new ResizeOptions
-            {
-                Size = new Size(size, size),
+                Size = new Size(fullscreenSize, 0),
                 Mode = ResizeMode.Max
             };
             image.Mutate(x => x.Resize(options));
@@ -45,62 +31,24 @@ namespace Core.Extensions
             return output;
         }
 
-        public static async Task SaveAsync(this IFormFile file, string path)
+        public static Stream GenerateThumbnail(this Stream stream)
         {
-            using var stream = new FileStream(path, FileMode.Create, FileAccess.Write);
-            await file.CopyToAsync(stream);
-        }
-
-        public static void SaveThumbnailAsWebP(this IFormFile file, string outputPath)
-        {
-            using var image = Image.Load(file.OpenReadStream());
+            using var image = Image.Load(stream);
             var options = new ResizeOptions
             {
-                Size = new Size(size, size),
+                Size = new Size(thumbnailSize, 0),
                 Mode = ResizeMode.Max
             };
             image.Mutate(x => x.Resize(options));
             image.Metadata.ExifProfile = null;
-            image.SaveAsWebp(outputPath);
-        }
+            var output = new MemoryStream();
 
-        public static void SaveCompressedAsJpeg(this IFormFile file, string outputPath)
-        {
-            using var image = Image.Load(file.OpenReadStream());
-            var options = new ResizeOptions
+            var encoder = new JpegEncoder()
             {
-                Size = new Size(size, size),
-                Mode = ResizeMode.Max
+                //Quality = 50 //Use variable to set between 5-30 based on your requirements
             };
-            image.Mutate(x => x.Resize(options));
-            image.Metadata.ExifProfile = null;
-            image.SaveAsJpeg(outputPath);
-        }
-
-        public static void SaveThumbnailAsWebPFromBase64(this string base64, string outputPath)
-        {
-            using var image = Image.Load(base64.GetStreamFromBase64());
-            var options = new ResizeOptions
-            {
-                Size = new Size(size, size),
-                Mode = ResizeMode.Max
-            };
-            image.Mutate(x => x.Resize(options));
-            image.Metadata.ExifProfile = null;
-            image.SaveAsWebp(outputPath);
-        }
-
-        public static void SaveAsJpegFromBase64(this string base64, string outputPath)
-        {
-            using var image = Image.Load(base64.GetStreamFromBase64());
-            var options = new ResizeOptions
-            {
-                Size = new Size(size, size),
-                Mode = ResizeMode.Max
-            };
-            image.Mutate(x => x.Resize(options));
-            image.Metadata.ExifProfile = null;
-            image.SaveAsJpeg(outputPath);
+            image.SaveAsync(output, encoder);
+            return output;
         }
 
         public static Stream GetStreamFromBase64(this string base64)

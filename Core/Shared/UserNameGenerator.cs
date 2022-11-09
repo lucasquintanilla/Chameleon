@@ -17,7 +17,7 @@ namespace Core.Shared
 
         public static string NewAnonymousUserName()
         {
-            return "anon" + NewRandomString(12);
+            return NewRandomString(12);
         }
     }
 }

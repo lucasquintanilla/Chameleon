@@ -107,8 +107,8 @@ public static class DependencyContainer
             options.Lockout.AllowedForNewUsers = true;
 
             // User settings.
-            options.User.AllowedUserNameCharacters =
-            "abcdefghijklmnopqrstuvwxyz0123456789";
+            //options.User.AllowedUserNameCharacters =
+            //"abcdefghijklmnopqrstuvwxyz0123456789";
             options.User.RequireUniqueEmail = false;
         });
     }
