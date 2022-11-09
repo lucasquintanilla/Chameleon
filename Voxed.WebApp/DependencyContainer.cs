@@ -1,6 +1,7 @@
 ﻿using Amazon.S3;
 using Core.Data.EF;
 using Core.Data.EF.MySql;
+using Core.Data.EF.PostgreSql;
 using Core.Data.EF.Repositories;
 using Core.Data.EF.Sqlite;
 using Core.Data.Repositories;
@@ -56,6 +57,11 @@ public static class DependencyContainer
                 //    ServerVersion.AutoDetect(Helpers.GetRDSConnectionString(configuration)),
                 //    x => x.MigrationsAssembly(typeof(MySqlVoxedContext).Assembly.GetName().Name)),
                 // //.UseLoggerFactory(ContextLoggerFactory),
+
+                nameof(SqlProvider.PostgreSQL) => options
+                .UseNpgsql(configuration.GetConnectionString(nameof(SqlProvider.PostgreSQL)),
+                    x => x.MigrationsAssembly(typeof(PostgreSqlVoxedContext).Assembly.GetName().Name)),
+                    //.UseLoggerFactory(ContextLoggerFactory),
 
                 _ => throw new Exception($"Unsupported provider: {provider}")
             });
