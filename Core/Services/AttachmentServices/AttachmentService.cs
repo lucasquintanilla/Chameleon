@@ -38,7 +38,7 @@ public class AttachmentService : IAttachmentService
         {
             VoxedAttachmentExtension.Youtube => await SaveFromYoutube(voxedAttachment.ExtensionData),
             VoxedAttachmentExtension.Base64 => await SaveFromBase64(voxedAttachment.ExtensionData),
-            VoxedAttachmentExtension.Gif => await SaveImageFromFile(file),
+            VoxedAttachmentExtension.Gif => await SaveImageFromGif(file),
             VoxedAttachmentExtension.Jpg => await SaveImageFromFile(file),
             VoxedAttachmentExtension.Jpeg => await SaveImageFromFile(file),
             VoxedAttachmentExtension.Png => await SaveImageFromFile(file),
@@ -55,6 +55,37 @@ public class AttachmentService : IAttachmentService
         {
             Key = Guid.NewGuid() + file.GetFileExtension(),
             Stream = file.OpenReadStream().Compress(),
+            ContentType = file.ContentType
+        };
+        await _storageService.Save(original);
+
+        var thumbnail = new StorageObject()
+        {
+            Key = "thumbnails/" + Guid.NewGuid() + ".jpeg",
+            Stream = file.OpenReadStream().GenerateThumbnail(),
+            ContentType = file.ContentType
+        };
+        await _storageService.Save(thumbnail);
+
+        return new Attachment
+        {
+            Url = $"/post-attachments/{original.Key}",
+            ThumbnailUrl = $"/post-attachments/{thumbnail.Key}",
+            Type = AttachmentType.Image,
+            //new
+            Key = original.Key,
+            ContentType = original.ContentType,
+        };
+    }
+
+    private async Task<Attachment> SaveImageFromGif(IFormFile file)
+    {
+        if (file == null) return null;
+
+        var original = new StorageObject()
+        {
+            Key = Guid.NewGuid() + file.GetFileExtension(),
+            Stream = file.OpenReadStream(),
             ContentType = file.ContentType
         };
         await _storageService.Save(original);
