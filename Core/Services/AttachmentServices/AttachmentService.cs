@@ -1,6 +1,7 @@
 ﻿using Core.Entities;
 using Core.Extensions;
 using Core.Services.Storage;
+using Core.Services.Storage.Models;
 using Core.Shared.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
@@ -11,19 +12,19 @@ namespace Core.Services.AttachmentServices;
 
 public interface IAttachmentService
 {
-    Task<Attachment> ProcessAttachment(VoxedAttachment uploadData, IFormFile file);
+    Task<Attachment> ProcessAttachment(VoxedAttachment voxedAttachment, IFormFile file);
 }
 
 public class AttachmentService : IAttachmentService
 {
     private readonly AttachmentServiceConfiguration _config;
     private readonly YoutubeService _youtubeService;
-    private readonly IStorageService _storageService;
+    private readonly IStorage _storageService;
 
     public AttachmentService(
         YoutubeService youtubeService,
         IOptions<AttachmentServiceConfiguration> options,
-        IStorageService storageService)
+        IStorage storageService)
     {
         _config = options.Value;
         _youtubeService = youtubeService;
@@ -54,7 +55,7 @@ public class AttachmentService : IAttachmentService
         var original = new StorageObject()
         {
             Key = Guid.NewGuid() + file.GetFileExtension(),
-            Stream = file.OpenReadStream().Compress(),
+            Content = file.OpenReadStream().Compress(),
             ContentType = file.ContentType
         };
         await _storageService.Save(original);
@@ -62,7 +63,7 @@ public class AttachmentService : IAttachmentService
         var thumbnail = new StorageObject()
         {
             Key = "thumbnails/" + Guid.NewGuid() + ".jpeg",
-            Stream = file.OpenReadStream().GenerateThumbnail(),
+            Content = file.OpenReadStream().GenerateThumbnail(),
             ContentType = file.ContentType
         };
         await _storageService.Save(thumbnail);
@@ -72,7 +73,6 @@ public class AttachmentService : IAttachmentService
             Url = $"/post-attachments/{original.Key}",
             ThumbnailUrl = $"/post-attachments/{thumbnail.Key}",
             Type = AttachmentType.Image,
-            //new
             Key = original.Key,
             ContentType = original.ContentType,
         };
@@ -85,7 +85,7 @@ public class AttachmentService : IAttachmentService
         var original = new StorageObject()
         {
             Key = Guid.NewGuid() + file.GetFileExtension(),
-            Stream = file.OpenReadStream(),
+            Content = file.OpenReadStream(),
             ContentType = file.ContentType
         };
         await _storageService.Save(original);
@@ -93,7 +93,7 @@ public class AttachmentService : IAttachmentService
         var thumbnail = new StorageObject()
         {
             Key = "thumbnails/" + Guid.NewGuid() + ".jpeg",
-            Stream = file.OpenReadStream().GenerateThumbnail(),
+            Content = file.OpenReadStream().GenerateThumbnail(),
             ContentType = file.ContentType
         };
         await _storageService.Save(thumbnail);
@@ -103,7 +103,6 @@ public class AttachmentService : IAttachmentService
             Url = $"/post-attachments/{original.Key}",
             ThumbnailUrl = $"/post-attachments/{thumbnail.Key}",
             Type = AttachmentType.Image,
-            //new
             Key = original.Key,
             ContentType = original.ContentType,
         };
@@ -114,7 +113,7 @@ public class AttachmentService : IAttachmentService
         var thumbnail = new StorageObject()
         {
             Key = "thumbnails/" + Guid.NewGuid() + ".jpeg",
-            Stream = await _youtubeService.GetYoutubeThumbnailStream(videoId),
+            Content = await _youtubeService.GetThumbnail(videoId),
             ContentType = "image/jpeg"
         };
         await _storageService.Save(thumbnail);
@@ -133,7 +132,7 @@ public class AttachmentService : IAttachmentService
         var original = new StorageObject()
         {
             Key = Guid.NewGuid() + ".jpeg",
-            Stream = base64.GetStreamFromBase64(),
+            Content = base64.GetStreamFromBase64(),
             ContentType = "image/jpeg"
         };
         await _storageService.Save(original);
@@ -141,7 +140,7 @@ public class AttachmentService : IAttachmentService
         var thumbnail = new StorageObject()
         {
             Key = "thumbnails/" + Guid.NewGuid() + ".jpeg",
-            Stream = base64.GetStreamFromBase64().GenerateThumbnail(),
+            Content = base64.GetStreamFromBase64().GenerateThumbnail(),
             ContentType = "image/jpeg"
         };
         await _storageService.Save(thumbnail);
@@ -151,7 +150,6 @@ public class AttachmentService : IAttachmentService
             Url = $"/post-attachments/{original.Key}",
             ThumbnailUrl = $"/post-attachments/{thumbnail.Key}",
             Type = AttachmentType.Image,
-            //new
             Key = original.Key,
             ContentType = original.ContentType,
         };

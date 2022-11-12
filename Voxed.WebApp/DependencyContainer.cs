@@ -9,6 +9,8 @@ using Core.Entities;
 using Core.Services;
 using Core.Services.AttachmentServices;
 using Core.Services.Storage;
+using Core.Services.Storage.Cloud;
+using Core.Services.Storage.Local;
 using Core.Services.Telegram;
 using Core.Shared;
 using Microsoft.AspNetCore.Identity;
@@ -128,7 +130,7 @@ public static class DependencyContainer
         services.AddTransient<IUserVoxActionService, UserVoxActionService>();
         services.AddTransient<IContentReportService, ContentReportService>();
 
-        services.Configure<TelegramConfiguration>(configuration.GetSection(TelegramConfiguration.SectionName));
+        services.Configure<TelegramOptions>(configuration.GetSection(TelegramOptions.SectionName));
         services.Configure<AttachmentServiceConfiguration>(configuration.GetSection(AttachmentServiceConfiguration.SectionName));
 
         services.AddSingleton<ITelegramService, TelegramService>();
@@ -165,7 +167,11 @@ public static class DependencyContainer
     {
         services.AddDefaultAWSOptions(configuration.GetAWSOptions());
         services.AddAWSService<IAmazonS3>();
-        services.AddSingleton<IStorageService, CloudStorageService>();
+        services.Configure<CloudStorageOptions>(configuration.GetSection(CloudStorageOptions.SectionName));
+        services.AddSingleton<IStorage, CloudStorage>();
+
+        //services.Configure<LocalStorageOptions>(configuration.GetSection(LocalStorageOptions.SectionName));
+        //services.AddSingleton<IStorage, LocalStorage>();
     }
 
     public static void RegisterWebServices(this IServiceCollection services)

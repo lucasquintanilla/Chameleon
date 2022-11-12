@@ -6,9 +6,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove=".platform\**" />
     <Compile Remove="Logs\**" />
+    <Content Remove=".platform\**" />
     <Content Remove="Logs\**" />
+    <EmbeddedResource Remove=".platform\**" />
     <EmbeddedResource Remove="Logs\**" />
+    <EntityDeploy Remove=".platform\**" />
+    <None Remove=".platform\**" />
     <None Remove="Logs\**" />
   </ItemGroup>
 
@@ -37,7 +42,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include=".platform\nginx\conf.d\proxy.conf" />
     <None Include="wwwroot\ffmpeg\ffmpeg.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

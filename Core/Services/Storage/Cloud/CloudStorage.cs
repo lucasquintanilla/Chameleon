@@ -1,15 +1,19 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Model;
+using Core.Services.Storage.Models;
+using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
 
-namespace Core.Services.Storage;
+namespace Core.Services.Storage.Cloud;
 
-public class CloudStorageService : IStorageService
+public class CloudStorage : IStorage
 {
+    private readonly CloudStorageOptions _options;
     private readonly IAmazonS3 _s3Client;
 
-    public CloudStorageService(IAmazonS3 s3Client)
+    public CloudStorage(IOptions<CloudStorageOptions> options, IAmazonS3 s3Client)
     {
+        _options = options.Value;
         _s3Client = s3Client;
     }
 
@@ -17,16 +21,11 @@ public class CloudStorageService : IStorageService
     {
         var request = new PutObjectRequest()
         {
-            BucketName = "post-attachments",
+            BucketName = _options.BucketName,
             Key = obj.Key,
-            InputStream = obj.Stream,
+            InputStream = obj.Content,
             ContentType = obj.ContentType
         };
         await _s3Client.PutObjectAsync(request);
     }
-}
-
-public interface IStorageService
-{
-    Task Save(StorageObject obj);
 }

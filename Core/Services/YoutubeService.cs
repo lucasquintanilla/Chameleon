@@ -13,7 +13,7 @@ namespace Core.Services
             _client = new HttpClient();
         }
 
-        public async Task<Stream> GetYoutubeThumbnailStream(string videoId)
+        public async Task<Stream> GetThumbnail(string videoId)
         {
             //var response = await _client.GetAsync($"https://img.youtube.com/vi/{videoId}/maxresdefault.jpg");
 

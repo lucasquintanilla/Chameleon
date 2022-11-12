@@ -21,10 +21,10 @@ namespace Core.Services.Telegram
 
     public class TelegramService : ITelegramService
     {
-        private readonly TelegramConfiguration _config;
+        private readonly TelegramOptions _config;
         private readonly TelegramBotClient _client;
 
-        public TelegramService(IOptions<TelegramConfiguration> options)
+        public TelegramService(IOptions<TelegramOptions> options)
         {
             _config = options.Value;
             _client = new TelegramBotClient(_config.Token);
