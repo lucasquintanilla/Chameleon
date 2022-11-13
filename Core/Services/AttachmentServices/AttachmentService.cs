@@ -37,13 +37,13 @@ public class AttachmentService : IAttachmentService
 
         return voxedAttachment.Extension switch
         {
-            VoxedAttachmentExtension.Youtube => await SaveFromYoutube(voxedAttachment.ExtensionData),
-            VoxedAttachmentExtension.Base64 => await SaveFromBase64(voxedAttachment.ExtensionData),
-            VoxedAttachmentExtension.Gif => await SaveImageFromGif(file),
-            VoxedAttachmentExtension.Jpg => await SaveImageFromFile(file),
-            VoxedAttachmentExtension.Jpeg => await SaveImageFromFile(file),
-            VoxedAttachmentExtension.Png => await SaveImageFromFile(file),
-            VoxedAttachmentExtension.WebP => await SaveImageFromFile(file),
+            VoxedAttachmentFileExtension.Youtube => await SaveFromYoutube(voxedAttachment.ExtensionData),
+            VoxedAttachmentFileExtension.Base64 => await SaveFromBase64(voxedAttachment.ExtensionData),
+            VoxedAttachmentFileExtension.Gif => await SaveImageFromGif(file),
+            VoxedAttachmentFileExtension.Jpg => await SaveImageFromFile(file),
+            VoxedAttachmentFileExtension.Jpeg => await SaveImageFromFile(file),
+            VoxedAttachmentFileExtension.Png => await SaveImageFromFile(file),
+            VoxedAttachmentFileExtension.WebP => await SaveImageFromFile(file),
             _ => throw new NotImplementedException("Invalid file extension"),
         };
     }

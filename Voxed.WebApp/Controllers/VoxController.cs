@@ -234,8 +234,8 @@ namespace Voxed.WebApp.Controllers
                     //TODO: Crear una notificacion para el nuevo usuario anonimo
                 }
 
-                var voxId = await _voxService.CreateVox(request, userId.Value);
-                return CreateVoxResponse.Succesful(voxId);
+                var voxId = await _voxService.CreateVox(request, userId.Value, UserIpAddress, UserAgent);
+                return CreateVoxResponse.Success(voxId);
             }
             catch (NotImplementedException e)
             {
@@ -267,7 +267,7 @@ namespace Voxed.WebApp.Controllers
             return await _voxService.GetByFilter(filter);
         }
 
-        private List<int> GetSubscriptionCategories(LoadMoreRequest request)
+        private IEnumerable<int> GetSubscriptionCategories(LoadMoreRequest request)
         {
             try
             {
@@ -275,15 +275,15 @@ namespace Voxed.WebApp.Controllers
 
                 if (subscriptions == null)
                 {
-                    return Categories.DefaultCategories.ToList();
+                    return Categories.DefaultCategories;
                 }
 
-                return subscriptions.Select(x => int.Parse(x)).ToList();
+                return subscriptions.Select(x => int.Parse(x));
 
             }
             catch (Exception)
             {
-                return Categories.DefaultCategories.ToList();
+                return Categories.DefaultCategories;
             }
         }
     }

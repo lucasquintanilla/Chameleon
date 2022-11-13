@@ -5,8 +5,11 @@ namespace Voxed.WebApp.Models
 {
     public class CreateVoxResponse : BaseResponse
     {
+        private CreateVoxResponse() { }
+
         public string VoxHash { get; set; }
-        public static CreateVoxResponse Succesful(Guid voxId)
+
+        public static CreateVoxResponse Success(Guid voxId)
         {
             return new CreateVoxResponse()
             {

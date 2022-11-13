@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
 using System.IO;
-using System.Net.Mime;
 
 namespace Core.Extensions
 {
@@ -11,9 +10,6 @@ namespace Core.Extensions
         {
             return Path.GetExtension(file.FileName).ToLowerInvariant();
         }
-
-        public static bool IsGif(this IFormFile file)
-            => file.ContentType == MediaTypeNames.Image.Gif;
 
         public static bool IsNew(this DateTimeOffset dateTime)
         {

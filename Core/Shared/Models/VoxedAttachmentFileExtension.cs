@@ -1,6 +1,6 @@
 ﻿namespace Core.Shared.Models
 {
-    public static class VoxedAttachmentExtension
+    public static class VoxedAttachmentFileExtension
     {
         public const string Youtube = "ytb";
         public const string Png = "png";

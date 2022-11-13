@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
+using Voxed.WebApp.Extensions;
 using Voxed.WebApp.Models;
 
 namespace Voxed.WebApp.Controllers
@@ -72,9 +73,7 @@ namespace Voxed.WebApp.Controllers
                 return new RegisterResponse()
                 {
                     Status = false,
-                    Swal = ModelState.Root.Children
-                    .Where(x => x.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid)
-                    .First().Errors.FirstOrDefault().ErrorMessage
+                    Swal = ModelState.GetErrorMessage()
                 };
             }
             var user = new User

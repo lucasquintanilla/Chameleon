@@ -9,6 +9,7 @@ namespace Core.Services.Storage.Local
     public class LocalStorage : IStorage
     {
         private readonly LocalStorageOptions _options;
+
         public LocalStorage(IOptions<LocalStorageOptions> options)
         {
             _options = options.Value;

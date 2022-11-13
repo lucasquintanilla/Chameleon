@@ -1,6 +1,6 @@
 # Voxed
 
-Es un proyecto de codigo abierto escrito en .NET 6
+Proyecto de codigo abierto escrito en .NET 6
 
 > https://voxed.club
 
@@ -10,7 +10,6 @@ Es un proyecto de codigo abierto escrito en .NET 6
 
 - [Visual Studio](https://visualstudio.microsoft.com/downloads/)
 - [Dbrowser (Sqlite)](https://sqlitebrowser.org/dl/) (opcional)
-- [FFmpeg](https://ffmpeg.org/download.html) Descargar archivos ejectuables (.exe) (Ya no es mas requerido)
 - [Git](https://git-scm.com/download/win)
 
 ### Nivel Avanzado
@@ -18,7 +17,6 @@ Es un proyecto de codigo abierto escrito en .NET 6
 - [Visual Studio](https://visualstudio.microsoft.com/downloads/)
 - [Mysql](https://dev.mysql.com/downloads/installer/)
 - [Workbench](https://dev.mysql.com/downloads/workbench/) o [DBeaver](https://dbeaver.io/) (MySql) (opcional)
-- [FFmpeg](https://ffmpeg.org/download.html) agregar ffmpeg executables en wwwroot\ffmpeg (edit path in appsetting.json)
 - [Git](https://git-scm.com/download/win)
 
 ## Instalacion 
@@ -76,7 +74,8 @@ tutorial https://swimburger.net/blog/azure/setting-up-cloudflare-full-universal-
 - [ ] Fix Light Mode
 - [ ] Implementar >hide
 - [x] Migrar a .NET 6
-- [ ] Agregar tests
+- [ ] Agregar unit tests
+- [ ] Agregar tags
 
 # Tecnologias
 
@@ -84,16 +83,23 @@ tutorial https://swimburger.net/blog/azure/setting-up-cloudflare-full-universal-
 - Entity Framework Core
 - MySQL
 - Sqlite
+- PostgreSQL
 - SignalR
-- FFmpeg
-- Elastic Search
 - Telegram
 
-# Patrones
+# Patrones de diseño
 
 - Coding First
 - Generic Repository Pattern
 - DI
+- Options Pattern
+- MVC
+
+
+# Principios
+- SOLID
+- DRY
+- Composition over inheritance
 
 # Ejemplos voxed.net
 

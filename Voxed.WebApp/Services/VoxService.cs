@@ -13,7 +13,7 @@ namespace Voxed.WebApp.Services
 {
     public interface IVoxService
     {
-        Task<Guid> CreateVox(CreateVoxRequest request, Guid userId);
+        Task<Guid> CreateVox(CreateVoxRequest request, Guid userId, string userIpAddress, string userAgent);
         Task<LoadMoreResponse> GetByFilter(VoxFilter filter);
     }
 
@@ -40,7 +40,7 @@ namespace Voxed.WebApp.Services
             _notificationService = notificationService;
         }
 
-        public async Task<Guid> CreateVox(CreateVoxRequest request, Guid userId)
+        public async Task<Guid> CreateVox(CreateVoxRequest request, Guid userId, string userIpAddress, string userAgent)
         {
             var attachment = await _attachmentService.ProcessAttachment(request.GetVoxedAttachment(), request.File);
             await _voxedRepository.Media.Add(attachment);
@@ -53,8 +53,8 @@ namespace Voxed.WebApp.Services
                 Content = _formatterService.Format(request.Content),
                 CategoryId = request.Niche,
                 AttachmentId = attachment.Id,
-                //IpAddress = UserIpAddress,
-                //UserAgent = UserAgent
+                IpAddress = userIpAddress,
+                UserAgent = userAgent
             };
 
             await _voxedRepository.Voxs.Add(vox);

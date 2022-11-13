@@ -54,15 +54,11 @@ namespace Voxed.WebApp.Controllers
             _logger.LogWarning($"{nameof(CreateCommentRequest)} received.");
             _logger.LogWarning(JsonConvert.SerializeObject(request));
 
-            var response = new CreateCommentResponse(id);
-
             if (ModelState.IsValid is false)
             {
                 var errorMessage = ModelState.GetErrorMessage();
-
                 _logger.LogWarning($"Request received is not valid. Message: {errorMessage}");
-                response.Swal = errorMessage;
-                return response;
+                return CreateCommentResponse.Failure(errorMessage);
             }
 
             try
@@ -70,8 +66,7 @@ namespace Voxed.WebApp.Controllers
                 if (request.HasEmptyContent())
                 {
                     _logger.LogWarning($"Comment request received has empty content");
-                    response.Swal = "Debes ingresar un contenido";
-                    return response;
+                    return CreateCommentResponse.Failure("Debes ingresar un contenido");
                 }
 
                 var comment = await ProcessComment(request, id);
@@ -90,23 +85,19 @@ namespace Voxed.WebApp.Controllers
                 await _notificationService.ManageNotifications(vox, comment);
                 await _notificationService.SendBoardUpdate(comment, vox, request);
 
-                response.Hash = comment.Hash;
-                response.Status = true;
+                return CreateCommentResponse.Success(comment.Hash);
             }
             catch (NotImplementedException e)
             {
                 _logger.LogWarning(e.Message);
-                response.Swal = e.Message;
+                return CreateCommentResponse.Failure(e.Message);
             }
             catch (Exception e)
             {
                 _logger.LogError(e.Message);
                 _logger.LogError(e.StackTrace);
-                response.Swal = "Hubo un error";
+                return CreateCommentResponse.Failure("Hubo un error");
             }
-
-            _logger.LogWarning($"{nameof(CreateCommentResponse)}: {JsonConvert.SerializeObject(response)}");
-            return response;
         }
 
         [HttpPost]
