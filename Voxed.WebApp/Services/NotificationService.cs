@@ -16,9 +16,9 @@ namespace Voxed.WebApp.Services
 {
     public interface INotificationService
     {
-        Task NotifyClients(Guid voxId);
+        Task NotifyPostCreated(Guid voxId);
         Task ManageNotifications(Vox vox, Comment comment);
-        Task SendBoardUpdate(Comment comment, Vox vox, CreateCommentRequest request);
+        Task NotifyCommentCreated(Comment comment, Vox vox, CreateCommentRequest request);
     }
 
     public class NotificationService : INotificationService
@@ -38,14 +38,13 @@ namespace Voxed.WebApp.Services
             _formateadorService = formateadorService;
         }
 
-        public async Task NotifyClients(Guid voxId)
+        public async Task NotifyPostCreated(Guid voxId)
         {
             //disparo notificacion del vox
             var vox = await _voxedRepository.Voxs.GetById(voxId); // Ver si se puede remover
 
             if (!Categories.HiddenCategories.Contains(vox.CategoryId))
             {
-                //var voxToHub = ConvertoToVoxResponse(vox);
                 var voxToHub = VoxedMapper.Map(vox);
                 await _notificationHub.Clients.All.Vox(voxToHub);
             }
@@ -83,7 +82,7 @@ namespace Voxed.WebApp.Services
             sender.Notify();
         }
 
-        public async Task SendBoardUpdate(Comment comment, Vox vox, CreateCommentRequest request)
+        public async Task NotifyCommentCreated(Comment comment, Vox vox, CreateCommentRequest request)
         {
             if (Categories.HiddenCategories.Contains(vox.CategoryId)) return;
 

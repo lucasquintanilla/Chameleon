@@ -59,7 +59,7 @@ namespace Voxed.WebApp.Services
 
             await _voxedRepository.Voxs.Add(vox);
             await _voxedRepository.SaveChangesAsync();
-            await _notificationService.NotifyClients(vox.Id);
+            await _notificationService.NotifyPostCreated(vox.Id);
 
             return vox.Id;
         }
