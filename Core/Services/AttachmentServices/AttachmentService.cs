@@ -62,7 +62,7 @@ public class AttachmentService : IAttachmentService
 
         var thumbnail = new StorageObject()
         {
-            Key = "thumbnails/" + Guid.NewGuid() + ".jpeg",
+            Key = Guid.NewGuid() + "_thumb.jpeg",
             Content = file.OpenReadStream().GenerateThumbnail(),
             ContentType = file.ContentType
         };
@@ -92,7 +92,7 @@ public class AttachmentService : IAttachmentService
 
         var thumbnail = new StorageObject()
         {
-            Key = "thumbnails/" + Guid.NewGuid() + ".jpeg",
+            Key = Guid.NewGuid() + "_thumb.jpeg",
             Content = file.OpenReadStream().GenerateThumbnail(),
             ContentType = file.ContentType
         };
@@ -112,7 +112,7 @@ public class AttachmentService : IAttachmentService
     {
         var thumbnail = new StorageObject()
         {
-            Key = "thumbnails/" + Guid.NewGuid() + ".jpeg",
+            Key = Guid.NewGuid() + "_thumb.jpeg",
             Content = await _youtubeService.GetThumbnail(videoId),
             ContentType = "image/jpeg"
         };
@@ -139,7 +139,7 @@ public class AttachmentService : IAttachmentService
 
         var thumbnail = new StorageObject()
         {
-            Key = "thumbnails/" + Guid.NewGuid() + ".jpeg",
+            Key = Guid.NewGuid() + "_thumb.jpeg",
             Content = base64.GetStreamFromBase64().GenerateThumbnail(),
             ContentType = "image/jpeg"
         };

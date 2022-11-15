@@ -10,7 +10,6 @@ using Core.Services;
 using Core.Services.AttachmentServices;
 using Core.Services.Storage;
 using Core.Services.Storage.Cloud;
-using Core.Services.Storage.Local;
 using Core.Services.Telegram;
 using Core.Shared;
 using Microsoft.AspNetCore.Identity;
@@ -63,7 +62,7 @@ public static class DependencyContainer
                 nameof(SqlProvider.PostgreSQL) => options
                 .UseNpgsql(configuration.GetConnectionString(nameof(SqlProvider.PostgreSQL)),
                     x => x.MigrationsAssembly(typeof(PostgreSqlVoxedContext).Assembly.GetName().Name)),
-                    //.UseLoggerFactory(ContextLoggerFactory),
+                //.UseLoggerFactory(ContextLoggerFactory),
 
                 _ => throw new Exception($"Unsupported provider: {provider}")
             });
@@ -173,6 +172,7 @@ public static class DependencyContainer
         //services.Configure<LocalStorageOptions>(configuration.GetSection(LocalStorageOptions.SectionName));
         //services.AddSingleton<IStorage, LocalStorage>();
     }
+
 
     public static void RegisterWebServices(this IServiceCollection services)
     {

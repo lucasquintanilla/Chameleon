@@ -83,7 +83,7 @@ namespace Voxed.WebApp.Controllers
                 await _voxedRepository.SaveChangesAsync();
 
                 await _notificationService.ManageNotifications(vox, comment);
-                await _notificationService.SendBoardUpdate(comment, vox, request);
+                await _notificationService.NotifyCommentCreated(comment, vox, request);
 
                 return CreateCommentResponse.Success(comment.Hash);
             }
