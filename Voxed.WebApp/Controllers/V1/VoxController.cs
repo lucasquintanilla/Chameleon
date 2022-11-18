@@ -42,7 +42,7 @@ namespace Voxed.WebApp.Controllers.V1
         [HttpGet]
         public async Task<IActionResult> GetLastest()
         {
-            var filter = new VoxFilter() { Categories = _defaultCategories.ToList() };
+            var filter = new PostFilter() { Categories = _defaultCategories.ToList() };
             var voxs = await _voxedRepository.Voxs.GetByFilterAsync(filter);
             return Ok(VoxedMapper.Map(voxs));
         }

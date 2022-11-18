@@ -44,7 +44,7 @@ namespace Voxed.WebApp.Controllers
             //    });
 
             //var x = Request.Headers.TryGetValue("CF-IPCountry", out var resulto);
-            var filter = new VoxFilter()
+            var filter = new PostFilter()
             {
                 UserId = User.GetLoggedInUserId<Guid?>(),
                 Categories = await GetUserCategorySubscriptions(),
@@ -69,7 +69,7 @@ namespace Voxed.WebApp.Controllers
         {
             if (!User.Identity.IsAuthenticated) return BadRequest();
 
-            var filter = new VoxFilter()
+            var filter = new PostFilter()
             {
                 UserId = User.GetLoggedInUserId<Guid?>(),
                 IncludeFavorites = true
@@ -93,7 +93,7 @@ namespace Voxed.WebApp.Controllers
         {
             if (!User.Identity.IsAuthenticated) return BadRequest();
 
-            var filter = new VoxFilter()
+            var filter = new PostFilter()
             {
                 UserId = User.GetLoggedInUserId<Guid?>(),
                 IncludeHidden = true
@@ -120,7 +120,7 @@ namespace Voxed.WebApp.Controllers
 
             if (category == null) return NotFound();
 
-            var filter = new VoxFilter() { Categories = new List<int>() { category.Id } };
+            var filter = new PostFilter() { Categories = new List<int>() { category.Id } };
 
             var voxs = await _voxedRepository.Voxs.GetByFilterAsync(filter);
             var board = new BoardViewModel()
@@ -138,7 +138,7 @@ namespace Voxed.WebApp.Controllers
         {
             if (string.IsNullOrWhiteSpace(value)) return BadRequest();
 
-            var filter = new VoxFilter() { Search = value };
+            var filter = new PostFilter() { Search = value };
 
             var voxs = await _voxedRepository.Voxs.GetByFilterAsync(filter);
 

@@ -123,7 +123,7 @@ public static class DependencyContainer
     public static void RegisterServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddTransient<INotificationService, NotificationService>();
-        services.AddTransient<IVoxService, VoxService>();
+        services.AddTransient<IPostService, PostService>();
         services.AddSingleton<IContentFormatterService, ContentFormatterService>();
         services.AddSingleton<IAttachmentService, AttachmentService>();
         services.AddTransient<IUserVoxActionService, UserVoxActionService>();

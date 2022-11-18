@@ -17,6 +17,7 @@ using Voxed.WebApp.Models;
 using Voxed.WebApp.Services;
 using Voxed.WebApp.ViewModels;
 using Core.Extensions;
+using Voxed.WebApp.Mappers;
 
 namespace Voxed.WebApp.Controllers
 {
@@ -25,7 +26,7 @@ namespace Voxed.WebApp.Controllers
         private readonly ILogger<VoxController> _logger;
         private readonly IVoxedRepository _voxedRepository;
         private readonly SignInManager<User> _signInManager;
-        private readonly IVoxService _voxService;
+        private readonly IPostService _postService;
         private readonly IUserVoxActionService _userVoxActionService;
         private readonly IContentReportService _contentReportService;
 
@@ -35,14 +36,14 @@ namespace Voxed.WebApp.Controllers
             UserManager<User> userManager,
             SignInManager<User> signInManager,
             IHttpContextAccessor accessor,
-            IVoxService voxService,
+            IPostService postService,
             IUserVoxActionService userVoxActionService,
             IContentReportService contentReportService)
             : base(accessor, userManager)
         {
             _voxedRepository = voxedRepository;
             _signInManager = signInManager;
-            _voxService = voxService;
+            _postService = postService;
             _logger = logger;
             _userVoxActionService = userVoxActionService;
             _contentReportService = contentReportService;
@@ -235,8 +236,8 @@ namespace Voxed.WebApp.Controllers
                     //TODO: Crear una notificacion para el nuevo usuario anonimo
                 }
 
-                var voxId = await _voxService.CreateVox(request, userId.Value, UserIpAddress, UserAgent);
-                return CreateVoxResponse.Success(voxId);
+                var post = await _postService.CreatePost(request, userId.Value, UserIpAddress, UserAgent);
+                return CreateVoxResponse.Success(post.Id);
             }
             catch (NotImplementedException e)
             {
@@ -258,14 +259,15 @@ namespace Voxed.WebApp.Controllers
             var skipList = JsonConvert.DeserializeObject<IEnumerable<string>>(request?.Ignore);
             var skipIdList = skipList.Select(x => GuidExtension.FromShortString(x)).ToList();
 
-            var filter = new VoxFilter()
+            var filter = new PostFilter()
             {
                 UserId = User.GetLoggedInUserId<Guid?>(),
                 IgnoreVoxIds = skipIdList,
                 Categories = GetSubscriptionCategories(request)
             };
 
-            return await _voxService.GetByFilter(filter);
+            var posts = await _postService.GetByFilter(filter);
+            return new LoadMoreResponse(VoxedMapper.Map(posts));
         }
 
         private IEnumerable<int> GetSubscriptionCategories(LoadMoreRequest request)

@@ -28,7 +28,7 @@ namespace Core.Data.EF.Repositories
                 .Include(x => x.Owner)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
-        public async Task<List<Vox>> GetByFilterAsync(VoxFilter filter)
+        public async Task<List<Vox>> GetByFilterAsync(PostFilter filter)
         {
             var query = _context.Voxs.AsNoTracking();
 

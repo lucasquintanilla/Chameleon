@@ -6,28 +6,30 @@ using Core.Shared;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Voxed.WebApp.Mappers;
 using Voxed.WebApp.Models;
 
 namespace Voxed.WebApp.Services
 {
-    public interface IVoxService
+    public interface IPostService
     {
-        Task<Guid> CreateVox(CreateVoxRequest request, Guid userId, string userIpAddress, string userAgent);
-        Task<LoadMoreResponse> GetByFilter(VoxFilter filter);
+        Task<Vox> CreatePost(CreateVoxRequest request, Guid userId, string userIpAddress, string userAgent);
+        Task<IEnumerable<Vox>> GetByFilter(PostFilter filter);
     }
 
-    public class VoxService : IVoxService
+    public class PostService : IPostService
     {
-        private readonly ILogger<VoxService> _logger;
+        private readonly ILogger<PostService> _logger;
         private readonly IAttachmentService _attachmentService;
         private readonly IVoxedRepository _voxedRepository;
         private readonly IContentFormatterService _formatterService;
         private readonly IServiceScopeFactory _scopeFactory;
 
-        public VoxService(
-            ILogger<VoxService> logger,
+        public PostService(
+            ILogger<PostService> logger,
             IAttachmentService attachmentService,
             IVoxedRepository voxedRepository,
             IContentFormatterService formatterService,
@@ -40,7 +42,7 @@ namespace Voxed.WebApp.Services
             _scopeFactory = scopeFactory;
         }
 
-        public async Task<Guid> CreateVox(CreateVoxRequest request, Guid userId, string userIpAddress, string userAgent)
+        public async Task<Vox> CreatePost(CreateVoxRequest request, Guid userId, string userIpAddress, string userAgent)
         {
             var attachment = await _attachmentService.ProcessAttachment(request.GetVoxedAttachment(), request.File);
             await _voxedRepository.Media.Add(attachment);
@@ -61,7 +63,7 @@ namespace Voxed.WebApp.Services
             await _voxedRepository.SaveChangesAsync();
             _ = Task.Run(() => NotifyPostCreated(vox.Id));
 
-            return vox.Id;
+            return vox;
         }
 
         private async Task NotifyPostCreated(Guid voxId)
@@ -71,10 +73,26 @@ namespace Voxed.WebApp.Services
             await notificationService.NotifyPostCreated(voxId);
         }
 
-        public async Task<LoadMoreResponse> GetByFilter(VoxFilter filter)
+        public async Task<IEnumerable<Vox>> GetByFilter(PostFilter filter)
         {
-            var voxs = await _voxedRepository.Voxs.GetByFilterAsync(filter);
-            return new LoadMoreResponse(VoxedMapper.Map(voxs));
+            return await _voxedRepository.Voxs.GetByFilterAsync(filter);
         }
     }
+
+    //public class CreatePostRequest
+    //{
+    //    public Guid UserId { get; set; }
+    //    public string Title { get; set; }
+    //    public string Content { get; set; }
+    //    public int CategoryId { get; set; }
+    //    public string UserAgent { get; set; }
+    //    public string IpAddress { get; set; }       
+    //}
+
+    //public class PostAttachment
+    //{
+    //    public string ExternalMetaData { get; set; }
+    //    public string ContentType { get; set; }
+    //    public Stream Content { get; set; }
+    //}
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Core.Data.Filters
 {
-    public class VoxFilter
+    public class PostFilter
     {
         public Guid? UserId { get; set; }
         public IEnumerable<int> Categories { get; set; } = new List<int>();

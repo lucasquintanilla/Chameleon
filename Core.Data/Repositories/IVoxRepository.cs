@@ -7,6 +7,6 @@ namespace Core.Data.Repositories
 {
     public interface IVoxRepository : IGenericRepository<Vox>
     {
-        Task<List<Vox>> GetByFilterAsync(VoxFilter filter);
+        Task<List<Vox>> GetByFilterAsync(PostFilter filter);
     }
 }
