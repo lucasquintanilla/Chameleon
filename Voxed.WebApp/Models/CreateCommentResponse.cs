@@ -13,7 +13,7 @@
 
         public static CreateCommentResponse Failure(string errorMessage)
         {
-            return new CreateCommentResponse() { Status = false, Error = errorMessage };
+            return new CreateCommentResponse() { Status = false, Swal = errorMessage };
         }
     }
 }

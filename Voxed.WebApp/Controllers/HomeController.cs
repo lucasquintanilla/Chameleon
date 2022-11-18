@@ -159,7 +159,7 @@ namespace Voxed.WebApp.Controllers
 
             if (subscriptionsCookie is not null)
             {
-                return JsonConvert.DeserializeObject<List<int>>(subscriptionsCookie);
+                return JsonConvert.DeserializeObject<IEnumerable<int>>(subscriptionsCookie);
             }
 
             var userCategories = Categories.DefaultCategories;
@@ -173,15 +173,18 @@ namespace Voxed.WebApp.Controllers
             return await Task.FromResult(userCategories);
         }
 
-        private List<string> GetUserHiddenWords()
+        private IEnumerable<string> GetUserHiddenWords()
         {
             if (HttpContext.Request.Cookies.TryGetValue(CookieName.HiddenWords, out var hiddenWordsCookie))
             {
-                var words = hiddenWordsCookie.Split(',');
-                return words.Select(word => word.Trim()).ToList();
+                if (hiddenWordsCookie.Trim().Length > 0)
+                {
+                    var words = hiddenWordsCookie.Trim().Split(',');
+                    return words.Select(word => word.Trim()).ToList();
+                }                
             }
 
-            return new List<string>();
+            return Array.Empty<string>();
         }
 
         public IActionResult Privacy()

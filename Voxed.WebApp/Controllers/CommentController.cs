@@ -6,6 +6,7 @@ using Core.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
@@ -26,6 +27,7 @@ namespace Voxed.WebApp.Controllers
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly INotificationService _notificationService;
+        private readonly IServiceScopeFactory _scopeFactory;
 
         public CommentController(
             ILogger<CommentController> logger,
@@ -35,8 +37,9 @@ namespace Voxed.WebApp.Controllers
             IVoxedRepository voxedRepository,
             UserManager<User> userManager,
             SignInManager<User> signInManager,
-            IHttpContextAccessor accessor
-            ) : base(accessor, userManager)
+            IHttpContextAccessor accessor,
+            IServiceScopeFactory scopeFactory) 
+            : base(accessor, userManager)
         {
             _formatter = formatter;
             _attachmentService = attachmentService;
@@ -45,6 +48,7 @@ namespace Voxed.WebApp.Controllers
             _logger = logger;
             _signInManager = signInManager;
             _notificationService = notificationService;
+            _scopeFactory = scopeFactory;
         }
 
 
@@ -83,8 +87,7 @@ namespace Voxed.WebApp.Controllers
 
                 await _voxedRepository.SaveChangesAsync();
 
-                await _notificationService.ManageNotifications(vox, comment);
-                await _notificationService.NotifyCommentCreated(comment, vox, request);
+                _ = Task.Run(() => NotifyCommentCreated(vox, comment, request));
 
                 return CreateCommentResponse.Success(comment.Hash);
             }
@@ -99,6 +102,14 @@ namespace Voxed.WebApp.Controllers
                 _logger.LogError(e.StackTrace);
                 return CreateCommentResponse.Failure("Hubo un error");
             }
+        }
+
+        private async Task NotifyCommentCreated(Vox vox, Comment comment, CreateCommentRequest request)
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
+            await notificationService.NotifyCommentCreated(comment, vox, request);
+            await notificationService.ManageNotifications(vox, comment);
         }
 
         [HttpPost]

@@ -26,22 +26,20 @@ namespace Voxed.WebApp.Services
     {
         private readonly IVoxedRepository _voxedRepository;
         private readonly IHubContext<VoxedHub, INotificationHub> _notificationHub;
-        private readonly IContentFormatterService _formateadorService;
+        private readonly IContentFormatterService _formatterService;
 
         public NotificationService(
             IVoxedRepository voxedRepository,
             IHubContext<VoxedHub, INotificationHub> notificationHub,
-            IContentFormatterService formateadorService
-            )
+            IContentFormatterService formatterService)
         {
             _voxedRepository = voxedRepository;
             _notificationHub = notificationHub;
-            _formateadorService = formateadorService;
+            _formatterService = formatterService;
         }
 
         public async Task NotifyPostCreated(Guid voxId)
         {
-            //disparo notificacion del vox
             var vox = await _voxedRepository.Voxs.GetById(voxId); // Ver si se puede remover
 
             if (!Categories.HiddenCategories.Contains(vox.CategoryId))
@@ -53,22 +51,11 @@ namespace Voxed.WebApp.Services
 
         public async Task ManageNotifications(Vox vox, Comment comment)
         {
-            await Task.Run(() => Console.WriteLine());
-            //new Thread(async () =>
-            //{
-            //    Thread.CurrentThread.IsBackground = true;
-
-            //    await Task.Delay(8000);
-
-            //    Debug.WriteLine("Hello, world");                
-
-            //}).Start();
-
             var notifications = new NotificationBuilder()
                     .WithVox(vox)
                     .WithComment(comment)
                     .UseRepository(_voxedRepository)
-                    .UseFormatter(_formateadorService)
+                    .UseFormatter(_formatterService)
                     .AddReplies()
                     .AddOPNotification()
                     .AddVoxSusbcriberNotifications()
@@ -80,7 +67,7 @@ namespace Voxed.WebApp.Services
                 .WithNotifications(notifications)
                 .UseHub(_notificationHub);
 
-            sender.Notify();
+            await Task.Run(() => sender.Notify());
         }
 
         public async Task NotifyCommentCreated(Comment comment, Vox vox, CreateCommentRequest request)
@@ -100,7 +87,7 @@ namespace Voxed.WebApp.Services
                 AvatarColor = comment.Style.ToString().ToLower(),
                 IsOp = vox.UserId == comment.UserId && vox.Owner.UserType != UserType.Anonymous, //probar cambiarlo cuando solo pruedan craer los usuarios.
                 Tag = UserViewHelper.GetUserTypeTag(comment.Owner.UserType), //admin o dev               
-                Content = comment.Content ?? String.Empty,
+                Content = comment.Content ?? string.Empty,
                 Name = UserViewHelper.GetUserName(comment.Owner),
                 CreatedAt = comment.CreatedOn.DateTime.ToTimeAgo(),
                 Poll = null, //aca va una opcion respondida

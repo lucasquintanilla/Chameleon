@@ -3,6 +3,7 @@ using Core.Data.Repositories;
 using Core.Entities;
 using Core.Services.AttachmentServices;
 using Core.Shared;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
@@ -23,21 +24,20 @@ namespace Voxed.WebApp.Services
         private readonly IAttachmentService _attachmentService;
         private readonly IVoxedRepository _voxedRepository;
         private readonly IContentFormatterService _formatterService;
-        private readonly INotificationService _notificationService;
+        private readonly IServiceScopeFactory _scopeFactory;
 
         public VoxService(
             ILogger<VoxService> logger,
             IAttachmentService attachmentService,
             IVoxedRepository voxedRepository,
             IContentFormatterService formatterService,
-            INotificationService notificationService
-            )
+            IServiceScopeFactory scopeFactory)
         {
             _logger = logger;
             _attachmentService = attachmentService;
             _voxedRepository = voxedRepository;
             _formatterService = formatterService;
-            _notificationService = notificationService;
+            _scopeFactory = scopeFactory;
         }
 
         public async Task<Guid> CreateVox(CreateVoxRequest request, Guid userId, string userIpAddress, string userAgent)
@@ -59,9 +59,16 @@ namespace Voxed.WebApp.Services
 
             await _voxedRepository.Voxs.Add(vox);
             await _voxedRepository.SaveChangesAsync();
-            await _notificationService.NotifyPostCreated(vox.Id);
+            _ = Task.Run(() => NotifyPostCreated(vox.Id));
 
             return vox.Id;
+        }
+
+        private async Task NotifyPostCreated(Guid voxId)
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
+            await notificationService.NotifyPostCreated(voxId);
         }
 
         public async Task<LoadMoreResponse> GetByFilter(VoxFilter filter)
