@@ -15,15 +15,4 @@ namespace Core.Entities
         public string Description { get; set; }
         public int Votes { get; set; }
     }
-
-    //public class EncuestaViewModel
-    //{
-    //    public EncuestaViewModel(Encuesta encuesta, string usuarioId)
-    //    {
-    //        Opciones = encuesta.Opciones;
-    //        HaVotado = encuesta.Ids.Any(id => id == usuarioId);
-    //    }
-    //    public IList<OpcionEncuesta> Opciones { get; set; }
-    //    public bool HaVotado { get; set; } = false;
-    //}
 }

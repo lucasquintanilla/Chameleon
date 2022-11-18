@@ -2,6 +2,7 @@
 using Core.Extensions;
 using Core.Services.Storage;
 using Core.Services.Storage.Models;
+using Core.Services.Youtube;
 using Core.Shared.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
