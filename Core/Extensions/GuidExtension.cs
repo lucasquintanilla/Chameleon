@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Core.Shared
+namespace Core.Extensions
 {
-    public static class GuidConverter
+    public static class GuidExtension
     {
         public static string ToShortString(this Guid guid)
         {

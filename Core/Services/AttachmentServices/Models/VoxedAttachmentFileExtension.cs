@@ -1,4 +1,4 @@
-﻿namespace Core.Shared.Models
+﻿namespace Core.Services.AttachmentServices.Models
 {
     public static class VoxedAttachmentFileExtension
     {

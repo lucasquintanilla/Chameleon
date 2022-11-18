@@ -133,7 +133,7 @@ public static class DependencyContainer
         services.Configure<AttachmentServiceConfiguration>(configuration.GetSection(AttachmentServiceConfiguration.SectionName));
 
         services.AddSingleton<ITelegramService, TelegramService>();
-        services.AddSingleton<YoutubeService>();
+        services.AddSingleton<IYoutubeService, YoutubeService>();
         //services.AddSingleton<GlobalMessageService>();
 
         services.AddImageSharp()

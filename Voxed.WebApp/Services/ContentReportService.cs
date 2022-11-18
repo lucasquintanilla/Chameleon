@@ -1,4 +1,5 @@
 ﻿using Core.Data.Repositories;
+using Core.Extensions;
 using Core.Services.Telegram;
 using Core.Shared;
 using Microsoft.Extensions.Logging;
@@ -40,11 +41,11 @@ namespace Voxed.WebApp.Services
                 {
                     case 0:
                         var comment = await _voxedRepository.Comments.GetByHash(request.ContentId);
-                        message = $"NUEVA DENUNCIA \n Reason: {request.Reason}. \n https://voxed.club/vox/{GuidConverter.ToShortString(comment.VoxId)}#{comment.Hash}";
+                        message = $"NUEVA DENUNCIA \n Reason: {request.Reason}. \n https://voxed.club/vox/{comment.VoxId.ToShortString()}#{comment.Hash}";
                         break;
 
                     case 1:
-                        message = $"NUEVA DENUNCIA \n Reason: {request.Reason}. \n https://voxed.club/vox/{GuidConverter.ToShortString(new Guid(request.ContentId))}";
+                        message = $"NUEVA DENUNCIA \n Reason: {request.Reason}. \n https://voxed.club/vox/{new Guid(request.ContentId).ToShortString()}";
                         break;
                 }
 

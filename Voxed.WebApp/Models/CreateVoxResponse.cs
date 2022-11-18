@@ -1,4 +1,4 @@
-﻿using Core.Shared;
+﻿using Core.Extensions;
 using System;
 
 namespace Voxed.WebApp.Models
@@ -13,7 +13,7 @@ namespace Voxed.WebApp.Models
         {
             return new CreateVoxResponse()
             {
-                VoxHash = GuidConverter.ToShortString(voxId),
+                VoxHash = voxId.ToShortString(),
                 Status = true
             };
         }

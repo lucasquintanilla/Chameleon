@@ -1,7 +1,8 @@
 ﻿using Core.Data.Repositories;
 using Core.Entities;
+using Core.Extensions;
+using Core.Services.AttachmentServices.Models;
 using Core.Shared;
-using Core.Shared.Models;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Linq;
@@ -94,7 +95,7 @@ namespace Voxed.WebApp.Services
 
                 Id = comment.Id.ToString(),
                 Hash = comment.Hash,
-                VoxHash = GuidConverter.ToShortString(vox.Id),
+                VoxHash = vox.Id.ToShortString(),
                 VoxId = vox.Id.ToString(),
                 AvatarColor = comment.Style.ToString().ToLower(),
                 IsOp = vox.UserId == comment.UserId && vox.Owner.UserType != UserType.Anonymous, //probar cambiarlo cuando solo pruedan craer los usuarios.

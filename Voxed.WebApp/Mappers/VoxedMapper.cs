@@ -1,9 +1,7 @@
 ﻿using Core.Entities;
 using Core.Extensions;
-using Core.Shared;
 using System.Collections.Generic;
 using System.Linq;
-using Voxed.WebApp.Extensions;
 using Voxed.WebApp.Models;
 
 namespace Voxed.WebApp.Mappers
@@ -14,7 +12,7 @@ namespace Voxed.WebApp.Mappers
         {
             return new VoxResponse()
             {
-                Hash = GuidConverter.ToShortString(vox.Id),
+                Hash = vox.Id.ToShortString(),
                 Status = true,
                 Niche = "20",
                 Title = vox.Title,

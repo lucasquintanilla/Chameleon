@@ -16,6 +16,7 @@ using Voxed.WebApp.Extensions;
 using Voxed.WebApp.Models;
 using Voxed.WebApp.Services;
 using Voxed.WebApp.ViewModels;
+using Core.Extensions;
 
 namespace Voxed.WebApp.Controllers
 {
@@ -148,7 +149,7 @@ namespace Voxed.WebApp.Controllers
         {
             if (hash == null) return BadRequest();
 
-            var voxId = GuidConverter.FromShortString(hash);
+            var voxId = GuidExtension.FromShortString(hash);
 
             var vox = await _voxedRepository.Voxs.GetById(voxId);
 
@@ -163,7 +164,7 @@ namespace Voxed.WebApp.Controllers
                 Id = vox.Id,
                 Title = vox.Title,
                 Content = vox.Content,
-                Hash = GuidConverter.ToShortString(vox.Id),
+                Hash = GuidExtension.ToShortString(vox.Id),
                 UserId = vox.UserId,
 
                 CommentTag = UserTypeDictionary.GetDescription(vox.Owner.UserType).ToLower(),
@@ -255,7 +256,7 @@ namespace Voxed.WebApp.Controllers
             // Page: home, category-anm, vox, favorites, hidden, search
             //HttpContext.Request.Cookies.TryGetValue("categoriasFavoritas", out string categoriasActivas);
             var skipList = JsonConvert.DeserializeObject<IEnumerable<string>>(request?.Ignore);
-            var skipIdList = skipList.Select(x => GuidConverter.FromShortString(x)).ToList();
+            var skipIdList = skipList.Select(x => GuidExtension.FromShortString(x)).ToList();
 
             var filter = new VoxFilter()
             {

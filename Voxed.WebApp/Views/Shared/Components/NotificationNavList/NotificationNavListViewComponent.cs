@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Voxed.WebApp.Hubs;
 using Voxed.WebApp.Extensions;
 using Core.Shared;
+using Core.Extensions;
 
 namespace Voxed.WebApp.Views.Shared.Components.NotificationNavList
 {
@@ -46,7 +47,7 @@ namespace Voxed.WebApp.Views.Shared.Components.NotificationNavList
                     Type = "new",
                     Content = new Content()
                     {
-                        VoxHash = GuidConverter.ToShortString(notification.Vox.Id),
+                        VoxHash = notification.Vox.Id.ToShortString(),
                         NotificationBold = GetTitleNotification(notification.Type),
                         NotificationText = notification.Vox.Title,
                         Count = "1",

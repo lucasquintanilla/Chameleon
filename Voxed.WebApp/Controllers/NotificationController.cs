@@ -1,5 +1,6 @@
 ﻿using Core.Data.Repositories;
 using Core.Entities;
+using Core.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -38,7 +39,7 @@ namespace Voxed.WebApp.Controllers
             var userId = User.GetLoggedInUserId<Guid?>();
             if (userId != notification.UserId) return Redirect("/");
 
-            var voxHash = Core.Shared.GuidConverter.ToShortString(notification.VoxId);
+            var voxHash = notification.VoxId.ToShortString();
             var commentHash = notification.Comment.Hash;
 
             new RemoveNotificationModel() { Id = notification.Id.ToString() };

@@ -1,5 +1,6 @@
 ﻿using Core.Data.Repositories;
 using Core.Entities;
+using Core.Extensions;
 using Core.Services.AttachmentServices;
 using Core.Shared;
 using Microsoft.AspNetCore.Http;
@@ -140,7 +141,7 @@ namespace Voxed.WebApp.Controllers
             var comment = new Comment()
             {
                 Hash = new Hash().NewHash(7),
-                VoxId = GuidConverter.FromShortString(id),
+                VoxId = GuidExtension.FromShortString(id),
                 Owner = user,
                 Content = _formatter.Format(request.Content),
                 Style = StyleService.GetRandomCommentStyle(),

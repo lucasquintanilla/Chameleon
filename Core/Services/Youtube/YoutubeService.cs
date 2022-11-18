@@ -4,7 +4,12 @@ using System.Threading.Tasks;
 
 namespace Core.Services.Youtube
 {
-    public class YoutubeService
+    public interface IYoutubeService
+    {
+        Task<Stream> GetThumbnail(string videoId);
+    }
+
+    public class YoutubeService : IYoutubeService
     {
         private readonly HttpClient _client;
 

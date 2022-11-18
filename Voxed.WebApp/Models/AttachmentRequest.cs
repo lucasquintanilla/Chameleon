@@ -1,5 +1,5 @@
 ﻿using Core.Extensions;
-using Core.Shared.Models;
+using Core.Services.AttachmentServices.Models;
 using Core.Validations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;

@@ -1,9 +1,9 @@
 ﻿using Core.Entities;
 using Core.Extensions;
+using Core.Services.AttachmentServices.Models;
 using Core.Services.Storage;
 using Core.Services.Storage.Models;
 using Core.Services.Youtube;
-using Core.Shared.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using System;
@@ -19,11 +19,11 @@ public interface IAttachmentService
 public class AttachmentService : IAttachmentService
 {
     private readonly AttachmentServiceConfiguration _config;
-    private readonly YoutubeService _youtubeService;
+    private readonly IYoutubeService _youtubeService;
     private readonly IStorage _storageService;
 
     public AttachmentService(
-        YoutubeService youtubeService,
+        IYoutubeService youtubeService,
         IOptions<AttachmentServiceConfiguration> options,
         IStorage storageService)
     {
