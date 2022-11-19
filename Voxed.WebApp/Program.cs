@@ -29,8 +29,8 @@ app.UseExceptionHandler("/Home/Error");
 app.UseHsts();
 app.UseHttpsRedirection();
 
-app.UseImageSharp(); // Add this BEFORE app.UseStaticFiles();
 
+app.UseImageSharp(); // Add this BEFORE app.UseStaticFiles();
 app.UseStaticFiles(new StaticFileOptions
 {
     OnPrepareResponse = ctx =>

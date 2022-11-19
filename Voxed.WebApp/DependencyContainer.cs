@@ -10,6 +10,7 @@ using Core.Services.AttachmentServices;
 using Core.Services.Post;
 using Core.Services.Storage;
 using Core.Services.Storage.Cloud;
+using Core.Services.Storage.Local;
 using Core.Services.Telegram;
 using Core.Services.Youtube;
 using Core.Shared;
@@ -20,6 +21,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SixLabors.ImageSharp.Web.Caching.AWS;
 using SixLabors.ImageSharp.Web.DependencyInjection;
+using SixLabors.ImageSharp.Web.Providers;
 using SixLabors.ImageSharp.Web.Providers.AWS;
 using System;
 using Voxed.WebApp.Services;
@@ -137,30 +139,41 @@ public static class DependencyContainer
         services.Configure<AttachmentServiceOptions>(configuration.GetSection(AttachmentServiceOptions.SectionName));
         services.AddSingleton<IAttachmentService, AttachmentService>();
 
-        services.AddImageSharp()
-        .Configure<AWSS3StorageImageProviderOptions>(options =>
+        if (false)
         {
-            options.S3Buckets.Add(new AWSS3BucketClientOptions
-            {
-                BucketName = "post-attachments",
-                AccessKey = "AKIAT3LYSLSBEG32UEDZ",
-                AccessSecret = "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",
-                Region = "sa-east-1"
-            });
-        })
-        .ClearProviders()
-        .AddProvider<AWSS3StorageImageProvider>()
-        .Configure<AWSS3StorageCacheOptions>(options =>
-        {
-            options.BucketName = "post-attachments/cache";
-            options.AccessKey = "AKIAT3LYSLSBEG32UEDZ";
-            options.AccessSecret = "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";
-            options.Region = "sa-east-1";
+            services
+                .AddImageSharp()
+                .Configure<AWSS3StorageImageProviderOptions>(options =>
+                {
+                    options.S3Buckets.Add(new AWSS3BucketClientOptions
+                    {
+                        BucketName = "post-attachments",
+                        AccessKey = "AKIAT3LYSLSBEG32UEDZ",
+                        AccessSecret = "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",
+                        Region = "sa-east-1"
+                    });
+                })
+                .ClearProviders()
+                .AddProvider<AWSS3StorageImageProvider>()
+                .Configure<AWSS3StorageCacheOptions>(options =>
+                {
+                    options.BucketName = "post-attachments/cache";
+                    options.AccessKey = "AKIAT3LYSLSBEG32UEDZ";
+                    options.AccessSecret = "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";
+                    options.Region = "sa-east-1";
 
-            // Optionally create the cache bucket on startup if not already created.
-            AWSS3StorageCache.CreateIfNotExists(options, S3CannedACL.Private);
-        })
-        .SetCache<AWSS3StorageCache>();
+                    // Optionally create the cache bucket on startup if not already created.
+                    AWSS3StorageCache.CreateIfNotExists(options, S3CannedACL.Private);
+                })
+                .SetCache<AWSS3StorageCache>();
+        }
+        else
+        {
+            services
+                .AddImageSharp()
+                .ClearProviders()
+                .AddProvider<PhysicalFileSystemProvider>();
+        }
     }
 
     public static void RegisterStorageServices(this IServiceCollection services, IConfiguration configuration)
@@ -168,15 +181,15 @@ public static class DependencyContainer
         services.AddDefaultAWSOptions(configuration.GetAWSOptions());
         services.AddAWSService<IAmazonS3>();
 
-        if (true)
+        if (false)
         {
             services.Configure<CloudStorageOptions>(configuration.GetSection(CloudStorageOptions.SectionName));
             services.AddSingleton<IStorage, CloudStorage>();
         }
         else
         {
-            //services.Configure<LocalStorageOptions>(configuration.GetSection(LocalStorageOptions.SectionName));
-            //services.AddSingleton<IStorage, LocalStorage>();
+            services.Configure<LocalStorageOptions>(configuration.GetSection(LocalStorageOptions.SectionName));
+            services.AddSingleton<IStorage, LocalStorage>();
         }
     }
 
