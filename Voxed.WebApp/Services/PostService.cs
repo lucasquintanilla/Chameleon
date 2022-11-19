@@ -2,14 +2,13 @@
 using Core.Data.Repositories;
 using Core.Entities;
 using Core.Services.AttachmentServices;
+using Core.Services.AttachmentServices.Models;
 using Core.Shared;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
-using Voxed.WebApp.Mappers;
 using Voxed.WebApp.Models;
 
 namespace Voxed.WebApp.Services
@@ -44,7 +43,16 @@ namespace Voxed.WebApp.Services
 
         public async Task<Vox> CreatePost(CreateVoxRequest request, Guid userId, string userIpAddress, string userAgent)
         {
-            var attachment = await _attachmentService.ProcessAttachment(request.GetVoxedAttachment(), request.File);
+            var voxedAttachment = request.GetVoxedAttachment();
+
+            var postAttachment = new CreateAttachmentRequest()
+            {
+                Extension = voxedAttachment.Extension,
+                ExtensionData = voxedAttachment.ExtensionData,
+                File = request.File
+            };
+
+            var attachment = await _attachmentService.CreateAttachment(postAttachment);
             await _voxedRepository.Media.Add(attachment);
 
             var vox = new Vox()
@@ -79,20 +87,15 @@ namespace Voxed.WebApp.Services
         }
     }
 
-    //public class CreatePostRequest
-    //{
-    //    public Guid UserId { get; set; }
-    //    public string Title { get; set; }
-    //    public string Content { get; set; }
-    //    public int CategoryId { get; set; }
-    //    public string UserAgent { get; set; }
-    //    public string IpAddress { get; set; }       
-    //}
+    public class CreatePostRequest
+    {
+        public Guid UserId { get; set; }
+        public string Title { get; set; }
+        public string Content { get; set; }
+        public int CategoryId { get; set; }
+        public string UserAgent { get; set; }
+        public string IpAddress { get; set; }
+    }
 
-    //public class PostAttachment
-    //{
-    //    public string ExternalMetaData { get; set; }
-    //    public string ContentType { get; set; }
-    //    public Stream Content { get; set; }
-    //}
+
 }

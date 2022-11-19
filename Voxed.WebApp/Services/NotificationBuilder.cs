@@ -35,12 +35,12 @@ namespace Voxed.WebApp.Services
 
         public NotificationBuilder AddOPNotification()
         {
-            if (_vox.Owner.UserType != UserType.Anonymous && _vox.UserId != _comment.UserId)
+            if (_comment.UserId != _vox.UserId)
             {
                 var notification = new Notification()
                 {
                     CommentId = _comment.Id,
-                    VoxId = _vox.Id,
+                    VoxId = _comment.VoxId,
                     UserId = _vox.UserId,
                     Type = NotificationType.NewComment,
                 };
@@ -71,7 +71,7 @@ namespace Voxed.WebApp.Services
                 .Select(userId => new Notification()
                 {
                     CommentId = _comment.Id,
-                    VoxId = _vox.Id,
+                    VoxId = _comment.VoxId,
                     UserId = userId,
                     Type = NotificationType.Reply,
                 })

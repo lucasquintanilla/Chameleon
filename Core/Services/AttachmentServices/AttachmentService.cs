@@ -13,7 +13,7 @@ namespace Core.Services.AttachmentServices;
 
 public interface IAttachmentService
 {
-    Task<Attachment> ProcessAttachment(VoxedAttachment voxedAttachment, IFormFile file);
+    Task<Attachment> CreateAttachment(CreateAttachmentRequest request);
 }
 
 public class AttachmentService : IAttachmentService
@@ -32,19 +32,17 @@ public class AttachmentService : IAttachmentService
         _storageService = storageService;
     }
 
-    public async Task<Attachment> ProcessAttachment(VoxedAttachment voxedAttachment, IFormFile file)
+    public async Task<Attachment> CreateAttachment(CreateAttachmentRequest request)
     {
-        if (voxedAttachment == null && file == null) return null;
-
-        return voxedAttachment.Extension switch
+        return request.Extension switch
         {
-            VoxedAttachmentFileExtension.Youtube => await SaveFromYoutube(voxedAttachment.ExtensionData),
-            VoxedAttachmentFileExtension.Base64 => await SaveFromBase64(voxedAttachment.ExtensionData),
-            VoxedAttachmentFileExtension.Gif => await SaveImageFromGif(file),
-            VoxedAttachmentFileExtension.Jpg => await SaveImageFromFile(file),
-            VoxedAttachmentFileExtension.Jpeg => await SaveImageFromFile(file),
-            VoxedAttachmentFileExtension.Png => await SaveImageFromFile(file),
-            VoxedAttachmentFileExtension.WebP => await SaveImageFromFile(file),
+            CreateAttachmentFileExtension.Youtube => await SaveFromYoutube(request.ExtensionData),
+            CreateAttachmentFileExtension.Base64 => await SaveFromBase64(request.ExtensionData),
+            CreateAttachmentFileExtension.Gif => await SaveImageFromGif(request.File),
+            CreateAttachmentFileExtension.Jpg => await SaveImageFromFile(request.File),
+            CreateAttachmentFileExtension.Jpeg => await SaveImageFromFile(request.File),
+            CreateAttachmentFileExtension.Png => await SaveImageFromFile(request.File),
+            CreateAttachmentFileExtension.WebP => await SaveImageFromFile(request.File),
             _ => throw new NotImplementedException("Invalid file extension"),
         };
     }

@@ -2,6 +2,7 @@
 using Core.Entities;
 using Core.Extensions;
 using Core.Services.AttachmentServices;
+using Core.Services.AttachmentServices.Models;
 using Core.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -87,7 +88,7 @@ namespace Voxed.WebApp.Controllers
 
                 await _voxedRepository.SaveChangesAsync();
 
-                _ = Task.Run(() => NotifyCommentCreated(vox, comment, request));
+                _ = Task.Run(() => NotifyCommentCreated(comment, request));
 
                 return CreateCommentResponse.Success(comment.Hash);
             }
@@ -104,12 +105,12 @@ namespace Voxed.WebApp.Controllers
             }
         }
 
-        private async Task NotifyCommentCreated(Vox vox, Comment comment, CreateCommentRequest request)
+        private async Task NotifyCommentCreated(Comment comment, CreateCommentRequest request)
         {
             using var scope = _scopeFactory.CreateScope();
             var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
-            await notificationService.NotifyCommentCreated(comment, vox, request);
-            await notificationService.ManageNotifications(vox, comment);
+            await notificationService.NotifyCommentCreated(comment, request);
+            await notificationService.ManageNotifications( comment);
         }
 
         [HttpPost]
@@ -120,7 +121,6 @@ namespace Voxed.WebApp.Controllers
             try
             {
                 var comment = await _voxedRepository.Comments.GetById(request.ContentId);
-
                 if (comment == null) NotFound(response);
 
                 comment.IsSticky = true;
@@ -158,10 +158,24 @@ namespace Voxed.WebApp.Controllers
                 Style = StyleService.GetRandomCommentStyle(),
                 IpAddress = UserIpAddress,
                 UserAgent = UserAgent,
-                Attachment = request.HasAttachment() ? await _attachmentService.ProcessAttachment(request.GetVoxedAttachment(), request.File) : null,
+                Attachment = request.HasAttachment() ? await CreateCommentAttachment(request) : null,
             };
 
             return comment;
+        }
+
+        private async Task<Attachment> CreateCommentAttachment(CreateCommentRequest request)
+        {
+            if (request.GetVoxedAttachment() == null && request.File == null) return null;
+
+            var attachment = new CreateAttachmentRequest()
+            {
+                Extension = request.GetVoxedAttachment().Extension,
+                ExtensionData = request.GetVoxedAttachment().ExtensionData,
+                File = request.File
+            };
+
+            return await _attachmentService.CreateAttachment(attachment);
         }
     }
 }
