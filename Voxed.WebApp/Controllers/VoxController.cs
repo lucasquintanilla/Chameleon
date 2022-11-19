@@ -1,10 +1,14 @@
 ﻿using Core.Data.Filters;
 using Core.Data.Repositories;
 using Core.Entities;
+using Core.Extensions;
+using Core.Services.Post;
+using Core.Services.Post.Models;
 using Core.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
@@ -13,11 +17,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Voxed.WebApp.Constants;
 using Voxed.WebApp.Extensions;
+using Voxed.WebApp.Mappers;
 using Voxed.WebApp.Models;
 using Voxed.WebApp.Services;
 using Voxed.WebApp.ViewModels;
-using Core.Extensions;
-using Voxed.WebApp.Mappers;
 
 namespace Voxed.WebApp.Controllers
 {
@@ -29,6 +32,7 @@ namespace Voxed.WebApp.Controllers
         private readonly IPostService _postService;
         private readonly IUserVoxActionService _userVoxActionService;
         private readonly IContentReportService _contentReportService;
+        private readonly IServiceScopeFactory _scopeFactory;
 
         public VoxController(
             ILogger<VoxController> logger,
@@ -38,7 +42,8 @@ namespace Voxed.WebApp.Controllers
             IHttpContextAccessor accessor,
             IPostService postService,
             IUserVoxActionService userVoxActionService,
-            IContentReportService contentReportService)
+            IContentReportService contentReportService,
+            IServiceScopeFactory scopeFactory)
             : base(accessor, userManager)
         {
             _voxedRepository = voxedRepository;
@@ -47,6 +52,7 @@ namespace Voxed.WebApp.Controllers
             _logger = logger;
             _userVoxActionService = userVoxActionService;
             _contentReportService = contentReportService;
+            _scopeFactory = scopeFactory;
         }
 
         [HttpPost("account/message")]
@@ -118,10 +124,10 @@ namespace Voxed.WebApp.Controllers
 
             try
             {
-                var userId = User.GetLoggedInUserId<Guid?>();
+                var userId = User.GetUserId();
                 if (userId == null)
                 {
-                    response.Swal = $"Debe iniciar sesion o crear un post o un comentario";
+                    response.Swal = $"Debe iniciar sesion";
                     return response;
                 }
 
@@ -156,7 +162,7 @@ namespace Voxed.WebApp.Controllers
 
             if (vox == null || vox.State == VoxState.Deleted) return NotFound();
 
-            var userId = User.GetLoggedInUserId<Guid?>();
+            var userId = User.GetUserId();
 
             var actions = await _userVoxActionService.GetUserVoxActions(voxId, userId);
 
@@ -220,23 +226,38 @@ namespace Voxed.WebApp.Controllers
         [Route("anon/vox")]
         public async Task<CreateVoxResponse> Create(CreateVoxRequest request)
         {
-            if (ModelState.IsValid is false)            
+            if (ModelState.IsValid is false)
                 return CreateVoxResponse.Failure(ModelState.GetErrorMessage());
 
             try
             {
-                var userId = User.GetLoggedInUserId<Guid?>();
-                //var user = await _userManager.GetUserAsync(HttpContext.User);
+                var userId = User.GetUserId();
                 if (userId == null)
                 {
                     var user = await CreateAnonymousUser();
                     await _signInManager.SignInAsync(user, true);
                     userId = user.Id;
-
-                    //TODO: Crear una notificacion para el nuevo usuario anonimo
                 }
 
-                var post = await _postService.CreatePost(request, userId.Value, UserIpAddress, UserAgent);
+                var voxedAttachment = request.GetVoxedAttachment();
+
+                var createPostRequest = new CreatePostRequest()
+                {
+                    UserId = userId.Value,
+                    IpAddress = UserIpAddress,
+                    UserAgent = UserAgent,
+                    Title = request.Title,
+                    Content = request.Content,
+                    CategoryId = request.Niche,
+                    Extension = voxedAttachment.Extension,
+                    ExtensionData = voxedAttachment.ExtensionData,
+                    File = request.File
+                };
+
+                var post = await _postService.CreatePost(createPostRequest);
+
+                _ = Task.Run(() => NotifyPostCreated(post.Id));
+
                 return CreateVoxResponse.Success(post.Id);
             }
             catch (NotImplementedException e)
@@ -261,7 +282,7 @@ namespace Voxed.WebApp.Controllers
 
             var filter = new PostFilter()
             {
-                UserId = User.GetLoggedInUserId<Guid?>(),
+                UserId = User.GetUserId(),
                 IgnoreVoxIds = skipIdList,
                 Categories = GetSubscriptionCategories(request)
             };
@@ -277,9 +298,7 @@ namespace Voxed.WebApp.Controllers
                 var subscriptions = JsonConvert.DeserializeObject<List<string>>(request?.Suscriptions);
 
                 if (subscriptions == null)
-                {
                     return Categories.DefaultCategories;
-                }
 
                 return subscriptions.Select(x => int.Parse(x));
 
@@ -288,6 +307,13 @@ namespace Voxed.WebApp.Controllers
             {
                 return Categories.DefaultCategories;
             }
+        }
+
+        private async Task NotifyPostCreated(Guid voxId)
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
+            await notificationService.NotifyPostCreated(voxId);
         }
     }
 }

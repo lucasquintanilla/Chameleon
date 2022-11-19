@@ -1,7 +1,6 @@
 ﻿using Core.Data.Repositories;
 using Core.Extensions;
 using Core.Services.Telegram;
-using Core.Shared;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
@@ -20,7 +19,7 @@ namespace Voxed.WebApp.Services
         private readonly ITelegramService _telegramService;
 
         public ContentReportService(
-            ILogger<ContentReportService> logger, 
+            ILogger<ContentReportService> logger,
             IVoxedRepository voxedRepository,
             ITelegramService telegramService)
         {

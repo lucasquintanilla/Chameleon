@@ -1,5 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Voxed.WebApp.Models;
 
 namespace Voxed.WebApp.Hubs
 {
@@ -8,7 +8,7 @@ namespace Voxed.WebApp.Hubs
         Task Comment(CommentLiveUpdate comment);
         Task Notification(UserNotification notification);
         Task RemoveNotification(RemoveNotificationModel removeNotification);
-        Task Vox(Models.VoxResponse notification);
+        Task Vox(VoxResponse notification);
     }
 }
 

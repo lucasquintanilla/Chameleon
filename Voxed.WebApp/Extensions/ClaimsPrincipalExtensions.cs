@@ -6,6 +6,11 @@ namespace Voxed.WebApp.Extensions
 {
     public static class ClaimsPrincipalExtensions
     {
+        public static Guid? GetUserId(this ClaimsPrincipal principal)
+        {
+            return principal.GetLoggedInUserId<Guid?>();
+        }
+
         public static T GetLoggedInUserId<T>(this ClaimsPrincipal principal)
         {
             if (principal == null)

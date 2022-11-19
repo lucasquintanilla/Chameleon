@@ -141,7 +141,7 @@ namespace Voxed.WebApp.Controllers
 
             await _voxedRepository.Comments.Add(comment);
 
-            if (ContainsHide(comment.Content))
+            if (!ContainsHide(comment.Content))
             {
                 var vox = await _voxedRepository.Voxs.GetById(comment.VoxId);
                 vox.Bump = DateTimeOffset.Now;
@@ -154,7 +154,7 @@ namespace Voxed.WebApp.Controllers
         private static bool ContainsHide(string content)
         {
             string hide = "&gt;hide";
-            return content is not null && !content.ToLower().Contains(hide);
+            return content is not null && content.ToLower().Contains(hide);
         }
 
         private async Task<Attachment> CreateCommentAttachment(CreateCommentRequest request)

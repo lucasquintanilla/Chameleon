@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 
 namespace Voxed.WebApp.Controllers
 {
-    //[ServiceFilter(typeof(TraceIPAttribute))]
     public class BaseController : Controller
     {
         private readonly UserManager<User> _userManager;

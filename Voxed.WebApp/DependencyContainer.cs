@@ -7,6 +7,7 @@ using Core.Data.EF.Sqlite;
 using Core.Data.Repositories;
 using Core.Entities;
 using Core.Services.AttachmentServices;
+using Core.Services.Post;
 using Core.Services.Storage;
 using Core.Services.Storage.Cloud;
 using Core.Services.Telegram;
@@ -91,11 +92,13 @@ public static class DependencyContainer
             .AddErrorDescriber<SpanishIdentityErrorDescriber>();
 
 
-        services.AddAuthentication().AddGoogle(googleOptions =>
-        {
-            googleOptions.ClientId = "921895924714-26f3feivedthc93e7jnnvaf2nkf497hk.apps.googleusercontent.com";
-            googleOptions.ClientSecret = "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";
-        });
+        services
+            .AddAuthentication()
+            .AddGoogle(googleOptions =>
+            {
+                googleOptions.ClientId = "921895924714-26f3feivedthc93e7jnnvaf2nkf497hk.apps.googleusercontent.com";
+                googleOptions.ClientSecret = "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";
+            });
 
         services.Configure<IdentityOptions>(options =>
         {
@@ -183,18 +186,18 @@ public static class DependencyContainer
         string myAllowSpecificOrigins = "_myAllowSpecificOrigins";
         // Cors Configuration must be before MVC / Razor Configuration
         services.AddCors(options =>
+        {
+            options.AddPolicy(name: myAllowSpecificOrigins,
+            builder =>
             {
-                options.AddPolicy(name: myAllowSpecificOrigins,
-                                  builder =>
-                                  {
-                                      //builder.WithOrigins("http://localhost",
-                                      //                    "http://www.contoso.com");
+                //builder.WithOrigins("http://localhost",
+                //                    "http://www.contoso.com");
 
-                                      builder.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost")
-                                      .AllowAnyHeader()
-                                      .AllowAnyMethod();
-                                  });
+                builder.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
             });
+        });
 
         services.AddControllersWithViews();
         services.AddRazorPages();
