@@ -17,7 +17,7 @@ namespace Core.Services.Storage.Local
 
         public async Task Save(StorageObject obj)
         {
-            var path = Path.Combine(_options.BaseDirectory, obj.Key);
+            var path = Path.Combine("wwwroot", _options.BaseDirectory, obj.Key);
             Directory.CreateDirectory(Path.GetDirectoryName(path));
             using var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write);
             obj.Content.Seek(0, SeekOrigin.Begin);

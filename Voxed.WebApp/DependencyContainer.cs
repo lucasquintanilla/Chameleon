@@ -35,36 +35,23 @@ public static class DependencyContainer
         Console.WriteLine("RDS Connection: " + Helpers.GetRDSConnectionString(configuration));
 
         //https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/providers?tabs=dotnet-core-cli
-        var provider = configuration.GetValue("Provider", nameof(SqlProvider.MySql));
+        var provider = configuration.GetValue("DatabaseProvider", nameof(SqlProvider.Sqlite));
         services.AddDbContext<VoxedContext>(
             options => _ = provider switch
             {
                 nameof(SqlProvider.Sqlite) => options
                     .UseSqlite(configuration.GetConnectionString(nameof(SqlProvider.Sqlite)),
                         x => x.MigrationsAssembly(typeof(SqliteVoxedContext).Assembly.GetName().Name)),
-                //.UseLoggerFactory(ContextLoggerFactory),
-
 
                 nameof(SqlProvider.MySql) => options
                 .UseMySql(
                     configuration.GetConnectionString(nameof(SqlProvider.MySql)),
                     ServerVersion.AutoDetect(configuration.GetConnectionString(nameof(SqlProvider.MySql))),
                     x => x.MigrationsAssembly(typeof(MySqlVoxedContext).Assembly.GetName().Name)),
-                //.UseLoggerFactory(ContextLoggerFactory),
 
-
-
-                // nameof(SqlProvider.MySql) => options
-                //.UseMySql(
-                //    Helpers.GetRDSConnectionString(configuration),
-                //    ServerVersion.AutoDetect(Helpers.GetRDSConnectionString(configuration)),
-                //    x => x.MigrationsAssembly(typeof(MySqlVoxedContext).Assembly.GetName().Name)),
-                // //.UseLoggerFactory(ContextLoggerFactory),
-
-                nameof(SqlProvider.PostgreSQL) => options
-                .UseNpgsql(configuration.GetConnectionString(nameof(SqlProvider.PostgreSQL)),
+                nameof(SqlProvider.PostgreSql) => options
+                .UseNpgsql(configuration.GetConnectionString(nameof(SqlProvider.PostgreSql)),
                     x => x.MigrationsAssembly(typeof(PostgreSqlVoxedContext).Assembly.GetName().Name)),
-                //.UseLoggerFactory(ContextLoggerFactory),
 
                 _ => throw new Exception($"Unsupported provider: {provider}")
             });
@@ -139,7 +126,7 @@ public static class DependencyContainer
         services.Configure<AttachmentServiceOptions>(configuration.GetSection(AttachmentServiceOptions.SectionName));
         services.AddSingleton<IAttachmentService, AttachmentService>();
 
-        if (false)
+        if (true)
         {
             services
                 .AddImageSharp()
@@ -247,5 +234,5 @@ public enum SqlProvider
     MySql,
     Sqlite,
     SqlServer,
-    PostgreSQL
+    PostgreSql
 }

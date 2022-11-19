@@ -1,91 +1,68 @@
 # Voxed
 
-Proyecto de codigo abierto escrito en .NET 6
+Proyecto free, cross-platform y open-source
 
 > https://voxed.club
 
+# Tech Stack
+
+- .NET 6
+- PostgreSQL
+- MySQL
+- Sqlite
+- Entity Framework Core
+- SignalR
+- Telegram
+
 ## Requisitos previos
 
-### Nivel Basico
+### Software requerido
 
-- [Visual Studio](https://visualstudio.microsoft.com/downloads/)
-- [Dbrowser (Sqlite)](https://sqlitebrowser.org/dl/) (opcional)
+- [Visual Studio 2022 Community](https://visualstudio.microsoft.com/downloads/)
 - [Git](https://git-scm.com/download/win)
 
-### Nivel Avanzado
+### Software opcional
 
-- [Visual Studio](https://visualstudio.microsoft.com/downloads/)
-- [Mysql](https://dev.mysql.com/downloads/installer/)
-- [Workbench](https://dev.mysql.com/downloads/workbench/) o [DBeaver](https://dbeaver.io/) (MySql) (opcional)
-- [Git](https://git-scm.com/download/win)
+- [Mysql Community](https://dev.mysql.com/downloads/)
+- [DB Browser for SQLite](https://sqlitebrowser.org/dl/)
+- [Workbench](https://dev.mysql.com/downloads/workbench/)
+- [DBeaver](https://dbeaver.io/)
+- [pgAdmin](https://www.pgadmin.org/download/)
 
 ## Instalacion 
 
-### Nivel Basico
-
-- Instalar software requerido
+- Instalar Visual Studio
 - Clonar repositorio ejecutando comando git clone
 > git clone https://github.com/lucasquintanilla/Voxed.git
-- Agregar archivos ejecutable FFmpeg en wwwroot\ffmpeg  (Ya no es mas requerido)
 - Abrir archivo Voxed.sln con Visual Studio
-- Configurar Sqlite como proveedor de base de datos en archivo appsettings.json
-> "Provider": "Sqlite" 
-- Ejectuar Voxed.WebApp desde Visual Studio
-
-### Nivel Avanzado
-
-- Instalar software requerido, crear instancia de MySql y base de datos
-- Clonar repositorio ejecutando comando git clone
-> git clone https://github.com/lucasquintanilla/Voxed.git
-- Agregar archivos ejecutable FFmpeg en wwwroot\ffmpeg  (Ya no es mas requerido)
-- Abrir archivo Voxed.sln con Visual Studio
-- Configurar MySql como proveedor de base de datos en archivo appsettings.json
-> "Provider": "MySql"
-- Configurar ConnectionString en appsettings.json.
-> "MySql": "Server=localhost;Database=voxed;Uid=root;Pwd=Password;Allow User Variables=true;"
 - Ejectuar Voxed.WebApp desde Visual Studio
 
 ## Contribucion
 
-Pull request son bienvenidos. Para cambios grandes abrir una issue primero.
+Pull request son bienvenidos
 
-## SSL Configuracion Cloudflare + Azure
-
-openssl pkcs12 -inkey voxed.club.key -in voxed.club.pem -export -out voxed.club.pfx
-
-tutorial https://swimburger.net/blog/azure/setting-up-cloudflare-full-universal-ssl-with-an-azure-app-services
-
-## To Do
+## To Do List
 
 - [ ] Doble envio de noticacion al OP cuando responden etiquetandolo en un comentario del propio post
 - [x] Fix buscador
-- [x] Logs en AWS
+- [x] Logs
 - [ ] Mejorar performance home
 - [ ] Separar front del back
 - [ ] Implementar PWA
 - [ ] Envio de notificaciones push con PWA
 - [ ] Reducir consultas a la db
 - [ ] Agregar roles mods
-- [ ] Ocultar categorias
+- [x] Ocultar categorias
 - [x] Bug al raplicar comentarios, en el cometario original no aparece el tag de la respuesta
 - [x] Al hovear un tag de los comentarios se abre un una previsualizacion y no se cierra solo
 - [ ] Implementar moderacion basada en bots y AI
-- [ ] Implementar hosting de imagenes en servicios externos
+- [x] Implementar hosting de imagenes en servicios externos
 - [ ] Fix Light Mode
-- [ ] Implementar >hide
+- [x] Implementar >hide
 - [x] Migrar a .NET 6
 - [ ] Agregar unit tests
 - [ ] Agregar tags
-
-# Tecnologias
-
-- .NET 6
-- Entity Framework Core
-- MySQL
-- Sqlite
-- PostgreSQL
-- SignalR
-- Telegram
+- [ ] Material Design 3
 
 # Patrones de diseño
 
@@ -96,7 +73,7 @@ tutorial https://swimburger.net/blog/azure/setting-up-cloudflare-full-universal-
 - MVC
 
 
-# Principios
+# Principios a seguir
 - SOLID
 - DRY
 - Composition over inheritance
