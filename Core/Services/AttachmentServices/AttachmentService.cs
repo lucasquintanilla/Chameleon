@@ -18,13 +18,13 @@ public interface IAttachmentService
 
 public class AttachmentService : IAttachmentService
 {
-    private readonly AttachmentServiceConfiguration _config;
+    private readonly AttachmentServiceOptions _config;
     private readonly IYoutubeService _youtubeService;
     private readonly IStorage _storageService;
 
     public AttachmentService(
         IYoutubeService youtubeService,
-        IOptions<AttachmentServiceConfiguration> options,
+        IOptions<AttachmentServiceOptions> options,
         IStorage storageService)
     {
         _config = options.Value;

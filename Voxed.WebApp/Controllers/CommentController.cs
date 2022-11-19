@@ -39,7 +39,7 @@ namespace Voxed.WebApp.Controllers
             UserManager<User> userManager,
             SignInManager<User> signInManager,
             IHttpContextAccessor accessor,
-            IServiceScopeFactory scopeFactory) 
+            IServiceScopeFactory scopeFactory)
             : base(accessor, userManager)
         {
             _formatter = formatter;
@@ -64,7 +64,7 @@ namespace Voxed.WebApp.Controllers
 
             try
             {
-                if (request.HasEmptyContent())                
+                if (request.HasEmptyContent())
                     return CreateCommentResponse.Failure("Debes ingresar un contenido");
 
                 var comment = await ProcessComment(request, id);

@@ -9,7 +9,6 @@ using Core.Entities;
 using Core.Services.AttachmentServices;
 using Core.Services.Storage;
 using Core.Services.Storage.Cloud;
-using Core.Services.Storage.Local;
 using Core.Services.Telegram;
 using Core.Services.Youtube;
 using Core.Shared;
@@ -125,16 +124,15 @@ public static class DependencyContainer
         services.AddTransient<INotificationService, NotificationService>();
         services.AddTransient<IPostService, PostService>();
         services.AddSingleton<IContentFormatterService, ContentFormatterService>();
-        services.AddSingleton<IAttachmentService, AttachmentService>();
         services.AddTransient<IUserVoxActionService, UserVoxActionService>();
         services.AddTransient<IContentReportService, ContentReportService>();
+        services.AddSingleton<IYoutubeService, YoutubeService>();
 
         services.Configure<TelegramOptions>(configuration.GetSection(TelegramOptions.SectionName));
-        services.Configure<AttachmentServiceConfiguration>(configuration.GetSection(AttachmentServiceConfiguration.SectionName));
-
         services.AddSingleton<ITelegramService, TelegramService>();
-        services.AddSingleton<IYoutubeService, YoutubeService>();
-        //services.AddSingleton<GlobalMessageService>();
+
+        services.Configure<AttachmentServiceOptions>(configuration.GetSection(AttachmentServiceOptions.SectionName));
+        services.AddSingleton<IAttachmentService, AttachmentService>();
 
         services.AddImageSharp()
         .Configure<AWSS3StorageImageProviderOptions>(options =>
@@ -156,11 +154,10 @@ public static class DependencyContainer
             options.AccessSecret = "fu1CrujoftoVQxCr/vV0pOd5NRpbxfJUOYTvsnpn";
             options.Region = "sa-east-1";
 
-                // Optionally create the cache bucket on startup if not already created.
+            // Optionally create the cache bucket on startup if not already created.
             AWSS3StorageCache.CreateIfNotExists(options, S3CannedACL.Private);
         })
         .SetCache<AWSS3StorageCache>();
-
     }
 
     public static void RegisterStorageServices(this IServiceCollection services, IConfiguration configuration)

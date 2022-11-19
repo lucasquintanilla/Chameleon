@@ -1,28 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Core.Services
 {
-    internal class UserActivity
+    public static class UserActivityLimiter
     {
         private static readonly Dictionary<Guid, DateTimeOffset> _userLastActivityOn = new();
+        private const int Interval = 2;
 
-        public bool CanUserCreateComment(Guid userId)
+        public static bool CanUserCreateComment(Guid userId)
         {
             if (_userLastActivityOn.ContainsKey(userId))
-            {
                 return HasUserCompletedTime(userId);
-            }
 
-            return true;            
+            _userLastActivityOn.Add(userId, DateTimeOffset.UtcNow);
+            return true;
         }
 
         private static bool HasUserCompletedTime(Guid userId)
         {
-            var interval = TimeSpan.FromMinutes(2);
+            var interval = TimeSpan.FromMinutes(Interval);
             var lastActivityOn = _userLastActivityOn[userId];
             if (DateTimeOffset.UtcNow - lastActivityOn > interval)
             {

@@ -29,7 +29,6 @@ app.UseExceptionHandler("/Home/Error");
 app.UseHsts();
 app.UseHttpsRedirection();
 
-
 app.UseImageSharp(); // Add this BEFORE app.UseStaticFiles();
 
 app.UseStaticFiles(new StaticFileOptions
@@ -60,6 +59,5 @@ app.UseEndpoints(endpoints =>
 
     endpoints.MapHub<VoxedHub>("/hubs/notifications");
 });
-
 
 app.Run();

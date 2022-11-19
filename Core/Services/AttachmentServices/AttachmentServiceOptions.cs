@@ -2,7 +2,7 @@
 
 namespace Core.Services.AttachmentServices
 {
-    public class AttachmentServiceConfiguration
+    public class AttachmentServiceOptions
     {
         public const string SectionName = "AttachmentService";
 
