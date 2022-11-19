@@ -57,36 +57,17 @@ namespace Voxed.WebApp.Controllers
         [Route("comment/nuevo/{id}")]
         public async Task<CreateCommentResponse> Create([FromForm] CreateCommentRequest request, [FromRoute] string id)
         {
-            _logger.LogWarning($"{nameof(CreateCommentRequest)} received.");
-            _logger.LogWarning(JsonConvert.SerializeObject(request));
+            _logger.LogWarning($"{nameof(CreateCommentRequest)} received. " + JsonConvert.SerializeObject(request));
 
             if (ModelState.IsValid is false)
-            {
-                var errorMessage = ModelState.GetErrorMessage();
-                _logger.LogWarning($"Request received is not valid. Message: {errorMessage}");
-                return CreateCommentResponse.Failure(errorMessage);
-            }
+                return CreateCommentResponse.Failure(ModelState.GetErrorMessage());
 
             try
             {
-                if (request.HasEmptyContent())
-                {
-                    _logger.LogWarning($"Comment request received has empty content");
+                if (request.HasEmptyContent())                
                     return CreateCommentResponse.Failure("Debes ingresar un contenido");
-                }
 
                 var comment = await ProcessComment(request, id);
-
-                //cambiar para buscar vox con el id de la request
-                await _voxedRepository.Comments.Add(comment);
-                var vox = await _voxedRepository.Voxs.GetById(comment.VoxId);
-
-                if (comment.Content != null && !comment.Content.ToLower().Contains("&gt;hide"))
-                {
-                    vox.Bump = DateTimeOffset.Now;
-                }
-
-                await _voxedRepository.SaveChangesAsync();
 
                 _ = Task.Run(() => NotifyCommentCreated(comment, request));
 
@@ -94,13 +75,12 @@ namespace Voxed.WebApp.Controllers
             }
             catch (NotImplementedException e)
             {
-                _logger.LogWarning(e.Message);
+                _logger.LogWarning(e.ToString());
                 return CreateCommentResponse.Failure(e.Message);
             }
             catch (Exception e)
             {
-                _logger.LogError(e.Message);
-                _logger.LogError(e.StackTrace);
+                _logger.LogError(e.ToString());
                 return CreateCommentResponse.Failure("Hubo un error");
             }
         }
@@ -110,7 +90,7 @@ namespace Voxed.WebApp.Controllers
             using var scope = _scopeFactory.CreateScope();
             var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
             await notificationService.NotifyCommentCreated(comment, request);
-            await notificationService.ManageNotifications( comment);
+            await notificationService.ManageNotifications(comment);
         }
 
         [HttpPost]
@@ -140,11 +120,9 @@ namespace Voxed.WebApp.Controllers
         private async Task<Comment> ProcessComment(CreateCommentRequest request, string id)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
-
             if (user == null)
             {
                 user = await CreateAnonymousUser();
-
                 await _signInManager.SignInAsync(user, true);
                 //Crear una notificacion para el nuevo usuario anonimo
             }
@@ -161,7 +139,22 @@ namespace Voxed.WebApp.Controllers
                 Attachment = request.HasAttachment() ? await CreateCommentAttachment(request) : null,
             };
 
+            await _voxedRepository.Comments.Add(comment);
+
+            if (ContainsHide(comment.Content))
+            {
+                var vox = await _voxedRepository.Voxs.GetById(comment.VoxId);
+                vox.Bump = DateTimeOffset.Now;
+            }
+
+            await _voxedRepository.SaveChangesAsync();
             return comment;
+        }
+
+        private static bool ContainsHide(string content)
+        {
+            string hide = "&gt;hide";
+            return content is not null && !content.ToLower().Contains(hide);
         }
 
         private async Task<Attachment> CreateCommentAttachment(CreateCommentRequest request)

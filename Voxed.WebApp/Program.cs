@@ -29,7 +29,9 @@ app.UseExceptionHandler("/Home/Error");
 app.UseHsts();
 app.UseHttpsRedirection();
 
+
 app.UseImageSharp(); // Add this BEFORE app.UseStaticFiles();
+
 app.UseStaticFiles(new StaticFileOptions
 {
     OnPrepareResponse = ctx =>
@@ -54,8 +56,7 @@ app.UseEndpoints(endpoints =>
         pattern: "{controller=Home}/{action=Index}/{id?}");
 
     endpoints.MapRazorPages();
-            //endpoints.MapBlazorHub();
-
+    //endpoints.MapBlazorHub();
 
     endpoints.MapHub<VoxedHub>("/hubs/notifications");
 });

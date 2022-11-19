@@ -173,7 +173,7 @@ namespace Voxed.WebApp.Controllers
                 CategoryShortName = vox.Category.ShortName,
                 CategoryThumbnailUrl = vox.Category.Attachment.ThumbnailUrl,
                 CommentsAttachmentCount = vox.Comments.Where(x => x.Attachment != null).Count(),
-                CommentsCount = vox.Comments.Count(),
+                CommentsCount = vox.Comments.Count,
                 UserName = vox.Owner.UserName,
                 UserType = (ViewModels.UserType)(int)vox.Owner.UserType,
                 CreatedOn = vox.CreatedOn.DateTime.ToTimeAgo(),
@@ -182,7 +182,7 @@ namespace Voxed.WebApp.Controllers
                 {
                     ThumbnailUrl = vox.Attachment.ThumbnailUrl,
                     Url = vox.Attachment.Url,
-                    MediaType = (ViewModels.MediaType)(int)vox.Attachment.Type,
+                    MediaType = (MediaType)(int)vox.Attachment.Type,
                     ExtensionData = vox.Attachment?.Url.Split('=')[(vox.Attachment?.Url.Split('=').Length - 1).Value]
                 },
 
@@ -201,7 +201,7 @@ namespace Voxed.WebApp.Controllers
                     Media = x.Attachment == null ? null : new MediaViewModel()
                     {
                         Url = x.Attachment?.Url,
-                        MediaType = (ViewModels.MediaType)(int)x.Attachment?.Type,
+                        MediaType = (MediaType)(int)x.Attachment?.Type,
                         ExtensionData = x.Attachment?.Url.Split('=')[(vox.Attachment?.Url.Split('=').Length - 1).Value],
                         ThumbnailUrl = x.Attachment?.ThumbnailUrl,
                     },

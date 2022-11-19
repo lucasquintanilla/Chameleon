@@ -9,6 +9,7 @@ using Core.Entities;
 using Core.Services.AttachmentServices;
 using Core.Services.Storage;
 using Core.Services.Storage.Cloud;
+using Core.Services.Storage.Local;
 using Core.Services.Telegram;
 using Core.Services.Youtube;
 using Core.Shared;
@@ -29,8 +30,7 @@ public static class DependencyContainer
 {
     public static void RegisterInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
-        //Console.WriteLine("Helper static" + Helpers.GetRDSConnectionString());
-        Console.WriteLine("Helper static isung iconfig" + Helpers.GetRDSConnectionString(configuration));
+        Console.WriteLine("RDS Connection: " + Helpers.GetRDSConnectionString(configuration));
 
         //https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/providers?tabs=dotnet-core-cli
         var provider = configuration.GetValue("Provider", nameof(SqlProvider.MySql));
@@ -137,40 +137,47 @@ public static class DependencyContainer
         //services.AddSingleton<GlobalMessageService>();
 
         services.AddImageSharp()
-            .Configure<AWSS3StorageImageProviderOptions>(options =>
+        .Configure<AWSS3StorageImageProviderOptions>(options =>
+        {
+            options.S3Buckets.Add(new AWSS3BucketClientOptions
             {
-                options.S3Buckets.Add(new AWSS3BucketClientOptions
-                {
-                    BucketName = "post-attachments",
-                    AccessKey = "AKIAT3LYSLSBEG32UEDZ",
-                    AccessSecret = "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",
-                    Region = "sa-east-1"
-                });
-            })
-            .ClearProviders()
-            .AddProvider<AWSS3StorageImageProvider>()
-            .Configure<AWSS3StorageCacheOptions>(options =>
-            {
-                options.BucketName = "post-attachments/cache";
-                options.AccessKey = "AKIAT3LYSLSBEG32UEDZ";
-                options.AccessSecret = "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";
-                options.Region = "sa-east-1";
+                BucketName = "post-attachments",
+                AccessKey = "AKIAT3LYSLSBEG32UEDZ",
+                AccessSecret = "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",
+                Region = "sa-east-1"
+            });
+        })
+        .ClearProviders()
+        .AddProvider<AWSS3StorageImageProvider>()
+        .Configure<AWSS3StorageCacheOptions>(options =>
+        {
+            options.BucketName = "post-attachments/cache";
+            options.AccessKey = "AKIAT3LYSLSBEG32UEDZ";
+            options.AccessSecret = "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";
+            options.Region = "sa-east-1";
 
                 // Optionally create the cache bucket on startup if not already created.
-                AWSS3StorageCache.CreateIfNotExists(options, S3CannedACL.Private);
-            })
-            .SetCache<AWSS3StorageCache>();
+            AWSS3StorageCache.CreateIfNotExists(options, S3CannedACL.Private);
+        })
+        .SetCache<AWSS3StorageCache>();
+
     }
 
     public static void RegisterStorageServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDefaultAWSOptions(configuration.GetAWSOptions());
         services.AddAWSService<IAmazonS3>();
-        services.Configure<CloudStorageOptions>(configuration.GetSection(CloudStorageOptions.SectionName));
-        services.AddSingleton<IStorage, CloudStorage>();
 
-        //services.Configure<LocalStorageOptions>(configuration.GetSection(LocalStorageOptions.SectionName));
-        //services.AddSingleton<IStorage, LocalStorage>();
+        if (true)
+        {
+            services.Configure<CloudStorageOptions>(configuration.GetSection(CloudStorageOptions.SectionName));
+            services.AddSingleton<IStorage, CloudStorage>();
+        }
+        else
+        {
+            //services.Configure<LocalStorageOptions>(configuration.GetSection(LocalStorageOptions.SectionName));
+            //services.AddSingleton<IStorage, LocalStorage>();
+        }
     }
 
 

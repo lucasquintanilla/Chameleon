@@ -14,7 +14,7 @@ namespace Voxed.WebApp.Mappers
             {
                 Hash = vox.Id.ToShortString(),
                 Status = true,
-                Niche = "20",
+                Niche = vox.CategoryId.ToString(),
                 Title = vox.Title,
                 Comments = vox.Comments.Count().ToString(),
                 Extension = string.Empty,
