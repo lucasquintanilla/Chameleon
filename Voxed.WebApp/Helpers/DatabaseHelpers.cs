@@ -1,6 +1,6 @@
-﻿namespace Voxed.WebApp
+﻿namespace Voxed.WebApp.Helpers
 {
-    public class Helpers
+    public class DatabaseHelpers
     {
         //public static string GetRDSConnectionString(Microsoft.Extensions.Configuration.IConfiguration config)
         //{

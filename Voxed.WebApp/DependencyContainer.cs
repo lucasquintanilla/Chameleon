@@ -24,6 +24,7 @@ using SixLabors.ImageSharp.Web.DependencyInjection;
 using SixLabors.ImageSharp.Web.Providers;
 using SixLabors.ImageSharp.Web.Providers.AWS;
 using System;
+using Voxed.WebApp.Helpers;
 using Voxed.WebApp.Services;
 using Voxed.WebApp.Services.Moderation;
 
@@ -33,28 +34,27 @@ public static class DependencyContainer
 {
     public static void RegisterInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
-        Console.WriteLine("RDS Connection: " + Helpers.GetRDSConnectionString(configuration));
+        Console.WriteLine("RDS Connection: " + DatabaseHelpers.GetRDSConnectionString(configuration));
 
-        //https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/providers?tabs=dotnet-core-cli
-        var provider = configuration.GetValue("DatabaseProvider", nameof(SqlProvider.Sqlite));
+        var provider = configuration.GetValue<DatabaseProvider>("DatabaseProvider");
         services.AddDbContext<VoxedContext>(
             options => _ = provider switch
             {
-                nameof(SqlProvider.Sqlite) => options
-                    .UseSqlite(configuration.GetConnectionString(nameof(SqlProvider.Sqlite)),
+                DatabaseProvider.Sqlite => options
+                    .UseSqlite(configuration.GetConnectionString(nameof(DatabaseProvider.Sqlite)),
                         x => x.MigrationsAssembly(typeof(SqliteVoxedContext).Assembly.GetName().Name)),
 
-                nameof(SqlProvider.MySql) => options
+                DatabaseProvider.MySql => options
                 .UseMySql(
-                    configuration.GetConnectionString(nameof(SqlProvider.MySql)),
-                    ServerVersion.AutoDetect(configuration.GetConnectionString(nameof(SqlProvider.MySql))),
+                    configuration.GetConnectionString(nameof(DatabaseProvider.MySql)),
+                    ServerVersion.AutoDetect(configuration.GetConnectionString(nameof(DatabaseProvider.MySql))),
                     x => x.MigrationsAssembly(typeof(MySqlVoxedContext).Assembly.GetName().Name)),
 
-                nameof(SqlProvider.PostgreSql) => options
-                .UseNpgsql(configuration.GetConnectionString(nameof(SqlProvider.PostgreSql)),
+                DatabaseProvider.PostgreSql => options
+                .UseNpgsql(configuration.GetConnectionString(nameof(DatabaseProvider.PostgreSql)),
                     x => x.MigrationsAssembly(typeof(PostgreSqlVoxedContext).Assembly.GetName().Name)),
 
-                _ => throw new Exception($"Unsupported provider: {provider}")
+                _ => throw new Exception($"Unsupported database provider: {provider}")
             });
     }
 
@@ -225,12 +225,4 @@ public static class DependencyContainer
 
         services.AddSignalR();
     }
-}
-
-public enum SqlProvider
-{
-    MySql,
-    Sqlite,
-    SqlServer,
-    PostgreSql
 }
