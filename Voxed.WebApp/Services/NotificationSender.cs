@@ -65,7 +65,7 @@ namespace Voxed.WebApp.Services
         {
             switch (notificationType)
             {
-                case NotificationType.NewComment:
+                case NotificationType.New:
                     return "Nuevo Comentario";
                 case NotificationType.Reply:
                     return "Nueva respuesta";

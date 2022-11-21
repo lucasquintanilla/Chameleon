@@ -2,7 +2,7 @@
 
 namespace Core.Entities
 {
-    public enum NotificationType { NewComment, Reply }
+    public enum NotificationType { New, Reply }
 
     public class Notification : Entity
     {

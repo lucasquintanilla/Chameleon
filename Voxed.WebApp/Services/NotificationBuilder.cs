@@ -42,7 +42,7 @@ namespace Voxed.WebApp.Services
                     CommentId = _comment.Id,
                     VoxId = _comment.VoxId,
                     UserId = _vox.UserId,
-                    Type = NotificationType.NewComment,
+                    Type = NotificationType.New,
                 };
 
                 _notifications.Add(notification);
@@ -95,7 +95,7 @@ namespace Voxed.WebApp.Services
                       CommentId = _comment.Id,
                       VoxId = _vox.Id,
                       UserId = userId,
-                      Type = NotificationType.NewComment,
+                      Type = NotificationType.New,
                   })
                   .ToList();
 

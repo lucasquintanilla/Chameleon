@@ -2,7 +2,7 @@
 
 Proyecto free, cross-platform y open-source
 
-> https://voxed.club
+Actualmente bajo del dominio de > https://voxed.club
 
 # Tech Stack
 
@@ -23,11 +23,11 @@ Proyecto free, cross-platform y open-source
 
 ### Software opcional
 
+- [pgAdmin](https://www.pgadmin.org/download/)
 - [Mysql Community](https://dev.mysql.com/downloads/)
 - [DB Browser for SQLite](https://sqlitebrowser.org/dl/)
 - [Workbench](https://dev.mysql.com/downloads/workbench/)
 - [DBeaver](https://dbeaver.io/)
-- [pgAdmin](https://www.pgadmin.org/download/)
 
 ## Instalacion 
 
@@ -56,24 +56,30 @@ Pull request son bienvenidos
 
 - [x] Logs
 - [x] Migrar a .NET 6
+- [x] Migrar a postgresSQL
+- [x] Multiple database providers
 - [ ] Agregar unit tests
+- [ ] Implementar clean code y clean architecture practices
 - [ ] Reducir consultas a la DB
 - [ ] Mejorar performance home
 - [ ] Agregar roles mods
 - [ ] Agregar documentacion
 - [ ] Agregar automapper
 - [ ] Limpiar estructura del proyecto
-- [ ] Implementar clean code y clean architecture practices
 
 ## Future features
 
-- [ ] Implementar videos
+- [ ] Implementar videos as reels
+- [ ] Implementar markdown processor. Frontmatter?
 - [ ] Separar frontend del backend
 - [ ] Implementar instalable PWA using web assembly
-- [ ] Envio de notificaciones push con PWA
+- [ ] Implementar notificaciones push con PWA
 - [ ] Eliminar categorias e implementar Tags
 - [ ] Implementar Material Design 3
 - [ ] Implementar moderacion basada en bots y AI cognitive services
+- [ ] Post scores
+- [ ] Timeline mixer based on post scores
+- [ ] External post sources
 
 # Patrones de diseño
 
@@ -88,10 +94,6 @@ Pull request son bienvenidos
 - SOLID
 - DRY
 - Composition over inheritance
-
-# Ejemplos voxed.net
-
-- [Id Unico](https://web.archive.org/web/20201020000307/https://www.voxed.net/off/R6X0nNN0BA6ySYDQa8EU)
 
 # EntityFramework Migrations
 

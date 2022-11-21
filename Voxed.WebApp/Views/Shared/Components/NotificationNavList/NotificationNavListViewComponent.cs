@@ -1,15 +1,13 @@
 ﻿using Core.Data.Repositories;
 using Core.Entities;
+using Core.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Voxed.WebApp.Hubs;
 using Voxed.WebApp.Extensions;
-using Core.Shared;
-using Core.Extensions;
+using Voxed.WebApp.Hubs;
 
 namespace Voxed.WebApp.Views.Shared.Components.NotificationNavList
 {
@@ -35,7 +33,7 @@ namespace Voxed.WebApp.Views.Shared.Components.NotificationNavList
 
             var notifications = await _voxedRepository.Notifications.GetByUserId(userId.Value);
 
-            if (notifications.Count() > 0)
+            if (notifications.Any())
             {
                 ViewData["NotificationsCount"] = $"({notifications.Count()})";
             }
@@ -43,7 +41,7 @@ namespace Voxed.WebApp.Views.Shared.Components.NotificationNavList
             var userNotifications = notifications
                 .Select(notification => new UserNotification
                 {
-                    Type = "new",
+                    Type = notification.Type.ToString().ToLowerInvariant(),
                     Content = new NotificationContent()
                     {
                         VoxHash = notification.Vox.Id.ToShortString(),
@@ -63,7 +61,7 @@ namespace Voxed.WebApp.Views.Shared.Components.NotificationNavList
         {
             switch (notificationType)
             {
-                case NotificationType.NewComment:
+                case NotificationType.New:
                     return "Nuevo comentario";
                 case NotificationType.Reply:
                     return "Nueva respuesta";
