@@ -20,6 +20,7 @@ using Voxed.WebApp.Extensions;
 using Voxed.WebApp.Mappers;
 using Voxed.WebApp.Models;
 using Voxed.WebApp.Services;
+using Voxed.WebApp.Services.Moderation;
 using Voxed.WebApp.ViewModels;
 
 namespace Voxed.WebApp.Controllers;
@@ -31,7 +32,7 @@ public class VoxController : BaseController
     private readonly SignInManager<User> _signInManager;
     private readonly IPostService _postService;
     private readonly IUserVoxActionService _userVoxActionService;
-    private readonly IContentReportService _contentReportService;
+    private readonly IModerationService _moderationService;
     private readonly IServiceScopeFactory _scopeFactory;
 
     public VoxController(
@@ -42,7 +43,7 @@ public class VoxController : BaseController
         IHttpContextAccessor accessor,
         IPostService postService,
         IUserVoxActionService userVoxActionService,
-        IContentReportService contentReportService,
+        IModerationService moderationService,
         IServiceScopeFactory scopeFactory)
         : base(accessor, userManager)
     {
@@ -51,7 +52,7 @@ public class VoxController : BaseController
         _postService = postService;
         _logger = logger;
         _userVoxActionService = userVoxActionService;
-        _contentReportService = contentReportService;
+        _moderationService = moderationService;
         _scopeFactory = scopeFactory;
     }
 
@@ -148,7 +149,7 @@ public class VoxController : BaseController
     [HttpPost("report")]
     public async Task<ReportResponse> Report(ReportRequest request)
     {
-        return await _contentReportService.Report(request);
+        return await _moderationService.Report(request);
     }
 
     [HttpGet("vox/{hash}")]

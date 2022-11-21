@@ -25,6 +25,7 @@ using SixLabors.ImageSharp.Web.Providers;
 using SixLabors.ImageSharp.Web.Providers.AWS;
 using System;
 using Voxed.WebApp.Services;
+using Voxed.WebApp.Services.Moderation;
 
 namespace Voxed.WebApp;
 
@@ -117,7 +118,7 @@ public static class DependencyContainer
         services.AddTransient<IPostService, PostService>();
         services.AddSingleton<IContentFormatterService, ContentFormatterService>();
         services.AddTransient<IUserVoxActionService, UserVoxActionService>();
-        services.AddTransient<IContentReportService, ContentReportService>();
+        services.AddTransient<IModerationService, ModerationService>();
         services.AddSingleton<IYoutubeService, YoutubeService>();
 
         services.Configure<TelegramOptions>(configuration.GetSection(TelegramOptions.SectionName));

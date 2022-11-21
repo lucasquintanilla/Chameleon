@@ -449,8 +449,10 @@ $RECYCLE.BIN/
 
 # All DBs
 *.db
+*.db-shm
+*.db-wal
 
 # Media Files Folder
 Voxed.WebApp/wwwroot/media/*
-/Voxed.WebApp/voxed.db-shm
-/Voxed.WebApp/voxed.db-wal
+Voxed.WebApp/wwwroot/post-attachments/*
+

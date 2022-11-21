@@ -6,21 +6,21 @@ using System;
 using System.Threading.Tasks;
 using Voxed.WebApp.Models;
 
-namespace Voxed.WebApp.Services
+namespace Voxed.WebApp.Services.Moderation
 {
-    public interface IContentReportService
+    public interface IModerationService
     {
         Task<ReportResponse> Report(ReportRequest request);
     }
 
-    public class ContentReportService : IContentReportService
+    public class ModerationService : IModerationService
     {
-        private readonly ILogger<ContentReportService> _logger;
+        private readonly ILogger<ModerationService> _logger;
         private readonly IVoxedRepository _voxedRepository;
         private readonly ITelegramService _telegramService;
 
-        public ContentReportService(
-            ILogger<ContentReportService> logger,
+        public ModerationService(
+            ILogger<ModerationService> logger,
             IVoxedRepository voxedRepository,
             ITelegramService telegramService)
         {
@@ -49,6 +49,7 @@ namespace Voxed.WebApp.Services
                         break;
                 }
 
+                // TODO Agregar botones de acciones a tomar
                 await _telegramService.SendMessage(message);
 
                 response.Status = true;
