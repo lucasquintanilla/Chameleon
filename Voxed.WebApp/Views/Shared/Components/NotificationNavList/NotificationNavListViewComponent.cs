@@ -27,8 +27,7 @@ namespace Voxed.WebApp.Views.Shared.Components.NotificationNavList
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            //var user = await _userManager.GetUserAsync(HttpContext.User.I);
-            var userId = HttpContext.User.GetLoggedInUserId<Guid?>();
+            var userId = HttpContext.User.GetUserId();
             if (userId == null)
             {
                 return View(new List<UserNotification>());
@@ -45,7 +44,7 @@ namespace Voxed.WebApp.Views.Shared.Components.NotificationNavList
                 .Select(notification => new UserNotification
                 {
                     Type = "new",
-                    Content = new Content()
+                    Content = new NotificationContent()
                     {
                         VoxHash = notification.Vox.Id.ToShortString(),
                         NotificationBold = GetTitleNotification(notification.Type),
@@ -69,7 +68,7 @@ namespace Voxed.WebApp.Views.Shared.Components.NotificationNavList
                 case NotificationType.Reply:
                     return "Nueva respuesta";
                 default:
-                    return "Nuevo notificacion";
+                    return "Nueva notificacion";
             }
         }
     }

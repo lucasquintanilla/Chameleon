@@ -45,7 +45,7 @@ namespace Voxed.WebApp.Services
                 var userNotification = new UserNotification()
                 {
                     Type = "new",
-                    Content = new Content()
+                    Content = new NotificationContent()
                     {
                         VoxHash = _vox.Id.ToShortString(),
                         NotificationBold = GetNotificationBoldString(notification.Type),

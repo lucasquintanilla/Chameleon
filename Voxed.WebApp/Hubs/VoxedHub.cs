@@ -1,17 +1,14 @@
 ﻿using Core.Entities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Voxed.WebApp.Controllers;
-using Voxed.WebApp.Extensions;
 
 namespace Voxed.WebApp.Hubs
 {
     public class VoxedHub : Hub<INotificationHub>
     {
-        private static HashSet<string> _usersOnline = new HashSet<string>();
+        private static HashSet<string> _usersOnline = new();
 
         public static int TotalUsersOnline => _usersOnline.Count;
 
@@ -47,15 +44,12 @@ namespace Voxed.WebApp.Hubs
         public override async Task OnConnectedAsync()
         {
             _usersOnline.Add(Context.GetHttpContext().Connection.RemoteIpAddress.MapToIPv4().ToString());
-            //usersOnline.Add(Context.ConnectionId);
             await base.OnConnectedAsync();
         }
 
         public override async Task OnDisconnectedAsync(Exception exception)
         {
             _usersOnline.Remove(Context.GetHttpContext().Connection.RemoteIpAddress.MapToIPv4().ToString());
-            //usersOnline.Remove(Context.GetHttpContext().GetServerVariable("HTTP_X_FORWARDED_FOR"));
-            //usersOnline.Remove(Context.ConnectionId);
             await base.OnDisconnectedAsync(exception);
         }
     }
@@ -63,16 +57,16 @@ namespace Voxed.WebApp.Hubs
     public class UserNotification
     {
         public string Type { get; set; }
-        public Content Content { get; set; }
+        public NotificationContent Content { get; set; }
     }
 
     public class VoxNotification
     {
         public string Niche { get; set; }
-       
+
     }
 
-    public class Content
+    public class NotificationContent
     {
         public string Id { get; set; }
         public string VoxHash { get; set; }
@@ -82,6 +76,7 @@ namespace Voxed.WebApp.Hubs
         public string Count { get; set; }
         public string ThumbnailUrl { get; set; }
     }
+
     public class CommentLiveUpdate
     {
         public string Id { get; set; }
