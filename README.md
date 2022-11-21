@@ -63,6 +63,7 @@ Pull request son bienvenidos
 - [ ] Agregar documentacion
 - [ ] Agregar automapper
 - [ ] Limpiar estructura del proyecto
+- [ ] Implementar clean code y clean architecture practices
 
 ## Future features
 
@@ -72,7 +73,7 @@ Pull request son bienvenidos
 - [ ] Envio de notificaciones push con PWA
 - [ ] Eliminar categorias e implementar Tags
 - [ ] Implementar Material Design 3
-- [ ] Implementar moderacion basada en bots y AI services
+- [ ] Implementar moderacion basada en bots y AI cognitive services
 
 # Patrones de diseño
 
