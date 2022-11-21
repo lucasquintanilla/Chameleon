@@ -66,6 +66,7 @@ Pull request son bienvenidos
 
 ## Future features
 
+- [ ] Implementar videos
 - [ ] Separar frontend del backend
 - [ ] Implementar instalable PWA using web assembly
 - [ ] Envio de notificaciones push con PWA
