@@ -2,7 +2,7 @@
 
 Proyecto free, cross-platform y open-source
 
-Actualmente bajo del dominio de > https://voxed.club
+> https://voxed.club
 
 # Tech Stack
 
