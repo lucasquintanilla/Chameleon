@@ -12,6 +12,7 @@ namespace Voxed.WebApp.Services
     {
         Task<ReportResponse> Report(ReportRequest request);
     }
+
     public class ContentReportService : IContentReportService
     {
         private readonly ILogger<ContentReportService> _logger;
