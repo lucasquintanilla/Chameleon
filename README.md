@@ -33,7 +33,7 @@ Proyecto free, cross-platform y open-source
 
 - Instalar Visual Studio
 - Clonar repositorio ejecutando comando git clone
-> git clone https://github.com/lucasquintanilla/Voxed.git
+> git clone https://github.com/.../Voxed.git
 - Abrir archivo Voxed.sln con Visual Studio
 - Ejectuar Voxed.WebApp desde Visual Studio
 
@@ -41,37 +41,46 @@ Proyecto free, cross-platform y open-source
 
 Pull request son bienvenidos
 
-## To Do List
+## Bugs
 
 - [ ] Doble envio de noticacion al OP cuando responden etiquetandolo en un comentario del propio post
 - [x] Fix buscador
-- [x] Logs
-- [ ] Mejorar performance home
-- [ ] Separar front del back
-- [ ] Implementar PWA
-- [ ] Envio de notificaciones push con PWA
-- [ ] Reducir consultas a la db
-- [ ] Agregar roles mods
-- [x] Ocultar categorias
-- [x] Bug al raplicar comentarios, en el cometario original no aparece el tag de la respuesta
+- [ ] Fix Light Mode / Dark Mode
+- [x] Ocultar voxs
+- [x] Seguir categorias
+- [x] Bug al replicar comentarios, en el cometario original no aparece el tag de la respuesta
 - [x] Al hovear un tag de los comentarios se abre un una previsualizacion y no se cierra solo
-- [ ] Implementar moderacion basada en bots y AI
-- [x] Implementar hosting de imagenes en servicios externos
-- [ ] Fix Light Mode
 - [x] Implementar >hide
+
+## Tech Debt
+
+- [x] Logs
 - [x] Migrar a .NET 6
 - [ ] Agregar unit tests
-- [ ] Agregar tags
-- [ ] Material Design 3
+- [ ] Reducir consultas a la DB
+- [ ] Mejorar performance home
+- [ ] Agregar roles mods
+- [ ] Agregar documentacion
+- [ ] Agregar automapper
+- [ ] Limpiar estructura del proyecto
+
+## Future features
+
+- [ ] Separar frontend del backend
+- [ ] Implementar instalable PWA using web assembly
+- [ ] Envio de notificaciones push con PWA
+- [ ] Eliminar categorias e implementar Tags
+- [ ] Implementar Material Design 3
+- [ ] Implementar moderacion basada en bots y AI services
 
 # Patrones de diseño
 
-- Coding First
+- Code First
 - Generic Repository Pattern
+- Unit of Work
 - DI
 - Options Pattern
 - MVC
-
 
 # Principios a seguir
 - SOLID

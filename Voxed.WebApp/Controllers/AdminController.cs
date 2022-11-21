@@ -10,74 +10,73 @@ using System.Threading.Tasks;
 using Voxed.WebApp.Constants;
 using Voxed.WebApp.Models;
 
-namespace Voxed.WebApp.Controllers
+namespace Voxed.WebApp.Controllers;
+
+[Authorize(Roles = nameof(RoleType.Administrator))]
+public class AdminController : Controller
 {
-    [Authorize(Roles = nameof(RoleType.Administrator))]
-    public class AdminController : Controller
+    private readonly ILogger<AdminController> _logger;
+    private readonly IVoxedRepository _voxedRepository;
+
+    public AdminController(
+        IVoxedRepository voxedRepository,
+        ILogger<AdminController> logger)
     {
-        private readonly ILogger<AdminController> _logger;
-        private readonly IVoxedRepository _voxedRepository;
+        _logger = logger;
+        _voxedRepository = voxedRepository;
+    }
 
-        public AdminController(
-            IVoxedRepository voxedRepository,
-            ILogger<AdminController> logger)
-        {
-            _logger = logger;
-            _voxedRepository = voxedRepository;
-        }
+    public IActionResult Index()
+    {
+        return View();
+    }
 
-        public IActionResult Index()
+    [HttpPost]
+    public async Task<DeleteResponse> Delete([FromForm] DeleteRequest request)
+    {
+        try
         {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<DeleteResponse> Delete([FromForm] DeleteRequest request)
-        {
-            try
+            switch (request.ContentType)
             {
-                switch (request.ContentType)
-                {
-                    case ContentType.Comment:
+                case ContentType.Comment:
 
-                        var comment = await _voxedRepository.Comments.GetById(new Guid(request.ContentId));
-                        if (comment == null) NotFound();
-                        comment.State = CommentState.Deleted;
-                        await UpdateVoxLastBump(comment);
-                        break;
-                    case ContentType.Vox:
+                    var comment = await _voxedRepository.Comments.GetById(new Guid(request.ContentId));
+                    if (comment == null) NotFound();
+                    comment.State = CommentState.Deleted;
+                    await UpdateVoxLastBump(comment);
+                    break;
+                case ContentType.Vox:
 
-                        var vox = await _voxedRepository.Voxs.GetById(new Guid(request.ContentId));
-                        if (vox == null) NotFound();
-                        vox.State = VoxState.Deleted;
-                        break;
-                    default:
-                        break;
-                }
-
-                await _voxedRepository.SaveChangesAsync();
-                return new DeleteResponse() { Value = "OK" };
+                    var vox = await _voxedRepository.Voxs.GetById(new Guid(request.ContentId));
+                    if (vox == null) NotFound();
+                    vox.State = VoxState.Deleted;
+                    break;
+                default:
+                    break;
             }
-            catch (Exception e)
-            {
-                _logger.LogError(e.Message);
-                _logger.LogError(e.StackTrace);
-                return new DeleteResponse() { Value = "Error" };
-            }
+
+            await _voxedRepository.SaveChangesAsync();
+            return new DeleteResponse() { Value = "OK" };
         }
-
-        private async Task UpdateVoxLastBump(Comment comment)
+        catch (Exception e)
         {
-            var vox = await _voxedRepository.Voxs.GetById(comment.VoxId);
-            if (vox == null) return;
-
-            var lastBump = vox.Comments
-                .Where(x => x.State == CommentState.Active)
-                .OrderByDescending(x => x.CreatedOn)
-                .Select(x => x.CreatedOn)
-                .FirstOrDefault();
-
-            vox.Bump = lastBump;
+            _logger.LogError(e.Message);
+            _logger.LogError(e.StackTrace);
+            return new DeleteResponse() { Value = "Error" };
         }
+    }
+
+    private async Task UpdateVoxLastBump(Comment comment)
+    {
+        var vox = await _voxedRepository.Voxs.GetById(comment.VoxId);
+        if (vox == null) return;
+
+        var lastBump = vox.Comments
+            .Where(x => x.State == CommentState.Active)
+            .OrderByDescending(x => x.CreatedOn)
+            .Select(x => x.CreatedOn)
+            .FirstOrDefault();
+
+        vox.Bump = lastBump;
     }
 }
