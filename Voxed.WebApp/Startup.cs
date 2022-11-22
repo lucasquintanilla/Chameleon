@@ -20,6 +20,6 @@ public class Startup
         services.RegisterRepositories();
         services.RegisterServices(_configuration);
         services.RegisterStorageServices(_configuration);
-        services.RegisterIdentity();
+        services.RegisterIdentity(_configuration);
     }
 }

@@ -73,7 +73,7 @@ public static class DependencyContainer
         });
     }
 
-    public static void RegisterIdentity(this IServiceCollection services)
+    public static void RegisterIdentity(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDefaultIdentity<User>(options =>
                 options.SignIn.RequireConfirmedAccount = true)
@@ -86,8 +86,8 @@ public static class DependencyContainer
             .AddAuthentication()
             .AddGoogle(googleOptions =>
             {
-                googleOptions.ClientId = "921895924714-26f3feivedthc93e7jnnvaf2nkf497hk.apps.googleusercontent.com";
-                googleOptions.ClientSecret = "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";
+                googleOptions.ClientId = configuration["Authentication:Google:ClientId"]; ;
+                googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"];
             });
 
         services.Configure<IdentityOptions>(options =>
