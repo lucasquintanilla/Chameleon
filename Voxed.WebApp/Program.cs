@@ -23,6 +23,8 @@ using (var scope = app.Services.CreateScope())
     new DataInitializer(context, userManager, roleManager).Initialize().GetAwaiter().GetResult();
 }
 
+app.UseHttpLogging();
+
 app.UseCors("_myAllowSpecificOrigins");
 app.UseExceptionHandler("/Home/Error");
 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.

@@ -169,7 +169,7 @@ public static class DependencyContainer
         services.AddDefaultAWSOptions(configuration.GetAWSOptions());
         services.AddAWSService<IAmazonS3>();
 
-        if (false)
+        if (true)
         {
             services.Configure<CloudStorageOptions>(configuration.GetSection(CloudStorageOptions.SectionName));
             services.AddSingleton<IStorage, CloudStorage>();
