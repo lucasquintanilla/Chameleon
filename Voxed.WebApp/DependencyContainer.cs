@@ -126,10 +126,21 @@ public static class DependencyContainer
 
         services.Configure<AttachmentServiceOptions>(configuration.GetSection(AttachmentServiceOptions.SectionName));
         services.AddSingleton<IAttachmentService, AttachmentService>();
+    }
 
-        if (true)
+    public static void RegisterMediaProviders(this IServiceCollection services, IConfiguration configuration)
+    {
+        var provider = configuration.GetValue<StorageProvider>("StorageProvider");
+        switch (provider)
         {
-            services
+            case StorageProvider.Local:
+                services
+                    .AddImageSharp()
+                    .ClearProviders()
+                    .AddProvider<PhysicalFileSystemProvider>();
+                break;
+            case StorageProvider.Cloud:
+                services
                 .AddImageSharp()
                 .Configure<AWSS3StorageImageProviderOptions>(options =>
                 {
@@ -154,13 +165,9 @@ public static class DependencyContainer
                     AWSS3StorageCache.CreateIfNotExists(options, S3CannedACL.Private);
                 })
                 .SetCache<AWSS3StorageCache>();
-        }
-        else
-        {
-            services
-                .AddImageSharp()
-                .ClearProviders()
-                .AddProvider<PhysicalFileSystemProvider>();
+                break;
+            default:
+                break;
         }
     }
 
@@ -169,15 +176,20 @@ public static class DependencyContainer
         services.AddDefaultAWSOptions(configuration.GetAWSOptions());
         services.AddAWSService<IAmazonS3>();
 
-        if (true)
+        var provider = configuration.GetValue<StorageProvider>("StorageProvider");
+
+        switch (provider)
         {
-            services.Configure<CloudStorageOptions>(configuration.GetSection(CloudStorageOptions.SectionName));
-            services.AddSingleton<IStorage, CloudStorage>();
-        }
-        else
-        {
-            services.Configure<LocalStorageOptions>(configuration.GetSection(LocalStorageOptions.SectionName));
-            services.AddSingleton<IStorage, LocalStorage>();
+            case StorageProvider.Local:
+                services.Configure<LocalStorageOptions>(configuration.GetSection(LocalStorageOptions.SectionName));
+                services.AddSingleton<IStorage, LocalStorage>();
+                break;
+            case StorageProvider.Cloud:
+                services.Configure<CloudStorageOptions>(configuration.GetSection(CloudStorageOptions.SectionName));
+                services.AddSingleton<IStorage, CloudStorage>();
+                break;
+            default:
+                throw new Exception($"Unsupported storage provider: {provider}");                
         }
     }
 
@@ -224,5 +236,11 @@ public static class DependencyContainer
         //});
 
         services.AddSignalR();
+    }
+
+    public enum StorageProvider
+    {
+        Local,
+        Cloud
     }
 }

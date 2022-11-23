@@ -84,13 +84,13 @@ Pull request son bienvenidos
 # Patrones de diseño
 
 - Code First
-- Generic Repository Pattern
-- Unit of Work
-- DI
+- Repository Pattern
+- Dependency Injection
 - Options Pattern
 - MVC
 
 # Principios a seguir
+- KISS (keep it simple stupid)
 - SOLID
 - DRY
 - Composition over inheritance

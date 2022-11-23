@@ -19,6 +19,7 @@ public class Startup
         services.RegisterInfrastructureServices(_configuration);
         services.RegisterRepositories();
         services.RegisterServices(_configuration);
+        services.RegisterMediaProviders(_configuration);
         services.RegisterStorageServices(_configuration);
         services.RegisterIdentity(_configuration);
     }
