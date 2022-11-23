@@ -2,7 +2,7 @@
 
 namespace Core.Data.Repositories
 {
-    public interface IPollRepository : IGenericRepository<Poll>
+    public interface IPollRepository : IRepository<Poll>
     {
     }
 }

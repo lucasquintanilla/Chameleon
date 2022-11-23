@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Core.Data.EF.Repositories
 {
-    public class UserVoxActionRepository : GenericRepository<UserVoxAction>, IUserVoxActionRepository
+    public class UserVoxActionRepository : Repository<UserVoxAction>, IUserVoxActionRepository
     {
         public UserVoxActionRepository(VoxedContext context) : base(context) { }
 

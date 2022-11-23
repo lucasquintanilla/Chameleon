@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Core.Data.Repositories
 {
-    public interface IVoxRepository : IGenericRepository<Vox>
+    public interface IVoxRepository : IRepository<Vox>
     {
         Task<List<Vox>> GetByFilterAsync(PostFilter filter);
     }

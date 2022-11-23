@@ -8,10 +8,11 @@ using System.Threading.Tasks;
 
 namespace Core.Data.EF.Repositories
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : class
+    public class Repository<T> : IRepository<T> where T : class
     {
         protected readonly VoxedContext _context;
-        public GenericRepository(VoxedContext context)
+
+        public Repository(VoxedContext context)
         {
             _context = context;
         }

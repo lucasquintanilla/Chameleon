@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Core.Data.Repositories
 {
-    public interface INotificationRepository : IGenericRepository<Notification>
+    public interface INotificationRepository : IRepository<Notification>
     {
         Task<IEnumerable<Notification>> GetByUserId(Guid userId);
     }

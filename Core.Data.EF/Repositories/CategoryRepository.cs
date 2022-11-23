@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Core.Data.EF.Repositories
 {
-    public class CategoryRepository : GenericRepository<Category>, ICategoryRepository
+    public class CategoryRepository : Repository<Category>, ICategoryRepository
     {
         public CategoryRepository(VoxedContext context) : base(context) { }
 

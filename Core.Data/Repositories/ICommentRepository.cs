@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Core.Data.Repositories
 {
-    public interface ICommentRepository : IGenericRepository<Comment>
+    public interface ICommentRepository : IRepository<Comment>
     {
         Task<IEnumerable<Guid>> GetUsersByCommentHash(IEnumerable<string> hashList, ICollection<Guid> skipUserId);
         Task<Comment> GetByHash(string hash);

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Core.Data.EF.Repositories
 {
-    public class CommentRepository : GenericRepository<Comment>, ICommentRepository
+    public class CommentRepository : Repository<Comment>, ICommentRepository
     {
         public CommentRepository(VoxedContext context) : base(context) { }
 

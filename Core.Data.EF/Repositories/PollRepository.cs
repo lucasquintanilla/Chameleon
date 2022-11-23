@@ -3,7 +3,7 @@ using Core.Entities;
 
 namespace Core.Data.EF.Repositories
 {
-    public class PollRepository : GenericRepository<Poll>, IPollRepository
+    public class PollRepository : Repository<Poll>, IPollRepository
     {
         public PollRepository(VoxedContext context) : base(context) { }
     }

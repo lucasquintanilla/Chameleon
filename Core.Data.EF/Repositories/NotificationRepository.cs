@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Core.Data.EF.Repositories
 {
-    public class NotificationRepository : GenericRepository<Notification>, INotificationRepository
+    public class NotificationRepository : Repository<Notification>, INotificationRepository
     {
         public NotificationRepository(VoxedContext context) : base(context) { }
 
