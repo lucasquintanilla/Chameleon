@@ -128,7 +128,7 @@ public static class DependencyContainer
         services.AddSingleton<IAttachmentService, AttachmentService>();
     }
 
-    public static void RegisterMediaProviders(this IServiceCollection services, IConfiguration configuration)
+    public static void RegisterStorageImageProvider(this IServiceCollection services, IConfiguration configuration)
     {
         var provider = configuration.GetValue<StorageProvider>("StorageProvider");
         switch (provider)
