@@ -2,7 +2,6 @@
 using Core.Data.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -20,14 +19,10 @@ namespace Voxed.WebApp.Controllers;
 [AllowAnonymous]
 public class HomeController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
     private readonly IVoxedRepository _voxedRepository;
 
-    public HomeController(
-        ILogger<HomeController> logger,
-        IVoxedRepository voxedRepository)
+    public HomeController(IVoxedRepository voxedRepository)
     {
-        _logger = logger;
         _voxedRepository = voxedRepository;
     }
 
@@ -181,7 +176,7 @@ public class HomeController : Controller
             {
                 var words = hiddenWordsCookie.Trim().Split(',');
                 return words.Select(word => word.Trim()).ToList();
-            }                
+            }
         }
 
         return Array.Empty<string>();

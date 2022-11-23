@@ -3,7 +3,7 @@ using System;
 
 namespace Core.Entities
 {
-    public class Role : IdentityRole<Guid>
-    {
-    }
+    public enum RoleType { Administrator, Moderator, Anonymous }
+
+    public class Role : IdentityRole<Guid> { }
 }

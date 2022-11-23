@@ -63,7 +63,7 @@
 
                         <span class="commentTag ">@Model.CommentTag</span>
 
-                        @if (User.IsInRole(nameof(Core.Data.EF.RoleType.Administrator)) || User.IsInRole(nameof(Core.Data.EF.RoleType.Moderator)))
+                        @if (User.IsInRole(nameof(Core.Entities.RoleType.Administrator)) || User.IsInRole(nameof(Core.Entities.RoleType.Moderator)))
                         {
                             <span class="commentTag pointer" data-delete data-contenttype="1" data-contentid="@Model.Id"><i class="fas fa-times" data-parent></i></span>
                         }
@@ -406,7 +406,7 @@
                                             <span class="commentTag ">@Core.Shared.UserTypeDictionary.GetDescription(comment.User.UserType).ToLower()</span>
                                         }
 
-                                        @if (User.IsInRole(nameof(Core.Data.EF.RoleType.Administrator)))
+                                        @if (User.IsInRole(nameof(Core.Entities.RoleType.Administrator)))
                                         {
                                             <span class="checkComment"><input class="selectComment" type="checkbox" data-checkcomment="@comment.ID"></span>
                                             <span class="commentTag hide adminTag" data-reactive data-contenttype="0" data-contentid="@comment.ID">Reactivar</span>
@@ -417,7 +417,7 @@
                                             var userId = Guid.Parse(UserManager.GetUserId(User));
 
                                             @if (userId == Model.UserId 
-                                                || User.IsInRole(nameof(Core.Data.EF.RoleType.Administrator)) || User.IsInRole(nameof(Core.Data.EF.RoleType.Moderator)))
+                                                || User.IsInRole(nameof(Core.Entities.RoleType.Administrator)) || User.IsInRole(nameof(Core.Entities.RoleType.Moderator)))
                                             {
                                                 <span class="commentTag pointer" data-delete data-contenttype="0" data-contentid="@comment.ID"><i class="fas fa-times" data-parent></i></span>
                                             }
