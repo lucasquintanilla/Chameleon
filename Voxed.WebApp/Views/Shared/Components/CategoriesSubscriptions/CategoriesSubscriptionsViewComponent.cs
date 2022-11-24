@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Voxed.WebApp.Views.Shared.Components.CategoriesMenuList
+namespace Voxed.WebApp.Views.Shared.Components.CategoriesSubscriptions
 {
     public class CategoriesSubscriptionsViewComponent : ViewComponent
     {

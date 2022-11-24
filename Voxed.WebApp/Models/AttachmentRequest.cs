@@ -1,5 +1,4 @@
-﻿using Core.Services.AttachmentServices.Models;
-using Core.Validations;
+﻿using Core.Validations;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 

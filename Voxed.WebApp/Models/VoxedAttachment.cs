@@ -1,4 +1,4 @@
-﻿namespace Core.Services.AttachmentServices.Models
+﻿namespace Voxed.WebApp.Models
 {
     public class VoxedAttachment
     {

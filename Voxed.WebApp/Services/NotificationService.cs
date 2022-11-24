@@ -1,7 +1,6 @@
 ﻿using Core.Data.Repositories;
 using Core.Entities;
 using Core.Extensions;
-using Core.Services.AttachmentServices.Models;
 using Core.Shared;
 using Microsoft.AspNetCore.SignalR;
 using System;
