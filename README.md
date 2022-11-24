@@ -73,13 +73,13 @@ Pull request son bienvenidos
 - [ ] Implementar markdown processor. Frontmatter?
 - [ ] Separar frontend del backend
 - [ ] Implementar instalable PWA using web assembly
-- [ ] Implementar notificaciones push con PWA
+- [ ] Implementar notificaciones push
 - [ ] Eliminar categorias e implementar Tags
 - [ ] Implementar Material Design 3
 - [ ] Implementar moderacion basada en bots y AI cognitive services
 - [ ] Post scores
-- [ ] Timeline mixer based on post scores
-- [ ] External post sources
+- [ ] External post data sources
+- [ ] Board mixer based on post scores and external post sources
 
 # Patrones de diseño
 
@@ -90,7 +90,7 @@ Pull request son bienvenidos
 - MVC
 
 # Principios a seguir
-- KISS (keep it simple stupid)
+- KISS
 - SOLID
 - DRY
 - Composition over inheritance
