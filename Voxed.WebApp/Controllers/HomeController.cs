@@ -58,8 +58,7 @@ public class HomeController : Controller
         return View("board", board);
     }
 
-    [HttpGet]
-    [Route("favoritos")]
+    [HttpGet("favoritos")]
     public async Task<IActionResult> Favorites()
     {
         if (!User.Identity.IsAuthenticated) return BadRequest();
@@ -82,8 +81,7 @@ public class HomeController : Controller
         return View("board", board);
     }
 
-    [HttpGet]
-    [Route("ocultos")]
+    [HttpGet("ocultos")]
     public async Task<IActionResult> Hidden()
     {
         if (!User.Identity.IsAuthenticated) return BadRequest();
@@ -147,6 +145,22 @@ public class HomeController : Controller
         return View("board", board);
     }
 
+    public IActionResult Privacy()
+    {
+        return View();
+    }
+
+    public IActionResult Info()
+    {
+        return View();
+    }
+
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public IActionResult Error()
+    {
+        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+    }
+
     private async Task<IEnumerable<int>> GetUserCategorySubscriptions()
     {
 
@@ -180,21 +194,5 @@ public class HomeController : Controller
         }
 
         return Array.Empty<string>();
-    }
-
-    public IActionResult Privacy()
-    {
-        return View();
-    }
-
-    public IActionResult Info()
-    {
-        return View();
-    }
-
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 }

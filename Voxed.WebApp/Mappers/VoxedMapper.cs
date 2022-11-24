@@ -1,39 +1,98 @@
 ﻿using Core.Entities;
 using Core.Extensions;
+using Core.Shared;
 using System.Collections.Generic;
 using System.Linq;
+using Voxed.WebApp.Extensions;
 using Voxed.WebApp.Models;
+using Voxed.WebApp.ViewModels;
 
-namespace Voxed.WebApp.Mappers
+
+namespace Voxed.WebApp.Mappers;
+
+public static class VoxedMapper
 {
-    public static class VoxedMapper
+    public static VoxResponse Map(Vox vox)
     {
-        public static VoxResponse Map(Vox vox)
+        return new VoxResponse()
         {
-            return new VoxResponse()
-            {
-                Hash = vox.Id.ToShortString(),
-                Status = true,
-                Niche = vox.CategoryId.ToString(),
-                Title = vox.Title,
-                Comments = vox.Comments.Count().ToString(),
-                Extension = string.Empty,
-                Sticky = vox.IsSticky ? "1" : "0",
-                CreatedAt = vox.CreatedOn.ToString(),
-                PollOne = string.Empty,
-                PollTwo = string.Empty,
-                Id = vox.Id.ToString(),
-                Slug = vox.Category.ShortName.ToUpper(),
-                VoxId = vox.Id.ToString(),
-                New = vox.CreatedOn.IsNew(),
-                ThumbnailUrl = vox.Attachment?.ThumbnailUrl,
-                Category = vox.Category.Name
-            };
-        }
+            Hash = vox.Id.ToShortString(),
+            Status = true,
+            Niche = vox.CategoryId.ToString(),
+            Title = vox.Title,
+            Comments = vox.Comments.Count().ToString(),
+            Extension = string.Empty,
+            Sticky = vox.IsSticky ? "1" : "0",
+            CreatedAt = vox.CreatedOn.ToString(),
+            PollOne = string.Empty,
+            PollTwo = string.Empty,
+            Id = vox.Id.ToString(),
+            Slug = vox.Category.ShortName.ToUpper(),
+            VoxId = vox.Id.ToString(),
+            New = vox.CreatedOn.IsNew(),
+            ThumbnailUrl = vox.Attachment?.ThumbnailUrl,
+            Category = vox.Category.Name
+        };
+    }
 
-        public static List<VoxResponse> Map(IEnumerable<Vox> voxs)
+    public static VoxDetailViewModel Map(Vox vox, UserVoxAction actions)
+    {
+        return new VoxDetailViewModel()
         {
-            return voxs.Select(vox => Map(vox)).ToList();
-        }
+            Id = vox.Id,
+            Title = vox.Title,
+            Content = vox.Content,
+            Hash = vox.Id.ToShortString(),
+            UserId = vox.UserId,
+
+            CommentTag = UserTypeDictionary.GetDescription(vox.Owner.UserType).ToLower(),
+            CategoryName = vox.Category.Name,
+            CategoryShortName = vox.Category.ShortName,
+            CategoryThumbnailUrl = vox.Category.Attachment.ThumbnailUrl,
+            CommentsAttachmentCount = vox.Comments.Where(x => x.Attachment != null).Count(),
+            CommentsCount = vox.Comments.Count,
+            UserName = vox.Owner.UserName,
+            UserType = (ViewModels.UserType)(int)vox.Owner.UserType,
+            CreatedOn = vox.CreatedOn.DateTime.ToTimeAgo(),
+
+            Media = new MediaViewModel()
+            {
+                ThumbnailUrl = vox.Attachment.ThumbnailUrl,
+                Url = vox.Attachment.Url,
+                MediaType = (MediaType)(int)vox.Attachment.Type,
+                ExtensionData = vox.Attachment?.Url.Split('=')[(vox.Attachment?.Url.Split('=').Length - 1).Value]
+            },
+
+            IsFavorite = actions.IsFavorite,
+            IsFollowed = actions.IsFollowed,
+            IsHidden = actions.IsHidden,
+
+            Comments = vox.Comments.OrderByDescending(c => c.IsSticky).ThenByDescending(c => c.CreatedOn).Select(x => new CommentViewModel()
+            {
+                ID = x.Id,
+                Content = x.Content,
+                Hash = x.Hash,
+                AvatarColor = x.Style.ToString().ToLower(),
+                AvatarText = UserTypeDictionary.GetDescription(x.Owner.UserType).ToUpper(),
+                IsOp = x.UserId == vox.UserId,
+                Media = x.Attachment == null ? null : new MediaViewModel()
+                {
+                    Url = x.Attachment?.Url,
+                    MediaType = (MediaType)(int)x.Attachment?.Type,
+                    ExtensionData = x.Attachment?.Url.Split('=')[(vox.Attachment?.Url.Split('=').Length - 1).Value],
+                    ThumbnailUrl = x.Attachment?.ThumbnailUrl,
+                },
+                IsSticky = x.IsSticky,
+                CreatedOn = x.CreatedOn,
+                Style = x.Style.ToString().ToLower(),
+                User = x.Owner,
+
+            }).ToList(),
+        };
+    }
+
+    public static List<VoxResponse> Map(IEnumerable<Vox> voxs)
+    {
+        return voxs.Select(vox => Map(vox)).ToList();
     }
 }

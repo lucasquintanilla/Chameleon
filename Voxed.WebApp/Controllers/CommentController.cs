@@ -52,9 +52,7 @@ public class CommentController : BaseController
         _scopeFactory = scopeFactory;
     }
 
-
-    [HttpPost]
-    [Route("comment/nuevo/{id}")]
+    [HttpPost("comment/nuevo/{id}")]
     public async Task<CreateCommentResponse> Create([FromForm] CreateCommentRequest request, [FromRoute] string id)
     {
         _logger.LogWarning($"{nameof(CreateCommentRequest)} received. " + JsonConvert.SerializeObject(request));
@@ -85,14 +83,6 @@ public class CommentController : BaseController
         }
     }
 
-    private async Task NotifyCommentCreated(Comment comment, CreateCommentRequest request)
-    {
-        using var scope = _scopeFactory.CreateScope();
-        var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
-        await notificationService.NotifyCommentCreated(comment, request);
-        await notificationService.ManageNotifications(comment);
-    }
-
     [HttpPost]
     public async Task<CommentStickyResponse> Sticky(CommentStickyRequest request)
     {
@@ -115,6 +105,14 @@ public class CommentController : BaseController
         }
 
         return response;
+    }
+
+    private async Task NotifyCommentCreated(Comment comment, CreateCommentRequest request)
+    {
+        using var scope = _scopeFactory.CreateScope();
+        var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
+        await notificationService.NotifyCommentCreated(comment, request);
+        await notificationService.ManageNotifications(comment);
     }
 
     private async Task<Comment> ProcessComment(CreateCommentRequest request, string id)

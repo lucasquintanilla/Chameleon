@@ -4,7 +4,6 @@ using Core.Entities;
 using Core.Extensions;
 using Core.Services.Post;
 using Core.Services.Post.Models;
-using Core.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -54,6 +53,21 @@ public class VoxController : BaseController
         _userVoxActionService = userVoxActionService;
         _moderationService = moderationService;
         _scopeFactory = scopeFactory;
+    }
+
+    [HttpGet("vox/{id}")]
+    public async Task<IActionResult> Index(string id)
+    {
+        if (id == null) return BadRequest();
+        var voxId = GuidExtension.FromShortString(id);
+
+        var vox = await _voxedRepository.Voxs.GetById(voxId);
+        if (vox == null || vox.State == VoxState.Deleted) return NotFound();
+
+        var userId = User.GetUserId();
+        var actions = await _userVoxActionService.GetUserVoxActions(voxId, userId);
+
+        return View(VoxedMapper.Map(vox, actions));
     }
 
     [HttpPost("account/message")]
@@ -152,73 +166,6 @@ public class VoxController : BaseController
         return await _moderationService.Report(request);
     }
 
-    [HttpGet("vox/{hash}")]
-    public async Task<IActionResult> Details(string hash)
-    {
-        if (hash == null) return BadRequest();
-        var voxId = GuidExtension.FromShortString(hash);
-
-        var vox = await _voxedRepository.Voxs.GetById(voxId);
-        if (vox == null || vox.State == VoxState.Deleted) return NotFound();
-
-        var userId = User.GetUserId();
-        var actions = await _userVoxActionService.GetUserVoxActions(voxId, userId);
-
-        var voxViewModel = new VoxDetailViewModel()
-        {
-            Id = vox.Id,
-            Title = vox.Title,
-            Content = vox.Content,
-            Hash = GuidExtension.ToShortString(vox.Id),
-            UserId = vox.UserId,
-
-            CommentTag = UserTypeDictionary.GetDescription(vox.Owner.UserType).ToLower(),
-            CategoryName = vox.Category.Name,
-            CategoryShortName = vox.Category.ShortName,
-            CategoryThumbnailUrl = vox.Category.Attachment.ThumbnailUrl,
-            CommentsAttachmentCount = vox.Comments.Where(x => x.Attachment != null).Count(),
-            CommentsCount = vox.Comments.Count,
-            UserName = vox.Owner.UserName,
-            UserType = (ViewModels.UserType)(int)vox.Owner.UserType,
-            CreatedOn = vox.CreatedOn.DateTime.ToTimeAgo(),
-
-            Media = new MediaViewModel()
-            {
-                ThumbnailUrl = vox.Attachment.ThumbnailUrl,
-                Url = vox.Attachment.Url,
-                MediaType = (MediaType)(int)vox.Attachment.Type,
-                ExtensionData = vox.Attachment?.Url.Split('=')[(vox.Attachment?.Url.Split('=').Length - 1).Value]
-            },
-
-            IsFavorite = actions.IsFavorite,
-            IsFollowed = actions.IsFollowed,
-            IsHidden = actions.IsHidden,
-
-            Comments = vox.Comments.OrderByDescending(c => c.IsSticky).ThenByDescending(c => c.CreatedOn).Select(x => new CommentViewModel()
-            {
-                ID = x.Id,
-                Content = x.Content,
-                Hash = x.Hash,
-                AvatarColor = x.Style.ToString().ToLower(),
-                AvatarText = UserTypeDictionary.GetDescription(x.Owner.UserType).ToUpper(),
-                IsOp = x.UserId == vox.UserId,
-                Media = x.Attachment == null ? null : new MediaViewModel()
-                {
-                    Url = x.Attachment?.Url,
-                    MediaType = (MediaType)(int)x.Attachment?.Type,
-                    ExtensionData = x.Attachment?.Url.Split('=')[(vox.Attachment?.Url.Split('=').Length - 1).Value],
-                    ThumbnailUrl = x.Attachment?.ThumbnailUrl,
-                },
-                IsSticky = x.IsSticky,
-                CreatedOn = x.CreatedOn,
-                Style = x.Style.ToString().ToLower(),
-                User = x.Owner,
-
-            }).ToList(),
-        };
-
-        return View(voxViewModel);
-    }
 
     [HttpPost]
     [Route("anon/vox")]
