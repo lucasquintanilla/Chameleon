@@ -1,8 +1,8 @@
 ﻿using Core.Data.Repositories;
 using Core.Entities;
 using Core.Extensions;
-using Core.Services.AttachmentServices;
-using Core.Services.AttachmentServices.Models;
+using Core.Services.MediaServices.Models;
+using Core.Services.MediaServices;
 using Core.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -16,14 +16,16 @@ using Voxed.WebApp.Extensions;
 using Voxed.WebApp.Models;
 using Voxed.WebApp.Services;
 using static Voxed.WebApp.Models.CommentStickyResponse;
+using Core.Services.Avatar;
+using Core.Services.TextFormatter;
 
 namespace Voxed.WebApp.Controllers;
 
 public class CommentController : BaseController
 {
     private readonly ILogger<CommentController> _logger;
-    private readonly IContentFormatterService _formatter;
-    private readonly IAttachmentService _attachmentService;
+    private readonly ITextFormatterService _formatter;
+    private readonly IMediaService _attachmentService;
     private readonly IVoxedRepository _voxedRepository;
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
@@ -33,8 +35,8 @@ public class CommentController : BaseController
     public CommentController(
         ILogger<CommentController> logger,
         INotificationService notificationService,
-        IContentFormatterService formatter,
-        IAttachmentService attachmentService,
+        ITextFormatterService formatter,
+        IMediaService attachmentService,
         IVoxedRepository voxedRepository,
         UserManager<User> userManager,
         SignInManager<User> signInManager,
@@ -131,7 +133,7 @@ public class CommentController : BaseController
             VoxId = GuidExtension.FromShortString(id),
             Owner = user,
             Content = _formatter.Format(request.Content),
-            Style = StyleService.GetRandomCommentStyle(),
+            Style = AvatarService.GetAvatarStyle(),
             IpAddress = UserIpAddress,
             UserAgent = UserAgent,
             Attachment = request.HasAttachment() ? await CreateCommentAttachment(request) : null,
@@ -155,17 +157,17 @@ public class CommentController : BaseController
         return content is not null && content.ToLower().Contains(hide);
     }
 
-    private async Task<Attachment> CreateCommentAttachment(CreateCommentRequest request)
+    private async Task<Media> CreateCommentAttachment(CreateCommentRequest request)
     {
         if (request.GetVoxedAttachment() == null && request.File == null) return null;
 
-        var attachment = new CreateAttachmentRequest()
+        var attachment = new CreateMediaRequest()
         {
             Extension = request.GetVoxedAttachment().Extension,
             ExtensionData = request.GetVoxedAttachment().ExtensionData,
             File = request.File
         };
 
-        return await _attachmentService.CreateAttachment(attachment);
+        return await _attachmentService.CreateMedia(attachment);
     }
 }

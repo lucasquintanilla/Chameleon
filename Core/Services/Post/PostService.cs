@@ -1,13 +1,13 @@
 ﻿using Core.Data.Filters;
 using Core.Data.Repositories;
 using Core.Entities;
-using Core.Services.AttachmentServices;
-using Core.Services.AttachmentServices.Models;
+using Core.Services.MediaServices.Models;
+using Core.Services.MediaServices;
 using Core.Services.Post.Models;
-using Core.Shared;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Core.Services.TextFormatter;
 
 namespace Core.Services.Post
 {
@@ -20,42 +20,42 @@ namespace Core.Services.Post
     public class PostService : IPostService
     {
         private readonly ILogger<PostService> _logger;
-        private readonly IAttachmentService _attachmentService;
+        private readonly IMediaService _mediaService;
         private readonly IVoxedRepository _voxedRepository;
-        private readonly IContentFormatterService _formatterService;
+        private readonly ITextFormatterService _textFormatter;
 
         public PostService(
             ILogger<PostService> logger,
-            IAttachmentService attachmentService,
+            IMediaService mediaService,
             IVoxedRepository voxedRepository,
-            IContentFormatterService formatterService)
+            ITextFormatterService textFormatter)
         {
             _logger = logger;
-            _attachmentService = attachmentService;
+            _mediaService = mediaService;
             _voxedRepository = voxedRepository;
-            _formatterService = formatterService;
+            _textFormatter = textFormatter;
         }
 
         public async Task<Vox> CreatePost(CreatePostRequest request)
         {
-            var postAttachment = new CreateAttachmentRequest()
+            var mediaRequest = new CreateMediaRequest()
             {
                 Extension = request.Extension,
                 ExtensionData = request.ExtensionData,
                 File = request.File
             };
 
-            var attachment = await _attachmentService.CreateAttachment(postAttachment);
-            await _voxedRepository.Media.Add(attachment);
+            var media = await _mediaService.CreateMedia(mediaRequest);
+            await _voxedRepository.Media.Add(media);
 
             var vox = new Vox()
             {
                 State = VoxState.Active,
                 UserId = request.UserId,
                 Title = request.Title,
-                Content = _formatterService.Format(request.Content),
+                Content = _textFormatter.Format(request.Content),
                 CategoryId = request.CategoryId,
-                AttachmentId = attachment.Id,
+                AttachmentId = media.Id,
                 IpAddress = request.IpAddress,
                 UserAgent = request.UserAgent
             };

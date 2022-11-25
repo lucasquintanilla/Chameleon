@@ -6,12 +6,13 @@ using Core.Data.EF.Repositories;
 using Core.Data.EF.Sqlite;
 using Core.Data.Repositories;
 using Core.Entities;
-using Core.Services.AttachmentServices;
+using Core.Services.MediaServices;
 using Core.Services.Post;
 using Core.Services.Storage;
 using Core.Services.Storage.Cloud;
 using Core.Services.Storage.Local;
 using Core.Services.Telegram;
+using Core.Services.TextFormatter;
 using Core.Services.Youtube;
 using Core.Shared;
 using Microsoft.AspNetCore.Identity;
@@ -116,7 +117,7 @@ public static class DependencyContainer
     {
         services.AddTransient<INotificationService, NotificationService>();
         services.AddTransient<IPostService, PostService>();
-        services.AddSingleton<IContentFormatterService, ContentFormatterService>();
+        services.AddSingleton<ITextFormatterService, TextFormatterService>();
         services.AddTransient<IUserVoxActionService, UserVoxActionService>();
         services.AddTransient<IModerationService, ModerationService>();
         services.AddSingleton<IYoutubeService, YoutubeService>();
@@ -124,8 +125,8 @@ public static class DependencyContainer
         services.Configure<TelegramOptions>(configuration.GetSection(TelegramOptions.SectionName));
         services.AddSingleton<ITelegramService, TelegramService>();
 
-        services.Configure<AttachmentServiceOptions>(configuration.GetSection(AttachmentServiceOptions.SectionName));
-        services.AddSingleton<IAttachmentService, AttachmentService>();
+        services.Configure<MediaServiceOptions>(configuration.GetSection(MediaServiceOptions.SectionName));
+        services.AddSingleton<IMediaService, MediaService>();
     }
 
     public static void RegisterStorageImageProvider(this IServiceCollection services, IConfiguration configuration)

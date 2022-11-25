@@ -17,7 +17,7 @@ namespace Core.Data.EF.Repositories
 
         public override async Task<Vox> GetById(Guid id)
             => await _context.Voxs
-                .Include(x => x.Attachment)
+                .Include(x => x.Media)
                 .Include(x => x.Category)
                 .Include(x => x.Category.Attachment)
                 .Include(x => x.Comments.Where(c => c.State == CommentState.Active)) //agregar order by descending
@@ -33,7 +33,7 @@ namespace Core.Data.EF.Repositories
             var query = _context.Voxs.AsNoTracking();
 
             query = query.Where(x => x.State == VoxState.Active)
-                       .Include(x => x.Attachment)
+                       .Include(x => x.Media)
                        .Include(x => x.Category)
                        .Include(x => x.Comments.Where(c => c.State == CommentState.Active));
 

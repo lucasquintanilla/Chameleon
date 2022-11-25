@@ -1,6 +1,7 @@
 ﻿using Core.Data.Repositories;
 using Core.Entities;
 using Core.Extensions;
+using Core.Services.TextFormatter;
 using Core.Shared;
 using Microsoft.AspNetCore.SignalR;
 using System;
@@ -25,16 +26,16 @@ public class NotificationService : INotificationService
 {
     private readonly IVoxedRepository _voxedRepository;
     private readonly IHubContext<VoxedHub, INotificationHub> _notificationHub;
-    private readonly IContentFormatterService _formatterService;
+    private readonly ITextFormatterService _textFormatter;
 
     public NotificationService(
         IVoxedRepository voxedRepository,
         IHubContext<VoxedHub, INotificationHub> notificationHub,
-        IContentFormatterService formatterService)
+        ITextFormatterService textFormatter)
     {
         _voxedRepository = voxedRepository;
         _notificationHub = notificationHub;
-        _formatterService = formatterService;
+        _textFormatter = textFormatter;
     }
 
     public async Task NotifyPostCreated(Guid voxId)
@@ -55,7 +56,7 @@ public class NotificationService : INotificationService
                 .WithVox(vox)
                 .WithComment(comment)
                 .UseRepository(_voxedRepository)
-                .UseFormatter(_formatterService)
+                .UseFormatter(_textFormatter)
                 .AddReplies()
                 .AddOPNotification()
                 .AddVoxSusbcriberNotifications()

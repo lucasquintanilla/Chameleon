@@ -15,7 +15,7 @@ namespace Core.Data.EF
         public DbSet<Vox> Voxs { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Category> Categories { get; set; }
-        public DbSet<Attachment> Media { get; set; }
+        public DbSet<Media> Media { get; set; }
         public DbSet<Poll> Polls { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<UserVoxAction> UserVoxActions { get; set; }
@@ -27,7 +27,7 @@ namespace Core.Data.EF
             modelBuilder.Entity<Poll>().ToTable(nameof(Polls));
 
             new UserEntityTypeConfiguration().Configure(modelBuilder.Entity<User>());
-            new MediaEntityTypeConfiguration().Configure(modelBuilder.Entity<Attachment>());
+            new MediaEntityTypeConfiguration().Configure(modelBuilder.Entity<Media>());
             new CategoryEntityTypeConfiguration().Configure(modelBuilder.Entity<Category>());
             new VoxEntityTypeConfiguration().Configure(modelBuilder.Entity<Vox>());
             new CommentEntityTypeConfiguration().Configure(modelBuilder.Entity<Comment>());

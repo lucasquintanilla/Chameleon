@@ -35,7 +35,7 @@ namespace Core.Data.EF.EntityTypeConfigurations
                 .IsUnicode(true)
                 .HasMaxLength(100);
 
-            builder.HasOne(x => x.Attachment)
+            builder.HasOne(x => x.Media)
               .WithMany()
               //.OnDelete(DeleteBehavior.Restrict)
               .HasForeignKey(x => x.AttachmentId);

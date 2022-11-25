@@ -1,6 +1,6 @@
-﻿namespace Core.Services.AttachmentServices.Models
+﻿namespace Core.Services.MediaServices.Models
 {
-    public static class CreateAttachmentFileExtension
+    public static class CreateMediaFileExtension
     {
         public const string Youtube = "ytb";
         public const string Png = "png";

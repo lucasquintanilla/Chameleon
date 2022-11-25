@@ -1,6 +1,6 @@
 ﻿using Core.Data.Repositories;
 using Core.Entities;
-using Core.Shared;
+using Core.Services.TextFormatter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +13,7 @@ namespace Voxed.WebApp.Services
         private Comment _comment;
         private List<Notification> _notifications = new List<Notification>();
         private IVoxedRepository _voxedRepository;
-        private IContentFormatterService _formateadorService;
+        private ITextFormatterService _formateadorService;
 
         public NotificationBuilder UseRepository(IVoxedRepository voxedRepository)
         {
@@ -51,7 +51,7 @@ namespace Voxed.WebApp.Services
             return this;
         }
 
-        public NotificationBuilder UseFormatter(IContentFormatterService formatter)
+        public NotificationBuilder UseFormatter(ITextFormatterService formatter)
         {
             _formateadorService = formatter;
             return this;

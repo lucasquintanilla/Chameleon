@@ -17,7 +17,7 @@ namespace Core.Entities
         public DateTimeOffset Bump { get; set; } = DateTimeOffset.Now;
         public string UserAgent { get; set; }
         public string IpAddress { get; set; }
-        public virtual Attachment Attachment { get; set; }
+        public virtual Media Media { get; set; }
         public virtual Category Category { get; set; }
         public virtual User Owner { get; set; }
         public virtual Poll Poll { get; set; }

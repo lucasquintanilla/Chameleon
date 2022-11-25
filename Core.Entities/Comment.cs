@@ -4,7 +4,7 @@ namespace Core.Entities
 {
     public enum CommentState { Active, Deleted, Reported }
     public enum CommentType { Normal, Sticky }
-    public enum CommentStyle { Black, Blue, Green, Multi, Red, White, Yellow } //invested
+    public enum AvatarStyle { Black, Blue, Green, Multi, Red, White, Yellow } //invested
 
     public class Comment : Entity
     {
@@ -16,11 +16,11 @@ namespace Core.Entities
         public DateTimeOffset Bump { get; set; } = DateTimeOffset.Now;
         public CommentState State { get; set; }
         public CommentType Type { get; set; }
-        public CommentStyle Style { get; set; }
+        public AvatarStyle Style { get; set; }
         public bool IsSticky { get; set; }
         public string UserAgent { get; set; }
         public string IpAddress { get; set; }
-        public Attachment Attachment { get; set; }
+        public Media Attachment { get; set; }
         public User Owner { get; set; }
     }
 }

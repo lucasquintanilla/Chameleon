@@ -3,19 +3,19 @@ using System.Linq;
 using System.Text.Encodings.Web;
 using System.Text.RegularExpressions;
 
-namespace Core.Shared
+namespace Core.Services.TextFormatter
 {
-    public interface IContentFormatterService
+    public interface ITextFormatterService
     {
         string Format(string content);
         List<string> GetRepliedHash(string content);
     }
 
-    public class ContentFormatterService : IContentFormatterService
+    public class TextFormatterService : ITextFormatterService
     {
         private readonly HtmlEncoder encoder;
 
-        public ContentFormatterService(HtmlEncoder encoder)
+        public TextFormatterService(HtmlEncoder encoder)
         {
             this.encoder = encoder;
         }

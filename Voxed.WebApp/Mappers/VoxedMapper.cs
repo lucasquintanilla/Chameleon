@@ -7,7 +7,6 @@ using Voxed.WebApp.Extensions;
 using Voxed.WebApp.Models;
 using Voxed.WebApp.ViewModels;
 
-
 namespace Voxed.WebApp.Mappers;
 
 public static class VoxedMapper
@@ -30,7 +29,7 @@ public static class VoxedMapper
             Slug = vox.Category.ShortName.ToUpper(),
             VoxId = vox.Id.ToString(),
             New = vox.CreatedOn.IsNew(),
-            ThumbnailUrl = vox.Attachment?.ThumbnailUrl,
+            ThumbnailUrl = vox.Media?.ThumbnailUrl,
             Category = vox.Category.Name
         };
     }
@@ -57,10 +56,10 @@ public static class VoxedMapper
 
             Media = new MediaViewModel()
             {
-                ThumbnailUrl = vox.Attachment.ThumbnailUrl,
-                Url = vox.Attachment.Url,
-                MediaType = (MediaType)(int)vox.Attachment.Type,
-                ExtensionData = vox.Attachment?.Url.Split('=')[(vox.Attachment?.Url.Split('=').Length - 1).Value]
+                ThumbnailUrl = vox.Media.ThumbnailUrl,
+                Url = vox.Media.Url,
+                MediaType = (ViewModels.MediaType)(int)vox.Media.Type,
+                ExtensionData = vox.Media?.Url.Split('=')[(vox.Media?.Url.Split('=').Length - 1).Value]
             },
 
             IsFavorite = actions.IsFavorite,
@@ -78,8 +77,8 @@ public static class VoxedMapper
                 Media = x.Attachment == null ? null : new MediaViewModel()
                 {
                     Url = x.Attachment?.Url,
-                    MediaType = (MediaType)(int)x.Attachment?.Type,
-                    ExtensionData = x.Attachment?.Url.Split('=')[(vox.Attachment?.Url.Split('=').Length - 1).Value],
+                    MediaType = (ViewModels.MediaType)(int)x.Attachment?.Type,
+                    ExtensionData = x.Attachment?.Url.Split('=')[(vox.Media?.Url.Split('=').Length - 1).Value],
                     ThumbnailUrl = x.Attachment?.ThumbnailUrl,
                 },
                 IsSticky = x.IsSticky,

@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Core.Data.EF.EntityTypeConfigurations
 {
-    public class MediaEntityTypeConfiguration : IEntityTypeConfiguration<Attachment>
+    public class MediaEntityTypeConfiguration : IEntityTypeConfiguration<Media>
     {
-        public void Configure(EntityTypeBuilder<Attachment> builder)
+        public void Configure(EntityTypeBuilder<Media> builder)
         {
             builder.HasKey(x => x.Id);
 
