@@ -1,6 +1,5 @@
 ﻿using Core.Data.Repositories;
 using Core.Entities;
-using Core.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -59,15 +58,12 @@ namespace Voxed.WebApp.Views.Shared.Components.NotificationNavList
 
         private string GetTitleNotification(NotificationType notificationType)
         {
-            switch (notificationType)
+            return notificationType switch
             {
-                case NotificationType.New:
-                    return "Nuevo comentario";
-                case NotificationType.Reply:
-                    return "Nueva respuesta";
-                default:
-                    return "Nueva notificacion";
-            }
+                NotificationType.New => "Nuevo comentario",
+                NotificationType.Reply => "Nueva respuesta",
+                _ => "Nueva notificacion",
+            };
         }
     }
 }

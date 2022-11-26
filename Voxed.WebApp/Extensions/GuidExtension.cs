@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Core.Extensions
+namespace Voxed.WebApp.Extensions
 {
     public static class GuidExtension
     {

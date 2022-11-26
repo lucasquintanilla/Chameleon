@@ -1,9 +1,9 @@
 ﻿using Core.Data.Repositories;
-using Core.Extensions;
 using Core.Services.Telegram;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
+using Voxed.WebApp.Extensions;
 using Voxed.WebApp.Models;
 
 namespace Voxed.WebApp.Services.Moderation

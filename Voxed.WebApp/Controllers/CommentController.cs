@@ -1,6 +1,5 @@
 ﻿using Core.Data.Repositories;
 using Core.Entities;
-using Core.Extensions;
 using Core.Services.MediaServices.Models;
 using Core.Services.MediaServices;
 using Core.Shared;

@@ -1,7 +1,6 @@
 ﻿using Core.Data.Filters;
 using Core.Data.Repositories;
 using Core.Entities;
-using Core.Extensions;
 using Core.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

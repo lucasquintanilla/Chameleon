@@ -1,7 +1,7 @@
-﻿using Core.Validations;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using System;
 using System.ComponentModel.DataAnnotations;
+using Voxed.WebApp.Attributes;
 
 namespace Voxed.WebApp.Models
 {

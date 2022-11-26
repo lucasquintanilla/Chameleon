@@ -1,6 +1,6 @@
-﻿using Core.Validations;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using Voxed.WebApp.Attributes;
 
 namespace Voxed.WebApp.Models
 {

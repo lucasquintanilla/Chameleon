@@ -1,18 +1,15 @@
 ﻿using Microsoft.AspNetCore.Http;
-using System;
 using System.ComponentModel.DataAnnotations;
-using System.IO;
-using System.Linq;
 
-namespace Core.Validations
+namespace Voxed.WebApp.Attributes
 {
-    public class AllowedExtensionsAttribute : ValidationAttribute
+    public class MaxFileSizeAttribute : ValidationAttribute
     {
-        private readonly string[] _extensions;
+        private readonly int _maxFileSize;
 
-        public AllowedExtensionsAttribute(string[] extensions)
+        public MaxFileSizeAttribute(int maxFileSize)
         {
-            _extensions = extensions;
+            _maxFileSize = maxFileSize;
         }
 
         protected override ValidationResult IsValid(
@@ -22,8 +19,7 @@ namespace Core.Validations
             var file = value as IFormFile;
             if (file != null)
             {
-                var extension = Path.GetExtension(file.FileName);
-                if (!_extensions.Contains(extension.ToLower()))
+                if (file.Length > _maxFileSize)
                 {
                     return new ValidationResult(GetErrorMessage());
                 }
@@ -34,7 +30,7 @@ namespace Core.Validations
 
         public string GetErrorMessage()
         {
-            return $"This photo extension is not allowed!";
+            return $"Maximum allowed file size is {_maxFileSize} bytes.";
         }
     }
 }

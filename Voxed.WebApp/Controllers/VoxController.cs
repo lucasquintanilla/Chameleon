@@ -1,7 +1,6 @@
 ﻿using Core.Data.Filters;
 using Core.Data.Repositories;
 using Core.Entities;
-using Core.Extensions;
 using Core.Services.Post;
 using Core.Services.Post.Models;
 using Microsoft.AspNetCore.Http;
