@@ -1,5 +1,6 @@
 ﻿using Core.Entities;
 using Core.Extensions;
+using Core.Services.Image;
 using Core.Services.MediaServices.Models;
 using Core.Services.Storage;
 using Core.Services.Storage.Models;
@@ -21,15 +22,18 @@ public class MediaService : IMediaService
     private readonly MediaServiceOptions _config;
     private readonly IYoutubeService _youtubeService;
     private readonly IStorage _storageService;
+    private readonly IImageService _imageService;
 
     public MediaService(
         IYoutubeService youtubeService,
         IOptions<MediaServiceOptions> options,
-        IStorage storageService)
+        IStorage storageService,
+        IImageService imageService)
     {
         _config = options.Value;
         _youtubeService = youtubeService;
         _storageService = storageService;
+        _imageService = imageService;
     }
 
     public async Task<Media> CreateMedia(CreateMediaRequest request)
@@ -54,7 +58,7 @@ public class MediaService : IMediaService
         var original = new StorageObject()
         {
             Key = Guid.NewGuid() + file.GetFileExtension(),
-            Content = file.OpenReadStream().Compress(),
+            Content = await _imageService.Compress(file.OpenReadStream()),
             ContentType = file.ContentType
         };
         await _storageService.Save(original);
@@ -62,7 +66,7 @@ public class MediaService : IMediaService
         var thumbnail = new StorageObject()
         {
             Key = Guid.NewGuid() + "_thumb.jpeg",
-            Content = file.OpenReadStream().GenerateThumbnail(),
+            Content = await _imageService.Compress(file.OpenReadStream()),
             ContentType = file.ContentType
         };
         await _storageService.Save(thumbnail);
@@ -92,7 +96,7 @@ public class MediaService : IMediaService
         var thumbnail = new StorageObject()
         {
             Key = Guid.NewGuid() + "_thumb.jpeg",
-            Content = file.OpenReadStream().GenerateThumbnail(),
+            Content = await _imageService.Compress(file.OpenReadStream()),
             ContentType = file.ContentType
         };
         await _storageService.Save(thumbnail);
@@ -128,10 +132,11 @@ public class MediaService : IMediaService
 
     private async Task<Media> SaveFromBase64(string base64)
     {
+        var image = _imageService.GetStreamFromBase64(base64);
         var original = new StorageObject()
         {
             Key = Guid.NewGuid() + ".jpeg",
-            Content = base64.GetStreamFromBase64(),
+            Content = image,
             ContentType = "image/jpeg"
         };
         await _storageService.Save(original);
@@ -139,7 +144,7 @@ public class MediaService : IMediaService
         var thumbnail = new StorageObject()
         {
             Key = Guid.NewGuid() + "_thumb.jpeg",
-            Content = base64.GetStreamFromBase64().GenerateThumbnail(),
+            Content = await _imageService.GenerateThumbnail(image),
             ContentType = "image/jpeg"
         };
         await _storageService.Save(thumbnail);

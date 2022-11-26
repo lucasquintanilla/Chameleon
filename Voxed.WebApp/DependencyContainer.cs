@@ -6,6 +6,7 @@ using Core.Data.EF.Repositories;
 using Core.Data.EF.Sqlite;
 using Core.Data.Repositories;
 using Core.Entities;
+using Core.Services.Image;
 using Core.Services.MediaServices;
 using Core.Services.Post;
 using Core.Services.Storage;
@@ -121,6 +122,7 @@ public static class DependencyContainer
         services.AddTransient<IUserVoxActionService, UserVoxActionService>();
         services.AddTransient<IModerationService, ModerationService>();
         services.AddSingleton<IYoutubeService, YoutubeService>();
+        services.AddSingleton<IImageService, ImageService>();
 
         services.Configure<TelegramOptions>(configuration.GetSection(TelegramOptions.SectionName));
         services.AddSingleton<ITelegramService, TelegramService>();

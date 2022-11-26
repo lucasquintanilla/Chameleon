@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Core.Extensions
 {
-    public static class PathExtensions
+    public static class FormFileExtensions
     {
         public static string GetFileExtension(this IFormFile file)
         {
