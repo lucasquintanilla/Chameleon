@@ -10,7 +10,7 @@ namespace Core.Data.EF.EntityTypeConfigurations
         {
             builder.HasKey(x => x.Id);
 
-            builder.Property(x => x.VoxId)
+            builder.Property(x => x.PostId)
                .IsRequired(true)
                .IsUnicode(true);
 
@@ -27,10 +27,10 @@ namespace Core.Data.EF.EntityTypeConfigurations
               //.OnDelete(DeleteBehavior.Restrict)
               .HasForeignKey(x => x.UserId);
 
-            builder.HasOne(x => x.Vox)
+            builder.HasOne(x => x.Post)
               .WithMany()
               //.OnDelete(DeleteBehavior.Restrict)
-              .HasForeignKey(x => x.VoxId);
+              .HasForeignKey(x => x.PostId);
 
             builder.HasOne(x => x.Comment)
              .WithMany()

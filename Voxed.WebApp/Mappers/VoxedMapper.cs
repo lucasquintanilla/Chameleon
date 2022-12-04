@@ -59,7 +59,7 @@ public static class VoxedMapper
         };
     }
 
-    public static VoxDetailViewModel Map(Post vox, UserVoxAction actions)
+    public static VoxDetailViewModel Map(Post vox, UserPostAction actions)
     {
         return new VoxDetailViewModel()
         {

@@ -36,7 +36,7 @@ public class NotificationController : BaseController
         var userId = User.GetUserId();
         if (userId != notification.UserId) return Redirect("/");
 
-        var voxHash = notification.VoxId.ToShortString();
+        var voxHash = notification.PostId.ToShortString();
         var commentHash = notification.Comment.Hash;
 
         new RemoveNotificationModel() { Id = notification.Id.ToString() };

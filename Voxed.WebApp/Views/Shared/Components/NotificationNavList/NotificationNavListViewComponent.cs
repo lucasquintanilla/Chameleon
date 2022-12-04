@@ -43,13 +43,13 @@ namespace Voxed.WebApp.Views.Shared.Components.NotificationNavList
                     Type = notification.Type.ToString().ToLowerInvariant(),
                     Content = new NotificationContent()
                     {
-                        VoxHash = notification.Vox.Id.ToShortString(),
+                        VoxHash = notification.Post.Id.ToShortString(),
                         NotificationBold = GetTitleNotification(notification.Type),
-                        NotificationText = notification.Vox.Title,
+                        NotificationText = notification.Post.Title,
                         Count = "1",
                         ContentHash = notification.Comment.Hash,
                         Id = notification.Id.ToString(),
-                        ThumbnailUrl = notification.Vox.Media?.ThumbnailUrl
+                        ThumbnailUrl = notification.Post.Media?.ThumbnailUrl
                     }
                 });
 

@@ -8,7 +8,7 @@ namespace Voxed.WebApp.Services
 {
     public interface IUserVoxActionService
     {
-        Task<UserVoxAction> GetUserVoxActions(Guid voxId, Guid? userId);
+        Task<UserPostAction> GetUserVoxActions(Guid voxId, Guid? userId);
         Task<string> ManageUserVoxAction(Guid userId, Guid voxId, string actionId);
     }
 
@@ -23,9 +23,9 @@ namespace Voxed.WebApp.Services
             _voxedRepository = voxedRepository;
         }
 
-        public async Task<UserVoxAction> GetUserVoxActions(Guid voxId, Guid? userId)
+        public async Task<UserPostAction> GetUserVoxActions(Guid voxId, Guid? userId)
         {
-            var userVoxAction = new UserVoxAction();
+            var userVoxAction = new UserPostAction();
 
             if (userId == null) return userVoxAction;
 
@@ -41,10 +41,10 @@ namespace Voxed.WebApp.Services
             var userVoxAction = await _voxedRepository.UserPostActions.GetByUserIdPostId(userId, voxId);
             if (userVoxAction == null)
             {
-                userVoxAction = new UserVoxAction()
+                userVoxAction = new UserPostAction()
                 {
                     UserId = userId,
-                    VoxId = voxId
+                    PostId = voxId
                 };
 
                 actionResult = SetAction(userVoxAction, actionId);
@@ -59,7 +59,7 @@ namespace Voxed.WebApp.Services
             return actionResult;
         }
 
-        private string SetAction(UserVoxAction userVoxAction, string actionId)
+        private string SetAction(UserPostAction userVoxAction, string actionId)
         {
             switch (actionId)
             {

@@ -41,24 +41,24 @@ namespace Core.Data.EF.Repositories
             {
                 if (filter.IncludeHidden)
                 {
-                    query = query.Where(x => _context.UserVoxActions.AsNoTracking().Where(u => u.UserId == filter.UserId.Value && u.IsHidden).Select(v => v.VoxId).Contains(x.Id));
+                    query = query.Where(x => _context.UserVoxActions.AsNoTracking().Where(u => u.UserId == filter.UserId.Value && u.IsHidden).Select(v => v.PostId).Contains(x.Id));
                 }
                 else
                 {
-                    query = query.Where(x => !_context.UserVoxActions.AsNoTracking().Where(x => x.UserId == filter.UserId.Value && x.IsHidden).Select(x => x.VoxId).Contains(x.Id));
+                    query = query.Where(x => !_context.UserVoxActions.AsNoTracking().Where(x => x.UserId == filter.UserId.Value && x.IsHidden).Select(x => x.PostId).Contains(x.Id));
                 }
 
                 if (filter.IncludeFavorites)
                 {
-                    query = query.Where(x => _context.UserVoxActions.AsNoTracking().Where(u => u.UserId == filter.UserId.Value && u.IsFavorite).Select(v => v.VoxId).Contains(x.Id));
+                    query = query.Where(x => _context.UserVoxActions.AsNoTracking().Where(u => u.UserId == filter.UserId.Value && u.IsFavorite).Select(v => v.PostId).Contains(x.Id));
                 }
             }
 
-            if (filter.IgnoreVoxIds.Any())
+            if (filter.IgnorePostIds.Any())
             {
-                query = query.Where(x => !filter.IgnoreVoxIds.Contains(x.Id));
+                query = query.Where(x => !filter.IgnorePostIds.Contains(x.Id));
 
-                var lastVox = await GetLastVoxBump(filter.IgnoreVoxIds);
+                var lastVox = await GetLastVoxBump(filter.IgnorePostIds);
                 query = query.Where(x => x.LastActivityOn < lastVox.LastActivityOn);
             }
 

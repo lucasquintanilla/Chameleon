@@ -8,18 +8,18 @@ using System.Threading.Tasks;
 
 namespace Core.Data.EF.Repositories
 {
-    public class UserVoxActionRepository : Repository<UserVoxAction>, IUserPostActionRepository
+    public class UserVoxActionRepository : Repository<UserPostAction>, IUserPostActionRepository
     {
         public UserVoxActionRepository(VoxedContext context) : base(context) { }
 
-        public async Task<UserVoxAction> GetByUserIdPostId(Guid userId, Guid voxId)
+        public async Task<UserPostAction> GetByUserIdPostId(Guid userId, Guid voxId)
             => await _context.UserVoxActions
-                .Where(x => x.UserId == userId && x.VoxId == voxId)
+                .Where(x => x.UserId == userId && x.PostId == voxId)
                 .SingleOrDefaultAsync();
 
         public async Task<IEnumerable<Guid>> GetPostSubscriberUserIds(Guid voxId, IEnumerable<Guid> ignoreUserIds)
             => await _context.UserVoxActions
-                .Where(x => x.VoxId == voxId && x.IsFollowed && !ignoreUserIds.Contains(x.UserId))
+                .Where(x => x.PostId == voxId && x.IsFollowed && !ignoreUserIds.Contains(x.UserId))
                 .Select(x => x.UserId)
                 .ToListAsync();
     }

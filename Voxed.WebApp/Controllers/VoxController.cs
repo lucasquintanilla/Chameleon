@@ -262,7 +262,7 @@ public class VoxController : BaseController
         var filter = new PostFilter()
         {
             UserId = User.GetUserId(),
-            IgnoreVoxIds = skipIdList,
+            IgnorePostIds = skipIdList,
             Categories = GetSubscriptionCategories(request)
         };
 

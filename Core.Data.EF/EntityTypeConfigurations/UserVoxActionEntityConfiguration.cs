@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Core.Data.EF.EntityTypeConfigurations
 {
-    public class UserVoxActionEntityConfiguration : IEntityTypeConfiguration<UserVoxAction>
+    public class UserVoxActionEntityConfiguration : IEntityTypeConfiguration<UserPostAction>
     {
-        public void Configure(EntityTypeBuilder<UserVoxAction> builder)
+        public void Configure(EntityTypeBuilder<UserPostAction> builder)
         {
             builder.HasKey(x => x.Id);
 
-            builder.HasIndex(x => new { x.UserId, x.VoxId }).IsUnique();
+            builder.HasIndex(x => new { x.UserId, x.PostId }).IsUnique();
 
             builder.Property(x => x.UserId)
               .IsRequired(true)
@@ -21,14 +21,14 @@ namespace Core.Data.EF.EntityTypeConfigurations
               //.OnDelete(DeleteBehavior.Restrict)
               .HasForeignKey(x => x.UserId);
 
-            builder.Property(x => x.VoxId)
+            builder.Property(x => x.PostId)
               .IsRequired(true)
               .IsUnicode(true);
 
-            builder.HasOne(x => x.Vox)
+            builder.HasOne(x => x.Post)
               .WithMany()
               //.OnDelete(DeleteBehavior.Restrict)
-              .HasForeignKey(x => x.VoxId);
+              .HasForeignKey(x => x.PostId);
         }
     }
 }

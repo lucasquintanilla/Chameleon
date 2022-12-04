@@ -17,8 +17,8 @@ namespace Core.Data.EF.Repositories
             return await _context.Notifications
                 .Where(x => x.UserId == userId)
                 .Include(x => x.Comment)
-                .Include(x => x.Vox)
-                .Include(x => x.Vox.Media)
+                .Include(x => x.Post)
+                .Include(x => x.Post.Media)
                 .Include(x => x.Owner)
                 .ToListAsync();
         }
