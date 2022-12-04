@@ -40,7 +40,7 @@ namespace Voxed.WebApp.Services
                 var notification = new Notification()
                 {
                     CommentId = _comment.Id,
-                    VoxId = _comment.VoxId,
+                    VoxId = _comment.PostId,
                     UserId = _vox.UserId,
                     Type = NotificationType.New,
                 };
@@ -71,7 +71,7 @@ namespace Voxed.WebApp.Services
                 .Select(userId => new Notification()
                 {
                     CommentId = _comment.Id,
-                    VoxId = _comment.VoxId,
+                    VoxId = _comment.PostId,
                     UserId = userId,
                     Type = NotificationType.Reply,
                 })

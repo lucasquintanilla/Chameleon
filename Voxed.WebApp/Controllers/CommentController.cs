@@ -129,7 +129,7 @@ public class CommentController : BaseController
         var comment = new Comment()
         {
             Hash = new Hash().NewHash(7),
-            VoxId = GuidExtension.FromShortString(id),
+            PostId = GuidExtension.FromShortString(id),
             Owner = user,
             Content = _formatter.Format(request.Content),
             Style = AvatarService.GetAvatarStyle(),
@@ -142,7 +142,7 @@ public class CommentController : BaseController
 
         if (!ContainsHide(comment.Content))
         {
-            var vox = await _voxedRepository.Voxs.GetById(comment.VoxId);
+            var vox = await _voxedRepository.Voxs.GetById(comment.PostId);
             vox.LastActivityOn = DateTimeOffset.Now;
         }
 

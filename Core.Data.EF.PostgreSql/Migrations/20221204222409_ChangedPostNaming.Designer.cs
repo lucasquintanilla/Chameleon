@@ -3,6 +3,7 @@ using System;
 using Core.Data.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Core.Data.EF.PostgreSql.Migrations
 {
     [DbContext(typeof(VoxedContext))]
-    partial class VoxedContextModelSnapshot : ModelSnapshot
+    [Migration("20221204222409_ChangedPostNaming")]
+    partial class ChangedPostNaming
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -86,8 +88,7 @@ namespace Core.Data.EF.PostgreSql.Migrations
                     b.Property<bool>("IsSticky")
                         .HasColumnType("boolean");
 
-                    b.Property<Guid>("PostId")
-                        .IsUnicode(true)
+                    b.Property<Guid?>("PostId")
                         .HasColumnType("uuid");
 
                     b.Property<int>("State")
@@ -107,6 +108,10 @@ namespace Core.Data.EF.PostgreSql.Migrations
                         .HasColumnType("character varying(500)");
 
                     b.Property<Guid>("UserId")
+                        .IsUnicode(true)
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("VoxId")
                         .IsUnicode(true)
                         .HasColumnType("uuid");
 
@@ -566,9 +571,7 @@ namespace Core.Data.EF.PostgreSql.Migrations
 
                     b.HasOne("Core.Entities.Post", null)
                         .WithMany("Comments")
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PostId");
 
                     b.HasOne("Core.Entities.User", "Owner")
                         .WithMany()

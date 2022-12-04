@@ -9,7 +9,7 @@ namespace Core.Entities
     public class Comment : Entity
     {
         public string Hash { get; set; }
-        public Guid VoxId { get; set; }
+        public Guid PostId { get; set; }
         public Guid UserId { get; set; }
         public Guid? AttachmentId { get; set; }
         public string Content { get; set; }

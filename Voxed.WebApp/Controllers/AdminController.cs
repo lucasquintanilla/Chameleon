@@ -68,7 +68,7 @@ public class AdminController : Controller
 
     private async Task UpdateVoxLastBump(Comment comment)
     {
-        var vox = await _voxedRepository.Voxs.GetById(comment.VoxId);
+        var vox = await _voxedRepository.Voxs.GetById(comment.PostId);
         if (vox == null) return;
 
         var lastBump = vox.Comments

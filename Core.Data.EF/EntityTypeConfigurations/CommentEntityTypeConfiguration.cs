@@ -12,7 +12,7 @@ namespace Core.Data.EF.EntityTypeConfigurations
 
             builder.HasIndex(x => x.Hash).IsUnique();
 
-            builder.Property(x => x.VoxId)
+            builder.Property(x => x.PostId)
                .IsRequired(true)
                .IsUnicode(true);
 

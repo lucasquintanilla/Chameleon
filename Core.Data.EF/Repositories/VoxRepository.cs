@@ -16,7 +16,7 @@ namespace Core.Data.EF.Repositories
         public VoxRepository(VoxedContext context) : base(context) { }
 
         public override async Task<Post> GetById(Guid id)
-            => await _context.Voxs
+            => await _context.Posts
                 .Include(x => x.Media)
                 .Include(x => x.Category)
                 .Include(x => x.Category.Attachment)
@@ -30,7 +30,7 @@ namespace Core.Data.EF.Repositories
 
         public async Task<IEnumerable<Post>> GetByFilterAsync(PostFilter filter)
         {
-            var query = _context.Voxs.AsNoTracking();
+            var query = _context.Posts.AsNoTracking();
 
             query = query.Where(x => x.State == PostState.Active)
                        .Include(x => x.Media)
@@ -96,7 +96,7 @@ namespace Core.Data.EF.Repositories
         }
 
         private async Task<Post> GetLastVoxBump(IEnumerable<Guid> skipIds)
-         => await _context.Voxs
+         => await _context.Posts
             .Where(x => skipIds.Contains(x.Id))
             .OrderBy(x => x.LastActivityOn)
             .AsNoTracking()

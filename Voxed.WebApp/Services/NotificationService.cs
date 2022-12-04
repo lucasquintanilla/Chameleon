@@ -50,7 +50,7 @@ public class NotificationService : INotificationService
 
     public async Task ManageNotifications(Comment comment)
     {
-        var vox = await _voxedRepository.Voxs.GetById(comment.VoxId);
+        var vox = await _voxedRepository.Voxs.GetById(comment.PostId);
         var notifications = new NotificationBuilder()
                 .WithVox(vox)
                 .WithComment(comment)
@@ -72,7 +72,7 @@ public class NotificationService : INotificationService
 
     public async Task NotifyCommentCreated(Comment comment, CreateCommentRequest request)
     {
-        var vox = await _voxedRepository.Voxs.GetById(comment.VoxId);
+        var vox = await _voxedRepository.Voxs.GetById(comment.PostId);
         if (Categories.HiddenCategories.Contains(vox.CategoryId)) return;
 
         var commentUpdate = new CommentLiveUpdate()

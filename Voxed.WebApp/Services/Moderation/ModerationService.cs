@@ -41,7 +41,7 @@ namespace Voxed.WebApp.Services.Moderation
                 {
                     case 0:
                         var comment = await _voxedRepository.Comments.GetByHash(request.ContentId);
-                        message = $"NUEVA DENUNCIA \n Reason: {request.Reason}. \n https://voxed.club/vox/{comment.VoxId.ToShortString()}#{comment.Hash}";
+                        message = $"NUEVA DENUNCIA \n Reason: {request.Reason}. \n https://voxed.club/vox/{comment.PostId.ToShortString()}#{comment.Hash}";
                         break;
 
                     case 1:
