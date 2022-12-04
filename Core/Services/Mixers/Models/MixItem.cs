@@ -1,6 +1,8 @@
-﻿namespace Voxed.WebApp.Models
+﻿using System;
+
+namespace Core.Services.Mixers.Models
 {
-    public class VoxResponse : BaseResponse
+    public class MixItem
     {
         //{
         //        "hash": "LVsFqy15CYaRdNXsv5jR",
@@ -35,5 +37,6 @@
         public string ThumbnailUrl { get; set; }
         public string Category { get; set; }
         public string Href { get; set; }
+        public DateTime LastActivityOn { get; set; }
     }
 }

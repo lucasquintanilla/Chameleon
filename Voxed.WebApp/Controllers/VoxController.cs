@@ -1,6 +1,9 @@
 ﻿using Core.Data.Filters;
 using Core.Data.Repositories;
+using Core.DataSources.Devox;
+using Core.DataSources.Devox.Helpers;
 using Core.Entities;
+using Core.Services.Mixers;
 using Core.Services.Post;
 using Core.Services.Post.Models;
 using Microsoft.AspNetCore.Http;
@@ -32,6 +35,8 @@ public class VoxController : BaseController
     private readonly IUserVoxActionService _userVoxActionService;
     private readonly IModerationService _moderationService;
     private readonly IServiceScopeFactory _scopeFactory;
+    private readonly IMixer _boardMixer;
+    private readonly IDevoxDataSource _devoxDataSource;
 
     public VoxController(
         ILogger<VoxController> logger,
@@ -42,7 +47,9 @@ public class VoxController : BaseController
         IPostService postService,
         IUserVoxActionService userVoxActionService,
         IModerationService moderationService,
-        IServiceScopeFactory scopeFactory)
+        IServiceScopeFactory scopeFactory,
+        IMixer boardMixer,
+        IDevoxDataSource devoxDataSource)
         : base(accessor, userManager)
     {
         _voxedRepository = voxedRepository;
@@ -52,6 +59,8 @@ public class VoxController : BaseController
         _userVoxActionService = userVoxActionService;
         _moderationService = moderationService;
         _scopeFactory = scopeFactory;
+        _boardMixer = boardMixer;
+        _devoxDataSource = devoxDataSource;
     }
 
     [HttpGet("vox/{id}")]
@@ -219,6 +228,32 @@ public class VoxController : BaseController
     [HttpPost("vox/list")]
     public async Task<LoadMoreResponse> LoadMore([FromForm] LoadMoreRequest request)
     {
+        //var devox = await _devoxDataSource.GetMoreVoxes(request.Ignore.Count());
+        //var devoxPosts = devox.Select(vox => new VoxResponse()
+        //{
+        //    Hash = vox.Id,
+        //    Status = true,
+        //    Niche = vox.Category.ToString(),
+        //    Title = vox.Title,
+        //    Comments = vox.CommentsCount.ToString(),
+        //    Extension = string.Empty,
+        //    //Sticky = vox.IsSticky ? "1" : "0",
+        //    //CreatedAt = vox.CreatedOn.ToString(),
+        //    PollOne = string.Empty,
+        //    PollTwo = string.Empty,
+        //    Id = vox.Id,
+        //    Slug = "devox",
+        //    VoxId = vox.Id.ToString(),
+        //    //New = vox.CreatedOn.IsNew(),
+        //    ThumbnailUrl = DevoxHelpers.GetThumbnailUrl(vox),
+        //    Category = vox.Category.ToString(),
+        //    Href = "https://devox.uno/vox/" + vox.Filename
+        //});
+
+        //return new LoadMoreResponse(devoxPosts.ToList());
+
+
+
         // Page: home, category-anm, vox, favorites, hidden, search
         //HttpContext.Request.Cookies.TryGetValue("categoriasFavoritas", out string categoriasActivas);
         var skipList = JsonConvert.DeserializeObject<IEnumerable<string>>(request?.Ignore);
@@ -234,7 +269,7 @@ public class VoxController : BaseController
         var posts = await _postService.GetByFilter(filter);
         return new LoadMoreResponse(VoxedMapper.Map(posts));
     }
-
+    
     private IEnumerable<int> GetSubscriptionCategories(LoadMoreRequest request)
     {
         try

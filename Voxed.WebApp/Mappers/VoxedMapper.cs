@@ -1,4 +1,5 @@
 ﻿using Core.Entities;
+using Core.Services.Mixers.Models;
 using Core.Shared;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,30 @@ namespace Voxed.WebApp.Mappers;
 
 public static class VoxedMapper
 {
+    public static VoxResponse Map(MixItem vox)
+    {
+        return new VoxResponse()
+        {
+            Hash = vox.Hash,
+            Status = true,
+            Niche = vox.Niche,
+            Title = vox.Title,
+            Comments = vox.Comments,
+            Extension = string.Empty,
+            Sticky = vox.Sticky,
+            //CreatedAt = vox.CreatedOn.ToString(),
+            PollOne = string.Empty,
+            PollTwo = string.Empty,
+            Id = vox.Id.ToString(),
+            Slug = vox.Slug,
+            VoxId = vox.Id.ToString(),
+            //New = vox.CreatedOn.IsNew(),
+            ThumbnailUrl = vox.ThumbnailUrl,
+            Category = vox.Category,
+            Href = vox.Href,
+        };
+    }
+
     public static VoxResponse Map(Vox vox)
     {
         return new VoxResponse()
@@ -29,7 +54,8 @@ public static class VoxedMapper
             VoxId = vox.Id.ToString(),
             New = vox.CreatedOn.IsNew(),
             ThumbnailUrl = vox.Media?.ThumbnailUrl,
-            Category = vox.Category.Name
+            Category = vox.Category.Name,
+            Href = "/vox/"+ vox.Id.ToShortString(),
         };
     }
 
@@ -65,32 +91,28 @@ public static class VoxedMapper
             IsFollowed = actions.IsFollowed,
             IsHidden = actions.IsHidden,
 
-            Comments = vox.Comments.OrderByDescending(c => c.IsSticky).ThenByDescending(c => c.CreatedOn).Select(x => new CommentViewModel()
+            Comments = vox.Comments.OrderByDescending(c => c.IsSticky).ThenByDescending(c => c.CreatedOn).Select(c => new CommentViewModel()
             {
-                ID = x.Id,
-                Content = x.Content,
-                Hash = x.Hash,
-                AvatarColor = x.Style.ToString().ToLower(),
-                AvatarText = UserTypeDictionary.GetDescription(x.Owner.UserType).ToUpper(),
-                IsOp = x.UserId == vox.UserId,
-                Media = x.Attachment == null ? null : new MediaViewModel()
+                ID = c.Id,
+                Content = c.Content,
+                Hash = c.Hash,
+                AvatarColor = c.Style.ToString().ToLower(),
+                AvatarText = UserTypeDictionary.GetDescription(c.Owner.UserType).ToUpper(),
+                IsOp = c.UserId == vox.UserId,
+                Media = c.Attachment == null ? null : new MediaViewModel()
                 {
-                    Url = x.Attachment?.Url,
-                    MediaType = (ViewModels.MediaType)(int)x.Attachment?.Type,
-                    ExtensionData = x.Attachment?.Url.Split('=')[(vox.Media?.Url.Split('=').Length - 1).Value],
-                    ThumbnailUrl = x.Attachment?.ThumbnailUrl,
+                    Url = c.Attachment?.Url,
+                    MediaType = (ViewModels.MediaType)(int)c.Attachment?.Type,
+                    ExtensionData = c.Attachment?.Url.Split('=')[(vox.Media?.Url.Split('=').Length - 1).Value],
+                    ThumbnailUrl = c.Attachment?.ThumbnailUrl,
                 },
-                IsSticky = x.IsSticky,
-                CreatedOn = x.CreatedOn,
-                Style = x.Style.ToString().ToLower(),
-                User = x.Owner,
-
-            }).ToList(),
+                IsSticky = c.IsSticky,
+                CreatedOn = c.CreatedOn,
+                Style = c.Style.ToString().ToLower(),
+                User = c.Owner,
+            }),
         };
     }
 
-    public static List<VoxResponse> Map(IEnumerable<Vox> voxs)
-    {
-        return voxs.Select(vox => Map(vox)).ToList();
-    }
+    public static IEnumerable<VoxResponse> Map(IEnumerable<Vox> voxs) => voxs.Select(Map);
 }

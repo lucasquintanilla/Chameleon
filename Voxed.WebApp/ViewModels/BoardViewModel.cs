@@ -5,7 +5,7 @@ namespace Voxed.WebApp.ViewModels
 {
     public class BoardViewModel
     {
-        public List<VoxResponse> Voxs { get; set; }
+        public IEnumerable<VoxResponse> Voxs { get; set; }
         public string Page { get; set; }
         public string Title { get; set; }
     }

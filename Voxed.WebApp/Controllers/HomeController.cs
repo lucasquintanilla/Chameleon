@@ -1,5 +1,6 @@
 ﻿using Core.Data.Filters;
 using Core.Data.Repositories;
+using Core.Services.Mixers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -20,10 +21,14 @@ namespace Voxed.WebApp.Controllers;
 public class HomeController : Controller
 {
     private readonly IVoxedRepository _voxedRepository;
+    private readonly IMixer _boardMixer;
 
-    public HomeController(IVoxedRepository voxedRepository)
+    public HomeController(
+        IVoxedRepository voxedRepository,
+        IMixer boardMixer)
     {
         _voxedRepository = voxedRepository;
+        _boardMixer = boardMixer;
     }
 
     public async Task<IActionResult> Index()
@@ -41,7 +46,7 @@ public class HomeController : Controller
         //var x = Request.Headers.TryGetValue("CF-IPCountry", out var resulto);
         var filter = new PostFilter()
         {
-            UserId = User.GetLoggedInUserId<Guid?>(),
+            UserId = User.GetUserId(),
             Categories = await GetUserCategorySubscriptions(),
             IncludeHidden = false,
             HiddenWords = GetUserHiddenWords()
@@ -49,9 +54,12 @@ public class HomeController : Controller
 
         var voxs = await _voxedRepository.Voxs.GetByFilterAsync(filter);
 
+        //var mix = await _boardMixer.GetMix();
+
         var board = new BoardViewModel()
         {
             Voxs = VoxedMapper.Map(voxs),
+            //Voxs = mix.Items.OrderByDescending(x => x.LastActivityOn).Select(VoxedMapper.Map),
             Title = "Home",
             Page = "home"
         };
@@ -126,12 +134,12 @@ public class HomeController : Controller
         return View("board", board);
     }
 
-    [HttpGet("search/{value}")]
-    public async Task<IActionResult> Search(string value)
+    [HttpGet("search/{searchText}")]
+    public async Task<IActionResult> Search(string searchText)
     {
-        if (string.IsNullOrWhiteSpace(value)) return BadRequest();
+        if (string.IsNullOrWhiteSpace(searchText)) return BadRequest();
 
-        var filter = new PostFilter() { Search = value };
+        var filter = new PostFilter() { SearchText = searchText };
 
         var voxs = await _voxedRepository.Voxs.GetByFilterAsync(filter);
 
@@ -163,16 +171,12 @@ public class HomeController : Controller
 
     private async Task<IEnumerable<int>> GetUserCategorySubscriptions()
     {
-
         HttpContext.Request.Cookies.TryGetValue(CookieName.Subscriptions, out string subscriptionsCookie);
 
         if (subscriptionsCookie is not null)
-        {
             return JsonConvert.DeserializeObject<IEnumerable<int>>(subscriptionsCookie);
-        }
 
         var userCategories = Categories.DefaultCategories;
-        //var userCategories = (await _voxedRepository.Categories.Find(x => !x.Nsfw)).Select(x=>x.Id);
         var subscriptionsCookieValue = JsonConvert.SerializeObject(userCategories.Select(categoryId => categoryId.ToString()), new JsonSerializerSettings() { StringEscapeHandling = StringEscapeHandling.EscapeHtml });
         HttpContext.Response.Cookies.Append(CookieName.Subscriptions, subscriptionsCookieValue, new Microsoft.AspNetCore.Http.CookieOptions()
         {
@@ -189,10 +193,10 @@ public class HomeController : Controller
             if (hiddenWordsCookie.Trim().Length > 0)
             {
                 var words = hiddenWordsCookie.Trim().Split(',');
-                return words.Select(word => word.Trim()).ToList();
+                return words.Select(word => word.Trim());
             }
         }
 
-        return Array.Empty<string>();
+        return Enumerable.Empty<string>();
     }
 }

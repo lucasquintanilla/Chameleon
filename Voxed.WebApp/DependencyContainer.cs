@@ -5,9 +5,12 @@ using Core.Data.EF.PostgreSql;
 using Core.Data.EF.Repositories;
 using Core.Data.EF.Sqlite;
 using Core.Data.Repositories;
+using Core.DataSources.Devox;
+using Core.DataSources.Ufftopia;
 using Core.Entities;
 using Core.Services.Image;
 using Core.Services.MediaServices;
+using Core.Services.Mixers;
 using Core.Services.Post;
 using Core.Services.Storage;
 using Core.Services.Storage.Cloud;
@@ -129,6 +132,10 @@ public static class DependencyContainer
 
         services.Configure<MediaServiceOptions>(configuration.GetSection(MediaServiceOptions.SectionName));
         services.AddSingleton<IMediaService, MediaService>();
+
+        services.AddSingleton<IUfftopiaDataSource, UfftopiaDataSource>();
+        services.AddSingleton<IDevoxDataSource, DevoxDataSource>();
+        services.AddSingleton<IMixer, BoardMixer>();
     }
 
     public static void RegisterStorageImageProvider(this IServiceCollection services, IConfiguration configuration)

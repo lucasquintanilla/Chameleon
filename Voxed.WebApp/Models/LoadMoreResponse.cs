@@ -5,13 +5,13 @@ namespace Voxed.WebApp.Models
 {
     public class LoadMoreResponse : BaseResponse
     {
-        public LoadMoreResponse(IList<VoxResponse> voxsList)
+        public LoadMoreResponse(IEnumerable<VoxResponse> voxs)
         {
-            Status = voxsList.Any();
+            Status = voxs.Any();
             List = new List()
             {
                 Page = "category-sld",
-                Voxs = voxsList
+                Voxs = voxs
             };
         }
 

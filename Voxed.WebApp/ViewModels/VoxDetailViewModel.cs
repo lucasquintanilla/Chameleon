@@ -23,7 +23,7 @@ namespace Voxed.WebApp.ViewModels
         public string CreatedOn { get; set; }
         public string CommentTag { get; set; }
         public MediaViewModel Media { get; set; }
-        public ICollection<CommentViewModel> Comments { get; set; }
+        public IEnumerable<CommentViewModel> Comments { get; set; }
         public bool IsFollowed { get; set; }
         public bool IsFavorite { get; set; }
         public bool IsHidden { get; set; }

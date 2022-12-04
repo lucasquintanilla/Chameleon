@@ -67,9 +67,9 @@ namespace Core.Data.EF.Repositories
                 query = query.Where(x => filter.Categories.Contains(x.CategoryId));
             }
 
-            if (!string.IsNullOrEmpty(filter.Search))
+            if (!string.IsNullOrEmpty(filter.SearchText))
             {
-                var keywords = filter.Search.ToLower().Split(' ').Distinct();
+                var keywords = filter.SearchText.ToLower().Split(' ').Distinct();
 
                 var predicateTitle = keywords.Select(k => (Expression<Func<Vox, bool>>)(x => x.Title.Contains(k))).ToArray();
                 //var predicateContent = keywords.Select(k => (Expression<Func<Vox, bool>>)(x => x.Content.Contains(k))).ToArray();      
