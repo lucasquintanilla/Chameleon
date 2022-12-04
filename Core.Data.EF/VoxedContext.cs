@@ -29,7 +29,7 @@ namespace Core.Data.EF
             new UserEntityTypeConfiguration().Configure(modelBuilder.Entity<User>());
             new MediaEntityTypeConfiguration().Configure(modelBuilder.Entity<Media>());
             new CategoryEntityTypeConfiguration().Configure(modelBuilder.Entity<Category>());
-            new VoxEntityTypeConfiguration().Configure(modelBuilder.Entity<Post>());
+            new PostEntityTypeConfiguration().Configure(modelBuilder.Entity<Post>());
             new CommentEntityTypeConfiguration().Configure(modelBuilder.Entity<Comment>());
             new UserVoxActionEntityConfiguration().Configure(modelBuilder.Entity<UserVoxAction>());
 

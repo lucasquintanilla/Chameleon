@@ -39,7 +39,7 @@ public class NotificationService : INotificationService
 
     public async Task NotifyPostCreated(Guid voxId)
     {
-        var vox = await _voxedRepository.Voxs.GetById(voxId); // Ver si se puede remover
+        var vox = await _voxedRepository.Posts.GetById(voxId); // Ver si se puede remover
 
         if (!Categories.HiddenCategories.Contains(vox.CategoryId))
         {
@@ -50,7 +50,7 @@ public class NotificationService : INotificationService
 
     public async Task ManageNotifications(Comment comment)
     {
-        var vox = await _voxedRepository.Voxs.GetById(comment.PostId);
+        var vox = await _voxedRepository.Posts.GetById(comment.PostId);
         var notifications = new NotificationBuilder()
                 .WithVox(vox)
                 .WithComment(comment)
@@ -72,7 +72,7 @@ public class NotificationService : INotificationService
 
     public async Task NotifyCommentCreated(Comment comment, CreateCommentRequest request)
     {
-        var vox = await _voxedRepository.Voxs.GetById(comment.PostId);
+        var vox = await _voxedRepository.Posts.GetById(comment.PostId);
         if (Categories.HiddenCategories.Contains(vox.CategoryId)) return;
 
         var commentUpdate = new CommentLiveUpdate()

@@ -31,7 +31,7 @@ namespace Voxed.WebApp.Controllers.V1
         [HttpGet("{id}")]
         public async Task<ActionResult<ApiVoxResponse>> Get(Guid id)
         {
-            var vox = await _voxedRepository.Voxs.GetById(id);
+            var vox = await _voxedRepository.Posts.GetById(id);
 
             if (vox == null || vox.State == PostState.Deleted) return NotFound();
 
@@ -42,7 +42,7 @@ namespace Voxed.WebApp.Controllers.V1
         public async Task<IActionResult> GetLastest()
         {
             var filter = new PostFilter() { Categories = _defaultCategories.ToList() };
-            var voxs = await _voxedRepository.Voxs.GetByFilterAsync(filter);
+            var voxs = await _voxedRepository.Posts.GetByFilterAsync(filter);
             return Ok(VoxedMapper.Map(voxs));
         }
 

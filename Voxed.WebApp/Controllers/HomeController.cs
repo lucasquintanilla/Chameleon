@@ -52,13 +52,13 @@ public class HomeController : Controller
             HiddenWords = GetUserHiddenWords()
         };
 
-        var voxs = await _voxedRepository.Voxs.GetByFilterAsync(filter);
+        var posts = await _voxedRepository.Posts.GetByFilterAsync(filter);
 
         //var mix = await _boardMixer.GetMix();
 
         var board = new BoardViewModel()
         {
-            Voxs = VoxedMapper.Map(voxs),
+            Voxs = VoxedMapper.Map(posts),
             //Voxs = mix.Items.OrderByDescending(x => x.LastActivityOn).Select(VoxedMapper.Map),
             Title = "Home",
             Page = "home"
@@ -77,7 +77,7 @@ public class HomeController : Controller
             IncludeFavorites = true
         };
 
-        var voxs = await _voxedRepository.Voxs.GetByFilterAsync(filter);
+        var voxs = await _voxedRepository.Posts.GetByFilterAsync(filter);
 
         var board = new BoardViewModel()
         {
@@ -100,7 +100,7 @@ public class HomeController : Controller
             IncludeHidden = true
         };
 
-        var voxs = await _voxedRepository.Voxs.GetByFilterAsync(filter);
+        var voxs = await _voxedRepository.Posts.GetByFilterAsync(filter);
 
         var board = new BoardViewModel()
         {
@@ -123,7 +123,7 @@ public class HomeController : Controller
 
         var filter = new PostFilter() { Categories = new List<int>() { category.Id } };
 
-        var voxs = await _voxedRepository.Voxs.GetByFilterAsync(filter);
+        var voxs = await _voxedRepository.Posts.GetByFilterAsync(filter);
         var board = new BoardViewModel()
         {
             Voxs = VoxedMapper.Map(voxs),
@@ -141,7 +141,7 @@ public class HomeController : Controller
 
         var filter = new PostFilter() { SearchText = searchText };
 
-        var voxs = await _voxedRepository.Voxs.GetByFilterAsync(filter);
+        var voxs = await _voxedRepository.Posts.GetByFilterAsync(filter);
 
         var board = new BoardViewModel()
         {

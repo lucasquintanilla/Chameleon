@@ -60,14 +60,14 @@ namespace Core.Services.Post
                 UserAgent = request.UserAgent
             };
 
-            await _voxedRepository.Voxs.Add(vox);
+            await _voxedRepository.Posts.Add(vox);
             await _voxedRepository.SaveChangesAsync();
             return vox;
         }
 
         public async Task<IEnumerable<Entities.Post>> GetByFilter(PostFilter filter)
         {
-            return await _voxedRepository.Voxs.GetByFilterAsync(filter);
+            return await _voxedRepository.Posts.GetByFilterAsync(filter);
         }
     }
 }

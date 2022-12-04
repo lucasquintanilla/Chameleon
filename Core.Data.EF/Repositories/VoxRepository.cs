@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Core.Data.EF.Repositories
 {
-    public class VoxRepository : Repository<Post>, IVoxRepository
+    public class VoxRepository : Repository<Post>, IPostRepository
     {
         public VoxRepository(VoxedContext context) : base(context) { }
 

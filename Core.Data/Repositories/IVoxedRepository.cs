@@ -5,12 +5,12 @@ namespace Core.Data.Repositories
 {
     public interface IVoxedRepository : IDisposable
     {
-        IVoxRepository Voxs { get; }
+        IPostRepository Posts { get; }
         ICategoryRepository Categories { get; }
         IMediaRepository Media { get; }
         ICommentRepository Comments { get; }
         INotificationRepository Notifications { get; }
-        IUserVoxActionRepository UserVoxActions { get; }
+        IUserPostActionRepository UserVoxActions { get; }
         Task<int> SaveChangesAsync();
     }
 }

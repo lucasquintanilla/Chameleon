@@ -69,7 +69,7 @@ public class VoxController : BaseController
         if (id == null) return BadRequest();
         var voxId = GuidExtension.FromShortString(id);
 
-        var vox = await _voxedRepository.Voxs.GetById(voxId);
+        var vox = await _voxedRepository.Posts.GetById(voxId);
         if (vox == null || vox.State == PostState.Deleted) return NotFound();
 
         var userId = User.GetUserId();

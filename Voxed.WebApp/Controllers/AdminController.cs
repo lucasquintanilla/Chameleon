@@ -47,7 +47,7 @@ public class AdminController : Controller
                     break;
                 case ContentType.Vox:
 
-                    var vox = await _voxedRepository.Voxs.GetById(new Guid(request.ContentId));
+                    var vox = await _voxedRepository.Posts.GetById(new Guid(request.ContentId));
                     if (vox == null) NotFound();
                     vox.State = PostState.Deleted;
                     break;
@@ -68,7 +68,7 @@ public class AdminController : Controller
 
     private async Task UpdateVoxLastBump(Comment comment)
     {
-        var vox = await _voxedRepository.Voxs.GetById(comment.PostId);
+        var vox = await _voxedRepository.Posts.GetById(comment.PostId);
         if (vox == null) return;
 
         var lastBump = vox.Comments

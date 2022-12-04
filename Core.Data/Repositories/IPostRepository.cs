@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Core.Data.Repositories
 {
-    public interface IVoxRepository : IRepository<Post>
+    public interface IPostRepository : IRepository<Post>
     {
         Task<IEnumerable<Post>> GetByFilterAsync(PostFilter filter);
     }
