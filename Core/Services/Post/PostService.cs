@@ -55,7 +55,7 @@ namespace Core.Services.Post
                 Title = request.Title,
                 Content = _textFormatter.Format(request.Content),
                 CategoryId = request.CategoryId,
-                AttachmentId = media.Id,
+                MediaId = media.Id,
                 IpAddress = request.IpAddress,
                 UserAgent = request.UserAgent
             };

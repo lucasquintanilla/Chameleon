@@ -6,6 +6,6 @@ namespace Core.Services.MediaServices
     {
         public const string SectionName = "MediaService";
 
-        public IEnumerable<string> PermittedExtensions { get; set; }
+        public IEnumerable<string> AllowedFileExtensions { get; set; }
     }
 }

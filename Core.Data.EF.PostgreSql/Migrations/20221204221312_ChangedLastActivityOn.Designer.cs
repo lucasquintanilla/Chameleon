@@ -3,6 +3,7 @@ using System;
 using Core.Data.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Core.Data.EF.PostgreSql.Migrations
 {
     [DbContext(typeof(VoxedContext))]
-    partial class VoxedContextModelSnapshot : ModelSnapshot
+    [Migration("20221204221312_ChangedLastActivityOn")]
+    partial class ChangedLastActivityOn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -377,6 +379,10 @@ namespace Core.Data.EF.PostgreSql.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("AttachmentId")
+                        .IsUnicode(true)
+                        .HasColumnType("uuid");
+
                     b.Property<int>("CategoryId")
                         .IsUnicode(true)
                         .HasColumnType("integer");
@@ -398,10 +404,6 @@ namespace Core.Data.EF.PostgreSql.Migrations
 
                     b.Property<DateTimeOffset>("LastActivityOn")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("MediaId")
-                        .IsUnicode(true)
-                        .HasColumnType("uuid");
 
                     b.Property<Guid?>("PollId")
                         .HasColumnType("uuid");
@@ -427,11 +429,11 @@ namespace Core.Data.EF.PostgreSql.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AttachmentId");
+
                     b.HasIndex("CategoryId");
 
                     b.HasIndex("LastActivityOn");
-
-                    b.HasIndex("MediaId");
 
                     b.HasIndex("PollId");
 
@@ -629,15 +631,15 @@ namespace Core.Data.EF.PostgreSql.Migrations
 
             modelBuilder.Entity("Core.Entities.Vox", b =>
                 {
-                    b.HasOne("Core.Entities.Category", "Category")
+                    b.HasOne("Core.Entities.Media", "Media")
                         .WithMany()
-                        .HasForeignKey("CategoryId")
+                        .HasForeignKey("AttachmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Core.Entities.Media", "Media")
+                    b.HasOne("Core.Entities.Category", "Category")
                         .WithMany()
-                        .HasForeignKey("MediaId")
+                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

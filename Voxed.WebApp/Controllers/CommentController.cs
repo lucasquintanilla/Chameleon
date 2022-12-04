@@ -143,7 +143,7 @@ public class CommentController : BaseController
         if (!ContainsHide(comment.Content))
         {
             var vox = await _voxedRepository.Voxs.GetById(comment.VoxId);
-            vox.Bump = DateTimeOffset.Now;
+            vox.LastActivityOn = DateTimeOffset.Now;
         }
 
         await _voxedRepository.SaveChangesAsync();

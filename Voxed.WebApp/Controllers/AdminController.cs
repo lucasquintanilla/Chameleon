@@ -77,6 +77,6 @@ public class AdminController : Controller
             .Select(x => x.CreatedOn)
             .FirstOrDefault();
 
-        vox.Bump = lastBump;
+        vox.LastActivityOn = lastBump;
     }
 }

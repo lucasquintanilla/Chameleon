@@ -59,7 +59,7 @@ namespace Core.Data.EF.Repositories
                 query = query.Where(x => !filter.IgnoreVoxIds.Contains(x.Id));
 
                 var lastVox = await GetLastVoxBump(filter.IgnoreVoxIds);
-                query = query.Where(x => x.Bump < lastVox.Bump);
+                query = query.Where(x => x.LastActivityOn < lastVox.LastActivityOn);
             }
 
             if (filter.Categories.Any())
@@ -86,7 +86,7 @@ namespace Core.Data.EF.Repositories
             }
 
             query = query
-                       .OrderByDescending(x => x.IsSticky).ThenByDescending(x => x.Bump)
+                       .OrderByDescending(x => x.IsSticky).ThenByDescending(x => x.LastActivityOn)
                        .Skip(0)
                        .Take(36);
 
@@ -98,7 +98,7 @@ namespace Core.Data.EF.Repositories
         private async Task<Vox> GetLastVoxBump(IEnumerable<Guid> skipIds)
          => await _context.Voxs
             .Where(x => skipIds.Contains(x.Id))
-            .OrderBy(x => x.Bump)
+            .OrderBy(x => x.LastActivityOn)
             .AsNoTracking()
             .FirstAsync();
     }

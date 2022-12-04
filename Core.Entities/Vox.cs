@@ -11,10 +11,10 @@ namespace Core.Entities
         public string Content { get; set; }
         public int CategoryId { get; set; }
         public Guid UserId { get; set; }
-        public Guid AttachmentId { get; set; }
+        public Guid MediaId { get; set; }
         public VoxState State { get; set; }
         public bool IsSticky { get; set; }
-        public DateTimeOffset Bump { get; set; } = DateTimeOffset.Now;
+        public DateTimeOffset LastActivityOn { get; set; } = DateTimeOffset.Now;
         public string UserAgent { get; set; }
         public string IpAddress { get; set; }
         public virtual Media Media { get; set; }
