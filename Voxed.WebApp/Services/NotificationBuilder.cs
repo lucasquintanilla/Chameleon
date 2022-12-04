@@ -9,7 +9,7 @@ namespace Voxed.WebApp.Services
 {
     public class NotificationBuilder
     {
-        private Vox _vox;
+        private Post _vox;
         private Comment _comment;
         private List<Notification> _notifications = new List<Notification>();
         private IVoxedRepository _voxedRepository;
@@ -21,7 +21,7 @@ namespace Voxed.WebApp.Services
             return this;
         }
 
-        public NotificationBuilder WithVox(Vox vox)
+        public NotificationBuilder WithVox(Post vox)
         {
             _vox = vox;
             return this;

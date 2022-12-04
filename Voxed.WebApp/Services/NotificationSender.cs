@@ -11,10 +11,10 @@ namespace Voxed.WebApp.Services
     {
         private IHubContext<VoxedHub, INotificationHub> _notificationHub;
         private List<Notification> _notifications = new List<Notification>();
-        private Vox _vox;
+        private Post _vox;
         private Comment _comment;
 
-        public NotificationSender WithVox(Vox vox)
+        public NotificationSender WithVox(Post vox)
         {
             _vox = vox;
             return this;

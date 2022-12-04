@@ -12,7 +12,7 @@ namespace Core.Data.EF
     {
         public VoxedContext(DbContextOptions<VoxedContext> options) : base(options) { }
 
-        public DbSet<Vox> Voxs { get; set; }
+        public DbSet<Post> Voxs { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Media> Media { get; set; }
@@ -29,7 +29,7 @@ namespace Core.Data.EF
             new UserEntityTypeConfiguration().Configure(modelBuilder.Entity<User>());
             new MediaEntityTypeConfiguration().Configure(modelBuilder.Entity<Media>());
             new CategoryEntityTypeConfiguration().Configure(modelBuilder.Entity<Category>());
-            new VoxEntityTypeConfiguration().Configure(modelBuilder.Entity<Vox>());
+            new VoxEntityTypeConfiguration().Configure(modelBuilder.Entity<Post>());
             new CommentEntityTypeConfiguration().Configure(modelBuilder.Entity<Comment>());
             new UserVoxActionEntityConfiguration().Configure(modelBuilder.Entity<UserVoxAction>());
 

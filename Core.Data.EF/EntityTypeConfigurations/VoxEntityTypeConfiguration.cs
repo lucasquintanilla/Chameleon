@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace Core.Data.EF.EntityTypeConfigurations
 {
 
-    public class VoxEntityTypeConfiguration : IEntityTypeConfiguration<Vox>
+    public class VoxEntityTypeConfiguration : IEntityTypeConfiguration<Post>
     {
-        public void Configure(EntityTypeBuilder<Vox> builder)
+        public void Configure(EntityTypeBuilder<Post> builder)
         {
             builder.HasKey(x => x.Id);
 

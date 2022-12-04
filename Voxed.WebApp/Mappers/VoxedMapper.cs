@@ -35,7 +35,7 @@ public static class VoxedMapper
         };
     }
 
-    public static VoxResponse Map(Vox vox)
+    public static VoxResponse Map(Post vox)
     {
         return new VoxResponse()
         {
@@ -59,7 +59,7 @@ public static class VoxedMapper
         };
     }
 
-    public static VoxDetailViewModel Map(Vox vox, UserVoxAction actions)
+    public static VoxDetailViewModel Map(Post vox, UserVoxAction actions)
     {
         return new VoxDetailViewModel()
         {
@@ -114,5 +114,5 @@ public static class VoxedMapper
         };
     }
 
-    public static IEnumerable<VoxResponse> Map(IEnumerable<Vox> voxs) => voxs.Select(Map);
+    public static IEnumerable<VoxResponse> Map(IEnumerable<Post> voxs) => voxs.Select(Map);
 }

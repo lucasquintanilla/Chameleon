@@ -46,7 +46,7 @@ namespace Voxed.WebApp.Controllers.V1
             return Ok(VoxedMapper.Map(voxs));
         }
 
-        private ApiVoxResponse ConvertToVoxResponse(Vox vox)
+        private ApiVoxResponse ConvertToVoxResponse(Post vox)
         {
             return new ApiVoxResponse()
             {

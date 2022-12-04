@@ -13,8 +13,8 @@ namespace Core.Services.Post
 {
     public interface IPostService
     {
-        Task<Vox> CreatePost(CreatePostRequest request);
-        Task<IEnumerable<Vox>> GetByFilter(PostFilter filter);
+        Task<Entities.Post> CreatePost(CreatePostRequest request);
+        Task<IEnumerable<Entities.Post>> GetByFilter(PostFilter filter);
     }
 
     public class PostService : IPostService
@@ -36,7 +36,7 @@ namespace Core.Services.Post
             _textFormatter = textFormatter;
         }
 
-        public async Task<Vox> CreatePost(CreatePostRequest request)
+        public async Task<Entities.Post> CreatePost(CreatePostRequest request)
         {
             var mediaRequest = new CreateMediaRequest()
             {
@@ -48,7 +48,7 @@ namespace Core.Services.Post
             var media = await _mediaService.CreateMedia(mediaRequest);
             await _voxedRepository.Media.Add(media);
 
-            var vox = new Vox()
+            var vox = new Entities.Post()
             {
                 State = PostState.Active,
                 UserId = request.UserId,
@@ -65,7 +65,7 @@ namespace Core.Services.Post
             return vox;
         }
 
-        public async Task<IEnumerable<Vox>> GetByFilter(PostFilter filter)
+        public async Task<IEnumerable<Entities.Post>> GetByFilter(PostFilter filter)
         {
             return await _voxedRepository.Voxs.GetByFilterAsync(filter);
         }

@@ -5,7 +5,7 @@ namespace Core.Entities
 {
     public enum PostState { Active, Deleted, Reported }
 
-    public class Vox : Entity
+    public class Post : Entity
     {
         public string Title { get; set; }
         public string Content { get; set; }

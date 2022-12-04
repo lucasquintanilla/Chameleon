@@ -10,6 +10,6 @@ namespace Core.Entities
         public bool IsFavorite { get; set; }
         public bool IsHidden { get; set; }
         public virtual User User { get; set; }
-        public virtual Vox Vox { get; set; }
+        public virtual Post Vox { get; set; }
     }
 }
