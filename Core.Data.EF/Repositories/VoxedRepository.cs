@@ -18,7 +18,7 @@ namespace Core.Data.EF.Repositories
             Media = new MediaRepository(context);
             Polls = new PollRepository(context);
             Notifications = new NotificationRepository(context);
-            UserVoxActions = new UserVoxActionRepository(context);
+            UserPostActions = new UserVoxActionRepository(context);
         }
 
         public IPostRepository Posts { get; }
@@ -27,7 +27,7 @@ namespace Core.Data.EF.Repositories
         public ICommentRepository Comments { get; }
         public IPollRepository Polls { get; }
         public INotificationRepository Notifications { get; }
-        public IUserPostActionRepository UserVoxActions { get; }
+        public IUserPostActionRepository UserPostActions { get; }
 
         public async Task<int> SaveChangesAsync()
         {

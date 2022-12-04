@@ -84,8 +84,8 @@ namespace Voxed.WebApp.Services
 
         public NotificationBuilder AddVoxSusbcriberNotifications()
         {
-            var voxSubscriberUserIds = _voxedRepository.UserVoxActions
-                .GetVoxSubscriberUserIds(_vox.Id, ignoreUserIds: new List<Guid>() { _comment.UserId, _vox.UserId })
+            var voxSubscriberUserIds = _voxedRepository.UserPostActions
+                .GetPostSubscriberUserIds(_vox.Id, ignoreUserIds: new List<Guid>() { _comment.UserId, _vox.UserId })
                 .GetAwaiter()
                 .GetResult();
 

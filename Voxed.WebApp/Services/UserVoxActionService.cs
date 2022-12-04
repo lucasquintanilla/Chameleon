@@ -29,7 +29,7 @@ namespace Voxed.WebApp.Services
 
             if (userId == null) return userVoxAction;
 
-            var actions = await _voxedRepository.UserVoxActions.GetByUserIdVoxId(userId.Value, voxId);
+            var actions = await _voxedRepository.UserPostActions.GetByUserIdPostId(userId.Value, voxId);
             if (actions == null) return userVoxAction;
 
             return actions;
@@ -38,7 +38,7 @@ namespace Voxed.WebApp.Services
         public async Task<string> ManageUserVoxAction(Guid userId, Guid voxId, string actionId)
         {
             string actionResult;
-            var userVoxAction = await _voxedRepository.UserVoxActions.GetByUserIdVoxId(userId, voxId);
+            var userVoxAction = await _voxedRepository.UserPostActions.GetByUserIdPostId(userId, voxId);
             if (userVoxAction == null)
             {
                 userVoxAction = new UserVoxAction()
@@ -48,7 +48,7 @@ namespace Voxed.WebApp.Services
                 };
 
                 actionResult = SetAction(userVoxAction, actionId);
-                await _voxedRepository.UserVoxActions.Add(userVoxAction);
+                await _voxedRepository.UserPostActions.Add(userVoxAction);
             }
             else
             {

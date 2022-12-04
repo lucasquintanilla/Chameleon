@@ -12,12 +12,12 @@ namespace Core.Data.EF.Repositories
     {
         public UserVoxActionRepository(VoxedContext context) : base(context) { }
 
-        public async Task<UserVoxAction> GetByUserIdVoxId(Guid userId, Guid voxId)
+        public async Task<UserVoxAction> GetByUserIdPostId(Guid userId, Guid voxId)
             => await _context.UserVoxActions
                 .Where(x => x.UserId == userId && x.VoxId == voxId)
                 .SingleOrDefaultAsync();
 
-        public async Task<IList<Guid>> GetVoxSubscriberUserIds(Guid voxId, IEnumerable<Guid> ignoreUserIds)
+        public async Task<IEnumerable<Guid>> GetPostSubscriberUserIds(Guid voxId, IEnumerable<Guid> ignoreUserIds)
             => await _context.UserVoxActions
                 .Where(x => x.VoxId == voxId && x.IsFollowed && !ignoreUserIds.Contains(x.UserId))
                 .Select(x => x.UserId)
