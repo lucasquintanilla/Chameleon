@@ -1,13 +1,13 @@
 ﻿using Core.Data.Filters;
 using Core.Data.Repositories;
 using Core.Entities;
-using Core.Services.MediaServices.Models;
 using Core.Services.MediaServices;
+using Core.Services.MediaServices.Models;
+using Core.Services.Posts.Models;
+using Core.Services.TextFormatter;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Core.Services.TextFormatter;
-using Core.Services.Posts.Models;
 
 namespace Core.Services.Posts
 {
@@ -48,7 +48,7 @@ namespace Core.Services.Posts
             var media = await _mediaService.CreateMedia(mediaRequest);
             await _voxedRepository.Media.Add(media);
 
-            var vox = new Post()
+            var post = new Post()
             {
                 State = PostState.Active,
                 UserId = request.UserId,
@@ -60,14 +60,12 @@ namespace Core.Services.Posts
                 UserAgent = request.UserAgent
             };
 
-            await _voxedRepository.Posts.Add(vox);
+            await _voxedRepository.Posts.Add(post);
             await _voxedRepository.SaveChangesAsync();
-            return vox;
+            return post;
         }
 
-        public async Task<IEnumerable<Post>> GetByFilter(PostFilter filter)
-        {
-            return await _voxedRepository.Posts.GetByFilterAsync(filter);
-        }
+        public async Task<IEnumerable<Post>> GetByFilter(PostFilter filter) =>
+            await _voxedRepository.Posts.GetByFilterAsync(filter);
     }
 }

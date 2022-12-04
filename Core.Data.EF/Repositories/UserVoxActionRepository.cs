@@ -17,7 +17,7 @@ namespace Core.Data.EF.Repositories
                 .Where(x => x.UserId == userId && x.VoxId == voxId)
                 .SingleOrDefaultAsync();
 
-        public async Task<IList<Guid>> GetVoxSubscriberUserIds(Guid voxId, List<Guid> ignoreUserIds)
+        public async Task<IList<Guid>> GetVoxSubscriberUserIds(Guid voxId, IEnumerable<Guid> ignoreUserIds)
             => await _context.UserVoxActions
                 .Where(x => x.VoxId == voxId && x.IsFollowed && !ignoreUserIds.Contains(x.UserId))
                 .Select(x => x.UserId)

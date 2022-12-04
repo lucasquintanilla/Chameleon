@@ -7,7 +7,7 @@ namespace Core.Data.Repositories
 {
     public interface IUserPostActionRepository : IRepository<UserVoxAction>
     {
-        Task<UserVoxAction> GetByUserIdVoxId(Guid userId, Guid voxId);
-        Task<IList<Guid>> GetVoxSubscriberUserIds(Guid voxId, List<Guid> ignoreUserIds);
+        Task<UserVoxAction> GetByUserIdVoxId(Guid userId, Guid postId);
+        Task<IList<Guid>> GetVoxSubscriberUserIds(Guid postId, IEnumerable<Guid> ignoreUserIds);
     }
 }
