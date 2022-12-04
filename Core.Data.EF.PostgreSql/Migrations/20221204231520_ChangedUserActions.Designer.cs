@@ -3,6 +3,7 @@ using System;
 using Core.Data.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Core.Data.EF.PostgreSql.Migrations
 {
     [DbContext(typeof(VoxedContext))]
-    partial class VoxedContextModelSnapshot : ModelSnapshot
+    [Migration("20221204231520_ChangedUserActions")]
+    partial class ChangedUserActions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,7 +32,7 @@ namespace Core.Data.EF.PostgreSql.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<Guid>("MediaId")
+                    b.Property<Guid>("AttachmentId")
                         .IsUnicode(true)
                         .HasColumnType("uuid");
 
@@ -51,7 +53,7 @@ namespace Core.Data.EF.PostgreSql.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MediaId");
+                    b.HasIndex("AttachmentId");
 
                     b.ToTable("Categories");
                 });
@@ -60,6 +62,13 @@ namespace Core.Data.EF.PostgreSql.Migrations
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
+
+                    b.Property<Guid?>("AttachmentId")
+                        .IsUnicode(true)
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("Bump")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Content")
                         .HasMaxLength(1000)
@@ -79,10 +88,6 @@ namespace Core.Data.EF.PostgreSql.Migrations
                     b.Property<bool>("IsSticky")
                         .HasColumnType("boolean");
 
-                    b.Property<Guid?>("MediaId")
-                        .IsUnicode(true)
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("PostId")
                         .IsUnicode(true)
                         .HasColumnType("uuid");
@@ -91,6 +96,9 @@ namespace Core.Data.EF.PostgreSql.Migrations
                         .HasColumnType("integer");
 
                     b.Property<int>("Style")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Type")
                         .HasColumnType("integer");
 
                     b.Property<DateTimeOffset>("UpdatedOn")
@@ -106,10 +114,10 @@ namespace Core.Data.EF.PostgreSql.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AttachmentId");
+
                     b.HasIndex("Hash")
                         .IsUnique();
-
-                    b.HasIndex("MediaId");
 
                     b.HasIndex("PostId");
 
@@ -510,20 +518,20 @@ namespace Core.Data.EF.PostgreSql.Migrations
 
             modelBuilder.Entity("Core.Entities.Category", b =>
                 {
-                    b.HasOne("Core.Entities.Media", "Media")
+                    b.HasOne("Core.Entities.Media", "Attachment")
                         .WithMany()
-                        .HasForeignKey("MediaId")
+                        .HasForeignKey("AttachmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Media");
+                    b.Navigation("Attachment");
                 });
 
             modelBuilder.Entity("Core.Entities.Comment", b =>
                 {
-                    b.HasOne("Core.Entities.Media", "Media")
+                    b.HasOne("Core.Entities.Media", "Attachment")
                         .WithMany()
-                        .HasForeignKey("MediaId");
+                        .HasForeignKey("AttachmentId");
 
                     b.HasOne("Core.Entities.Post", null)
                         .WithMany("Comments")
@@ -537,7 +545,7 @@ namespace Core.Data.EF.PostgreSql.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Media");
+                    b.Navigation("Attachment");
 
                     b.Navigation("Owner");
                 });

@@ -135,7 +135,7 @@ public class CommentController : BaseController
             Style = AvatarService.GetAvatarStyle(),
             IpAddress = UserIpAddress,
             UserAgent = UserAgent,
-            Attachment = request.HasAttachment() ? await CreateCommentAttachment(request) : null,
+            Media = request.HasAttachment() ? await CreateCommentAttachment(request) : null,
         };
 
         await _voxedRepository.Comments.Add(comment);

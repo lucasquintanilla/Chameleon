@@ -11,20 +11,19 @@ using System.Threading.Tasks;
 
 namespace Core.Data.EF.Repositories
 {
-    public class VoxRepository : Repository<Post>, IPostRepository
+    public class PostRepository : Repository<Post>, IPostRepository
     {
-        public VoxRepository(VoxedContext context) : base(context) { }
+        public PostRepository(VoxedContext context) : base(context) { }
 
         public override async Task<Post> GetById(Guid id)
             => await _context.Posts
                 .Include(x => x.Media)
                 .Include(x => x.Category)
-                .Include(x => x.Category.Attachment)
+                .Include(x => x.Category.Media)
                 .Include(x => x.Comments.Where(c => c.State == CommentState.Active)) //agregar order by descending
-                    .ThenInclude(c => c.Attachment)
+                    .ThenInclude(c => c.Media)
                 .Include(x => x.Comments.Where(c => c.State == CommentState.Active))
                     .ThenInclude(c => c.Owner)
-                .Include(x => x.Poll)
                 .Include(x => x.Owner)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
@@ -41,16 +40,16 @@ namespace Core.Data.EF.Repositories
             {
                 if (filter.IncludeHidden)
                 {
-                    query = query.Where(x => _context.UserVoxActions.AsNoTracking().Where(u => u.UserId == filter.UserId.Value && u.IsHidden).Select(v => v.PostId).Contains(x.Id));
+                    query = query.Where(x => _context.UserPostActions.AsNoTracking().Where(u => u.UserId == filter.UserId.Value && u.IsHidden).Select(v => v.PostId).Contains(x.Id));
                 }
                 else
                 {
-                    query = query.Where(x => !_context.UserVoxActions.AsNoTracking().Where(x => x.UserId == filter.UserId.Value && x.IsHidden).Select(x => x.PostId).Contains(x.Id));
+                    query = query.Where(x => !_context.UserPostActions.AsNoTracking().Where(x => x.UserId == filter.UserId.Value && x.IsHidden).Select(x => x.PostId).Contains(x.Id));
                 }
 
                 if (filter.IncludeFavorites)
                 {
-                    query = query.Where(x => _context.UserVoxActions.AsNoTracking().Where(u => u.UserId == filter.UserId.Value && u.IsFavorite).Select(v => v.PostId).Contains(x.Id));
+                    query = query.Where(x => _context.UserPostActions.AsNoTracking().Where(u => u.UserId == filter.UserId.Value && u.IsFavorite).Select(v => v.PostId).Contains(x.Id));
                 }
             }
 
@@ -58,8 +57,8 @@ namespace Core.Data.EF.Repositories
             {
                 query = query.Where(x => !filter.IgnorePostIds.Contains(x.Id));
 
-                var lastVox = await GetLastVoxBump(filter.IgnorePostIds);
-                query = query.Where(x => x.LastActivityOn < lastVox.LastActivityOn);
+                var lastPost = await GetLastPostBump(filter.IgnorePostIds);
+                query = query.Where(x => x.LastActivityOn < lastPost.LastActivityOn);
             }
 
             if (filter.Categories.Any())
@@ -72,7 +71,7 @@ namespace Core.Data.EF.Repositories
                 var keywords = filter.SearchText.ToLower().Split(' ').Distinct();
 
                 var predicateTitle = keywords.Select(k => (Expression<Func<Post, bool>>)(x => x.Title.Contains(k))).ToArray();
-                //var predicateContent = keywords.Select(k => (Expression<Func<Vox, bool>>)(x => x.Content.Contains(k))).ToArray();      
+                //var predicateContent = keywords.Select(k => (Expression<Func<Post, bool>>)(x => x.Content.Contains(k))).ToArray();      
                 query = query.WhereAny(predicateTitle);
             }
 
@@ -81,7 +80,7 @@ namespace Core.Data.EF.Repositories
                 var hiddenWords = filter.HiddenWords.Distinct();
 
                 var predicateTitle = hiddenWords.Select(k => (Expression<Func<Post, bool>>)(x => !x.Title.Contains(k))).ToArray();
-                //var predicateContent = keywords.Select(k => (Expression<Func<Vox, bool>>)(x => x.Content.Contains(k))).ToArray();      
+                //var predicateContent = keywords.Select(k => (Expression<Func<Post, bool>>)(x => x.Content.Contains(k))).ToArray();      
                 query = query.WhereAny(predicateTitle);
             }
 
@@ -95,7 +94,7 @@ namespace Core.Data.EF.Repositories
             return await Task.FromResult(result);
         }
 
-        private async Task<Post> GetLastVoxBump(IEnumerable<Guid> skipIds)
+        private async Task<Post> GetLastPostBump(IEnumerable<Guid> skipIds)
          => await _context.Posts
             .Where(x => skipIds.Contains(x.Id))
             .OrderBy(x => x.LastActivityOn)

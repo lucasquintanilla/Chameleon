@@ -20,7 +20,6 @@ namespace Core.Entities
         public virtual Media Media { get; set; }
         public virtual Category Category { get; set; }
         public virtual User Owner { get; set; }
-        public virtual Poll Poll { get; set; }
         public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();        
     }
 }

@@ -12,20 +12,18 @@ namespace Core.Data.EF.Repositories
         {
             //context.Database.Log = Console.Write; // .NET6 feature
             _context = context;
-            Posts = new VoxRepository(context);
+            Posts = new PostRepository(context);
             Categories = new CategoryRepository(context);
             Comments = new CommentRepository(context);
             Media = new MediaRepository(context);
-            Polls = new PollRepository(context);
             Notifications = new NotificationRepository(context);
-            UserPostActions = new UserVoxActionRepository(context);
+            UserPostActions = new UserPostActionRepository(context);
         }
 
         public IPostRepository Posts { get; }
         public ICategoryRepository Categories { get; }
         public IMediaRepository Media { get; }
         public ICommentRepository Comments { get; }
-        public IPollRepository Polls { get; }
         public INotificationRepository Notifications { get; }
         public IUserPostActionRepository UserPostActions { get; }
 

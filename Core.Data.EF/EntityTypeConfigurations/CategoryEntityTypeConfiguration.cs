@@ -20,14 +20,14 @@ namespace Core.Data.EF.EntityTypeConfigurations
                 .IsUnicode(true)
                 .HasMaxLength(50);
 
-            builder.Property(x => x.AttachmentId)
+            builder.Property(x => x.MediaId)
               .IsRequired(true)
               .IsUnicode(true);
 
-            builder.HasOne(x => x.Attachment)
+            builder.HasOne(x => x.Media)
              .WithMany()
              //.OnDelete(DeleteBehavior.Restrict)
-             .HasForeignKey(x => x.AttachmentId);
+             .HasForeignKey(x => x.MediaId);
         }
     }
 }

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Core.Data.EF.EntityTypeConfigurations
 {
-    public class UserVoxActionEntityConfiguration : IEntityTypeConfiguration<UserPostAction>
+    public class UserPostActionEntityConfiguration : IEntityTypeConfiguration<UserPostAction>
     {
         public void Configure(EntityTypeBuilder<UserPostAction> builder)
         {

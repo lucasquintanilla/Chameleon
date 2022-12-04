@@ -55,7 +55,7 @@ namespace Voxed.WebApp.Controllers.V1
                 Content = vox.Content,
                 CategoryName = vox.Category.Name,
                 CategoryShortName = vox.Category.ShortName,
-                CategoryThumbnailUrl = vox.Category.Attachment.ThumbnailUrl,
+                CategoryThumbnailUrl = vox.Category.Media.ThumbnailUrl,
                 CreatedOn = vox.CreatedOn.DateTime.ToTimeAgo(),
                 UserName = UserViewHelper.GetUserName(vox.Owner),
                 UserTag = UserViewHelper.GetUserTypeTag(vox.Owner.UserType),
@@ -78,8 +78,8 @@ namespace Voxed.WebApp.Controllers.V1
                     Poll = null, //aca va una opcion respondida
 
                     //Media
-                    MediaUrl = comment.Attachment?.Url,
-                    MediaThumbnailUrl = comment.Attachment?.ThumbnailUrl,
+                    MediaUrl = comment.Media?.Url,
+                    MediaThumbnailUrl = comment.Media?.ThumbnailUrl,
                     //Extension = request.GetUploadData()?.Extension == UploadDataExtension.Base64 ? GetFileExtensionFromUrl(comment.Media?.Url) : request.GetUploadData()?.Extension,
                     //ExtensionData = request.GetUploadData()?.ExtensionData,
                     //Via = request.GetUploadData()?.Extension == UploadDataExtension.Youtube ? comment.Media?.Url : null,

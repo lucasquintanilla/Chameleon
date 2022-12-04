@@ -5,28 +5,17 @@ namespace Core.Shared
 {
     public class UserTypeDictionary
     {
-        private static Dictionary<UserType, string> _description;
-
-        public static Dictionary<UserType, string> Description
+        private static Dictionary<UserType, string> _description = new()
         {
-            get
-            {
-                if (_description == null)
-                    _description = new Dictionary<UserType, string>()
-                    {
-                        {UserType.Anonymous, "anon" },
-                        {UserType.Administrator, "admin" },
-                        {UserType.Moderator, "mod" },
-                        {UserType.Account, "anon" },
-                        {UserType.AnonymousAccount, "anon" },
-                        {UserType.Developer, "dev" },
-                    };
-
-                return _description;
-            }
-        }
+            { UserType.Anonymous, "anon" },
+            { UserType.Administrator, "admin" },
+            { UserType.Moderator, "mod" },
+            { UserType.Account, "anon" },
+            { UserType.AnonymousAccount, "anon" },
+            { UserType.Developer, "dev" },
+        };
 
         public static string GetDescription(UserType code)
-            => Description[code];
+            => _description[code];
     }
 }

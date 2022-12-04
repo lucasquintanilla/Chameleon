@@ -30,7 +30,7 @@ namespace Core.Data.EF.Repositories
         {
             return await _context.Categories
                 .OrderBy(c => c.Name)
-                .Include(c => c.Attachment)
+                .Include(c => c.Media)
                 .AsNoTracking()
                 .ToListAsync();
         }
@@ -38,7 +38,7 @@ namespace Core.Data.EF.Repositories
         public override async Task<Category> GetById(int id)
         {
             return await _context.Categories
-                .Include(c => c.Attachment)
+                .Include(c => c.Media)
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
     }

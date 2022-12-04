@@ -94,11 +94,11 @@ public class NotificationService : INotificationService
             Poll = null, //aca va una opcion respondida
 
             //Media
-            MediaUrl = comment.Attachment?.Url,
-            MediaThumbnailUrl = comment.Attachment?.ThumbnailUrl,
-            Extension = request.GetVoxedAttachment()?.Extension == VoxedAttachmentFileExtension.Base64 ? Core.Utilities.UrlUtility.GetFileExtensionFromUrl(comment.Attachment?.Url) : request.GetVoxedAttachment()?.Extension,
+            MediaUrl = comment.Media?.Url,
+            MediaThumbnailUrl = comment.Media?.ThumbnailUrl,
+            Extension = request.GetVoxedAttachment()?.Extension == VoxedAttachmentFileExtension.Base64 ? Core.Utilities.UrlUtility.GetFileExtensionFromUrl(comment.Media?.Url) : request.GetVoxedAttachment()?.Extension,
             ExtensionData = request.GetVoxedAttachment()?.ExtensionData,
-            Via = request.GetVoxedAttachment()?.Extension == VoxedAttachmentFileExtension.Youtube ? comment.Attachment?.Url : null,
+            Via = request.GetVoxedAttachment()?.Extension == VoxedAttachmentFileExtension.Youtube ? comment.Media?.Url : null,
         };
 
         await _notificationHub.Clients.All.Comment(commentUpdate);
