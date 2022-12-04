@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
 
-namespace Core.Services.Post.Models
+namespace Core.Services.Posts.Models
 {
     public class CreatePostRequest
     {

@@ -11,7 +11,7 @@ using Core.Entities;
 using Core.Services.Image;
 using Core.Services.MediaServices;
 using Core.Services.Mixers;
-using Core.Services.Post;
+using Core.Services.Posts;
 using Core.Services.Storage;
 using Core.Services.Storage.Cloud;
 using Core.Services.Storage.Local;

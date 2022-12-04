@@ -3,18 +3,18 @@ using Core.Data.Repositories;
 using Core.Entities;
 using Core.Services.MediaServices.Models;
 using Core.Services.MediaServices;
-using Core.Services.Post.Models;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Core.Services.TextFormatter;
+using Core.Services.Posts.Models;
 
-namespace Core.Services.Post
+namespace Core.Services.Posts
 {
     public interface IPostService
     {
-        Task<Entities.Post> CreatePost(CreatePostRequest request);
-        Task<IEnumerable<Entities.Post>> GetByFilter(PostFilter filter);
+        Task<Post> CreatePost(CreatePostRequest request);
+        Task<IEnumerable<Post>> GetByFilter(PostFilter filter);
     }
 
     public class PostService : IPostService
@@ -36,7 +36,7 @@ namespace Core.Services.Post
             _textFormatter = textFormatter;
         }
 
-        public async Task<Entities.Post> CreatePost(CreatePostRequest request)
+        public async Task<Post> CreatePost(CreatePostRequest request)
         {
             var mediaRequest = new CreateMediaRequest()
             {
@@ -48,7 +48,7 @@ namespace Core.Services.Post
             var media = await _mediaService.CreateMedia(mediaRequest);
             await _voxedRepository.Media.Add(media);
 
-            var vox = new Entities.Post()
+            var vox = new Post()
             {
                 State = PostState.Active,
                 UserId = request.UserId,
@@ -65,7 +65,7 @@ namespace Core.Services.Post
             return vox;
         }
 
-        public async Task<IEnumerable<Entities.Post>> GetByFilter(PostFilter filter)
+        public async Task<IEnumerable<Post>> GetByFilter(PostFilter filter)
         {
             return await _voxedRepository.Posts.GetByFilterAsync(filter);
         }

@@ -6,7 +6,7 @@ namespace Core.Services
     public static class UserActivityLimiter
     {
         private static readonly Dictionary<Guid, DateTimeOffset> _userLastActivityOn = new();
-        private const int Interval = 2;
+        private const int IntervalInMinutes = 2;
 
         public static bool CanUserCreateComment(Guid userId)
         {
@@ -19,7 +19,7 @@ namespace Core.Services
 
         private static bool HasUserCompletedTime(Guid userId)
         {
-            var interval = TimeSpan.FromMinutes(Interval);
+            var interval = TimeSpan.FromMinutes(IntervalInMinutes);
             var lastActivityOn = _userLastActivityOn[userId];
             if (DateTimeOffset.UtcNow - lastActivityOn > interval)
             {
