@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Core.Entities
 {
-    public enum VoxState { Active, Deleted, Reported }
+    public enum PostState { Active, Deleted, Reported }
 
     public class Vox : Entity
     {
@@ -12,7 +12,7 @@ namespace Core.Entities
         public int CategoryId { get; set; }
         public Guid UserId { get; set; }
         public Guid MediaId { get; set; }
-        public VoxState State { get; set; }
+        public PostState State { get; set; }
         public bool IsSticky { get; set; }
         public DateTimeOffset LastActivityOn { get; set; } = DateTimeOffset.Now;
         public string UserAgent { get; set; }

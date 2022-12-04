@@ -70,7 +70,7 @@ public class VoxController : BaseController
         var voxId = GuidExtension.FromShortString(id);
 
         var vox = await _voxedRepository.Voxs.GetById(voxId);
-        if (vox == null || vox.State == VoxState.Deleted) return NotFound();
+        if (vox == null || vox.State == PostState.Deleted) return NotFound();
 
         var userId = User.GetUserId();
         var actions = await _userVoxActionService.GetUserVoxActions(voxId, userId);

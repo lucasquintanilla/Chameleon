@@ -32,7 +32,7 @@ namespace Core.Data.EF.Repositories
         {
             var query = _context.Voxs.AsNoTracking();
 
-            query = query.Where(x => x.State == VoxState.Active)
+            query = query.Where(x => x.State == PostState.Active)
                        .Include(x => x.Media)
                        .Include(x => x.Category)
                        .Include(x => x.Comments.Where(c => c.State == CommentState.Active));

@@ -50,7 +50,7 @@ namespace Core.Services.Post
 
             var vox = new Vox()
             {
-                State = VoxState.Active,
+                State = PostState.Active,
                 UserId = request.UserId,
                 Title = request.Title,
                 Content = _textFormatter.Format(request.Content),

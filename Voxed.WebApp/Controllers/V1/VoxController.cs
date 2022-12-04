@@ -33,7 +33,7 @@ namespace Voxed.WebApp.Controllers.V1
         {
             var vox = await _voxedRepository.Voxs.GetById(id);
 
-            if (vox == null || vox.State == VoxState.Deleted) return NotFound();
+            if (vox == null || vox.State == PostState.Deleted) return NotFound();
 
             return Ok(ConvertToVoxResponse(vox));
         }

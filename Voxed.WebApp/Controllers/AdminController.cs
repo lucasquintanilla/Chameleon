@@ -49,7 +49,7 @@ public class AdminController : Controller
 
                     var vox = await _voxedRepository.Voxs.GetById(new Guid(request.ContentId));
                     if (vox == null) NotFound();
-                    vox.State = VoxState.Deleted;
+                    vox.State = PostState.Deleted;
                     break;
                 default:
                     break;
