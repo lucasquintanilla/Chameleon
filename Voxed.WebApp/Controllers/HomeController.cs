@@ -66,6 +66,20 @@ public class HomeController : Controller
         return View("board", board);
     }
 
+    [HttpGet("hub")]
+    public async Task<IActionResult> Hub()
+    {
+        var mix = await _boardMixer.GetMix();
+
+        var board = new BoardViewModel()
+        {
+            Voxs = mix.Items.OrderByDescending(x => x.LastActivityOn).Select(VoxedMapper.Map),
+            Title = "Hub",
+            Page = "hub"
+        };
+        return View("board", board);
+    }
+
     [HttpGet("favoritos")]
     public async Task<IActionResult> Favorites()
     {
