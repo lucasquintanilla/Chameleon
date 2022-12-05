@@ -54,12 +54,9 @@ public class HomeController : Controller
 
         var posts = await _voxedRepository.Posts.GetByFilterAsync(filter);
 
-        //var mix = await _boardMixer.GetMix();
-
         var board = new BoardViewModel()
         {
             Voxs = VoxedMapper.Map(posts),
-            //Voxs = mix.Items.OrderByDescending(x => x.LastActivityOn).Select(VoxedMapper.Map),
             Title = "Home",
             Page = "home"
         };
