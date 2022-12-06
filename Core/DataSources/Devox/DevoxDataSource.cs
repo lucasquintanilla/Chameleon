@@ -37,7 +37,7 @@ public class DevoxDataSource : IDevoxDataSource
             request.Headers.TryAddWithoutValidation("Sec-Fetch-Site", "same-site");
             request.Headers.TryAddWithoutValidation("TE", "trailers");
 
-            request.Content = new StringContent("{\"user\":null,\"count\":20,\"oldCount\":0}");
+            request.Content = new StringContent("{\"user\":null,\"count\":36,\"oldCount\":0}");
             request.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
 
             var response = await httpClient.SendAsync(request);

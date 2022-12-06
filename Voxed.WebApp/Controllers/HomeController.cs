@@ -72,7 +72,7 @@ public class HomeController : Controller
         {
             Voxs = mix.Items.OrderByDescending(x => x.LastActivityOn).Select(VoxedMapper.Map),
             Title = "Hub",
-            Page = "hub"
+            Page = "category-hub"
         };
         return View("board", board);
     }

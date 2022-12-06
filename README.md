@@ -51,6 +51,7 @@ Pull request son bienvenidos
 - [x] Bug al replicar comentarios, en el cometario original no aparece el tag de la respuesta
 - [x] Al hovear un tag de los comentarios se abre un una previsualizacion y no se cierra solo
 - [x] Implementar >hide
+- [ ] Cargas mas post en vista categoria
 
 ## Tech Debt
 
@@ -78,7 +79,7 @@ Pull request son bienvenidos
 - [ ] Implementar Material Design 3
 - [ ] Implementar moderacion basada en bots y AI cognitive services
 - [ ] Post scores
-- [ ] External post data sources
+- [x] External post data sources
 - [ ] Board mixer based on post scores and external post sources
 
 # Patrones de diseño

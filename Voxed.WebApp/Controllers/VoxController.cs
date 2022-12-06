@@ -228,30 +228,32 @@ public class VoxController : BaseController
     [HttpPost("vox/list")]
     public async Task<LoadMoreResponse> LoadMore([FromForm] LoadMoreRequest request)
     {
-        //var devox = await _devoxDataSource.GetMoreVoxes(request.Ignore.Count());
-        //var devoxPosts = devox.Select(vox => new VoxResponse()
-        //{
-        //    Hash = vox.Id,
-        //    Status = true,
-        //    Niche = vox.Category.ToString(),
-        //    Title = vox.Title,
-        //    Comments = vox.CommentsCount.ToString(),
-        //    Extension = string.Empty,
-        //    //Sticky = vox.IsSticky ? "1" : "0",
-        //    //CreatedAt = vox.CreatedOn.ToString(),
-        //    PollOne = string.Empty,
-        //    PollTwo = string.Empty,
-        //    Id = vox.Id,
-        //    Slug = "devox",
-        //    VoxId = vox.Id.ToString(),
-        //    //New = vox.CreatedOn.IsNew(),
-        //    ThumbnailUrl = DevoxHelpers.GetThumbnailUrl(vox),
-        //    Category = vox.Category.ToString(),
-        //    Href = "https://devox.uno/vox/" + vox.Filename
-        //});
+        if (request.Page == "category-hub")
+        {
+            var devox = await _devoxDataSource.GetMoreVoxes(request.Ignore.Count());
+            var devoxPosts = devox.Select(vox => new VoxResponse()
+            {
+                Hash = vox.Id,
+                Status = true,
+                Niche = vox.Category.ToString(),
+                Title = vox.Title,
+                Comments = vox.CommentsCount.ToString(),
+                Extension = string.Empty,
+                //Sticky = vox.IsSticky ? "1" : "0",
+                //CreatedAt = vox.CreatedOn.ToString(),
+                PollOne = string.Empty,
+                PollTwo = string.Empty,
+                Id = vox.Id,
+                Slug = "devox",
+                VoxId = vox.Id.ToString(),
+                //New = vox.CreatedOn.IsNew(),
+                ThumbnailUrl = DevoxHelpers.GetThumbnailUrl(vox),
+                Category = vox.Category.ToString(),
+                Href = "https://devox.uno/vox/" + vox.Filename
+            });
 
-        //return new LoadMoreResponse(devoxPosts.ToList());
-
+            return new LoadMoreResponse(devoxPosts.ToList());
+        }
 
 
         // Page: home, category-anm, vox, favorites, hidden, search
