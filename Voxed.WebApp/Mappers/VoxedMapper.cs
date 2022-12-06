@@ -109,7 +109,9 @@ public static class VoxedMapper
                 IsSticky = c.IsSticky,
                 CreatedOn = c.CreatedOn,
                 Style = c.Style.ToString().ToLower(),
-                User = c.Owner,
+                Author = c.Owner.UserType == Core.Entities.UserType.Administrator ? c.Owner?.UserName  : "Anonimo",
+                Tag = UserTypeDictionary.GetDescription(c.Owner.UserType).ToLower(),
+                IsAdmin = c.Owner.UserType == Core.Entities.UserType.Administrator
             }),
         };
     }

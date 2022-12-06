@@ -1,8 +1,6 @@
-﻿using System.Security.AccessControl;
-
-namespace Voxed.WebApp.ViewModels
+﻿namespace Voxed.WebApp.ViewModels
 {
-    public enum MediaType { Image, Video, YouTube, Gif }
+    public enum MediaType { Image, Video, YouTube }
 
     public class MediaViewModel
     {

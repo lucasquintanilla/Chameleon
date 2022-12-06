@@ -16,7 +16,7 @@ namespace Voxed.WebApp.Views.Shared.Components.VoxDetails
             this.voxedRepository = voxedRepository;
         }
 
-        public async Task<IViewComponentResult> InvokeAsync(IEnumerable<VoxResponse> voxs)
+        public async Task<IViewComponentResult> InvokeAsync(IEnumerable<IBoardPostViewModel> voxs)
         {
             await Task.Run(() => Console.WriteLine());
             return View(voxs);

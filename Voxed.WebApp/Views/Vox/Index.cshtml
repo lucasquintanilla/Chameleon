@@ -51,7 +51,6 @@
                 <div class="metadata">
                     <div class="authorVox">
 
-
                         @if (@Model.UserType == UserType.Administrator)
                         {
                             <span class="name adminTag ">@Model.UserName</span>
@@ -93,7 +92,7 @@
 
             <article class="voxContent" itemscope="itemscope" itemtype="http://schema.org/NewsArticle">
 
-                @if (@Model.Media != null)
+                @if (@Model.Media is not null)
                 {
                     switch (@Model.Media.MediaType)
                     {
@@ -107,17 +106,6 @@
                                 </div>
                             </figure>
                             break;
-
-                        @*case Voxed.WebApp.ViewModels.MediaType.Gif:
-
-                            <figure class="voxAttach">
-                                <div class="voxAttachContainer">
-                                    <a class="voxImage" target="_BLANK" href="@Model.Media.Url">
-                                        <img src="@Model.Media.Url" alt="@Model.Title">
-                                    </a>
-                                </div>
-                            </figure>
-                            break;*@
 
                         case Voxed.WebApp.ViewModels.MediaType.YouTube:
 
@@ -155,9 +143,7 @@
 
                 <header class="voxBody">
                     <h1 itemprop="name" id="voxTitle">@Model.Title</h1>
-                    @*<div class="voxDescription" itemprop="articleBody" id="voxContent">@Model.Content</div>*@
                     <div class="voxDescription" itemprop="articleBody" id="voxContent">@Html.Raw(Model.Content)</div>
-                    @*@Html.Raw(comment.Content)*@
                 </header>
             </article>
         </section>
@@ -182,13 +168,6 @@
                         </a>
 
                     }
-                    @*<a href="/home" data-event="click,button,REGISTER_GLOBAL_MESSAGE">
-                        <li class="message   multi">
-                        <div class="backgroundMessage" style="width: 97%"></div>
-                        <div class="messageContent">MENSAJE GLOBAL</div>
-                        <div class="messageTokens"><i class="fas fa-gem" aria-hidden="true"></i> 4000</div>
-                        </li>
-                        </a>*@
                 </ul>
             </div>
 
@@ -295,7 +274,7 @@
                     Comentarios (<span id="voxComments">@Model.Comments.Count()</span>)
                 </span>
                 <span class="commentsVoxText hide" id="attachsVoxText">
-                    Archivos (<span id="voxAttachsToggle">@Model.Comments.Where(x => x.Media != null).Count()</span>)
+                    Archivos (<span id="voxAttachsToggle">@Model.Comments.Where(x => x.Media is not null).Count()</span>)
                 </span>
                 <span class="attachsVox"><span data-openfiles><i class="fas fa-folder"></i></span></span>
             </div>
@@ -309,7 +288,6 @@
                     {
                         switch (comment.Media.MediaType)
                         {
-                            @*case Core.Entities.MediaType.Image:*@
                             case MediaType.Image:
 
                                 <div class="attach">
@@ -378,8 +356,8 @@
                     {
                         <div class="comment @(comment.IsSticky ? "COMMENT_STICKY" : string.Empty)" id="@comment.Hash" data-id="@comment.ID">
                             <div class="commentAvatar">
-                                <div class="unselect avatarColor  @comment.Style.ToString().ToLower()">
-                                    <span class="avatarText">@Core.Shared.UserTypeDictionary.GetDescription(comment.User.UserType).ToUpper()</span>
+                                <div class="unselect avatarColor  @comment.AvatarColor">
+                                    <span class="avatarText">@comment.AvatarText</span>
                                 </div>
                             </div>
                             <div class="commentBody">
@@ -395,15 +373,15 @@
                                             <span class="commentTagBg op">OP</span>
                                         }
 
-                                        @if (comment.User.UserType == Core.Entities.UserType.Administrator)
+                                        @if (comment.IsAdmin)
                                         {
-                                            <span class="author adminTag" style="">@comment.User?.UserName</span>
-                                            <span class="commentTag adminTag">@Core.Shared.UserTypeDictionary.GetDescription(comment.User.UserType).ToLower()</span>
+                                            <span class="author adminTag" style="">@comment.Author</span>
+                                            <span class="commentTag adminTag">@comment.Tag</span>
                                         }
                                         else
                                         {
-                                            <span class="author   " style="">Anonimo</span>
-                                            <span class="commentTag ">@Core.Shared.UserTypeDictionary.GetDescription(comment.User.UserType).ToLower()</span>
+                                            <span class="author   " style="">@comment.Author</span>
+                                            <span class="commentTag ">@comment.Tag</span>
                                         }
 
                                         @if (User.IsInRole(nameof(Core.Entities.RoleType.Administrator)))
@@ -461,19 +439,6 @@
                                                 </figure>
                                                 break;
 
-                                            case MediaType.Gif:
-
-                                                <figure class="commentAttach">
-                                                    <div class="commentAttachContainer">
-                                                        <a class="voxImage" target="_BLANK"
-                                           href="@comment.Media.Url">
-                                                            <img class="lazyload"
-                                                 data-src="@comment.Media.Url">
-                                                        </a>
-                                                    </div>
-                                                </figure>
-                                                break;
-
                                             case MediaType.YouTube:
 
                                                 <figure class="commentAttach">
@@ -519,7 +484,6 @@
 
                                     <div class="commentContent">
                                         @Html.Raw(comment.Content?.Trim())
-                                        @*@comment.Content*@
                                     </div>
                                 </div>
                             </div>

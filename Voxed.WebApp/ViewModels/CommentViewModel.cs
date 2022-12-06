@@ -16,8 +16,9 @@ namespace Voxed.WebApp.ViewModels
         public DateTimeOffset CreatedOn { get; set; }
         public int UserType { get; set; }
         public string Style { get; set; }
+        public string Author { get; set; }
+        public string Tag { get; set; }
+        public bool IsAdmin { get; set; }
         public MediaViewModel Media { get; set; }
-        public User User { get; set; }
-
     }
 }
