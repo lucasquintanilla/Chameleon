@@ -13,7 +13,7 @@ var startup = new Startup(builder.Configuration);
 startup.ConfigureServices(builder.Services);
 var app = builder.Build();
 
-// move this to responsable class
+// move this to a responsable class
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -32,7 +32,7 @@ app.UseHsts();
 app.UseHttpsRedirection();
 
 
-app.UseImageSharp(); // Add this BEFORE app.UseStaticFiles();
+app.UseImageSharp(); // Add UseImageSharp BEFORE app.UseStaticFiles();
 app.UseStaticFiles(new StaticFileOptions
 {
     OnPrepareResponse = ctx =>

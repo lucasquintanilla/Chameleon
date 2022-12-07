@@ -1,4 +1,5 @@
 ﻿using Amazon.S3;
+using Core.Data;
 using Core.Data.EF;
 using Core.Data.EF.MySql;
 using Core.Data.EF.PostgreSql;
@@ -246,11 +247,5 @@ public static class DependencyContainer
         //});
 
         services.AddSignalR();
-    }
-
-    public enum StorageProvider
-    {
-        Local,
-        Cloud
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Voxed.WebApp.Helpers;
+﻿namespace Core.Data;
 
 public enum DatabaseProvider
 {
