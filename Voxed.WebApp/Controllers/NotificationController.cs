@@ -30,6 +30,8 @@ public class NotificationController : BaseController
     [HttpGet("{id}")]
     public async Task<IActionResult> Get(Guid id)
     {
+        if (id == Guid.Empty) return BadRequest();
+
         var notification = await _voxedRepository.Notifications.GetById(id);
         if (notification == null) { return Redirect($"/"); }
 
@@ -38,8 +40,6 @@ public class NotificationController : BaseController
 
         var voxHash = notification.PostId.ToShortString();
         var commentHash = notification.Comment.Hash;
-
-        new RemoveNotificationModel() { Id = notification.Id.ToString() };
 
         await _notificationHub.Clients
             .User(notification.UserId.ToString())

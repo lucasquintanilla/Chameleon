@@ -23,8 +23,8 @@ namespace Voxed.WebApp.Controllers;
 public class CommentController : BaseController
 {
     private readonly ILogger<CommentController> _logger;
-    private readonly ITextFormatterService _formatter;
-    private readonly IMediaService _attachmentService;
+    private readonly ITextFormatterService _textFormatter;
+    private readonly IMediaService _mediaService;
     private readonly IVoxedRepository _voxedRepository;
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
@@ -34,8 +34,8 @@ public class CommentController : BaseController
     public CommentController(
         ILogger<CommentController> logger,
         INotificationService notificationService,
-        ITextFormatterService formatter,
-        IMediaService attachmentService,
+        ITextFormatterService textFormatter,
+        IMediaService mediaService,
         IVoxedRepository voxedRepository,
         UserManager<User> userManager,
         SignInManager<User> signInManager,
@@ -43,8 +43,8 @@ public class CommentController : BaseController
         IServiceScopeFactory scopeFactory)
         : base(accessor, userManager)
     {
-        _formatter = formatter;
-        _attachmentService = attachmentService;
+        _textFormatter = textFormatter;
+        _mediaService = mediaService;
         _voxedRepository = voxedRepository;
         _userManager = userManager;
         _logger = logger;
@@ -128,14 +128,14 @@ public class CommentController : BaseController
 
         var comment = new Comment()
         {
-            Hash = new Hash().NewHash(7),
+            Hash = Hash.NewHash(7),
             PostId = GuidExtension.FromShortString(id),
-            Owner = user,
-            Content = _formatter.Format(request.Content),
+            UserId = user.Id,
+            Content = _textFormatter.Format(request.Content),
             Style = AvatarService.GetAvatarStyle(),
             IpAddress = UserIpAddress,
             UserAgent = UserAgent,
-            Media = request.HasAttachment() ? await CreateCommentAttachment(request) : null,
+            Media = request.HasAttachment() ? await CreateMediaFromRequest(request) : null,
         };
 
         await _voxedRepository.Comments.Add(comment);
@@ -156,17 +156,17 @@ public class CommentController : BaseController
         return content is not null && content.ToLower().Contains(hide);
     }
 
-    private async Task<Media> CreateCommentAttachment(CreateCommentRequest request)
+    private async Task<Media> CreateMediaFromRequest(CreateCommentRequest request)
     {
         if (request.GetVoxedAttachment() == null && request.File == null) return null;
 
-        var attachment = new CreateMediaRequest()
+        var mediaRequest = new CreateMediaRequest()
         {
             Extension = request.GetVoxedAttachment().Extension,
             ExtensionData = request.GetVoxedAttachment().ExtensionData,
             File = request.File
         };
 
-        return await _attachmentService.CreateMedia(attachment);
+        return await _mediaService.CreateMedia(mediaRequest);
     }
 }
