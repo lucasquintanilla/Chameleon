@@ -45,12 +45,14 @@ public class AdminController : Controller
                     comment.State = CommentState.Deleted;
                     await UpdateVoxLastBump(comment);
                     break;
+
                 case ContentType.Vox:
 
                     var vox = await _voxedRepository.Posts.GetById(new Guid(request.ContentId));
                     if (vox == null) NotFound();
                     vox.State = PostState.Deleted;
                     break;
+
                 default:
                     break;
             }

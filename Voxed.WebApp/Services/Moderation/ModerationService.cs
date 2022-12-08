@@ -3,6 +3,7 @@ using Core.Services.Telegram;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
+using Voxed.WebApp.Constants;
 using Voxed.WebApp.Extensions;
 using Voxed.WebApp.Models;
 
@@ -39,12 +40,12 @@ namespace Voxed.WebApp.Services.Moderation
 
                 switch (request.ContentType)
                 {
-                    case 0:
+                    case ContentType.Comment:
                         var comment = await _voxedRepository.Comments.GetByHash(request.ContentId);
                         message = $"NUEVA DENUNCIA \n Reason: {request.Reason}. \n https://voxed.club/vox/{comment.PostId.ToShortString()}#{comment.Hash}";
                         break;
 
-                    case 1:
+                    case ContentType.Vox:
                         message = $"NUEVA DENUNCIA \n Reason: {request.Reason}. \n https://voxed.club/vox/{new Guid(request.ContentId).ToShortString()}";
                         break;
                 }

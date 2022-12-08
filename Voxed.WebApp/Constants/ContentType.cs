@@ -2,7 +2,7 @@
 {
     public class ContentType
     {
-        public const string Comment = "0";
-        public const string Vox = "1";
+        public const int Comment = 0;
+        public const int Vox = 1;
     }
 }
