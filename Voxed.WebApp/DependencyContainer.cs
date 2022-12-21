@@ -10,6 +10,7 @@ using Core.DataSources.Devox;
 using Core.DataSources.Ufftopia;
 using Core.Entities;
 using Core.Services.Image;
+using Core.Services.ImageProvider;
 using Core.Services.MediaServices;
 using Core.Services.Mixers;
 using Core.Services.Posts;
@@ -142,6 +143,7 @@ public static class DependencyContainer
     public static void RegisterStorageImageProvider(this IServiceCollection services, IConfiguration configuration)
     {
         var provider = configuration.GetValue<StorageProvider>("StorageProvider");
+        var imageProvider = configuration.GetValue<StorageImageProviderOptions>(StorageImageProviderOptions.SectionName);
         switch (provider)
         {
             case StorageProvider.Local:
@@ -157,20 +159,20 @@ public static class DependencyContainer
                 {
                     options.S3Buckets.Add(new AWSS3BucketClientOptions
                     {
-                        BucketName = "post-attachments",
-                        AccessKey = "AKIAT3LYSLSBEG32UEDZ",
-                        AccessSecret = "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",
-                        Region = "sa-east-1"
+                        BucketName = imageProvider.BucketName,
+                        AccessKey = imageProvider.AccessKey,
+                        AccessSecret = imageProvider.AccessSecret,
+                        Region = imageProvider.Region,
                     });
                 })
                 .ClearProviders()
                 .AddProvider<AWSS3StorageImageProvider>()
                 .Configure<AWSS3StorageCacheOptions>(options =>
                 {
-                    options.BucketName = "post-attachments/cache";
-                    options.AccessKey = "AKIAT3LYSLSBEG32UEDZ";
-                    options.AccessSecret = "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";
-                    options.Region = "sa-east-1";
+                    options.BucketName = imageProvider.BucketName;
+                    options.AccessKey = imageProvider.AccessKey;
+                    options.AccessSecret = imageProvider.AccessSecret;
+                    options.Region = imageProvider.Region;
 
                     // Optionally create the cache bucket on startup if not already created.
                     AWSS3StorageCache.CreateIfNotExists(options, S3CannedACL.Private);
