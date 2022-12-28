@@ -1,4 +1,4 @@
-﻿namespace Web.UI.Constants
+﻿namespace Voxed.WebApp.Constants
 {
     public static class Commands
     {

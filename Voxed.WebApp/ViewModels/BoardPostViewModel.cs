@@ -1,6 +1,6 @@
 ﻿using Voxed.WebApp.Models;
 
-namespace Web.UI.ViewModels
+namespace Voxed.WebApp.ViewModels
 {
     public class BoardPostViewModel : IBoardPostViewModel
     {
