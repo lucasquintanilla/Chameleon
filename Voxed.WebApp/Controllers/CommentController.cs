@@ -17,6 +17,7 @@ using Voxed.WebApp.Services;
 using static Voxed.WebApp.Models.CommentStickyResponse;
 using Core.Services.Avatar;
 using Core.Services.TextFormatter;
+using Web.UI.Constants;
 
 namespace Voxed.WebApp.Controllers;
 
@@ -150,11 +151,8 @@ public class CommentController : BaseController
         return comment;
     }
 
-    private static bool ContainsHide(string content)
-    {
-        string hide = "&gt;hide";
-        return content is not null && content.ToLower().Contains(hide);
-    }
+    private static bool ContainsHide(string content) => 
+        content is not null && content.ToLower().Contains(Commands.Hide);
 
     private async Task<Media> CreateMediaFromRequest(CreateCommentRequest request)
     {
