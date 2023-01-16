@@ -198,8 +198,8 @@ public static class DependencyContainer
                 services.AddSingleton<IStorage, LocalStorage>();
                 break;
             case StorageProvider.Cloud:
-                services.Configure<CloudStorageOptions>(configuration.GetSection(CloudStorageOptions.SectionName));
-                services.AddSingleton<IStorage, CloudStorage>();
+                services.Configure<S3StorageOptions>(configuration.GetSection(S3StorageOptions.SectionName));
+                services.AddSingleton<IStorage, S3Storage>();
                 break;
             default:
                 throw new Exception($"Unsupported storage provider: {provider}");                

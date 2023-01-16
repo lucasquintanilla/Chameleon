@@ -25,17 +25,14 @@ namespace Core.Data.EF
         public async Task Initialize()
         {
             await InitializeTables();
-
             await InitializeCategories();
-
-            await InitiliazeRoles();
-
+            await InitializeRoles();
             await InitializeUsers();
         }
 
         private async Task InitializeTables()
         {
-            // Using this method you will not able to use Migrations
+            // Using this method you won't be able to use Migrations
             //await _context.Database.EnsureCreatedAsync();
 
             var pendingMigrations = await _context.Database.GetPendingMigrationsAsync();
@@ -43,7 +40,7 @@ namespace Core.Data.EF
                 await _context.Database.MigrateAsync();
         }
 
-        private async Task InitiliazeRoles()
+        private async Task InitializeRoles()
         {
             if (await _roleManager.Roles.AnyAsync()) return;
 
@@ -66,10 +63,7 @@ namespace Core.Data.EF
 
         private async Task InitializeUsers()
         {
-            if (await _userManager.Users.AnyAsync())
-            {
-                return;
-            }
+            if (await _userManager.Users.AnyAsync()) return;            
 
             var administrator = new User
             {
@@ -82,19 +76,6 @@ namespace Core.Data.EF
             if (result.Succeeded)
             {
                 await _userManager.AddToRoleAsync(administrator, nameof(RoleType.Administrator));
-            }
-
-            var anonymus = new User
-            {
-                UserName = "anonimo",
-                EmailConfirmed = true,
-                UserType = UserType.Anonymous
-            };
-
-            result = await _userManager.CreateAsync(anonymus, "Anonimo1234");
-            if (result.Succeeded)
-            {
-                await _userManager.AddToRoleAsync(anonymus, nameof(RoleType.Anonymous));
             }
         }
 
