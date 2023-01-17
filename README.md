@@ -4,7 +4,7 @@ Proyecto free, cross-platform y open-source
 
 > https://voxed.club
 
-# Tech Stack
+# Tech Stack :hammer_and_wrench:
 
 - .NET 6
 - PostgreSQL
@@ -29,7 +29,7 @@ Proyecto free, cross-platform y open-source
 - [Workbench](https://dev.mysql.com/downloads/workbench/)
 - [DBeaver](https://dbeaver.io/)
 
-## Instalacion 
+## Instalacion :rocket:
 
 - Instalar Visual Studio
 - Clonar repositorio ejecutando comando git clone
@@ -41,7 +41,7 @@ Proyecto free, cross-platform y open-source
 
 Pull request son bienvenidos
 
-## Bugs
+## Bugs :ladybug:
 
 - [ ] Doble envio de noticacion al OP cuando responden etiquetandolo en un comentario del propio post
 - [x] Fix buscador
@@ -53,7 +53,7 @@ Pull request son bienvenidos
 - [x] Implementar >hide
 - [ ] Cargas mas post en vista categoria
 
-## Tech Debt
+## Tech Debt :pencil2:
 
 - [x] Logs
 - [x] Migrar a .NET 6
@@ -68,12 +68,12 @@ Pull request son bienvenidos
 - [ ] Agregar automapper
 - [ ] Limpiar estructura del proyecto
 
-## Future features
+## Future features :pushpin:
 
 - [ ] Implementar videos as reels
 - [ ] Implementar markdown processor. Frontmatter?
 - [ ] Separar frontend del backend
-- [ ] Implementar instalable PWA using web assembly
+- [ ] Implementar instalable PWA using web assembly / Flutter
 - [ ] Implementar notificaciones push
 - [ ] Eliminar categorias e implementar Tags
 - [ ] Implementar Material Design 3
@@ -91,6 +91,7 @@ Pull request son bienvenidos
 - MVC
 
 # Principios a seguir
+
 - KISS
 - SOLID
 - DRY
