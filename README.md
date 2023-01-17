@@ -14,7 +14,7 @@ Proyecto free, cross-platform y open-source
 - SignalR
 - Telegram
 
-## Requisitos previos
+## Requisitos previos :clipboard:
 
 ### Software requerido
 
@@ -37,11 +37,11 @@ Proyecto free, cross-platform y open-source
 - Abrir archivo Voxed.sln con Visual Studio
 - Ejectuar Voxed.WebApp desde Visual Studio
 
-## Contribucion
+## Contribucion :coffee:
 
 Pull request son bienvenidos
 
-## Bugs :ladybug:
+## Bugs :bug:
 
 - [ ] Doble envio de noticacion al OP cuando responden etiquetandolo en un comentario del propio post
 - [x] Fix buscador
@@ -68,7 +68,7 @@ Pull request son bienvenidos
 - [ ] Agregar automapper
 - [ ] Limpiar estructura del proyecto
 
-## Future features :pushpin:
+## Future features :bulb:
 
 - [ ] Implementar videos as reels
 - [ ] Implementar markdown processor. Frontmatter?
