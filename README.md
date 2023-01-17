@@ -7,12 +7,18 @@ Proyecto free, cross-platform y open-source
 ## Tech Stack :hammer_and_wrench:
 
 - .NET 6
-- PostgreSQL
-- MySQL
-- Sqlite
+- PostgreSQL / MySQL / Sqlite
 - Entity Framework Core
 - SignalR
-- Telegram
+- AWS
+
+## Instalacion :rocket:
+
+- Instalar Visual Studio
+- Clonar repositorio ejecutando comando git clone
+> git clone https://github.com/.../Voxed.git
+- Abrir archivo Voxed.sln con Visual Studio
+- Ejectuar Voxed.WebApp desde Visual Studio
 
 ## Requisitos previos :clipboard:
 
@@ -29,17 +35,11 @@ Proyecto free, cross-platform y open-source
 - [Workbench](https://dev.mysql.com/downloads/workbench/)
 - [DBeaver](https://dbeaver.io/)
 
-## Instalacion :rocket:
-
-- Instalar Visual Studio
-- Clonar repositorio ejecutando comando git clone
-> git clone https://github.com/.../Voxed.git
-- Abrir archivo Voxed.sln con Visual Studio
-- Ejectuar Voxed.WebApp desde Visual Studio
-
 ## Contribucion :coffee:
 
-Pull request son bienvenidos
+La intencion de este documento es brindar informacion paso a paso para una facil ejecucion. Puede necesitar ser actualizado, contener errores o pasos faltantes.
+En caso de encontrar errores o cualquier inconveniente ejecutando el codigo, por favor hacerlo saber por los medios correspondientes o enviar pull request con los cambios necesarios.
+Pull requests para incorporar cambios son bienvenidos
 
 ## Bugs :bug:
 
@@ -70,23 +70,29 @@ Pull request son bienvenidos
 
 ## Future features :bulb:
 
-- [ ] Implementar videos as reels
+- [ ] Videos as Reels
 - [ ] Implementar markdown processor. Frontmatter?
-- [ ] Separar frontend del backend
+- [ ] Separar frontend / backend
 - [ ] Implementar instalable PWA using web assembly / Flutter
 - [ ] Implementar notificaciones push
-- [ ] Eliminar categorias e implementar Tags
+- [ ] Implementar Tags
 - [ ] Implementar Material Design 3
 - [ ] Implementar moderacion basada en bots y AI cognitive services
 - [ ] Post scores
 - [x] External post data sources
 - [ ] Board mixer based on post scores and external post sources
 - [ ] Implementar CloudFront
+- [ ] Redis
 
 
 ## Infrastructure :building_construction:
 
 ![Infrastructure](https://i.ibb.co/dL5W2R5/Imageboard-drawio-2.png)
+
+## External Services
+
+- Telegram
+- Youtube
 
 ## Patrones de diseño
 
