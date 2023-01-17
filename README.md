@@ -1,10 +1,10 @@
-# Voxed
+# voxed.club
 
 Proyecto free, cross-platform y open-source
 
 > https://voxed.club
 
-# Tech Stack :hammer_and_wrench:
+## Tech Stack :hammer_and_wrench:
 
 - .NET 6
 - PostgreSQL
@@ -81,8 +81,9 @@ Pull request son bienvenidos
 - [ ] Post scores
 - [x] External post data sources
 - [ ] Board mixer based on post scores and external post sources
+- [ ] Implementar CloudFront
 
-# Patrones de diseño
+## Patrones de diseño
 
 - Code First
 - Repository Pattern
@@ -90,14 +91,14 @@ Pull request son bienvenidos
 - Options Pattern
 - MVC
 
-# Principios a seguir
+## Principios a seguir
 
 - KISS
 - SOLID
 - DRY
 - Composition over inheritance
 
-# EntityFramework Migrations
+## EntityFramework Migrations
 
 ### Add Migration
 
@@ -106,3 +107,7 @@ Pull request son bienvenidos
 2. Ejecutar comando migracion 
 
 > add-migration NombreDeMigracion
+
+## Infrastructure :building_construction:
+
+![Infrastructure](https://ibb.co/CMH17fH)
