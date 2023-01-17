@@ -83,6 +83,11 @@ Pull request son bienvenidos
 - [ ] Board mixer based on post scores and external post sources
 - [ ] Implementar CloudFront
 
+
+## Infrastructure :building_construction:
+
+![Infrastructure](https://i.ibb.co/dL5W2R5/Imageboard-drawio-2.png)
+
 ## Patrones de diseño
 
 - Code First
@@ -108,6 +113,3 @@ Pull request son bienvenidos
 
 > add-migration NombreDeMigracion
 
-## Infrastructure :building_construction:
-
-![Infrastructure](https://ibb.co/CMH17fH)
