@@ -88,7 +88,6 @@ public static class DependencyContainer
             .AddEntityFrameworkStores<VoxedContext>()
             .AddErrorDescriber<SpanishIdentityErrorDescriber>();
 
-
         services
             .AddAuthentication()
             .AddGoogle(googleOptions =>
