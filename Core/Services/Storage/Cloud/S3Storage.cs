@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Core.Services.Storage.Cloud;
 
-public class CloudStorage : IStorage
+public class S3Storage : IStorage
 {
-    private readonly CloudStorageOptions _options;
+    private readonly S3StorageOptions _options;
     private readonly IAmazonS3 _s3Client;
 
-    public CloudStorage(IOptions<CloudStorageOptions> options, IAmazonS3 s3Client)
+    public S3Storage(IOptions<S3StorageOptions> options, IAmazonS3 s3Client)
     {
         _options = options.Value;
         _s3Client = s3Client;

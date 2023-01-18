@@ -73,8 +73,8 @@ public class MediaService : IMediaService
 
         return new Media
         {
-            Url = $"/post-attachments/{original.Key}",
-            ThumbnailUrl = $"/post-attachments/{thumbnail.Key}",
+            Url = $"/{_config.BaseDirectory}/{original.Key}",
+            ThumbnailUrl = $"/{_config.BaseDirectory}/{thumbnail.Key}",
             Type = MediaType.Image,
             Key = original.Key,
             ContentType = original.ContentType,
@@ -103,8 +103,8 @@ public class MediaService : IMediaService
 
         return new Media
         {
-            Url = $"/post-attachments/{original.Key}",
-            ThumbnailUrl = $"/post-attachments/{thumbnail.Key}",
+            Url = $"/{_config.BaseDirectory}/{original.Key}",
+            ThumbnailUrl = $"/{_config.BaseDirectory}/{thumbnail.Key}",
             Type = MediaType.Image,
             Key = original.Key,
             ContentType = original.ContentType,
@@ -124,7 +124,7 @@ public class MediaService : IMediaService
         return new Media
         {
             Url = $"https://www.youtube.com/watch?v={videoId}",
-            ThumbnailUrl = $"/post-attachments/{thumbnail.Key}",
+            ThumbnailUrl = $"/{_config.BaseDirectory}/{thumbnail.Key}",
             Type = MediaType.YouTube,
             ExternalUrl = $"https://www.youtube.com/watch?v={videoId}"
         };
@@ -151,8 +151,8 @@ public class MediaService : IMediaService
 
         return new Media
         {
-            Url = $"/post-attachments/{original.Key}",
-            ThumbnailUrl = $"/post-attachments/{thumbnail.Key}",
+            Url = $"/{_config.BaseDirectory}/{original.Key}",
+            ThumbnailUrl = $"/{_config.BaseDirectory}/{thumbnail.Key}",
             Type = MediaType.Image,
             Key = original.Key,
             ContentType = original.ContentType,

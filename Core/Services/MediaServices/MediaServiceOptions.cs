@@ -5,7 +5,6 @@ namespace Core.Services.MediaServices
     public class MediaServiceOptions
     {
         public const string SectionName = "MediaService";
-
-        public IEnumerable<string> AllowedFileExtensions { get; set; }
+        public string BaseDirectory { get; set; }
     }
 }
