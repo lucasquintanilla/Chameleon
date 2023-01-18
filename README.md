@@ -58,11 +58,11 @@ Pull requests para incorporar cambios son bienvenidos.
 
 ## Tech Debt :pencil2:
 
+- [ ] Unit tests
 - [x] Logs
 - [x] Migrar a .NET 6
 - [x] Migrar a postgresSQL
 - [x] Multiple database providers
-- [ ] Agregar unit tests
 - [ ] Implementar clean code y clean architecture practices
 - [ ] Reducir consultas a la DB
 - [ ] Mejorar performance home
@@ -86,6 +86,8 @@ Pull requests para incorporar cambios son bienvenidos.
 - [ ] Board mixer based on post scores and external post sources
 - [ ] Implementar CloudFront
 - [ ] Redis
+- [ ] Terraform
+- [ ] CI/CD
 
 
 ## Infrastructure :building_construction:

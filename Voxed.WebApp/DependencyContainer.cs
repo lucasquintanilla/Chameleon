@@ -93,7 +93,7 @@ public static class DependencyContainer
             .AddAuthentication()
             .AddGoogle(googleOptions =>
             {
-                googleOptions.ClientId = configuration["Authentication:Google:ClientId"]; ;
+                googleOptions.ClientId = configuration["Authentication:Google:ClientId"];
                 googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"];
             });
 
@@ -143,7 +143,7 @@ public static class DependencyContainer
     public static void RegisterStorageImageProvider(this IServiceCollection services, IConfiguration configuration)
     {
         var provider = configuration.GetValue<StorageProvider>("StorageProvider");
-        var imageProvider = configuration.GetValue<StorageImageProviderOptions>(StorageImageProviderOptions.SectionName);
+        //var imageProvider = configuration.GetValue<StorageImageProviderOptions>(StorageImageProviderOptions.SectionName);
         switch (provider)
         {
             case StorageProvider.Local:
@@ -159,20 +159,24 @@ public static class DependencyContainer
                 {
                     options.S3Buckets.Add(new AWSS3BucketClientOptions
                     {
-                        BucketName = imageProvider.BucketName,
-                        AccessKey = imageProvider.AccessKey,
-                        AccessSecret = imageProvider.AccessSecret,
-                        Region = imageProvider.Region,
+                        //BucketName = imageProvider.BucketName,
+                        //AccessKey = imageProvider.AccessKey,
+                        //AccessSecret = imageProvider.AccessSecret,
+                        //Region = imageProvider.Region,
+                        BucketName = configuration["StorageImageProvider:BucketName"],
+                        AccessKey = configuration["StorageImageProvider:AccessKey"],
+                        AccessSecret = configuration["StorageImageProvider:AccessSecret"],
+                        Region = configuration["StorageImageProvider:Region"],
                     });
                 })
                 .ClearProviders()
                 .AddProvider<AWSS3StorageImageProvider>()
                 .Configure<AWSS3StorageCacheOptions>(options =>
                 {
-                    options.BucketName = imageProvider.BucketName;
-                    options.AccessKey = imageProvider.AccessKey;
-                    options.AccessSecret = imageProvider.AccessSecret;
-                    options.Region = imageProvider.Region;
+                    options.BucketName = configuration["StorageImageProvider:BucketName"];
+                    options.AccessKey = configuration["StorageImageProvider:AccessKey"];
+                    options.AccessSecret = configuration["StorageImageProvider:AccessSecret"];
+                    options.Region = configuration["StorageImageProvider:Region"];
 
                     // Optionally create the cache bucket on startup if not already created.
                     AWSS3StorageCache.CreateIfNotExists(options, S3CannedACL.Private);
@@ -202,7 +206,7 @@ public static class DependencyContainer
                 services.AddSingleton<IStorage, CloudStorage>();
                 break;
             default:
-                throw new Exception($"Unsupported storage provider: {provider}");                
+                throw new Exception($"Unsupported storage provider: {provider}");
         }
     }
 
