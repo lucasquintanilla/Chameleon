@@ -37,7 +37,7 @@ Proyecto free, cross-platform y open-source
 
 ## Documentation :books:
 
-La intencion de este documento es brindar informacion paso a paso para una facil ejecucion. Puede necesitar ser actualizado, contener errores o pasos faltantes.
+La intencion de este documento es brindar informacion paso a paso para una facil ejecucion para que cualquiera pueda hacerlo. Puede necesitar ser actualizado, contener errores o pasos faltantes.
 En caso de encontrar errores o cualquier inconveniente ejecutando el codigo, por favor hacerlo saber por los medios correspondientes o enviar pull request con los cambios necesarios.
 
 ## Contribucion :coffee:

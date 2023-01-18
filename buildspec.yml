@@ -1,0 +1,17 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      dotnet: 6.0
+  pre_build:
+    commands:
+      - dotnet restore Voxed.WebApp/Voxed.WebApp.csproj
+  build:
+    commands:
+      - dotnet build Voxed.WebApp/Voxed.WebApp.csproj
+  post_build:
+    commands:
+      - dotnet publish -c Release -o ./app/Voxed.WebApp/Voxed.WebApp.csproj
+artifacts:
+  files:
+    - '**/*'
