@@ -22,7 +22,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Data.EF.PostgreSql", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Voxed.WebApp", "Voxed.WebApp\Voxed.WebApp.csproj", "{D327910B-99C9-4897-8FD8-E128075954D4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Data.EF.MySql", "Core.Data.EF.My\Core.Data.EF.MySql.csproj", "{2EEC7538-FEC8-4727-ACF1-B361001B71A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Data.EF.MySql", "Core.Data.EF.MySql\Core.Data.EF.MySql.csproj", "{2AC1CFCB-B2FA-480C-98B9-0F71177F5B20}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -58,10 +58,10 @@ Global
 		{D327910B-99C9-4897-8FD8-E128075954D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D327910B-99C9-4897-8FD8-E128075954D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D327910B-99C9-4897-8FD8-E128075954D4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2EEC7538-FEC8-4727-ACF1-B361001B71A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2EEC7538-FEC8-4727-ACF1-B361001B71A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2EEC7538-FEC8-4727-ACF1-B361001B71A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2EEC7538-FEC8-4727-ACF1-B361001B71A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2AC1CFCB-B2FA-480C-98B9-0F71177F5B20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2AC1CFCB-B2FA-480C-98B9-0F71177F5B20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2AC1CFCB-B2FA-480C-98B9-0F71177F5B20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2AC1CFCB-B2FA-480C-98B9-0F71177F5B20}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
