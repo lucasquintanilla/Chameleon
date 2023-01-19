@@ -2,7 +2,7 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      dotnet: 6.0
+      - /usr/local/bin/dotnet-install.sh --channel LTS
   pre_build:
     commands:
       - dotnet restore Voxed.WebApp/Voxed.WebApp.csproj
