@@ -13,8 +13,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Data.EF", "Core.Data.E
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Data.EF.Sqlite", "Core.Data.EF.Sqlite\Core.Data.EF.Sqlite.csproj", "{63C66A21-85F7-46CB-88DE-F514DF5BABD2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Data.EF.MySql", "Core.Data.EF.MySql\Core.Data.EF.MySql.csproj", "{E33E25AD-5FA0-49CE-8B24-BB6451920A63}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B2D68657-8631-4248-9F1A-80479CAAA065}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
@@ -23,6 +21,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Data.EF.PostgreSql", "Core.Data.EF.PostgreSql\Core.Data.EF.PostgreSql.csproj", "{549F30D4-8998-46DE-8B9F-F5DEADB9249E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Voxed.WebApp", "Voxed.WebApp\Voxed.WebApp.csproj", "{D327910B-99C9-4897-8FD8-E128075954D4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Data.EF.MySql", "Core.Data.EF.My\Core.Data.EF.MySql.csproj", "{2EEC7538-FEC8-4727-ACF1-B361001B71A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,10 +50,6 @@ Global
 		{63C66A21-85F7-46CB-88DE-F514DF5BABD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{63C66A21-85F7-46CB-88DE-F514DF5BABD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{63C66A21-85F7-46CB-88DE-F514DF5BABD2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E33E25AD-5FA0-49CE-8B24-BB6451920A63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E33E25AD-5FA0-49CE-8B24-BB6451920A63}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E33E25AD-5FA0-49CE-8B24-BB6451920A63}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E33E25AD-5FA0-49CE-8B24-BB6451920A63}.Release|Any CPU.Build.0 = Release|Any CPU
 		{549F30D4-8998-46DE-8B9F-F5DEADB9249E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{549F30D4-8998-46DE-8B9F-F5DEADB9249E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{549F30D4-8998-46DE-8B9F-F5DEADB9249E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -62,6 +58,10 @@ Global
 		{D327910B-99C9-4897-8FD8-E128075954D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D327910B-99C9-4897-8FD8-E128075954D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D327910B-99C9-4897-8FD8-E128075954D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2EEC7538-FEC8-4727-ACF1-B361001B71A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EEC7538-FEC8-4727-ACF1-B361001B71A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EEC7538-FEC8-4727-ACF1-B361001B71A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EEC7538-FEC8-4727-ACF1-B361001B71A6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

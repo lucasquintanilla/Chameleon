@@ -40,7 +40,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Core.Data.EF.MySql\Core.Data.EF.MySql.csproj" />
+    <ProjectReference Include="..\Core.Data.EF.My\Core.Data.EF.MySql.csproj" />
     <ProjectReference Include="..\Core.Data.EF.PostgreSql\Core.Data.EF.PostgreSql.csproj" />
     <ProjectReference Include="..\Core.Data.EF.Sqlite\Core.Data.EF.Sqlite.csproj" />
     <ProjectReference Include="..\Core.Data.EF\Core.Data.EF.csproj" />
