@@ -92,7 +92,20 @@ Pull requests para incorporar cambios son bienvenidos.
 
 ## Infrastructure :building_construction:
 
-![Infrastructure](https://i.ibb.co/dL5W2R5/Imageboard-drawio-2.png)
+AWS Cloud services used:
+
+- Elastic Beanstalk
+- RDS
+- S3 Bucket
+- Route 53
+- CloudWatch
+- Route 53
+- CloudFront (not implemented)
+- CodePipeline (not implemented)
+
+### Infrastructure Diagram
+
+![Infrastructure Diagram](https://i.ibb.co/wwJzQry/Imageboard-drawio.png)
 
 ## External Services :earth_americas:
 
@@ -106,6 +119,7 @@ Pull requests para incorporar cambios son bienvenidos.
 - Options Pattern
 
 ## Architectural Patterns
+
 - MVC
 
 ## Design principles 
@@ -117,6 +131,8 @@ Pull requests para incorporar cambios son bienvenidos.
 - Composition over inheritance
 
 ## EntityFramework Migrations
+
+Cambios base de datos a traves de EF migrations
 
 ### Add Migration
 
