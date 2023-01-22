@@ -46,6 +46,7 @@ Pull requests son bienvenidos.
 
 ## Bugs :bug:
 
+- [ ] Login 
 - [ ] Doble envio de noticacion al OP cuando responden etiquetandolo en un comentario del propio post
 - [x] Fix buscador
 - [ ] Fix Light Mode / Dark Mode
