@@ -14,7 +14,7 @@ Proyecto free, cross-platform y open-source
 
 ## Instalacion :rocket:
 
-- Instalar Visual Studio + .NET 6
+- Instalar Visual Studio + .NET 6 SDK
 - Clonar repositorio ejecutando comando git clone
 > git clone https://github.com/.../Voxed.git
 - Abrir archivo Voxed.sln con Visual Studio
@@ -37,12 +37,12 @@ Proyecto free, cross-platform y open-source
 
 ## Documentation :books:
 
-La intencion de este documento es brindar informacion paso a paso para una facil ejecucion para que cualquiera pueda hacerlo. Puede necesitar ser actualizado, contener errores o pasos faltantes.
+La intencion de esta documentacion es brindar informacion paso a paso para una facil ejecucion. Puede necesitar ser actualizado, contener errores o pasos faltantes.
 En caso de encontrar errores o cualquier inconveniente ejecutando el codigo, por favor hacerlo saber por los medios correspondientes o enviar pull request con los cambios necesarios.
 
 ## Contribucion :coffee:
 
-Pull requests para incorporar cambios son bienvenidos.
+Pull requests son bienvenidos.
 
 ## Bugs :bug:
 
@@ -86,8 +86,8 @@ Pull requests para incorporar cambios son bienvenidos.
 - [ ] Board mixer based on post scores and external post sources
 - [ ] Implementar CloudFront
 - [ ] Redis
-- [ ] Terraform
-- [ ] CI/CD
+- [ ] Infrastruture as Code using Terraform
+- [ ] CI/CD 
 
 
 ## Infrastructure :building_construction:
