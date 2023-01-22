@@ -99,7 +99,6 @@ AWS Cloud services used:
 - S3 Bucket
 - Route 53
 - CloudWatch
-- Route 53
 - CloudFront (not implemented)
 - CodePipeline (not implemented)
 
