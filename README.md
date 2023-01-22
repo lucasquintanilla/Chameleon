@@ -94,23 +94,25 @@ Pull requests para incorporar cambios son bienvenidos.
 
 ![Infrastructure](https://i.ibb.co/dL5W2R5/Imageboard-drawio-2.png)
 
-## External Services
+## External Services :earth_americas:
 
 - Telegram
 - Youtube
 
-## Patrones de diseño
+## Design Patterns
 
-- Code First
 - Repository Pattern
 - Dependency Injection
 - Options Pattern
+
+## Architectural Patterns
 - MVC
 
-## Principios a seguir
+## Design principles 
 
-- KISS
+- Code First
 - SOLID
+- KISS
 - DRY
 - Composition over inheritance
 
