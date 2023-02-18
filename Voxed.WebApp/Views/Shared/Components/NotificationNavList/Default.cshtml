@@ -13,12 +13,12 @@
         <i class="fas fa-laptop"></i>
         <div class="navOnlineDevicesCount">@VoxedHub.TotalUsersOnline.ToString()</div>
     </li>*@
-    <a href="/hub">
+ @*   <a href="/hub">
     <li class="menuIcon tooltip-bottom mobile" data-tooltip="Hub">
         
         <i class="fas fa-compass"></i>
     </li>
-    </a>
+    </a>*@
     <li class="menuIcon tooltip-bottom mobile" data-tooltip="Buscar" data-togglesearch>
         <i class="fas fa-search"></i>
     </li>
@@ -28,6 +28,11 @@
     <li class="search">
         <input type="text" id="searchInput" placeholder="Buscar...">
     </li>
+
+   @* <li class="search">
+        <input type="text" placeholder="Buscar...">
+    </li>
+    <li class="newVox"><i class="fas fa-search"></i></li>*@
 
     @if (SignInManager.IsSignedIn(User))
     {
@@ -68,7 +73,7 @@
     <li class="menuIcon tooltip-bottom mobile" data-toggle="slideMenu" data-tooltip="Menu">
         <i class="fas fa-bars"></i>
     </li>
-    <li class="newVox" data-function="createVox">INICIAR VOX</li>
+    @*<li class="newVox" data-function="createVox">INICIAR VOX</li>*@
 </ul>
 
 <div class="menuModal notifications hide" id="notificationsList">

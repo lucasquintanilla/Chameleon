@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Voxed.WebApp.Models;
 
 namespace Voxed.WebApp.ViewModels
 {
@@ -27,5 +28,6 @@ namespace Voxed.WebApp.ViewModels
         public bool IsFollowed { get; set; }
         public bool IsFavorite { get; set; }
         public bool IsHidden { get; set; }
+        public IEnumerable<IBoardPostViewModel> Posts { get; set; }
     }
 }

@@ -75,7 +75,13 @@ public class VoxController : BaseController
         var userId = User.GetUserId();
         var actions = await _userVoxActionService.GetUserVoxActions(voxId, userId);
 
-        return View(VoxedMapper.Map(vox, actions));
+        var filter = new PostFilter();
+        filter.Categories.Add(vox.CategoryId);
+        filter.IgnorePostIds = new List<Guid>() { vox.Id };
+        var morePosts = await _voxedRepository.Posts.GetByFilterAsync(filter);
+        var posts = VoxedMapper.Map(morePosts);
+
+        return View(VoxedMapper.Map(vox, actions, posts));
     }
 
     [HttpPost("account/message")]
@@ -265,7 +271,7 @@ public class VoxController : BaseController
         {
             UserId = User.GetUserId(),
             IgnorePostIds = skipIdList,
-            Categories = GetSubscriptionCategories(request)
+            Categories = (GetSubscriptionCategories(request)).ToList()
         };
 
         var posts = await _postService.GetByFilter(filter);

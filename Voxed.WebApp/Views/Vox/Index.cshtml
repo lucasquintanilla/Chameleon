@@ -146,12 +146,13 @@
                     <div class="voxDescription" itemprop="articleBody" id="voxContent">@Html.Raw(Model.Content)</div>
                 </header>
             </article>
+            
         </section>
         <section class="voxCommentList">
 
             @await Component.InvokeAsync("CommentForm", new { voxID = Model.Id, userID = Model.UserId })
 
-            <div class="sendMessage">
+            <div class="sendMessage hide">
                 <div data-modal="sendMessage">Enviar mensaje global</div>
             </div>
 
@@ -185,7 +186,7 @@
                 <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
                 </div>
-                </form>*@
+                </form>
 
             @*<form class="commentBox" asp-controller="Comment" asp-action="Create" enctype="multipart/form-data">
                 <div class="pollOption voted hide" id="commentPoll">
@@ -490,7 +491,18 @@
                         </div>
                     }
 
+                    <div class="voxList" id="voxList">
+
+        @await Component.InvokeAsync("VoxDetails", Model.Posts)
+
+    </div>
+    <div class="loadingSpinner hide" id="homeLoadingSpinner">
+        @*<i class="fas fa-spinner fa-spin"></i>*@
+        <i class="fas fa-circle-notch fa-spin"></i>
+    </div>
+
                 </div>
+                
                 <div class="floatQuote" id="floatQuote"></div>
 
                 <div class="floatCommentAction" id="floatCommentAction">
@@ -508,7 +520,14 @@
             </div>
         </section>
     </div>
+
+    
+
+   @* <div class="loadingSpinner hide" id="homeLoadingSpinner">
+        <i class="fas fa-circle-notch fa-spin"></i>
+    </div>*@
 </main>
+
 
 <script>
     var VOX_ID = "@GuidExtension.ToShortString(Model.Id)";

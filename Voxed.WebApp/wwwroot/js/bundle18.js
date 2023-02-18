@@ -16083,7 +16083,7 @@
                         })
                     })
                 }
-            }), ("home" == window.ACTUAL_PAGE || window.ACTUAL_PAGE.includes("category-")) && (window.onscroll = function (t) {
+            }), ("home" == window.ACTUAL_PAGE || window.ACTUAL_PAGE.includes("category-") || window.ACTUAL_PAGE.includes("vox")) && (window.onscroll = function (t) {
                 window.innerHeight + window.scrollY >= document.body.offsetHeight && e.loadMoreVoxs()
             })
         }

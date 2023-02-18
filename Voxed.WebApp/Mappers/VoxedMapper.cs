@@ -59,7 +59,7 @@ public static class VoxedMapper
         };
     }
 
-    public static VoxDetailViewModel Map(Post vox, UserPostAction actions)
+    public static VoxDetailViewModel Map(Post vox, UserPostAction actions, IEnumerable<IBoardPostViewModel> posts = null)
     {
         return new VoxDetailViewModel()
         {
@@ -113,6 +113,7 @@ public static class VoxedMapper
                 Tag = UserTypeDictionary.GetDescription(c.Owner.UserType).ToLower(),
                 IsAdmin = c.Owner.UserType == Core.Entities.UserType.Administrator
             }),
+            Posts = posts
         };
     }
 
