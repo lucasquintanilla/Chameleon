@@ -49,6 +49,11 @@
     <input asp-for="Title" placeholder="Titulo" />
     <span asp-validation-for="Title" class="text-danger"></span>
 
+    
+    <textarea asp-for="Content" class="newVoxContent" id="voxTextarea" maxlength="5000"
+              placeholder="Escribe el contenido del vox o pega una imagen..."></textarea>
+    <span asp-validation-for="Content" class="text-danger"></span>
+
     <div class="selectAttach" id="voxAttachs">
         <div class="uploadFromLocal tooltip-bottom" data-tooltip="Subir archivo" data-upload='{ "type": "local", "container": "voxAttachs" }'>
             <i class="fas fa-upload"></i>
@@ -65,11 +70,6 @@
         </div>
         <img src="" alt="">
     </div>
-    <textarea asp-for="Content" class="newVoxContent" id="voxTextarea" maxlength="5000"
-              placeholder="Escribe el contenido del vox o pega una imagen..."></textarea>
-    <span asp-validation-for="Content" class="text-danger"></span>
-
-
     @*<textarea name="content" class="newVoxContent" id="voxTextarea" maxlength="5000" placeholder="Escribe el contenido del vox o pega una imagen..."></textarea>*@
     @*<div class="subtitle pointer" data-toggle="polls">
             <span class="subtitleText">

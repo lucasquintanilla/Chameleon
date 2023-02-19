@@ -1,0 +1,45 @@
+﻿.i-ua_skin_dark {
+    /* Цвета https://depot.yandex-team.ru/images/colors */
+    --color-g-bg-tertiary: #2f2f32;
+    --color-g-text-primary: #fff;
+    --color-g-text-tertiary: rgba(255, 255, 255, .6);
+    --color-g-text-quaternary: rgba(255, 255, 255, .45);
+    --color-g-text-quinary: rgba(255, 255, 255, .25);
+    --color-g-control-primary: #fdde55;
+    --color-g-control-secondary: rgba(255, 255, 255, .08);
+    --color-g-control-secondary-checked: rgba(255, 255, 255, .25);
+    --color-g-green: #47b143;
+    --color-g-red: #fb5c56;
+    --color-g-yellow: #fdde55;
+    --color-g-greenurl: rgba(255, 255, 255, .87);
+    --color-g-green-text: #5c995c;
+    --color-g-link: #8bb4dd;
+    --color-g-link-visited: #a58bdd;
+    --color-g-stroke: rgba(255, 255, 255, .12);
+    --color-g-fill-05: rgba(255, 255, 255, .05);
+    --color-g-fill-05-solid: #222223;
+    --color-g-fill-20: rgba(255, 255, 255, .2);
+    --color-g-fill-30: rgba(255, 255, 255, .3);
+    --color-g-image-fill: rgba(255, 255, 255, .06);
+    --color-g-overlay: rgba(0, 0, 0, .7);
+    --color-g-skeleton: rgba(255, 255, 255, .05);
+    --color-g-stroke-solid: #1f1f1f;
+    --color-g-fill-adv-label: rgba(255, 255, 255, .1);
+    --color-g-cbir-viewer-bg-overflow: #000;
+    --color-g-cbir-smartcamera-control-primary: #7a55ff;
+    --color-g-bg-overflow: #111112;
+    --color-g-bg-overflow-secondary: #0e0e0e;
+    --color-g-bg-primary: #18181a;
+    --color-g-bg-secondary: #222224;
+    --color-g-text-secondary: rgba(255, 255, 255, .75);
+    --color-g-control-primary-hovered: #fdc93d;
+    --color-g-control-secondary-hovered: rgba(255, 255, 255, .16);
+    --color-g-link-hovered: #fff;
+    --color-g-footer-bg: #161617;
+    /* Тени https://depot.yandex-team.ru/images/shadows */
+    --shadow-g-lightblue-10: 0 0 0 1px rgba(255, 255, 255, .12), 0 2px 7px -4px rgba(0, 0, 0, .4);
+    --shadow-g-lightblue-20: 0 0 0 1px rgba(255, 255, 255, .12), 0 3.3px 10px -4px rgba(0, 0, 0, .4);
+    --shadow-g-lightblue-30: 0 0 0 1px rgba(255, 255, 255, .12), 0 5px 15px -4px rgba(0, 0, 0, .4);
+    --shadow-g-lightblue-40: 0 0 0 1px rgba(255, 255, 255, .12), 0 10px 20px -4px rgba(0, 0, 0, .36);
+    --shadow-g-lightblue-50: 0 0 0 1px rgba(255, 255, 255, .12), 0 15px 25px -4px rgba(0, 0, 0, .32);
+}
