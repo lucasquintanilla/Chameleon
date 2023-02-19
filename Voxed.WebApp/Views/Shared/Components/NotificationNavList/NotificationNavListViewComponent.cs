@@ -1,5 +1,6 @@
 ﻿using Core.Data.Repositories;
 using Core.Entities;
+using Core.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;

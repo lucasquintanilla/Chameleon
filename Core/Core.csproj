@@ -36,6 +36,7 @@
   <ItemGroup>
     <Folder Include="DataSources\Ufftopia\Models\" />
     <Folder Include="Services\Background\" />
+    <Folder Include="Services\Notifications\" />
   </ItemGroup>
 
 </Project>

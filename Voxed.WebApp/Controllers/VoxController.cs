@@ -23,6 +23,8 @@ using Voxed.WebApp.Models;
 using Voxed.WebApp.Services;
 using Voxed.WebApp.Services.Moderation;
 using Voxed.WebApp.ViewModels;
+using Core.Extensions;
+using Core.Services;
 
 namespace Voxed.WebApp.Controllers;
 
@@ -177,7 +179,24 @@ public class VoxController : BaseController
     [HttpPost("report")]
     public async Task<ReportResponse> Report(ReportRequest request)
     {
-        return await _moderationService.Report(request);
+        var response = new ReportResponse();
+
+        try
+        {
+            await _moderationService.Report(request);
+
+            response.Status = true;
+            response.Swal = "Gracias por enviarnos tu denuncia";
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e.Message);
+
+            response.Status = false;
+            response.Swal = "Hubo un error al enviar tu denuncia";
+        }
+
+        return response;
     }
 
 

@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 
-namespace Voxed.WebApp.Services
+namespace Core.Services
 {
     public interface IUserVoxActionService
     {

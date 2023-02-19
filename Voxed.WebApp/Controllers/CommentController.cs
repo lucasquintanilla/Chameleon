@@ -18,6 +18,7 @@ using static Voxed.WebApp.Models.CommentStickyResponse;
 using Core.Services.Avatar;
 using Core.Services.TextFormatter;
 using Voxed.WebApp.Constants;
+using Core.Extensions;
 
 namespace Voxed.WebApp.Controllers;
 

@@ -1,5 +1,7 @@
+using Core.IoC;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Voxed.WebApp.Services;
 
 namespace Voxed.WebApp;
 
@@ -22,5 +24,6 @@ public class Startup
         services.RegisterStorageImageProvider(_configuration);
         services.RegisterStorageServices(_configuration);
         services.RegisterIdentity(_configuration);
+        services.AddTransient<INotificationService, NotificationService>();
     }
 }

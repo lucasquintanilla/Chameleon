@@ -45,6 +45,7 @@
     <ProjectReference Include="..\Core.Data.EF.Sqlite\Core.Data.EF.Sqlite.csproj" />
     <ProjectReference Include="..\Core.Data.EF\Core.Data.EF.csproj" />
     <ProjectReference Include="..\Core.Data\Core.Data.csproj" />
+    <ProjectReference Include="..\Core.IoC\Core.IoC.csproj" />
     <ProjectReference Include="..\Core\Core.csproj" />
   </ItemGroup>
 
@@ -62,7 +63,6 @@
 
   <ItemGroup>
     <Folder Include="Properties\PublishProfiles\" />
-    <Folder Include="Services\Moderation\Models\" />
   </ItemGroup>
 
 

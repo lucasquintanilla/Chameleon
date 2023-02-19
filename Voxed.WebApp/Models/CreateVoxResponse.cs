@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.Extensions;
+using System;
 using Voxed.WebApp.Extensions;
 
 namespace Voxed.WebApp.Models

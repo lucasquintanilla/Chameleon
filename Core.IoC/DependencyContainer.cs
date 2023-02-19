@@ -9,8 +9,8 @@ using Core.Data.Repositories;
 using Core.DataSources.Devox;
 using Core.DataSources.Ufftopia;
 using Core.Entities;
+using Core.Services;
 using Core.Services.Image;
-using Core.Services.ImageProvider;
 using Core.Services.MediaServices;
 using Core.Services.Mixers;
 using Core.Services.Posts;
@@ -30,9 +30,6 @@ using SixLabors.ImageSharp.Web.Caching.AWS;
 using SixLabors.ImageSharp.Web.DependencyInjection;
 using SixLabors.ImageSharp.Web.Providers;
 using SixLabors.ImageSharp.Web.Providers.AWS;
-using System;
-using Voxed.WebApp.Helpers;
-using Voxed.WebApp.Services;
 using Voxed.WebApp.Services.Moderation;
 
 namespace Core.IoC;
@@ -41,7 +38,7 @@ public static class DependencyContainer
 {
     public static void RegisterInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
-        Console.WriteLine("RDS Connection: " + DatabaseHelpers.GetRDSConnectionString(configuration));
+        //Console.WriteLine("RDS Connection: " + DatabaseHelpers.GetRDSConnectionString(configuration));
 
         var provider = configuration.GetValue<DatabaseProvider>("DatabaseProvider");
         services.AddDbContext<VoxedContext>(
@@ -120,7 +117,7 @@ public static class DependencyContainer
 
     public static void RegisterServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddTransient<INotificationService, NotificationService>();
+        //services.AddTransient<INotificationService, NotificationService>();
         services.AddTransient<IPostService, PostService>();
         services.AddSingleton<ITextFormatterService, TextFormatterService>();
         services.AddTransient<IUserVoxActionService, UserVoxActionService>();
@@ -232,7 +229,7 @@ public static class DependencyContainer
 
         services.AddDistributedMemoryCache();
         services.AddSession();
-        services.AddScoped<TraceIPAttribute>();
+        //services.AddScoped<TraceIPAttribute>(); // agregar cuando este en uso
 
         services.ConfigureApplicationCookie(options =>
         {
