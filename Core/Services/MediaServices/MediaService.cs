@@ -63,18 +63,18 @@ public class MediaService : IMediaService
         };
         await _storageService.Save(original);
 
-        var thumbnail = new StorageObject()
-        {
-            Key = Guid.NewGuid() + "_thumb.jpeg",
-            Content = await _imageService.Compress(file.OpenReadStream()),
-            ContentType = file.ContentType
-        };
-        await _storageService.Save(thumbnail);
+        //var thumbnail = new StorageObject()
+        //{
+        //    Key = Guid.NewGuid() + "_thumb.jpeg",
+        //    Content = await _imageService.Compress(file.OpenReadStream()),
+        //    ContentType = file.ContentType
+        //};
+        //await _storageService.Save(thumbnail);
 
         return new Media
         {
             Url = $"/{_config.BaseDirectory}/{original.Key}",
-            ThumbnailUrl = $"/{_config.BaseDirectory}/{thumbnail.Key}",
+            //ThumbnailUrl = $"/{_config.BaseDirectory}/{thumbnail.Key}",
             Type = MediaType.Image,
             Key = original.Key,
             ContentType = original.ContentType,
@@ -93,18 +93,18 @@ public class MediaService : IMediaService
         };
         await _storageService.Save(original);
 
-        var thumbnail = new StorageObject()
-        {
-            Key = Guid.NewGuid() + "_thumb.jpeg",
-            Content = await _imageService.Compress(file.OpenReadStream()),
-            ContentType = file.ContentType
-        };
-        await _storageService.Save(thumbnail);
+        //var thumbnail = new StorageObject()
+        //{
+        //    Key = Guid.NewGuid() + "_thumb.jpeg",
+        //    Content = await _imageService.Compress(file.OpenReadStream()),
+        //    ContentType = file.ContentType
+        //};
+        //await _storageService.Save(thumbnail);
 
         return new Media
         {
             Url = $"/{_config.BaseDirectory}/{original.Key}",
-            ThumbnailUrl = $"/{_config.BaseDirectory}/{thumbnail.Key}",
+            //ThumbnailUrl = $"/{_config.BaseDirectory}/{thumbnail.Key}",
             Type = MediaType.Image,
             Key = original.Key,
             ContentType = original.ContentType,
@@ -115,7 +115,7 @@ public class MediaService : IMediaService
     {
         var thumbnail = new StorageObject()
         {
-            Key = Guid.NewGuid() + "_thumb.jpeg",
+            Key = Guid.NewGuid() + ".jpeg",
             Content = await _youtubeService.GetThumbnail(videoId),
             ContentType = "image/jpeg"
         };
@@ -124,7 +124,7 @@ public class MediaService : IMediaService
         return new Media
         {
             Url = $"https://www.youtube.com/watch?v={videoId}",
-            ThumbnailUrl = $"/{_config.BaseDirectory}/{thumbnail.Key}",
+            //ThumbnailUrl = $"/{_config.BaseDirectory}/{thumbnail.Key}",
             Type = MediaType.YouTube,
             ExternalUrl = $"https://www.youtube.com/watch?v={videoId}"
         };
@@ -141,18 +141,18 @@ public class MediaService : IMediaService
         };
         await _storageService.Save(original);
 
-        var thumbnail = new StorageObject()
-        {
-            Key = Guid.NewGuid() + "_thumb.jpeg",
-            Content = await _imageService.GenerateThumbnail(image),
-            ContentType = "image/jpeg"
-        };
-        await _storageService.Save(thumbnail);
+        //var thumbnail = new StorageObject()
+        //{
+        //    Key = Guid.NewGuid() + "_thumb.jpeg",
+        //    Content = await _imageService.GenerateThumbnail(image),
+        //    ContentType = "image/jpeg"
+        //};
+        //await _storageService.Save(thumbnail);
 
         return new Media
         {
             Url = $"/{_config.BaseDirectory}/{original.Key}",
-            ThumbnailUrl = $"/{_config.BaseDirectory}/{thumbnail.Key}",
+            //ThumbnailUrl = $"/{_config.BaseDirectory}/{thumbnail.Key}",
             Type = MediaType.Image,
             Key = original.Key,
             ContentType = original.ContentType,

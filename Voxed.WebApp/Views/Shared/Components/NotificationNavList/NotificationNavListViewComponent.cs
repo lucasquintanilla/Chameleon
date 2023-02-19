@@ -50,7 +50,7 @@ namespace Voxed.WebApp.Views.Shared.Components.NotificationNavList
                         Count = "1",
                         ContentHash = notification.Comment.Hash,
                         Id = notification.Id.ToString(),
-                        ThumbnailUrl = notification.Post.Media?.ThumbnailUrl
+                        ThumbnailUrl = notification.Post.Media?.Url + Core.Constants.ImageParameter.FormatWebP
                     }
                 });
 

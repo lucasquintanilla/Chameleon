@@ -27,7 +27,7 @@ namespace Core.DataSources.Ufftopia
             // In production code, don't destroy the HttpClient through using, but better use IHttpClientFactory factory or at least reuse an existing HttpClient instance
             // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/http-requests
             // https://www.aspnetmonsters.com/2016/08/2016-08-27-httpclientwrong/
-            Console.WriteLine(DateTimeOffset.Now.ToString("s"));
+            //Console.WriteLine(DateTimeOffset.Now.ToString("s"));
             //using var request = new HttpRequestMessage(new HttpMethod("GET"), "https://ufftopia.net/api/Hilo/CargarMas?ultimoBump=2022-11-28T23:22:52.0090765%2B00:00&categorias=19,3,24,35,4,30,5,7,40,16,29,21,18,41,31,8,6,1,11,10,12,42,9,39,13,25,43,32,14,15,17,38,37,26,23,22,36,20");
             using var request = new HttpRequestMessage(new HttpMethod("GET"), $"https://ufftopia.net/api/Hilo/CargarMas?ultimoBump={DateTimeOffset.Now:s}&categorias=19,3,24,35,4,30,5,7,40,16,29,21,18,41,31,8,6,1,11,10,12,42,9,39,13,25,43,32,14,15,17,38,37,26,23,22,36,20");
             request.Headers.TryAddWithoutValidation("authority", "ufftopia.net");
@@ -48,7 +48,7 @@ namespace Core.DataSources.Ufftopia
             if (!response.IsSuccessStatusCode)
                 return Enumerable.Empty<LoadMoreResponse>();
 
-            Console.WriteLine(await response.Content.ReadAsStringAsync());
+            //Console.WriteLine(await response.Content.ReadAsStringAsync());
 
             return JsonConvert.DeserializeObject<IEnumerable<LoadMoreResponse>>(await response.Content.ReadAsStringAsync());
         }

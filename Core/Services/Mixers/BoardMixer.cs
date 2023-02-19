@@ -35,7 +35,7 @@ namespace Core.Services.Mixers
             var tasks = new List<Task<IEnumerable<MixItem>>>
             {
                 GetDevoxs(),
-                GetUpptopia()
+                //GetUpptopia()
             };
 
             try

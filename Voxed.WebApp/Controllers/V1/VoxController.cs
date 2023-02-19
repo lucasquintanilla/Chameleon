@@ -80,7 +80,7 @@ namespace Voxed.WebApp.Controllers.V1
 
                     //Media
                     MediaUrl = comment.Media?.Url,
-                    MediaThumbnailUrl = comment.Media?.ThumbnailUrl,
+                    MediaThumbnailUrl = comment.Media?.Url + Core.Constants.ImageParameter.Quality40
                     //Extension = request.GetUploadData()?.Extension == UploadDataExtension.Base64 ? GetFileExtensionFromUrl(comment.Media?.Url) : request.GetUploadData()?.Extension,
                     //ExtensionData = request.GetUploadData()?.ExtensionData,
                     //Via = request.GetUploadData()?.Extension == UploadDataExtension.Youtube ? comment.Media?.Url : null,

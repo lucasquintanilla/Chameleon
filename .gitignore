@@ -456,3 +456,4 @@ $RECYCLE.BIN/
 Voxed.WebApp/wwwroot/media/*
 Voxed.WebApp/wwwroot/post-attachments/*
 
+/Voxed.WebApp/wwwroot/is-cache

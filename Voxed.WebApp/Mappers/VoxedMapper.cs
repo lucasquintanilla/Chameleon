@@ -7,6 +7,7 @@ using System.Linq;
 using Voxed.WebApp.Extensions;
 using Voxed.WebApp.Models;
 using Voxed.WebApp.ViewModels;
+using Core.Constants;
 
 namespace Voxed.WebApp.Mappers;
 
@@ -44,7 +45,7 @@ public static class VoxedMapper
             Status = true,
             Niche = vox.CategoryId.ToString(),
             Title = vox.Title,
-            Comments = vox.Comments.Count().ToString(),
+            Comments = vox.Comments.Count.ToString(),
             Extension = string.Empty,
             Sticky = vox.IsSticky ? "1" : "0",
             CreatedAt = vox.CreatedOn.ToString(),
@@ -54,7 +55,8 @@ public static class VoxedMapper
             Slug = vox.Category.ShortName.ToUpper(),
             VoxId = vox.Id.ToString(),
             New = vox.CreatedOn.IsNew(),
-            ThumbnailUrl = vox.Media?.ThumbnailUrl,
+            //ThumbnailUrl = vox.Media?.ThumbnailUrl,
+            ThumbnailUrl = vox.Media?.Url + ImageParameter.FormatWebP,
             Category = vox.Category.Name,
             Href = "/vox/"+ vox.Id.ToShortString(),
         };
@@ -82,8 +84,8 @@ public static class VoxedMapper
 
             Media = new MediaViewModel()
             {
-                ThumbnailUrl = vox.Media.ThumbnailUrl,
-                Url = vox.Media.Url,
+                ThumbnailUrl = vox.Media.Url + ImageParameter.Quality40,
+                Url = vox.Media.Url + ImageParameter.Quality40,
                 MediaType = (ViewModels.MediaType)(int)vox.Media.Type,
                 ExtensionData = vox.Media?.Url.Split('=')[(vox.Media?.Url.Split('=').Length - 1).Value]
             },
@@ -106,7 +108,7 @@ public static class VoxedMapper
                     Url = c.Media?.Url,
                     MediaType = (ViewModels.MediaType)(int)c.Media?.Type,
                     ExtensionData = c.Media?.Url.Split('=')[(vox.Media?.Url.Split('=').Length - 1).Value],
-                    ThumbnailUrl = c.Media?.ThumbnailUrl,
+                    ThumbnailUrl = c.Media?.Url + ImageParameter.Quality40,
                 },
                 IsSticky = c.IsSticky,
                 CreatedOn = c.CreatedOn,
