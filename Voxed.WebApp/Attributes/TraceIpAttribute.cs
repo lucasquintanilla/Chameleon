@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using System.Linq;
 using Voxed.WebApp.Models;
 
-namespace Voxed.WebApp.Services
+namespace Voxed.WebApp.Attributes
 {
     public class TraceIPAttribute : ActionFilterAttribute
     {
