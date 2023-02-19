@@ -185,11 +185,11 @@ public class VoxController : BaseController
     [Route("anon/vox")]
     public async Task<CreateVoxResponse> Create(CreateVoxRequest request)
     {
-        if (ModelState.IsValid is false)
-            return CreateVoxResponse.Failure(ModelState.GetErrorMessage());
-
         try
         {
+            if (ModelState.IsValid is false)
+                return CreateVoxResponse.Failure(ModelState.GetErrorMessage());
+
             var userId = User.GetUserId();
             if (userId == null)
             {

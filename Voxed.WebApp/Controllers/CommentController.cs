@@ -57,13 +57,11 @@ public class CommentController : BaseController
     [HttpPost("comment/nuevo/{id}")]
     public async Task<CreateCommentResponse> Create([FromForm] CreateCommentRequest request, [FromRoute] string id)
     {
-        _logger.LogWarning($"{nameof(CreateCommentRequest)} received. " + JsonConvert.SerializeObject(request));
-
-        if (ModelState.IsValid is false)
-            return CreateCommentResponse.Failure(ModelState.GetErrorMessage());
-
         try
         {
+            if (ModelState.IsValid is false)
+                return CreateCommentResponse.Failure(ModelState.GetErrorMessage());
+
             if (request.HasEmptyContent())
                 return CreateCommentResponse.Failure("Debes ingresar un contenido");
 
@@ -76,11 +74,13 @@ public class CommentController : BaseController
         catch (NotImplementedException e)
         {
             _logger.LogWarning(e.ToString());
+            _logger.LogWarning($"{nameof(CreateCommentRequest)} received. " + JsonConvert.SerializeObject(request));
             return CreateCommentResponse.Failure(e.Message);
         }
         catch (Exception e)
         {
             _logger.LogError(e.ToString());
+            _logger.LogError($"{nameof(CreateCommentRequest)} received. " + JsonConvert.SerializeObject(request));
             return CreateCommentResponse.Failure("Hubo un error");
         }
     }
