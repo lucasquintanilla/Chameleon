@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="6.0.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core.Data.EF.MySql\Core.Data.EF.MySql.csproj" />
+    <ProjectReference Include="..\Core.Data.EF.PostgreSql\Core.Data.EF.PostgreSql.csproj" />
+    <ProjectReference Include="..\Core.Data.EF.Sqlite\Core.Data.EF.Sqlite.csproj" />
+    <ProjectReference Include="..\Core.Data.EF\Core.Data.EF.csproj" />
+    <ProjectReference Include="..\Core.Data\Core.Data.csproj" />
+    <ProjectReference Include="..\Core.Entities\Core.Entities.csproj" />
+    <ProjectReference Include="..\Core\Core.csproj" />
+  </ItemGroup>
+
+</Project>

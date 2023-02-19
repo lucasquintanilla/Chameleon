@@ -35,7 +35,7 @@ using Voxed.WebApp.Helpers;
 using Voxed.WebApp.Services;
 using Voxed.WebApp.Services.Moderation;
 
-namespace Voxed.WebApp;
+namespace Core.IoC;
 
 public static class DependencyContainer
 {

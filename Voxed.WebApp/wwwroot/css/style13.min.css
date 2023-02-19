@@ -576,7 +576,7 @@ img.categoryLogo {
 }
 
 .voxList {
-    margin-top: 50px;
+    margin-top: 56px;
     /* margin-left: 6px;
     margin-right: 6px; */
     display: flex;
@@ -600,13 +600,66 @@ img.categoryLogo {
     position: relative;
     background-size: cover !important;
     /* background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)); */
-    border-radius: 20px;
+    border-radius: 30px;
     border-style: solid;
     border-color: var(--main-bg-color-dark);
     border-width: 4px;
     /* margin-top: 6px; */
     /* margin-left: 6px; */
 }
+
+/*.vox:active {
+    
+    border-style: solid;
+    border-color: mediumvioletred;
+    border-width: 4px;*/
+    /* margin-top: 6px; */
+    /* margin-left: 6px; */
+/*}*/
+
+.vox:focus {
+/*width: 250px;
+height: 250px;*/
+/*box-shadow: 16px 14px 20px #0000008c;*/
+border-radius: 0px;
+/*position: relative;*/
+}
+
+/*.vox:active::before {
+    content: "";*/
+    /* override the gradient here */
+    /*background-image: conic-gradient( #ff0052 20deg, transparent 120deg );
+    width: 150%;
+    height: 150%;
+    position: absolute;
+    animation: rotate 2s linear infinite;
+}
+
+.vox:active::after {*/
+    /*content: "CSSScript";*/
+    /* width: 240px;
+    height: 240px;*/
+    /*background: #101010;
+    position: absolute;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #ff0052;
+    font-size: larger;
+    letter-spacing: 5px;
+    box-shadow: inset 20px 20px 20px #0000008c;
+}*/
+/*
+@keyframes rotate {
+0% {
+transform: rotate(0deg);
+}
+
+100% {
+transform: rotate(-360deg);
+}
+}*/
 
 /* .vox:hover { 
     -moz-transform: scale(1.05);
@@ -951,7 +1004,7 @@ a.selectedVox.vox .over {
 
 @media only screen and (max-width: 600px) {
     .vox {
-        width: calc(100% / 2);
+        width: calc(100% / 1);
         height: calc(100vw / 2);
     }
 

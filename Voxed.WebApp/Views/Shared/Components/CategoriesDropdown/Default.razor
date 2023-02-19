@@ -1,0 +1,19 @@
+﻿@using Core.Entities
+
+<select name="niche">
+<option disabled="disabled" selected="selected" value="0">Elige una categoría</option>
+
+@foreach (var category in Model)
+{
+    <option value="@category.Id">@category.Name</option>
+}
+</select>
+
+@code{
+    private IEnumerable<Category> Model { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Model = await Task.FromResult(new List<Category>());
+    }
+}

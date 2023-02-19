@@ -45,7 +45,7 @@ namespace Core.Services.Mixers
             }
             catch (Exception e)
             {
-                _logger.LogWarning(e.ToString());
+                //_logger.LogWarning(e.ToString());
             }
 
             return mix;
@@ -82,7 +82,7 @@ namespace Core.Services.Mixers
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.ToString());
+                //Console.WriteLine(e.ToString());
                 return Enumerable.Empty<MixItem>();
             }
         }
@@ -116,7 +116,7 @@ namespace Core.Services.Mixers
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.ToString());
+                //Console.WriteLine(e.ToString());
                 return Enumerable.Empty<MixItem>();
             }
         }

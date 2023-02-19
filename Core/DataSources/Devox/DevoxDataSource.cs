@@ -45,7 +45,7 @@ public class DevoxDataSource : IDevoxDataSource
                 return Enumerable.Empty<Vox>();
             
             var content = await response.Content.ReadAsStringAsync();
-            Console.WriteLine(content);
+            //Console.WriteLine(content);
 
             var respon = JsonConvert.DeserializeObject<GetVoxesResponse>(content);
             return respon.Voxes;
@@ -78,7 +78,7 @@ public class DevoxDataSource : IDevoxDataSource
                 return Enumerable.Empty<Vox>();
 
             var content = await response.Content.ReadAsStringAsync();
-            Console.WriteLine(content);
+            //Console.WriteLine(content);
 
             var respon = JsonConvert.DeserializeObject<GetVoxesResponse>(content);
             return respon.Voxes;

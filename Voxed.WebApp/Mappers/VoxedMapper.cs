@@ -96,9 +96,10 @@ public static class VoxedMapper
                 ID = c.Id,
                 Content = c.Content,
                 Hash = c.Hash,
+                IsOp = c.UserId == vox.UserId,
                 AvatarColor = c.Style.ToString().ToLower(),
                 AvatarText = UserTypeDictionary.GetDescription(c.Owner.UserType).ToUpper(),
-                IsOp = c.UserId == vox.UserId,
+                //AvatarText = (c.UserId == vox.UserId ? "OP" : UserTypeDictionary.GetDescription(c.Owner.UserType).ToUpper()),
                 Media = c.Media == null ? null : new MediaViewModel()
                 {
                     Url = c.Media?.Url,

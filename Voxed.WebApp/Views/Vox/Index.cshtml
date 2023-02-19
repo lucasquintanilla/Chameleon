@@ -369,21 +369,21 @@
                                             <span class="commentTagBg commentSticky">Destacado</span>
                                         }
 
-                                        @if (comment.IsOp)
+                                        @*@if (comment.IsOp)
                                         {
                                             <span class="commentTagBg op">OP</span>
-                                        }
+                                        }*@
 
                                         @if (comment.IsAdmin)
                                         {
                                             <span class="author adminTag" style="">@comment.Author</span>
                                             <span class="commentTag adminTag">@comment.Tag</span>
                                         }
-                                        else
+                                        @*else
                                         {
                                             <span class="author   " style="">@comment.Author</span>
                                             <span class="commentTag ">@comment.Tag</span>
-                                        }
+                                        }*@
 
                                         @if (User.IsInRole(nameof(Core.Entities.RoleType.Administrator)))
                                         {
