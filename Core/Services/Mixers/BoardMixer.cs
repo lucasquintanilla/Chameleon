@@ -2,6 +2,7 @@
 using Core.DataSources.Devox.Helpers;
 using Core.DataSources.Ufftopia;
 using Core.Services.Mixers.Models;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,12 +19,14 @@ namespace Core.Services.Mixers
     {
         private readonly IDevoxDataSource _devoxDataSource;
         private readonly IUfftopiaDataSource _ufftopiaDataSource;
+        private readonly ILogger<BoardMixer> _logger;
 
         public BoardMixer(IUfftopiaDataSource ufftopiaDataSource,
-            IDevoxDataSource devoxDataSource)
+            IDevoxDataSource devoxDataSource, ILogger<BoardMixer> logger)
         {
             _ufftopiaDataSource = ufftopiaDataSource;
             _devoxDataSource = devoxDataSource;
+            _logger = logger;
         }
 
         public async Task<Mix> GetMix()
@@ -42,7 +45,7 @@ namespace Core.Services.Mixers
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.ToString());
+                _logger.LogWarning(e.ToString());
             }
 
             return mix;
