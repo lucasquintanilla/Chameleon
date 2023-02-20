@@ -51,7 +51,7 @@
 
     
     <textarea asp-for="Content" class="newVoxContent" id="voxTextarea" maxlength="5000"
-              placeholder="Escribe el contenido del vox o pega una imagen..."></textarea>
+              placeholder="Cuentanos algo..."></textarea>
     <span asp-validation-for="Content" class="text-danger"></span>
 
     <div class="selectAttach" id="voxAttachs">
@@ -88,6 +88,6 @@
     @*<a class="noCaptcha" target="_BLANK" data-event="click,button,CREATE_VOX_NO_MORE_CAPTCHAS" href="/registro">No llenes mas captchas</a>*@
     <button class="buttonPress" id="newVox" type="submit">
         <i class="fas fa-circle-notch fa-spin"></i>
-        <span>Iniciar vox</span>
+        <span>Publicar</span>
     </button>
 </form>

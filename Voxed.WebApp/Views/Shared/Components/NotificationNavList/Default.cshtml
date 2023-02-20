@@ -48,9 +48,9 @@
             }
         </li>
 
-        <li class="menuIcon tooltip-bottom mobile" data-toggle="profileData">
+       @* <li class="menuIcon tooltip-bottom mobile" data-toggle="profileData">
             <i class="fas fa-user"></i>
-        </li>
+        </li>*@
 
         //NUEVO
         <li class="menuModal notifications hide" id="profileData">
@@ -70,10 +70,14 @@
             <i class="fas fa-user"></i>
         </li>
     }
-    <li class="menuIcon tooltip-bottom mobile" data-toggle="slideMenu" data-tooltip="Menu">
+    @*<li class="menuIcon tooltip-bottom mobile" data-toggle="slideMenu" data-tooltip="Menu">
         <i class="fas fa-bars"></i>
+    </li>*@
+    
+    <li class="menuIcon tooltip-bottom mobile" data-function="createVox">
+        <i class="fas fa-plus"></i>
     </li>
-    @*<li class="newVox" data-function="createVox">INICIAR VOX</li>*@
+    @*<li class="newVox" data-function="createVox"><i class="fas fa-plus"></i></li>*@
 </ul>
 
 <div class="menuModal notifications hide" id="notificationsList">
