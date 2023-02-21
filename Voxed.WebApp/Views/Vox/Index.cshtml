@@ -17,7 +17,7 @@
 <main>
     <div class="voxWraper">
         <section class="voxData">
-            <div class="voxBar">
+            <div class="voxBar hide">
                 <div class="voxCategoryBar">
                     <a href="/@Model.CategoryShortName">
                         <div class="voxCategory">
@@ -28,47 +28,6 @@
                             <div class="categoryTitle">@Model.CategoryName</div>
                         </div>
                     </a>
-                </div>
-            </div>
-            <div class="voxBar">
-                <div class="actions">
-                    <div class="voxOption" data-report="vox" data-contentid="@Model.Id" data-contenttype="1">
-                        <i class="fas fa-flag" data-parent></i>
-                        <span class="voxOptionText" data-parent>Denunciar</span>
-                    </div>
-                    <div class="voxOption @(Model.IsFavorite ? "metaSelectedOption": string.Empty)" data-meta="favorite" data-contenttype="1" data-contentid="@Model.Id">
-                        <i data-parent class="fas fa-star"></i>
-                        <span data-parent class="voxOptionText">Favorito</span>
-                    </div>
-                    <div class="voxOption @(Model.IsFollowed ? "metaSelectedOption": string.Empty)" data-meta="follow" data-contenttype="1" data-contentid="@Model.Id">
-                        <i data-parent class="fas fa-thumbtack"></i>
-                        <span data-parent class="voxOptionText">Seguir</span>
-                    </div>
-                    <div class="voxOption @(Model.IsHidden ? "metaSelectedOption": string.Empty)" data-meta="hide" data-contenttype="1" data-contentid="@Model.Id">
-                        <i data-parent class="fas fa-lock"></i>
-                        <span data-parent class="voxOptionText">Ocultar</span>
-                    </div>
-                </div>
-                <div class="metadata">
-                    <div class="authorVox">
-
-                        @if (@Model.UserType == UserType.Administrator)
-                        {
-                            <span class="name adminTag ">@Model.UserName</span>
-                        }
-                        else
-                        {
-                            <span class="name ">Anonimo</span>
-                        }
-
-                        <span class="commentTag ">@Model.CommentTag</span>
-
-                        @if (User.IsInRole(nameof(Core.Entities.RoleType.Administrator)) || User.IsInRole(nameof(Core.Entities.RoleType.Moderator)))
-                        {
-                            <span class="commentTag pointer" data-delete data-contenttype="1" data-contentid="@Model.Id"><i class="fas fa-times" data-parent></i></span>
-                        }
-                    </div>
-                    <div class="voxCreatedAt">@Model.CreatedOn</div>
                 </div>
             </div>
 
@@ -142,6 +101,52 @@
                     }
                 }
 
+                <div class="voxBar">
+                <div class="actions">                    
+                    <div class="voxOption @(Model.IsFavorite ? "metaSelectedOption": string.Empty)" data-meta="favorite" data-contenttype="1" data-contentid="@Model.Id">
+                        <i data-parent class="fas fa-bookmark"></i>
+                        @*<span data-parent class="voxOptionText">Favorito</span>*@
+                        <span data-parent class="voxOptionText"></span>
+                    </div>
+                    <div class="voxOption @(Model.IsFollowed ? "metaSelectedOption": string.Empty)" data-meta="follow" data-contenttype="1" data-contentid="@Model.Id">
+                        <i data-parent class="fas fa-bell"></i>
+                        @*<span data-parent class="voxOptionText">Seguir</span>*@
+                        <span data-parent class="voxOptionText"></span>
+                    </div>
+                    <div class="voxOption @(Model.IsHidden ? "metaSelectedOption": string.Empty)" data-meta="hide" data-contenttype="1" data-contentid="@Model.Id">
+                        <i data-parent class="fas fa-ban"></i>
+                        @*<span data-parent class="voxOptionText">Ocultar</span>*@
+                        <span data-parent class="voxOptionText"></span>
+                    </div>
+                    <div class="voxOption" data-report="vox" data-contentid="@Model.Id" data-contenttype="1">
+                        <i class="fas fa-flag" data-parent></i>
+                        @*<span class="voxOptionText" data-parent>Denunciar</span>*@
+                        <span class="voxOptionText" data-parent></span>
+                    </div>
+                </div>
+                <div class="metadata">
+                    <div class="authorVox">
+
+                        @if (@Model.UserType == UserType.Administrator)
+                        {
+                            <span class="name adminTag ">@Model.UserName</span>
+                        }
+                        else
+                        {
+                            <span class="name ">Anonimo</span>
+                        }
+
+                        @*<span class="commentTag ">@Model.CommentTag</span>*@
+
+                        @if (User.IsInRole(nameof(Core.Entities.RoleType.Administrator)) || User.IsInRole(nameof(Core.Entities.RoleType.Moderator)))
+                        {
+                            <span class="commentTag pointer" data-delete data-contenttype="1" data-contentid="@Model.Id"><i class="fas fa-times" data-parent></i></span>
+                        }
+                    </div>
+                    <div class="voxCreatedAt">@Model.CreatedOn</div>
+                </div>
+            </div>
+
                 <header class="voxBody">
                     <h1 itemprop="name" id="voxTitle">@Model.Title</h1>
                     <div class="voxDescription" itemprop="articleBody" id="voxContent">@Html.Raw(Model.Content)</div>
@@ -150,14 +155,14 @@
             
         </section>
         <section class="voxCommentList">
-
+            
             @await Component.InvokeAsync("CommentForm", new { voxID = Model.Id, userID = Model.UserId })
 
             <div class="sendMessage hide">
                 <div data-modal="sendMessage">Enviar mensaje global</div>
             </div>
 
-            <div class="globalMessages">
+            <div class="globalMessages hide">
                 <ul>
                     @foreach (var message in GlobalMessageService.GetActiveMessages())
                     {
@@ -271,7 +276,7 @@
                 </form>*@
 
 
-            <div class="commentsVoxCount">
+            <div class="commentsVoxCount hide">
                 <span class="commentsVoxText" id="commentsVoxText">
                     Comentarios (<span id="voxComments">@Model.Comments.Count()</span>)
                 </span>
@@ -280,6 +285,7 @@
                 </span>
                 <span class="attachsVox"><span data-openfiles><i class="fas fa-folder"></i></span></span>
             </div>
+
             <div class="commentsVoxCount loadmore disabled unselect" id="commentLoadMore" data-comments="0"></div>
             <div class="attachList hide" id="attachList">
 
@@ -359,7 +365,7 @@
                         <div class="comment @(comment.IsSticky ? "COMMENT_STICKY" : string.Empty)" id="@comment.Hash" data-id="@comment.ID">
                             <div class="commentAvatar">
                                 <div class="unselect avatarColor  @comment.AvatarColor">
-                                    <span class="avatarText">@comment.AvatarText</span>
+                                    @*<span class="avatarText">@comment.AvatarText</span>*@
                                 </div>
                             </div>
                             <div class="commentBody">
@@ -370,15 +376,15 @@
                                             <span class="commentTagBg commentSticky">Destacado</span>
                                         }
 
-                                        @*@if (comment.IsOp)
+                                        @if (comment.IsOp)
                                         {
                                             <span class="commentTagBg op">OP</span>
-                                        }*@
+                                        }
 
                                         @if (comment.IsAdmin)
                                         {
                                             <span class="author adminTag" style="">@comment.Author</span>
-                                            <span class="commentTag adminTag">@comment.Tag</span>
+                                            @*<span class="commentTag adminTag">@comment.Tag</span>*@
                                         }
                                         @*else
                                         {
@@ -388,8 +394,8 @@
 
                                         @if (User.IsInRole(nameof(Core.Entities.RoleType.Administrator)))
                                         {
-                                            <span class="checkComment"><input class="selectComment" type="checkbox" data-checkcomment="@comment.ID"></span>
-                                            <span class="commentTag hide adminTag" data-reactive data-contenttype="0" data-contentid="@comment.ID">Reactivar</span>
+                                            @*<span class="checkComment"><input class="selectComment" type="checkbox" data-checkcomment="@comment.ID"></span>
+                                            <span class="commentTag hide adminTag" data-reactive data-contenttype="0" data-contentid="@comment.ID">Reactivar</span>*@
                                         }
 
                                         @if (User.Identity.IsAuthenticated)
@@ -492,7 +498,7 @@
                         </div>
                     }
 
-                    <div class="voxList" id="voxList">
+                    <div class="voxList " id="voxList">
 
         @await Component.InvokeAsync("VoxDetails", Model.Posts)
 

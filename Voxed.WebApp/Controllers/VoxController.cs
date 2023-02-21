@@ -294,7 +294,21 @@ public class VoxController : BaseController
         };
 
         var posts = await _postService.GetByFilter(filter);
+
+        if (!posts.Any())
+        {
+            filter = new PostFilter()
+            {
+                UserId = User.GetUserId(),
+                IgnorePostIds = Enumerable.Empty<Guid>(),
+                Categories = (GetSubscriptionCategories(request)).ToList()
+            };
+
+            posts = await _postService.GetByFilter(filter);
+        }
+
         return new LoadMoreResponse(VoxedMapper.Map(posts));
+       
     }
     
     private IEnumerable<int> GetSubscriptionCategories(LoadMoreRequest request)
