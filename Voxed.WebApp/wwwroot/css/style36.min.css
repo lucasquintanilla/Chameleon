@@ -1093,13 +1093,17 @@ section.voxCommentList {
 }
 
 .voxOption {
-    font-size: 20px;
-    margin-right: 20px;
+    font-size: 15px;
+    margin-right: 10px;
     cursor: pointer;
+    /*border: solid 1px;*/
+    border-radius: 9999px;
+    padding: 10px 12px;
+    background: var(--main-button-secondary-bg-color-dark);
 }
 
     .voxOption i {
-        margin-right: 4px;
+        /*margin-right: 4px;*/
     }
 
 .pollOption {
@@ -2299,7 +2303,7 @@ select.commentSendToken {
         position: fixed;
         width: 100%;
         bottom: 0;
-        z-index:9999;
+        z-index:9;
     }
 
     header.voxBody h1 {
@@ -3464,7 +3468,12 @@ textarea.newVoxContent {
 
 .openModal {
     display: flex;
+   
 }
+
+
+
+
 
 .verify {
     max-width: 420px;
@@ -3595,6 +3604,16 @@ select {
 /* Celulares */
 
 @media only screen and (max-width: 600px) {
+
+    .createVox {
+        /*display: flex;*/
+        bottom: 0 !important;
+        left: 0%;
+        transform: translate(0%, 0%);
+        min-width: 420px;
+        z-index:10;
+        
+    }
 
     .modalBox {
         min-width: auto;
@@ -4102,7 +4121,7 @@ h5 {
     }
 
     .darkmode .authorVox {
-        color: #549246;
+        color: whitesmoke
     }
 
     .darkmode .commentTag {

@@ -51,12 +51,18 @@
 
 
     <form class="commentBox" id="createComment" enctype="multipart/form-data">
+        <div class="preview" id="previewInputComment">
+            <div class="closePreview" data-closepreview="previewInputComment">
+                <i class="fas fa-times"></i>
+            </div>
+            <img src="/img/home/version4.png" alt="">
+        </div>
         <div class="pollOption voted hide" id="commentPoll">
             <div class="pollOptionText"></div>
             <div class="pollOptionPercent" id="cancelVoteComment">X</div>
         </div>
         <textarea name="content" class="commentTextarea" id="commentTextarea" maxlength="3000"
-                  placeholder="Comenta anonimamente..."></textarea>
+                  placeholder="Que opinas?"></textarea>
         <div class="commentBoxButtons">
             <div class="attachs" id="commentAttachs">
                 <div class="attachButton tooltip-bottom"
@@ -72,12 +78,12 @@
                      data-upload="{ &quot;type&quot;: &quot;link&quot;, &quot;container&quot;: &quot;commentAttachs&quot;, &quot;preview&quot; : &quot;previewInputComment&quot; }">
                     <i class="fas fa-link"></i>
                 </div>
-                <div class="preview" id="previewInputComment">
+                @*<div class="preview" id="previewInputComment">
                     <div class="closePreview" data-closepreview="previewInputComment">
                         <i class="fas fa-times"></i>
                     </div>
                     <img src="/img/home/version4.png" alt="">
-                </div>
+                </div>*@
             </div>
             <button type="submit" class="buttonPress newComment" id="newComment">
                 <i class="fas fa-circle-notch fa-spin"></i>

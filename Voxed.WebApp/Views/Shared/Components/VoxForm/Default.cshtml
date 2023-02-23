@@ -46,12 +46,12 @@
     @await Component.InvokeAsync("CategoriesDropdown")
     <span asp-validation-for="Niche" class="text-danger"></span>
     @*<input name="title" type="text" placeholder="Titulo" maxlength="120">*@
-    <input asp-for="Title" placeholder="Titulo" />
+    <input asp-for="Title" placeholder="Titulo" autofocus />
     <span asp-validation-for="Title" class="text-danger"></span>
 
     
     <textarea asp-for="Content" class="newVoxContent" id="voxTextarea" maxlength="5000"
-              placeholder="Cuentanos algo..."></textarea>
+              placeholder="Cuentanos tus mas profundos secretos..."></textarea>
     <span asp-validation-for="Content" class="text-danger"></span>
 
     <div class="selectAttach" id="voxAttachs">
