@@ -1245,8 +1245,8 @@ textarea.commentTextarea {
     }
 
     .attachButton:active {
-        border-top: 3px solid #dbdbdb;
-        border-bottom: 1px solid #dbdbdb;
+        /*border-top: 3px solid #dbdbdb;
+        border-bottom: 1px solid #dbdbdb;*/
     }
 
 
@@ -1385,6 +1385,8 @@ textarea.commentTextarea:focus {
 
     .commentBox .preview img {
         width: 100%;
+        border: solid 1px white;
+        border-radius: 15px;
     }
 
 .commentData video {
@@ -1533,8 +1535,8 @@ span.greentext {
     right: 4px;
     top: 4px;
     background: white;
-    border-radius: 4px;
-    padding: 8px;
+    border-radius: 9999px;
+    padding: 10px 12px;
     display: flex;
     color: var(--main-bg-color);
 }
@@ -4242,7 +4244,7 @@ h5 {
         }
 
     .darkmode .closePreview {
-        background: var(--main-bg-color);
+        background: black;
         color: white;
     }
 
