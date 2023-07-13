@@ -1,8 +1,6 @@
-# voxed.club
+# Chameleon
 
 Proyecto free, cross-platform y open-source
-
-> https://voxed.club
 
 ## Tech Stack :hammer_and_wrench:
 
