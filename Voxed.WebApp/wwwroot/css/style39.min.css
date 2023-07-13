@@ -1,6 +1,7 @@
 html {
     box-sizing: border-box;
     /* outline: black solid 2px; */
+    scroll-behavior: smooth;
 }
 
 *, *:before, *:after {
@@ -27,6 +28,12 @@ html {
     /* button comment attachment color #3d5871 */
     /* --main-button-secondary-bg-color-dark: #263a4a; */
     --main-button-secondary-bg-color-dark: #303134;
+}
+
+.replyLabel {
+    font-size: 14px;
+    color: grey;
+    margin-right: 5px;
 }
 
 nav {

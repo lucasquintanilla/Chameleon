@@ -13,12 +13,12 @@
         <i class="fas fa-laptop"></i>
         <div class="navOnlineDevicesCount">@VoxedHub.TotalUsersOnline.ToString()</div>
     </li>*@
- @*   <a href="/hub">
+    <a href="/hub">
     <li class="menuIcon tooltip-bottom mobile" data-tooltip="Hub">
         
         <i class="fas fa-compass"></i>
     </li>
-    </a>*@
+    </a>
     <li class="menuIcon tooltip-bottom mobile" data-tooltip="Buscar" data-togglesearch>
         <i class="fas fa-search"></i>
     </li>
@@ -29,14 +29,14 @@
         <input type="text" id="searchInput" placeholder="Buscar...">
     </li>
 
-   @* <li class="search">
+    @*<li class="search">
         <input type="text" placeholder="Buscar...">
-    </li>
-    <li class="newVox"><i class="fas fa-search"></i></li>*@
+    </li>*@
+    @*<li class="newVox"><i class="fas fa-search"></i></li>*@
 
     @if (SignInManager.IsSignedIn(User))
     {
-        <li class="menuIcon tooltip-bottom mobile" data-tooltip="Notificaciones" data-toggle="notificationsList">
+        @*<li class="menuIcon tooltip-bottom mobile" data-tooltip="Notificaciones" data-toggle="notificationsList">
             <i class="fas fa-bell"></i>
             @if (@Model.Any())
             {
@@ -46,13 +46,13 @@
             {
                 <i class="menuIconCount hide" id="notificationsCount">0</i>
             }
-        </li>
+        </li>*@
 
        @* <li class="menuIcon tooltip-bottom mobile" data-toggle="profileData">
             <i class="fas fa-user"></i>
-        </li>*@
+        </li>
 
-        //NUEVO
+        @*//NUEVO*@
         <li class="menuModal notifications hide" id="profileData">
             <ul class="slideMenuOptions">
                 <li class="optionsTitle">Usuario</li>

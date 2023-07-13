@@ -10,7 +10,7 @@
     //}
 }
 
-<html class="@result" lang="es">
+<html class="@result" lang="es" >
 <head>
     <script data-ad-client="ca-pub-6267970976305303" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
     <meta charset="utf-8" />
@@ -18,7 +18,7 @@
     @*<title>@ViewData["NotificationsCount"] @Configuration["ApplicationName"] | @ViewData["Title"]</title>*@
     <title>@ViewData["NotificationsCount"] @Configuration["ApplicationName"]</title>
     <meta name="theme-color" content="#2C3E50" />
-    <link rel="stylesheet" href="~/css/style38.min.css" />
+    <link rel="stylesheet" href="~/css/style39.min.css" />
     <meta name="description"
           content="Voxed es una plataforma social orientada al anonimato, donde se puede compartir casi cualquier tipo de contenido de forma inmediata.">
 
@@ -28,7 +28,8 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto&amp;display=swap"
           rel="stylesheet" async defer>
     <link rel="stylesheet" src="https://unpkg.com/css-tooltip" />
-    <link rel="shortcut icon" href="/favicon.ico">
+    @*<link rel="shortcut icon" href="/favicon.ico">*@
+    <link rel="shortcut icon" href="/favicon-new.ico">
 </head>
 <body class="noSelect">
     <nav>
@@ -64,6 +65,8 @@
 
         @await Component.InvokeAsync("NotificationNavList")
 
+       
+       
         <div class="alertBox"></div>
     </nav>
     <div class="bottonContextual hide" data-function="createVox"><i class="fas fa-plus"></i></div>
@@ -707,7 +710,7 @@
 
     <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
 
-    <script src="~/js/bundle18.js"></script>
+    <script src="~/js/bundle19.js"></script>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

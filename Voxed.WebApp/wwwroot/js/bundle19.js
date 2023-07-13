@@ -3734,11 +3734,13 @@
             let t = e.id,
                 n = e.querySelector(".commentContent").textContent.match(/>>([a-zA-Z0-9]{7}\b)/g);
             if (!n) return !1;
+            e.querySelector(".commentContent").innerHTML = '<span class="replyLabel">En respuesta a </span>' + e.querySelector(".commentContent").innerHTML
             n = n.map(e => e.slice(2)), n.forEach(n => {
                 let a = document.getElementById(n),
                     r = !!e.querySelector(".op");
                 if (!a) return !1;
-                a.querySelector(".commentReply").innerHTML += `<a href="#${t}" data-quote="${t}">>>${t}${r ? "(OP)" : ""}</a>`
+                var replies = a.querySelector(".commentReply").innerHTML;
+                a.querySelector(".commentReply").innerHTML += `${replies ? "" : `<span class="replyLabel">Respondido por </span>`} <a href="#${t}" data-quote="${t}">>>${t}${r ? "(OP)" : ""}</a>`
             })
         }
         toggleFilesVox() {
