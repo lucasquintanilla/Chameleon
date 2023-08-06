@@ -13,8 +13,8 @@ namespace Core.Data.EF.EntityTypeConfigurations
             builder.Property(x => x.Url)
                .IsUnicode(true);
 
-            builder.Property(x => x.ThumbnailUrl)
-               .IsUnicode(true);
+            //builder.Property(x => x.ThumbnailUrl)
+            //   .IsUnicode(true);
         }
     }
 }

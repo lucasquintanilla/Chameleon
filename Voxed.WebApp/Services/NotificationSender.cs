@@ -1,9 +1,9 @@
-﻿using Core.Entities;
+﻿using Core.Constants;
+using Core.Entities;
 using Core.Extensions;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
-using Voxed.WebApp.Extensions;
 using Voxed.WebApp.Hubs;
 
 namespace Voxed.WebApp.Services
@@ -54,7 +54,8 @@ namespace Voxed.WebApp.Services
                         Count = "1",
                         ContentHash = _comment.Hash,
                         Id = notification.Id.ToString(),
-                        ThumbnailUrl = _vox.Media?.Url + Core.Constants.ImageParameter.FormatWebP
+                        //ThumbnailUrl = _vox.Media?.Url + Core.Constants.ImageParameter.FormatWebP
+                        ThumbnailUrl = $"/media/{_vox.Media?.Key}" + ImageParameter.FormatWebP,
                     }
                 };
 

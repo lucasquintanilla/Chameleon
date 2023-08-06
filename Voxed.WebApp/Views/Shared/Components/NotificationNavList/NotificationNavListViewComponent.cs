@@ -1,4 +1,6 @@
-﻿using Core.Data.Repositories;
+﻿using Core.Constants;
+using Core.Data.Repositories;
+using Core.DataSources.Devox.Models;
 using Core.Entities;
 using Core.Extensions;
 using Microsoft.AspNetCore.Identity;
@@ -50,7 +52,8 @@ namespace Voxed.WebApp.Views.Shared.Components.NotificationNavList
                         Count = "1",
                         ContentHash = notification.Comment.Hash,
                         Id = notification.Id.ToString(),
-                        ThumbnailUrl = notification.Post.Media?.Url + Core.Constants.ImageParameter.FormatWebP
+                        //ThumbnailUrl = notification.Post.Media?.Url + Core.Constants.ImageParameter.FormatWebP
+                        ThumbnailUrl = $"/media/{notification.Post.Media?.Key}" + ImageParameter.FormatWebP,
                     }
                 });
 

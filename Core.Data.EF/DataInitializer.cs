@@ -91,7 +91,6 @@ namespace Core.Data.EF
                     Nsfw = false,
                     Media = new Media {
                         Url = "/img/categories/anm.jpg",
-                        ThumbnailUrl = "/img/categories/anm.jpg",
                         Type = MediaType.Image
                     },
                 },
@@ -101,7 +100,6 @@ namespace Core.Data.EF
                     Nsfw = false,
                     Media = new Media {
                         Url = "/img/categories/art.jpg",
-                        ThumbnailUrl = "/img/categories/art.jpg",
                         Type = MediaType.Image
                     }
                 },
@@ -111,7 +109,6 @@ namespace Core.Data.EF
                     Nsfw = false,
                     Media = new Media {
                         Url = "/img/categories/aut.jpg",
-                        ThumbnailUrl = "/img/categories/aut.jpg",
                         Type = MediaType.Image
                     }
                 },
@@ -121,7 +118,6 @@ namespace Core.Data.EF
                     Nsfw = false,
                     Media = new Media {
                         Url = "/img/categories/cnc.jpg",
-                        ThumbnailUrl = "/img/categories/cnc.jpg",
                         Type = MediaType.Image
                     }
                 },
@@ -131,7 +127,6 @@ namespace Core.Data.EF
                     Nsfw = false,
                     Media = new Media {
                         Url = "/img/categories/cin.jpg",
-                        ThumbnailUrl = "/img/categories/cin.jpg",
                         Type = MediaType.Image
                     }
                 },
@@ -141,7 +136,6 @@ namespace Core.Data.EF
                     Nsfw = false,
                     Media = new Media {
                         Url = "/img/categories/_con.jpg",
-                        ThumbnailUrl = "/img/categories/_con.jpg",
                         Type = MediaType.Image
                     }
                 },
@@ -151,7 +145,6 @@ namespace Core.Data.EF
                     Nsfw = false,
                     Media = new Media {
                         Url = "/img/categories/dpt.jpg",
-                        ThumbnailUrl = "/img/categories/dpt.jpg",
                         Type = MediaType.Image
                     }
                 },
@@ -161,7 +154,6 @@ namespace Core.Data.EF
                     Nsfw = false,
                     Media = new Media {
                         Url = "/img/categories/dwl.jpg",
-                        ThumbnailUrl = "/img/categories/dwl.jpg",
                         Type = MediaType.Image
                     }
                 },
@@ -171,7 +163,6 @@ namespace Core.Data.EF
                     Nsfw = false,
                     Media = new Media {
                         Url = "/img/categories/eco.jpg",
-                        ThumbnailUrl = "/img/categories/eco.jpg",
                         Type = MediaType.Image
                     }
                 },
@@ -181,7 +172,6 @@ namespace Core.Data.EF
                     Nsfw = false,
                     Media = new Media {
                         Url = "/img/categories/gas.jpg",
-                        ThumbnailUrl = "/img/categories/gas.jpg",
                         Type = MediaType.Image
                     }
                 },
@@ -191,7 +181,6 @@ namespace Core.Data.EF
                     Nsfw = false,
                     Media = new Media {
                         Url = "/img/categories/off.jpg",
-                        ThumbnailUrl = "/img/categories/off.jpg",
                         Type = MediaType.Image
                     }
                 },
@@ -201,7 +190,6 @@ namespace Core.Data.EF
                     Nsfw = false,
                     Media = new Media {
                         Url = "/img/categories/his.jpg",
-                        ThumbnailUrl = "/img/categories/his.jpg",
                         Type = MediaType.Image,
                     }
                 },
@@ -211,7 +199,6 @@ namespace Core.Data.EF
                     Nsfw = false,
                     Media = new Media {
                         Url = "/img/categories/hum.jpg",
-                        ThumbnailUrl = "/img/categories/hum.jpg",
                         Type = MediaType.Image
                     }
                 },
@@ -221,7 +208,6 @@ namespace Core.Data.EF
                     Nsfw = false,
                     Media = new Media {
                         Url = "/img/categories/hmr.jpg",
-                        ThumbnailUrl = "/img/categories/hmr.jpg",
                         Type = MediaType.Image
                     }
                 },
@@ -231,7 +217,6 @@ namespace Core.Data.EF
                     Nsfw = false,
                     Media = new Media {
                         Url = "/img/categories/gmr.jpg",
-                        ThumbnailUrl = "/img/categories/gmr.jpg",
                         Type = MediaType.Image
                     }
                 },
@@ -241,7 +226,6 @@ namespace Core.Data.EF
                     Nsfw = false,
                     Media = new Media {
                         Url = "/img/categories/lit.jpg",
-                        ThumbnailUrl = "/img/categories/lit.jpg",
                         Type = MediaType.Image
                     }
                 },
@@ -251,7 +235,6 @@ namespace Core.Data.EF
                     Nsfw = false,
                     Media = new Media {
                         Url = "/img/categories/lgr.jpg",
-                        ThumbnailUrl = "/img/categories/lgr.jpg",
                         Type = MediaType.Image
                     }
                 },
@@ -261,7 +244,6 @@ namespace Core.Data.EF
                     Nsfw = false,
                     Media = new Media {
                         Url = "/img/categories/mus.jpg",
-                        ThumbnailUrl = "/img/categories/mus.jpg",
                         Type = MediaType.Image
                     }
                 },
@@ -271,7 +253,6 @@ namespace Core.Data.EF
                     Nsfw = false,
                     Media = new Media {
                         Url = "/img/categories/not.jpg",
-                        ThumbnailUrl = "/img/categories/not.jpg",
                         Type = MediaType.Image
                     }
                 },
@@ -281,7 +262,6 @@ namespace Core.Data.EF
                     Nsfw = false,
                     Media = new Media {
                         Url = "/img/categories/par.jpg",
-                        ThumbnailUrl = "/img/categories/par.jpg",
                         Type = MediaType.Image
                     }
                 },
@@ -291,7 +271,6 @@ namespace Core.Data.EF
                     Nsfw = false,
                     Media = new Media {
                         Url = "/img/categories/pol.jpg",
-                        ThumbnailUrl = "/img/categories/pol.jpg",
                         Type = MediaType.Image
                     }
                 },
@@ -301,7 +280,6 @@ namespace Core.Data.EF
                     Nsfw = false,
                     Media = new Media {
                         Url = "/img/categories/prg.jpg",
-                        ThumbnailUrl = "/img/categories/prg.jpg",
                         Type = MediaType.Image
                     }
                 },
@@ -311,7 +289,6 @@ namespace Core.Data.EF
                     Nsfw = false,
                     Media = new Media {
                         Url = "/img/categories/pro.jpg",
-                        ThumbnailUrl = "/img/categories/pro.jpg",
                         Type = MediaType.Image
                     }
                 },
@@ -321,7 +298,6 @@ namespace Core.Data.EF
                     Nsfw = false,
                     Media = new Media {
                         Url = "/img/categories/sld.jpg",
-                        ThumbnailUrl = "/img/categories/sld.jpg",
                         Type = MediaType.Image
                     }
                 },
@@ -331,7 +307,6 @@ namespace Core.Data.EF
                     Nsfw = false,
                     Media = new Media {
                         Url = "/img/categories/tec.jpg",
-                        ThumbnailUrl = "/img/categories/tec.jpg",
                         Type = MediaType.Image
                     }
                 },
@@ -341,7 +316,6 @@ namespace Core.Data.EF
                     Nsfw = false,
                     Media = new Media {
                         Url = "/img/categories/vid.jpg",
-                        ThumbnailUrl = "/img/categories/vid.jpg",
                         Type = MediaType.Image
                     }
                 },
@@ -351,7 +325,6 @@ namespace Core.Data.EF
                     Nsfw = false,
                     Media = new Media {
                         Url = "/img/categories/ytb.jpg",
-                        ThumbnailUrl = "/img/categories/ytb.jpg",
                         Type = MediaType.Image
                     }
                 },
@@ -361,7 +334,6 @@ namespace Core.Data.EF
                     Nsfw = true,
                     Media = new Media {
                         Url = "/img/categories/gtb.jpg",
-                        ThumbnailUrl = "/img/categories/gtb.jpg",
                         Type = MediaType.Image
                     }
                 },
@@ -371,7 +343,6 @@ namespace Core.Data.EF
                     Nsfw = true,
                     Media = new Media {
                         Url = "/img/categories/xxx.jpg",
-                        ThumbnailUrl = "/img/categories/xxx.jpg",
                         Type = MediaType.Image
                     }
                 },
@@ -381,7 +352,6 @@ namespace Core.Data.EF
                     Nsfw = false,
                     Media = new Media {
                         Url = "/img/categories/uff.jpg",
-                        ThumbnailUrl = "/img/categories/uff.jpg",
                         Type = MediaType.Image
                     }
                 },
@@ -391,7 +361,6 @@ namespace Core.Data.EF
                     Nsfw = true,
                     Media = new Media {
                         Url = "/img/categories/hot.jpg",
-                        ThumbnailUrl = "/img/categories/hot.jpg",
                         Type = MediaType.Image
                     }
                 },

@@ -138,10 +138,6 @@ namespace Core.Data.EF.PostgreSql.Migrations
                     b.Property<string>("ThumbnailKey")
                         .HasColumnType("text");
 
-                    b.Property<string>("ThumbnailUrl")
-                        .IsUnicode(true)
-                        .HasColumnType("text");
-
                     b.Property<int>("Type")
                         .HasColumnType("integer");
 

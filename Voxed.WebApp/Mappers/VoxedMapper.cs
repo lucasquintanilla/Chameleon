@@ -1,4 +1,5 @@
-﻿using Core.Entities;
+﻿using Core.Constants;
+using Core.Entities;
 using Core.Extensions;
 using Core.Services.Mixers.Models;
 using Core.Shared;
@@ -7,7 +8,6 @@ using System.Linq;
 using Voxed.WebApp.Extensions;
 using Voxed.WebApp.Models;
 using Voxed.WebApp.ViewModels;
-using Core.Constants;
 
 namespace Voxed.WebApp.Mappers;
 
@@ -55,9 +55,10 @@ public static class VoxedMapper
             Slug = vox.Category.ShortName.ToUpper(),
             VoxId = vox.Id.ToString(),
             New = vox.CreatedOn.IsNew(),
-            ThumbnailUrl = vox.Media?.Url + ImageParameter.FormatWebP,
+            //ThumbnailUrl = vox.Media?.Url + ImageParameter.FormatWebP,
+            ThumbnailUrl = $"/media/{vox.Media?.Key}" + ImageParameter.FormatWebP,
             Category = vox.Category.Name,
-            Href = "/vox/"+ vox.Id.ToShortString(),
+            Href = "/vox/" + vox.Id.ToShortString(),
         };
     }
 
@@ -83,11 +84,13 @@ public static class VoxedMapper
 
             Media = new MediaViewModel()
             {
-                ThumbnailUrl = vox.Media.Url + ImageParameter.Quality40,
-                Url = vox.Media.Url + ImageParameter.Quality40,
+                //ThumbnailUrl = vox.Media.Url + ImageParameter.Quality40,
+                ThumbnailUrl = $"/media/{vox.Media.Key}" + ImageParameter.Quality40,
+                //Url = vox.Media.Url + ImageParameter.Quality40,
+                Url = $"/media/{vox.Media.Key}" + ImageParameter.Quality40,
                 MediaType = (ViewModels.MediaType)(int)vox.Media.Type,
                 ExtensionData = vox.Media?.Url.Split('=')[(vox.Media?.Url.Split('=').Length - 1).Value],
-                ExternalUrl = vox.Media?.ExternalUrl                
+                ExternalUrl = vox.Media?.ExternalUrl
             },
 
             IsFavorite = actions.IsFavorite,
@@ -105,16 +108,18 @@ public static class VoxedMapper
                 //AvatarText = (c.UserId == vox.UserId ? "OP" : UserTypeDictionary.GetDescription(c.Owner.UserType).ToUpper()),
                 Media = c.Media == null ? null : new MediaViewModel()
                 {
-                    Url = c.Media?.Url,
+                    //Url = c.Media?.Url,
+                    Url = $"/media/{c.Media?.Key}" + ImageParameter.Quality40,
                     MediaType = (ViewModels.MediaType)(int)c.Media?.Type,
                     ExtensionData = c.Media?.Url.Split('=')[(vox.Media?.Url.Split('=').Length - 1).Value],
-                    ThumbnailUrl = c.Media?.Url + ImageParameter.Quality40,
+                    //ThumbnailUrl = c.Media?.Url + ImageParameter.Quality40,
+                    ThumbnailUrl = $"/media/{c.Media?.Key}" + ImageParameter.Quality40,
                     ExternalUrl = c.Media?.ExternalUrl,
                 },
                 IsSticky = c.IsSticky,
                 CreatedOn = c.CreatedOn,
                 Style = c.Style.ToString().ToLower(),
-                Author = c.Owner.UserType == Core.Entities.UserType.Administrator ? c.Owner?.UserName  : "Anonimo",
+                Author = c.Owner.UserType == Core.Entities.UserType.Administrator ? c.Owner?.UserName : "Anonimo",
                 Tag = UserTypeDictionary.GetDescription(c.Owner.UserType).ToLower(),
                 IsAdmin = c.Owner.UserType == Core.Entities.UserType.Administrator
             }),

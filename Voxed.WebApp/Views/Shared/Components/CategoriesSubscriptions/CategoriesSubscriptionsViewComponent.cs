@@ -19,10 +19,7 @@ namespace Voxed.WebApp.Views.Shared.Components.CategoriesSubscriptions
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            if (_categories == null)
-            {
-                _categories = await _voxedRepository.Categories.GetAll();
-            }
+            _categories ??= await _voxedRepository.Categories.GetAll();
 
             return View(_categories);
         }

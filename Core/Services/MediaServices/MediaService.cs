@@ -108,17 +108,17 @@ public class MediaService : IMediaService
         {
             Url = $"/{_config.BaseDirectory}/{thumbnail.Key}",
             Type = MediaType.YouTube,
+            Key = thumbnail.Key,
             ExternalUrl = $"https://www.youtube.com/watch?v={videoId}"
         };
     }
 
     private async Task<Media> SaveFromBase64(string base64)
     {
-        var image = _imageService.GetStreamFromBase64(base64);
         var original = new StorageObject()
         {
             Key = Guid.NewGuid() + ".jpeg",
-            Content = image,
+            Content = _imageService.GetStreamFromBase64(base64),
             ContentType = "image/jpeg"
         };
         await _storageService.Save(original);
