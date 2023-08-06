@@ -55,7 +55,6 @@ public static class VoxedMapper
             Slug = vox.Category.ShortName.ToUpper(),
             VoxId = vox.Id.ToString(),
             New = vox.CreatedOn.IsNew(),
-            //ThumbnailUrl = vox.Media?.ThumbnailUrl,
             ThumbnailUrl = vox.Media?.Url + ImageParameter.FormatWebP,
             Category = vox.Category.Name,
             Href = "/vox/"+ vox.Id.ToShortString(),
@@ -87,7 +86,8 @@ public static class VoxedMapper
                 ThumbnailUrl = vox.Media.Url + ImageParameter.Quality40,
                 Url = vox.Media.Url + ImageParameter.Quality40,
                 MediaType = (ViewModels.MediaType)(int)vox.Media.Type,
-                ExtensionData = vox.Media?.Url.Split('=')[(vox.Media?.Url.Split('=').Length - 1).Value]
+                ExtensionData = vox.Media?.Url.Split('=')[(vox.Media?.Url.Split('=').Length - 1).Value],
+                ExternalUrl = vox.Media?.ExternalUrl                
             },
 
             IsFavorite = actions.IsFavorite,
@@ -109,6 +109,7 @@ public static class VoxedMapper
                     MediaType = (ViewModels.MediaType)(int)c.Media?.Type,
                     ExtensionData = c.Media?.Url.Split('=')[(vox.Media?.Url.Split('=').Length - 1).Value],
                     ThumbnailUrl = c.Media?.Url + ImageParameter.Quality40,
+                    ExternalUrl = c.Media?.ExternalUrl,
                 },
                 IsSticky = c.IsSticky,
                 CreatedOn = c.CreatedOn,
