@@ -36,7 +36,7 @@
 
     @if (SignInManager.IsSignedIn(User))
     {
-        @*<li class="menuIcon tooltip-bottom mobile" data-tooltip="Notificaciones" data-toggle="notificationsList">
+        <li class="menuIcon tooltip-bottom mobile" data-tooltip="Notificaciones" data-toggle="notificationsList">
             <i class="fas fa-bell"></i>
             @if (@Model.Any())
             {
@@ -46,7 +46,7 @@
             {
                 <i class="menuIconCount hide" id="notificationsCount">0</i>
             }
-        </li>*@
+        </li>
 
        @* <li class="menuIcon tooltip-bottom mobile" data-toggle="profileData">
             <i class="fas fa-user"></i>

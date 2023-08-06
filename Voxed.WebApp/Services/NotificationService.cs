@@ -52,15 +52,13 @@ public class NotificationService : INotificationService
     public async Task ManageNotifications(Comment comment)
     {
         var vox = await _voxedRepository.Posts.GetById(comment.PostId);
-        var notifications = new NotificationBuilder()
-                .WithVox(vox)
+        var notifications = new NotificationBuilder(_voxedRepository, _textFormatter)
+                .WithPost(vox)
                 .WithComment(comment)
-                .UseRepository(_voxedRepository)
-                .UseFormatter(_textFormatter)
                 .AddReplies()
                 .AddOPNotification()
                 .AddVoxSusbcriberNotifications()
-                .Save();
+                .Build();
 
         var sender = new NotificationSender()
             .WithVox(vox)
