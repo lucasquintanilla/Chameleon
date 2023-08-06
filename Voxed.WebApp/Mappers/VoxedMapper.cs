@@ -74,7 +74,7 @@ public static class VoxedMapper
             CommentTag = UserTypeDictionary.GetDescription(vox.Owner.UserType).ToLower(),
             CategoryName = vox.Category.Name,
             CategoryShortName = vox.Category.ShortName,
-            CategoryThumbnailUrl = vox.Category.Media.ThumbnailUrl,
+            CategoryThumbnailUrl = vox.Category.Media.Url,
             CommentsAttachmentCount = vox.Comments.Where(x => x.Media != null).Count(),
             CommentsCount = vox.Comments.Count,
             UserName = vox.Owner.UserName,

@@ -94,7 +94,7 @@ public class NotificationService : INotificationService
 
             //Media
             MediaUrl = comment.Media?.Url,
-            MediaThumbnailUrl = comment.Media?.ThumbnailUrl,
+            MediaThumbnailUrl = comment.Media?.Url,
             Extension = request.GetVoxedAttachment()?.Extension == VoxedAttachmentFileExtension.Base64 ? Core.Utilities.UrlUtility.GetFileExtensionFromUrl(comment.Media?.Url) : request.GetVoxedAttachment()?.Extension,
             ExtensionData = request.GetVoxedAttachment()?.ExtensionData,
             Via = request.GetVoxedAttachment()?.Extension == VoxedAttachmentFileExtension.Youtube ? comment.Media?.Url : null,

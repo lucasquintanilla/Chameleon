@@ -4,7 +4,7 @@
 
     public class Media : Entity
     {
-        public string Url { get; set; }
+        public string Url { get; set; } //Eliminar
         public string ThumbnailUrl { get; set; } //Eliminar
         public MediaType Type { get; set; }
         public string Key { get; set; }
