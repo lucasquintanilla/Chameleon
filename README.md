@@ -140,8 +140,8 @@ Cambios base de datos a traves de EF migrations
 
 > add-migration NombreDeMigracion
 
-example: 
+Example: 
 
 Default Project: Core.Data.EF.Sqlite
-EntityFrameworkCore\Add-Migration RemoveMediaThumbnailUrl
+Command: EntityFrameworkCore\Add-Migration RemoveMediaThumbnailUrl
 
