@@ -1,20 +1,36 @@
 ﻿using Core.Constants;
 using Core.Entities;
 using Core.Extensions;
+using Core.Services.MediaServices;
 using Core.Services.Mixers.Models;
 using Core.Shared;
 using System.Collections.Generic;
 using System.Linq;
 using Voxed.WebApp.Extensions;
+using Voxed.WebApp.Hubs;
 using Voxed.WebApp.Models;
 using Voxed.WebApp.ViewModels;
 
 namespace Voxed.WebApp.Mappers;
 
-public static class VoxedMapper
+public interface IMapper
 {
-    private static string MediaEndpoint = "post-attachments";
-    public static VoxResponse Map(MixItem vox)
+    VoxResponse Map(MixItem vox);
+    VoxResponse Map(Post vox);
+    VoxDetailViewModel Map(Post vox, UserPostAction actions, IEnumerable<IBoardPostViewModel> posts = null);
+    IEnumerable<VoxResponse> Map(IEnumerable<Post> voxs);
+    UserNotification Map(Notification notification);
+}
+
+public class VoxedMapper : IMapper
+{
+    private readonly string MediaEndpoint;
+
+    public VoxedMapper(IMediaService mediaService)
+    {
+        MediaEndpoint = mediaService.Location;
+    }
+    public VoxResponse Map(MixItem vox)
     {
         return new VoxResponse()
         {
@@ -38,7 +54,7 @@ public static class VoxedMapper
         };
     }
 
-    public static VoxResponse Map(Post vox)
+    public VoxResponse Map(Post vox)
     {
         return new VoxResponse()
         {
@@ -63,7 +79,7 @@ public static class VoxedMapper
         };
     }
 
-    public static VoxDetailViewModel Map(Post vox, UserPostAction actions, IEnumerable<IBoardPostViewModel> posts = null)
+    public VoxDetailViewModel Map(Post vox, UserPostAction actions, IEnumerable<IBoardPostViewModel> posts = null)
     {
         return new VoxDetailViewModel()
         {
@@ -128,5 +144,34 @@ public static class VoxedMapper
         };
     }
 
-    public static IEnumerable<VoxResponse> Map(IEnumerable<Post> voxs) => voxs.Select(Map);
+    public IEnumerable<VoxResponse> Map(IEnumerable<Post> voxs) => voxs.Select(Map);
+
+    public UserNotification Map(Notification notification)
+    {
+        return new UserNotification
+        {
+            Type = notification.Type.ToString().ToLowerInvariant(),
+            Content = new NotificationContent()
+            {
+                VoxHash = notification.Post.Id.ToShortString(),
+                NotificationBold = GetTitleNotification(notification.Type),
+                NotificationText = notification.Post.Title,
+                Count = "1",
+                ContentHash = notification.Comment.Hash,
+                Id = notification.Id.ToString(),
+                //ThumbnailUrl = notification.Post.Media?.Url + Core.Constants.ImageParameter.FormatWebP
+                ThumbnailUrl = $"/{MediaEndpoint}/{notification.Post.Media?.Key}" + ImageParameter.FormatWebP,
+            }
+        };
+    }
+
+    private string GetTitleNotification(NotificationType notificationType)
+    {
+        return notificationType switch
+        {
+            NotificationType.New => "Nuevo comentario",
+            NotificationType.Reply => "Nueva respuesta",
+            _ => "Nueva notificacion",
+        };
+    }
 }

@@ -1,6 +1,7 @@
 using Core.IoC;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Voxed.WebApp.Mappers;
 using Voxed.WebApp.Services;
 
 namespace Voxed.WebApp;
@@ -26,6 +27,8 @@ public class Startup
         services.RegisterStorageServices(_configuration);
         services.RegisterIdentity(_configuration);
         services.AddTransient<INotificationService, NotificationService>();
+        services.AddSingleton<INotificationSender, NotificationSender>();
+        services.AddSingleton<IMapper, VoxedMapper>();
     }
 
     static void LogConfigurationValues(IConfiguration configuration)

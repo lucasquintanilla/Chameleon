@@ -39,6 +39,7 @@ public class VoxController : BaseController
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly IMixer _boardMixer;
     private readonly IDevoxDataSource _devoxDataSource;
+    private readonly IMapper _mapper;
 
     public VoxController(
         ILogger<VoxController> logger,
@@ -51,7 +52,8 @@ public class VoxController : BaseController
         IModerationService moderationService,
         IServiceScopeFactory scopeFactory,
         IMixer boardMixer,
-        IDevoxDataSource devoxDataSource)
+        IDevoxDataSource devoxDataSource,
+        IMapper mapper)
         : base(accessor, userManager)
     {
         _voxedRepository = voxedRepository;
@@ -63,6 +65,7 @@ public class VoxController : BaseController
         _scopeFactory = scopeFactory;
         _boardMixer = boardMixer;
         _devoxDataSource = devoxDataSource;
+        _mapper = mapper;
     }
 
     [HttpGet("vox/{id}")]
@@ -81,9 +84,9 @@ public class VoxController : BaseController
         filter.Categories.Add(vox.CategoryId);
         filter.IgnorePostIds = new List<Guid>() { vox.Id };
         var morePosts = await _voxedRepository.Posts.GetByFilterAsync(filter);
-        var posts = VoxedMapper.Map(morePosts);
+        var posts = _mapper.Map(morePosts);
 
-        return View(VoxedMapper.Map(vox, actions, posts));
+        return View(_mapper.Map(vox, actions, posts));
     }
 
     [HttpPost("account/message")]
@@ -307,7 +310,7 @@ public class VoxController : BaseController
             posts = await _postService.GetByFilter(filter);
         }
 
-        return new LoadMoreResponse(VoxedMapper.Map(posts));
+        return new LoadMoreResponse(_mapper.Map(posts));
        
     }
     

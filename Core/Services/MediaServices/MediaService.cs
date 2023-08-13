@@ -15,6 +15,7 @@ namespace Core.Services.MediaServices;
 public interface IMediaService
 {
     Task<Media> CreateMedia(CreateMediaRequest request);
+    string Location { get; }
 }
 
 public class MediaService : IMediaService
@@ -23,6 +24,8 @@ public class MediaService : IMediaService
     private readonly IYoutubeService _youtubeService;
     private readonly IStorage _storageService;
     private readonly IImageService _imageService;
+
+    public string Location => _config.BaseDirectory;    
 
     public MediaService(
         IYoutubeService youtubeService,

@@ -27,15 +27,21 @@ public class NotificationService : INotificationService
     private readonly IVoxedRepository _voxedRepository;
     private readonly IHubContext<VoxedHub, INotificationHub> _notificationHub;
     private readonly ITextFormatterService _textFormatter;
+    private readonly IMapper _mapper;
+    private readonly INotificationSender _notificationSender;
 
     public NotificationService(
         IVoxedRepository voxedRepository,
         IHubContext<VoxedHub, INotificationHub> notificationHub,
-        ITextFormatterService textFormatter)
+        ITextFormatterService textFormatter,
+        IMapper mapper,
+        INotificationSender notificationSender)
     {
         _voxedRepository = voxedRepository;
         _notificationHub = notificationHub;
         _textFormatter = textFormatter;
+        _mapper = mapper;
+        _notificationSender = notificationSender;
     }
 
     public async Task NotifyPostCreated(Guid voxId)
@@ -44,7 +50,7 @@ public class NotificationService : INotificationService
 
         if (!Categories.HiddenCategories.Contains(vox.CategoryId))
         {
-            var voxToHub = VoxedMapper.Map(vox);
+            var voxToHub = _mapper.Map(vox);
             await _notificationHub.Clients.All.Vox(voxToHub);
         }
     }
@@ -60,11 +66,10 @@ public class NotificationService : INotificationService
                 .AddVoxSusbcriberNotifications()
                 .Build();
 
-        var sender = new NotificationSender()
+        var sender = _notificationSender
             .WithVox(vox)
             .WithComment(comment)
-            .WithNotifications(notifications)
-            .UseHub(_notificationHub);
+            .WithNotifications(notifications);
 
         await Task.Run(() => sender.Notify());
     }

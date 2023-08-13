@@ -139,6 +139,7 @@ public static class DependencyContainer
         services.AddSingleton<IUfftopiaDataSource, UfftopiaDataSource>();
         services.AddSingleton<IDevoxDataSource, DevoxDataSource>();
         services.AddSingleton<IMixer, BoardMixer>();
+
     }
 
     public static void RegisterStorageImageProvider(this IServiceCollection services, IConfiguration configuration)

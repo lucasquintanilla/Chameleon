@@ -1,8 +1,5 @@
-﻿using Core.Constants;
-using Core.Data.Repositories;
-using Core.DataSources.Devox.Models;
+﻿using Core.Data.Repositories;
 using Core.Entities;
-using Core.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -10,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Voxed.WebApp.Extensions;
 using Voxed.WebApp.Hubs;
+using Voxed.WebApp.Mappers;
 
 namespace Voxed.WebApp.Views.Shared.Components.NotificationNavList
 {
@@ -17,12 +15,15 @@ namespace Voxed.WebApp.Views.Shared.Components.NotificationNavList
     {
         private readonly IVoxedRepository _voxedRepository;
         private readonly UserManager<User> _userManager;
+        private readonly IMapper _mapper;
 
         public NotificationNavListViewComponent(IVoxedRepository voxedRepository,
-            UserManager<User> userManager)
+            UserManager<User> userManager,
+            IMapper mapper)
         {
             _voxedRepository = voxedRepository;
             _userManager = userManager;
+            _mapper = mapper;
         }
 
         public async Task<IViewComponentResult> InvokeAsync()
@@ -41,33 +42,9 @@ namespace Voxed.WebApp.Views.Shared.Components.NotificationNavList
             }
 
             var userNotifications = notifications
-                .Select(notification => new UserNotification
-                {
-                    Type = notification.Type.ToString().ToLowerInvariant(),
-                    Content = new NotificationContent()
-                    {
-                        VoxHash = notification.Post.Id.ToShortString(),
-                        NotificationBold = GetTitleNotification(notification.Type),
-                        NotificationText = notification.Post.Title,
-                        Count = "1",
-                        ContentHash = notification.Comment.Hash,
-                        Id = notification.Id.ToString(),
-                        //ThumbnailUrl = notification.Post.Media?.Url + Core.Constants.ImageParameter.FormatWebP
-                        ThumbnailUrl = $"/media/{notification.Post.Media?.Key}" + ImageParameter.FormatWebP,
-                    }
-                });
+                .Select(_mapper.Map);
 
             return View(userNotifications);
-        }
-
-        private string GetTitleNotification(NotificationType notificationType)
-        {
-            return notificationType switch
-            {
-                NotificationType.New => "Nuevo comentario",
-                NotificationType.Reply => "Nueva respuesta",
-                _ => "Nueva notificacion",
-            };
         }
     }
 }

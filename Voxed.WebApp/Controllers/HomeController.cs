@@ -22,13 +22,16 @@ public class HomeController : Controller
 {
     private readonly IVoxedRepository _voxedRepository;
     private readonly IMixer _boardMixer;
+    private readonly IMapper _mapper;
 
     public HomeController(
         IVoxedRepository voxedRepository,
-        IMixer boardMixer)
+        IMixer boardMixer,
+        IMapper mapper)
     {
         _voxedRepository = voxedRepository;
         _boardMixer = boardMixer;
+        _mapper = mapper;
     }
 
     public async Task<IActionResult> Index()
@@ -56,7 +59,7 @@ public class HomeController : Controller
 
         var board = new BoardViewModel()
         {
-            Voxs = VoxedMapper.Map(posts),
+            Voxs = _mapper.Map(posts),
             Title = "Home",
             Page = "home"
         };
@@ -70,7 +73,7 @@ public class HomeController : Controller
 
         var board = new BoardViewModel()
         {
-            Voxs = mix.Items.OrderByDescending(x => x.LastActivityOn).Select(VoxedMapper.Map),
+            Voxs = mix.Items.OrderByDescending(x => x.LastActivityOn).Select(_mapper.Map),
             Title = "Hub",
             Page = "category-hub"
         };
@@ -92,7 +95,7 @@ public class HomeController : Controller
 
         var board = new BoardViewModel()
         {
-            Voxs = VoxedMapper.Map(voxs),
+            Voxs = _mapper.Map(voxs),
             Title = "Favoritos",
             Page = "favorites"
         };
@@ -115,7 +118,7 @@ public class HomeController : Controller
 
         var board = new BoardViewModel()
         {
-            Voxs = VoxedMapper.Map(voxs),
+            Voxs = _mapper.Map(voxs),
             Title = "Ocultos",
             Page = "hidden"
         };
@@ -137,7 +140,7 @@ public class HomeController : Controller
         var voxs = await _voxedRepository.Posts.GetByFilterAsync(filter);
         var board = new BoardViewModel()
         {
-            Voxs = VoxedMapper.Map(voxs),
+            Voxs = _mapper.Map(voxs),
             Title = category.Name,
             Page = "category-" + category.ShortName
         };
@@ -156,7 +159,7 @@ public class HomeController : Controller
 
         var board = new BoardViewModel()
         {
-            Voxs = VoxedMapper.Map(voxs),
+            Voxs = _mapper.Map(voxs),
             Title = "Resultado",
             Page = "search"
         };
