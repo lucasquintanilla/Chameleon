@@ -13,6 +13,7 @@ namespace Voxed.WebApp.Mappers;
 
 public static class VoxedMapper
 {
+    private static string MediaEndpoint = "post-attachments";
     public static VoxResponse Map(MixItem vox)
     {
         return new VoxResponse()
@@ -56,7 +57,7 @@ public static class VoxedMapper
             VoxId = vox.Id.ToString(),
             New = vox.CreatedOn.IsNew(),
             //ThumbnailUrl = vox.Media?.Url + ImageParameter.FormatWebP,
-            ThumbnailUrl = $"/media/{vox.Media?.Key}" + ImageParameter.FormatWebP,
+            ThumbnailUrl = $"/{MediaEndpoint}/{vox.Media?.Key}" + ImageParameter.FormatWebP,
             Category = vox.Category.Name,
             Href = "/vox/" + vox.Id.ToShortString(),
         };
@@ -85,9 +86,9 @@ public static class VoxedMapper
             Media = new MediaViewModel()
             {
                 //ThumbnailUrl = vox.Media.Url + ImageParameter.Quality40,
-                ThumbnailUrl = $"/media/{vox.Media.Key}" + ImageParameter.Quality40,
+                ThumbnailUrl = $"/{MediaEndpoint}/{vox.Media.Key}" + ImageParameter.Quality40,
                 //Url = vox.Media.Url + ImageParameter.Quality40,
-                Url = $"/media/{vox.Media.Key}" + ImageParameter.Quality40,
+                Url = $"/{MediaEndpoint}/{vox.Media.Key}" + ImageParameter.Quality40,
                 MediaType = (ViewModels.MediaType)(int)vox.Media.Type,
                 ExtensionData = vox.Media?.Url.Split('=')[(vox.Media?.Url.Split('=').Length - 1).Value],
                 ExternalUrl = vox.Media?.ExternalUrl
@@ -109,11 +110,11 @@ public static class VoxedMapper
                 Media = c.Media == null ? null : new MediaViewModel()
                 {
                     //Url = c.Media?.Url,
-                    Url = $"/media/{c.Media?.Key}" + ImageParameter.Quality40,
+                    Url = $"/{MediaEndpoint}/{c.Media?.Key}" + ImageParameter.Quality40,
                     MediaType = (ViewModels.MediaType)(int)c.Media?.Type,
                     ExtensionData = c.Media?.Url.Split('=')[(vox.Media?.Url.Split('=').Length - 1).Value],
                     //ThumbnailUrl = c.Media?.Url + ImageParameter.Quality40,
-                    ThumbnailUrl = $"/media/{c.Media?.Key}" + ImageParameter.Quality40,
+                    ThumbnailUrl = $"/{MediaEndpoint}/{c.Media?.Key}" + ImageParameter.Quality40,
                     ExternalUrl = c.Media?.ExternalUrl,
                 },
                 IsSticky = c.IsSticky,

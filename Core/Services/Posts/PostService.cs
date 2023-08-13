@@ -47,7 +47,6 @@ namespace Core.Services.Posts
 
             var media = await _mediaService.CreateMedia(mediaRequest);
             await _voxedRepository.Media.Add(media);
-            await _voxedRepository.SaveChangesAsync();
 
             var post = new Post()
             {

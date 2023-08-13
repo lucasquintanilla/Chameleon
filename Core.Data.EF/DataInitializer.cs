@@ -366,9 +366,7 @@ namespace Core.Data.EF
                 },
             };
 
-
             await _context.Categories.AddRangeAsync(categories);
-
             await _context.SaveChangesAsync();
         }
     }

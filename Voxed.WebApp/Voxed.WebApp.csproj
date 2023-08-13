@@ -8,13 +8,19 @@
   <ItemGroup>
     <Compile Remove=".platform\**" />
     <Compile Remove="Logs\**" />
+    <Compile Remove="Properties\PublishProfiles\**" />
     <Content Remove=".platform\**" />
     <Content Remove="Logs\**" />
+    <Content Remove="Properties\PublishProfiles\**" />
     <EmbeddedResource Remove=".platform\**" />
     <EmbeddedResource Remove="Logs\**" />
+    <EmbeddedResource Remove="Properties\PublishProfiles\**" />
     <EntityDeploy Remove=".platform\**" />
+    <EntityDeploy Remove="Properties\PublishProfiles\**" />
     <None Remove=".platform\**" />
     <None Remove="Logs\**" />
+    <None Remove="Properties\PublishProfiles\**" />
+    <_WebToolingArtifacts Remove="Properties\PublishProfiles\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -59,10 +65,6 @@
     <Content Update="wwwroot\js\bundle19.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
 
 
