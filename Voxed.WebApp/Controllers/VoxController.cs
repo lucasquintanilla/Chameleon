@@ -25,6 +25,8 @@ using Voxed.WebApp.Services.Moderation;
 using Voxed.WebApp.ViewModels;
 using Core.Extensions;
 using Core.Services;
+using System.Diagnostics;
+using Microsoft.Extensions.Hosting;
 
 namespace Voxed.WebApp.Controllers;
 
@@ -207,8 +209,13 @@ public class VoxController : BaseController
     [Route("anon/vox")]
     public async Task<CreateVoxResponse> Create(CreateVoxRequest request)
     {
+        var stopwatch = new Stopwatch();
+        stopwatch.Start();
+
         try
         {
+            _logger.LogWarning(JsonConvert.SerializeObject(request));
+
             if (ModelState.IsValid is false)
                 return CreateVoxResponse.Failure(ModelState.GetErrorMessage());
 
@@ -239,6 +246,10 @@ public class VoxController : BaseController
 
             _ = Task.Run(() => NotifyPostCreated(post.Id));
 
+            stopwatch.Stop();
+
+            _logger.LogWarning($"Post created: {post.Title} after {stopwatch.Elapsed.TotalMilliseconds} milliseconds");
+
             return CreateVoxResponse.Success(post.Id);
         }
         catch (NotImplementedException e)
@@ -249,6 +260,9 @@ public class VoxController : BaseController
         {
             _logger.LogError(e.Message);
             _logger.LogError(e.StackTrace);
+
+            stopwatch.Stop();
+            _logger.LogWarning($"Post creation failed: {request.Title} after {stopwatch.Elapsed.Seconds} seconds");
             return CreateVoxResponse.Failure("Error inesperado");
         }
     }

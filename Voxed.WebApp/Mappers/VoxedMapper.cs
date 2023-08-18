@@ -73,7 +73,7 @@ public class VoxedMapper : IMapper
             VoxId = vox.Id.ToString(),
             New = vox.CreatedOn.IsNew(),
             //ThumbnailUrl = vox.Media?.Url + ImageParameter.FormatWebP,
-            ThumbnailUrl = $"/{MediaEndpoint}/{vox.Media?.Key}" + ImageParameter.FormatWebP,
+            ThumbnailUrl = $"/{MediaEndpoint}/{vox.Media?.Key}" + ImageParameter.Quality40,
             Category = vox.Category.Name,
             Href = "/vox/" + vox.Id.ToShortString(),
         };

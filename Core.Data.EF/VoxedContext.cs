@@ -18,6 +18,7 @@ namespace Core.Data.EF
         public DbSet<Media> Media { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<UserPostAction> UserPostActions { get; set; }
+        public DbSet<Tag> Tags { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

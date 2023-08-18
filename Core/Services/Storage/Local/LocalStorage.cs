@@ -1,6 +1,5 @@
 ﻿using Core.Services.Storage.Models;
 using Microsoft.Extensions.Options;
-using System;
 using System.IO;
 using System.Threading.Tasks;
 

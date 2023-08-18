@@ -5,7 +5,7 @@ namespace Core.Entities
 {
     public enum PostState { Active, Deleted, Reported }
 
-    public class Post : Entity
+    public class Post : Entity, ITaggable
     {
         public string Title { get; set; }
         public string Content { get; set; }
@@ -20,6 +20,7 @@ namespace Core.Entities
         public virtual Media Media { get; set; }
         public virtual Category Category { get; set; }
         public virtual User Owner { get; set; }
-        public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();        
+        public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
+        public virtual ICollection<Tag> Tags { get; set ; }
     }
 }
