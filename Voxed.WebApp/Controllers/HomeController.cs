@@ -56,7 +56,7 @@ public class HomeController : Controller
         var filter = new PostFilter()
         {
             UserId = User.GetUserId(),
-            Categories = (await GetUserCategorySubscriptions()).ToList(),
+            //Categories = (await GetUserCategorySubscriptions()).ToList(),
             IncludeHidden = false,
             HiddenWords = GetUserHiddenWords()
         };

@@ -316,7 +316,7 @@ public class VoxController : BaseController
         {
             UserId = User.GetUserId(),
             IgnorePostIds = skipIdList,
-            Categories = (GetSubscriptionCategories(request)).ToList()
+            //Categories = (GetSubscriptionCategories(request)).ToList()
         };
 
         var posts = await _postService.GetByFilter(filter);
@@ -327,7 +327,7 @@ public class VoxController : BaseController
             {
                 UserId = User.GetUserId(),
                 IgnorePostIds = Enumerable.Empty<Guid>(),
-                Categories = (GetSubscriptionCategories(request)).ToList()
+                //Categories = (GetSubscriptionCategories(request)).ToList()
             };
 
             posts = await _postService.GetByFilter(filter);
