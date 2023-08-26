@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Data.EF.Sqlite", "Core
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B2D68657-8631-4248-9F1A-80479CAAA065}"
 	ProjectSection(SolutionItems) = preProject
+		Docs = Docs
+		Queries = Queries
 		README.md = README.md
 	EndProjectSection
 EndProject

@@ -9,24 +9,36 @@ html {
     outline: inherit;
 }
 
-:root {
+/*:root {*/
     /* --main-bg-color: #256587; */
-    --main-bg-color: #1a73e8;
+    /*--main-bg-color: #1a73e8;*/
     /* --main-bg-color-dark:#213140; */
-    --main-bg-color-dark: #202124;
+    /*--main-bg-color-dark: #202124;*/
     /* --main-nav-color-dark:#2C3E50; */
-    --main-nav-color-dark: #303134;
-    --main-search-bg-color-dark: #303134;
+    /*--main-nav-color-dark: #303134;
+    --main-search-bg-color-dark: #303134;*/
     /* --main-border-color-dark: #182631; */
-    --main-border-color-dark: white;
+    /*--main-border-color-dark: white;*/
     /* --main-menu-icon-hover-color-dark: #334b63; */
-    --main-menu-icon-hover-color-dark: rgba(232,234,237,.08);
+    /*--main-menu-icon-hover-color-dark: rgba(232,234,237,.08);*/
     /* --main-container-color-dark: #243646; */
-    --main-container-color-dark: #36373a;
+    /*--main-container-color-dark: #36373a;*/
     /* --main-input-bg-color-dark: #21313e; */
-    --main-input-bg-color-dark: #303134;
+    /*--main-input-bg-color-dark: #303134;*/
     /* button comment attachment color #3d5871 */
     /* --main-button-secondary-bg-color-dark: #263a4a; */
+    /*--main-button-secondary-bg-color-dark: #303134;
+}*/
+
+:root {
+    --main-bg-color: #1a73e8;
+    --main-bg-color-dark: #000;
+    --main-nav-color-dark: #000;
+    --main-search-bg-color-dark: #303134;
+    --main-border-color-dark: white;
+    --main-menu-icon-hover-color-dark: rgba(232,234,237,.08);
+    --main-container-color-dark: #36373a;
+    --main-input-bg-color-dark: #303134;
     --main-button-secondary-bg-color-dark: #303134;
 }
 

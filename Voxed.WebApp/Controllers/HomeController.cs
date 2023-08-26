@@ -1,5 +1,6 @@
 ﻿using Core.Data.Filters;
 using Core.Data.Repositories;
+using Core.Entities;
 using Core.Services.Mixers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,6 +24,7 @@ public class HomeController : Controller
     private readonly IVoxedRepository _voxedRepository;
     private readonly IMixer _boardMixer;
     private readonly IMapper _mapper;
+    private readonly IEnumerable<Category> _categories = Enumerable.Empty<Category>();
 
     public HomeController(
         IVoxedRepository voxedRepository,
@@ -32,6 +34,10 @@ public class HomeController : Controller
         _voxedRepository = voxedRepository;
         _boardMixer = boardMixer;
         _mapper = mapper;
+        if (!_categories.Any())
+        {
+            _categories = voxedRepository.Categories.GetAll().GetAwaiter().GetResult();
+        }
     }
 
     public async Task<IActionResult> Index()
@@ -61,7 +67,8 @@ public class HomeController : Controller
         {
             Voxs = _mapper.Map(posts),
             Title = "Home",
-            Page = "home"
+            Page = "home",
+            Categories = _categories
         };
         return View("board", board);
     }
@@ -75,7 +82,8 @@ public class HomeController : Controller
         {
             Voxs = mix.Items.OrderByDescending(x => x.LastActivityOn).Select(_mapper.Map),
             Title = "Hub",
-            Page = "category-hub"
+            Page = "category-hub",
+            Categories = _categories
         };
         return View("board", board);
     }
@@ -97,7 +105,8 @@ public class HomeController : Controller
         {
             Voxs = _mapper.Map(voxs),
             Title = "Favoritos",
-            Page = "favorites"
+            Page = "favorites",
+            Categories = _categories
         };
 
         return View("board", board);
@@ -120,7 +129,8 @@ public class HomeController : Controller
         {
             Voxs = _mapper.Map(voxs),
             Title = "Ocultos",
-            Page = "hidden"
+            Page = "hidden",
+            Categories = _categories
         };
 
         return View("board", board);
@@ -142,7 +152,8 @@ public class HomeController : Controller
         {
             Voxs = _mapper.Map(voxs),
             Title = category.Name,
-            Page = "category-" + category.ShortName
+            Page = "category-" + category.ShortName,
+            Categories = _categories
         };
 
         return View("board", board);
@@ -161,7 +172,8 @@ public class HomeController : Controller
         {
             Voxs = _mapper.Map(voxs),
             Title = "Resultado",
-            Page = "search"
+            Page = "search",
+            Categories = _categories
         };
 
         return View("board", board);

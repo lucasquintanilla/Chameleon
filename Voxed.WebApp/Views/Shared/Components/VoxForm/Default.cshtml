@@ -46,20 +46,27 @@
     @await Component.InvokeAsync("CategoriesDropdown")
     <span asp-validation-for="Niche" class="text-danger"></span>
     @*<input name="title" type="text" placeholder="Titulo" maxlength="120">*@
-    <input asp-for="Title" placeholder="Titulo" autofocus />
-    <span asp-validation-for="Title" class="text-danger"></span>
+    @*<input asp-for="Title" placeholder="Titulo" autofocus />
+    <span asp-validation-for="Title" class="text-danger"></span>*@
 
+
+    @{
+        var placeholder =
+@"Titulo de post
+Este es un post sobre #politica #nsfw
+>>https://web.com";
+    }
     
     <textarea asp-for="Content" class="newVoxContent" id="voxTextarea" maxlength="5000"
-              placeholder="Cuentanos tus mas profundos secretos..."></textarea>
+              placeholder="@placeholder"></textarea>
     <span asp-validation-for="Content" class="text-danger"></span>
 
     <div class="selectAttach" id="voxAttachs">
         <div class="uploadFromLocal tooltip-bottom" data-tooltip="Subir archivo" data-upload='{ "type": "local", "container": "voxAttachs" }'>
             <i class="fas fa-upload"></i>
         </div>
-        @*<input name="file" type="file" accept="image/gif, image/jpeg, image/jpg, image/png, video/webm, video/mp4" class="hiddeFileInput" data-preview="previewInputVox">*@
-        <input name="file" type="file" accept="image/gif, image/jpeg, image/jpg, image/png" class="hiddeFileInput" data-preview="previewInputVox">
+        <input name="file" type="file" accept="image/gif, image/jpeg, image/jpg, image/png, video/webm, video/mp4" class="hiddeFileInput" data-preview="previewInputVox">
+        @*<input name="file" type="file" accept="image/gif, image/jpeg, image/jpg, image/png" class="hiddeFileInput" data-preview="previewInputVox">*@
         <div class="uploadFromLink tooltip-bottom" data-tooltip="Subir via link" data-upload='{ "type": "link", "container": "voxAttachs", "preview" : "previewInputVox" }'>
             <i class="fas fa-link"></i>
         </div>

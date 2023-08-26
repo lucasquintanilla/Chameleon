@@ -7,6 +7,7 @@ using Core.Services.Posts.Models;
 using Core.Services.TextFormatter;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace Core.Services.Posts
@@ -65,6 +66,7 @@ namespace Core.Services.Posts
             return post;
         }
 
+       
         public async Task<IEnumerable<Post>> GetByFilter(PostFilter filter) =>
             await _voxedRepository.Posts.GetByFilterAsync(filter);
     }

@@ -11,11 +11,23 @@
 </select>*@
 
 <select name="niche">
-        <option disabled="disabled" selected="selected" value="0">Categoría</option>
+        @*<option disabled="disabled" selected="selected" value="0">Categoría</option>*@
+        <option selected="selected" value="0">Global</option>
 
         @foreach (var category in Model)
         {
-            <option value="@category.Id">@category.Name</option>
+            if (category.Name == "Global")
+            {
+                <option selected="selected" value="@category.Id">
+                    @category.Name
+                </option>
+            }
+            else
+            {
+                <option value="@category.Id">
+                    @category.Name
+                </option>
+            }
         }
 </select>
 

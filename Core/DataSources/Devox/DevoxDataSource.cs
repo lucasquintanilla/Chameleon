@@ -19,19 +19,21 @@ public interface IDevoxDataSource
 public class DevoxDataSource : IDevoxDataSource
 {
     private readonly HttpClient httpClient = new HttpClient();
-
+    static string domain = "devox.me";
+    static string apiUrl = $"https://go.{domain}";
+    static string getVoxesEnpoint = $"{apiUrl}/getVoxes";
     public async Task<IEnumerable<Vox>> GetVoxes()
     {
-        using (var request = new HttpRequestMessage(new HttpMethod("POST"), "https://api.devox.uno/getVoxes"))
+        using (var request = new HttpRequestMessage(new HttpMethod("POST"), getVoxesEnpoint))
         {
             request.Headers.TryAddWithoutValidation("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:108.0) Gecko/20100101 Firefox/108.0");
             request.Headers.TryAddWithoutValidation("Accept", "application/json, text/plain, */*");
             request.Headers.TryAddWithoutValidation("Accept-Language", "en-US,en;q=0.5");
             request.Headers.TryAddWithoutValidation("Accept-Encoding", "gzip, deflate, br");
-            request.Headers.TryAddWithoutValidation("Origin", "https://devox.uno");
+            request.Headers.TryAddWithoutValidation("Origin", "https://devox.me");
             request.Headers.TryAddWithoutValidation("DNT", "1");
             request.Headers.TryAddWithoutValidation("Connection", "keep-alive");
-            request.Headers.TryAddWithoutValidation("Referer", "https://devox.uno/");
+            request.Headers.TryAddWithoutValidation("Referer", "https://devox.me/");
             request.Headers.TryAddWithoutValidation("Sec-Fetch-Dest", "empty");
             request.Headers.TryAddWithoutValidation("Sec-Fetch-Mode", "cors");
             request.Headers.TryAddWithoutValidation("Sec-Fetch-Site", "same-site");
@@ -54,7 +56,7 @@ public class DevoxDataSource : IDevoxDataSource
 
     public async Task<IEnumerable<Vox>> GetMoreVoxes(int count)
     {
-        using (var request = new HttpRequestMessage(new HttpMethod("POST"), "https://api.devox.uno/getVoxes"))
+        using (var request = new HttpRequestMessage(new HttpMethod("POST"), getVoxesEnpoint))
         {
             request.Headers.TryAddWithoutValidation("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:108.0) Gecko/20100101 Firefox/108.0");
             request.Headers.TryAddWithoutValidation("Accept", "application/json, text/plain, */*");

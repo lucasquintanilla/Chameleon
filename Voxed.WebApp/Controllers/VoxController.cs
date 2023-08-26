@@ -27,6 +27,7 @@ using Core.Extensions;
 using Core.Services;
 using System.Diagnostics;
 using Microsoft.Extensions.Hosting;
+using System.IO;
 
 namespace Voxed.WebApp.Controllers;
 
@@ -234,7 +235,7 @@ public class VoxController : BaseController
                 UserId = userId.Value,
                 IpAddress = UserIpAddress,
                 UserAgent = UserAgent,
-                Title = request.Title,
+                Title = GetTitleFromContent(request.Content),
                 Content = request.Content,
                 CategoryId = request.Niche,
                 Extension = voxedAttachment.Extension,
@@ -262,10 +263,18 @@ public class VoxController : BaseController
             _logger.LogError(e.StackTrace);
 
             stopwatch.Stop();
-            _logger.LogWarning($"Post creation failed: {request.Title} after {stopwatch.Elapsed.Seconds} seconds");
+            _logger.LogWarning($"Post creation failed: {request.Content} after {stopwatch.Elapsed.Seconds} seconds");
             return CreateVoxResponse.Failure("Error inesperado");
         }
     }
+
+    private string GetTitleFromContent(string content)
+    {
+        using var reader = new StringReader(content);
+        string title = reader.ReadLine();
+        return title;
+    }
+
 
     [HttpPost("vox/list")]
     public async Task<LoadMoreResponse> LoadMore([FromForm] LoadMoreRequest request)
