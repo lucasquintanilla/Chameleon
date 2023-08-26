@@ -35,14 +35,10 @@
 </head>
 <body class="noSelect">
     @await Component.InvokeAsync(NavViewComponent.Name)
-    
-
     @if (@ViewData["Title"] is "Home")
     {
-        <div class="bottonContextual " data-function="createVox"><i class="fas fa-plus"></i></div>
+        <div class="bottonContextual " data-function="createVox"><i class="fas fa-feather-alt"></i></div>
     }
-    
-    
 
     @RenderBody()
 
