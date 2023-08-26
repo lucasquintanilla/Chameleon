@@ -10,6 +10,7 @@ namespace Voxed.WebApp.Views.Shared.Components.VoxDetails
     public class VoxDetailsViewComponent : ViewComponent
     {
         private readonly IVoxedRepository voxedRepository;
+        public static string Name = "VoxDetails";
 
         public VoxDetailsViewComponent(IVoxedRepository voxedRepository)
         {

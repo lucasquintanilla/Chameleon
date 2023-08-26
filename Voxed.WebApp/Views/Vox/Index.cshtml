@@ -6,6 +6,7 @@
 @using Voxed.WebApp.Extensions
 @using Voxed.WebApp.Services
 @using Voxed.WebApp.ViewModels
+@using Voxed.WebApp.Views.Shared.Components.VoxDetails;
 
 @inject SignInManager<Core.Entities.User> SignInManager
 @inject UserManager<Core.Entities.User> UserManager
@@ -500,9 +501,9 @@
 
                     <div class="voxList " id="voxList">
 
-        @await Component.InvokeAsync("VoxDetails", Model.Posts)
+                        @await Component.InvokeAsync(VoxDetailsViewComponent.Name, Model.Posts)
 
-    </div>
+                    </div>
     <div class="loadingSpinner hide" id="homeLoadingSpinner">
         @*<i class="fas fa-spinner fa-spin"></i>*@
         <i class="fas fa-circle-notch fa-spin"></i>

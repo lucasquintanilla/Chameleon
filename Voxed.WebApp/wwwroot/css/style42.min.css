@@ -220,8 +220,8 @@ li.menuIcon {
     right: 12px;
     color: white;
     background: var(--main-bg-color);
-    width: 48px;
-    height: 48px;
+    width: 56px;
+    height: 56px;
     display: none;
     align-items: center;
     justify-content: center;

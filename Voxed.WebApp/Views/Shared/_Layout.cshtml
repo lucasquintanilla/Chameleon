@@ -1,5 +1,7 @@
 ﻿<!DOCTYPE html>
 @using Microsoft.Extensions.Configuration
+@using Voxed.WebApp.Views.Shared.Components.Nav;
+@using Voxed.WebApp.Views.Shared.Components.VoxForm;
 @inject IConfiguration Configuration
 @{
     string result = "darkmode";
@@ -18,7 +20,7 @@
     @*<title>@ViewData["NotificationsCount"] @Configuration["ApplicationName"] | @ViewData["Title"]</title>*@
     <title>@ViewData["NotificationsCount"] @Configuration["ApplicationName"]</title>
     <meta name="theme-color" content="#2C3E50" />
-    <link rel="stylesheet" href="~/css/style41.min.css" />
+    <link rel="stylesheet" href="~/css/style42.min.css" />
     <meta name="description"
           content="Plataforma social orientada al anonimato, donde se puede compartir casi cualquier tipo de contenido de forma inmediata.">
 
@@ -32,49 +34,8 @@
     <link rel="shortcut icon" href="/favicon-new.ico">
 </head>
 <body class="noSelect">
-    <nav>
-        <div class="logo unselect">
-            @if (@ViewData["Title"] is "Home")
-            {
-                <a href="/" class="navbarLogo">@Configuration["ApplicationName"].ToString().ToLower()</a>
-            }
-            else
-            {
-                <a href='javascript:history.go(-1)'>
-                    <i class="fas fa-arrow-left" aria-hidden="true"></i>
-                </a>
-                                         
-            }
-
-            @*@await Component.InvokeAsync("CategoriesMenuList")*@
-
-        </div>
-
-        @*<ul class="menu unselect" id="navbarMenu">
-            <li class="menuIcon tooltip-bottom mobile" data-tooltip="Buscar" data-togglesearch>
-            <i class="fas fa-search"></i>
-            </li>
-            <li class="menuIcon tooltip-bottom mobile closeSearch" data-tooltip="Cerrar" data-togglesearch>
-            <i class="fas fa-times"></i>
-            </li>
-            <li class="search">
-            <input type="text" id="searchInput" placeholder="Buscar...">
-            </li>
-            <partial name="_LoginPartial" />
-            <li class="menuIcon tooltip-bottom mobile" data-toggle="slideMenu" data-tooltip="Menu">
-            <i class="fas fa-bars"></i>
-            </li>
-            <li class="newVox" data-function="createVox">INICIAR VOX</li>
-            </ul>*@
-
-        @if (@ViewData["Title"] is "Home")
-        {
-            @await Component.InvokeAsync("NotificationNavList")
-        }
-              
-       
-        <div class="alertBox"></div>
-    </nav>
+    @await Component.InvokeAsync(NavViewComponent.Name)
+    
 
     @if (@ViewData["Title"] is "Home")
     {
@@ -102,7 +63,7 @@
         </span>
     </div>
 
-    @await Component.InvokeAsync("VoxForm")
+    @await Component.InvokeAsync(CreatePostFormViewComponent.Name)
 
     @*<form class="modalBox createVox" id="NewVox" asp-controller="Vox" asp-action="Create" enctype="multipart/form-data">
 

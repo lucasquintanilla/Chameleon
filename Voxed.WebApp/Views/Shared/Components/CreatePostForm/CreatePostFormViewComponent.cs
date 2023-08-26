@@ -7,11 +7,11 @@ using Voxed.WebApp.Models;
 
 namespace Voxed.WebApp.Views.Shared.Components.VoxForm
 {
-    public class VoxFormViewComponent : ViewComponent
+    public class CreatePostFormViewComponent : ViewComponent
     {
         private readonly IVoxedRepository voxedRepository;
-
-        public VoxFormViewComponent(
+        public static string Name = "CreatePostForm";
+        public CreatePostFormViewComponent(
                 IVoxedRepository voxedRepository
             )
         {
