@@ -152,7 +152,7 @@ public class HomeController : Controller
         {
             Voxs = _mapper.Map(voxs),
             Title = category.Name,
-            Page = "category-" + category.ShortName,
+            Page = category.ShortName,
             Categories = _categories
         };
 

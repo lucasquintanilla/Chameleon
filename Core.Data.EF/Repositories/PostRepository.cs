@@ -65,6 +65,10 @@ namespace Core.Data.EF.Repositories
             {
                 query = query.Where(x => filter.Categories.Contains(x.CategoryId));
             }
+            else
+            {
+                query = query.Where(x => x.Category.Nsfw == false);
+            }
 
             if (!string.IsNullOrEmpty(filter.SearchText))
             {

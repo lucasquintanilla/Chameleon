@@ -36,10 +36,15 @@
     <li class="newVox" data-function="createVox">INICIAR VOX</li>
     </ul>*@
 
-    @if (@ViewData["Title"] is "Home")
+
+@*
+    Find other way to implement it*@
+    @*@if (@ViewData["Title"] is "Home")
     {
         @await Component.InvokeAsync("NotificationNavList")
-    }
+    }*@
+
+    @await Component.InvokeAsync("NotificationNavList")
 
 
     <div class="alertBox"></div>

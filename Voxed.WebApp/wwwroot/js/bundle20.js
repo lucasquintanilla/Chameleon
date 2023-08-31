@@ -3494,7 +3494,8 @@
             return `\n            <a href="/admin/report/${e.id}#${e.contentHash}">\n                <li id="${e.id}">\n                    <div class="avatar">\n                        <img src="${this.uploadFiles}/thumb_${e.voxHash}.jpg" alt="">\n                    </div>\n                    <div class="notification">\n                        <div class="voxTitle"><b>${e.voxTitle}</b></div>\n                        <div class="reportReason">${e.reason}</div>\n                    </div>\n                </li>\n            </a>\n        `
         }
         youtubePlayer(e) {
-            return `\n        <iframe width="100%" height="215" src="https://www.youtube.com/embed/${e.extensiondata}?autoplay=1"  frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>                             \n        `
+            //return `\n        <iframe width="100%" height="215" src="https://www.youtube.com/embed/${e.extensiondata}?autoplay=1"  frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>                             \n        `
+            return `\n        <iframe width="100%" height="215" src="https://www.youtube-nocookie.com/embed/${e.extensiondata}?autoplay=1"  frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>                             \n        `
         }
         webmPlayer(e) {
             return `\n            <video controls autoplay muted class="attach_video" width="100%" height="auto" preload="metadata" controls="" loop="" muted="">\n            <source src="${this.uploadFiles}/${e.hash}.${e.extension}" type="video/${e.extension}">Tu navegador no soporta etiquetas de video.</video>\n        `

@@ -112,7 +112,7 @@ public class MediaService : IMediaService
             Url = $"/{_config.BaseDirectory}/{thumbnail.Key}",
             Type = MediaType.YouTube,
             Key = thumbnail.Key,
-            ExternalUrl = $"https://www.youtube.com/watch?v={videoId}"
+            ExternalUrl = videoId
         };
     }
 

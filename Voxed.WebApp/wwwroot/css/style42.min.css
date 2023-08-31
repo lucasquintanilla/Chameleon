@@ -4221,7 +4221,8 @@ h5 {
     }
 
     .darkmode .metaSelectedOption {
-        color: #a1a1a1 !important;
+        /*color: #a1a1a1 !important;*/
+        color: #f00 !important;
     }
 
     .darkmode .commentAttach {
@@ -4677,6 +4678,12 @@ h5 {
     text-decoration: none;
     justify-content: center;
     margin-left: 3px;
+}
+
+.chip-selected{
+    background-color: #ca2b00;
+    border: none;
+    outline: none;
 }
 
 .chip-head {

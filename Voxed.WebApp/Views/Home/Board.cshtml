@@ -21,7 +21,7 @@
             </div>*@
         @*</div>*@
 
-        @foreach (var category in Model.Categories)
+        @foreach (var category in Model.Categories.OrderBy(x=>x.ShortName != Model.Page).ThenBy(x=>x.Name))
         {
             <div class="chip">
                 <a href="/@category.ShortName">
