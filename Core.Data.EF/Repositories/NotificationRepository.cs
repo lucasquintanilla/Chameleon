@@ -14,7 +14,7 @@ namespace Core.Data.EF.Repositories
 
         public async Task<IEnumerable<Notification>> GetByUserId(Guid userId)
         {
-            return await _context.Notifications
+            return await Entities
                 .Where(x => x.UserId == userId)
                 .Include(x => x.Comment)
                 .Include(x => x.Post)
@@ -25,7 +25,7 @@ namespace Core.Data.EF.Repositories
 
         public override async Task<Notification> GetById(Guid id)
         {
-            return await _context.Notifications
+            return await Entities
                 .Where(x => x.Id == id)
                 .Include(x => x.Comment)
                 .FirstOrDefaultAsync();

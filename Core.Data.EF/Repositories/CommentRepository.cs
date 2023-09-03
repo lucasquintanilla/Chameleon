@@ -13,16 +13,16 @@ namespace Core.Data.EF.Repositories
         public CommentRepository(VoxedContext context) : base(context) { }
 
         public override async Task<IEnumerable<Comment>> GetAll()
-            => await _context.Comments
+            => await Entities
                    .Include(x => x.Media)
                    .Include(x => x.Owner)
                    .ToListAsync();
 
         public async Task<Comment> GetByHash(string hash) 
-            => await _context.Comments.Where(x => x.Hash == hash).SingleOrDefaultAsync();
+            => await Entities.Where(x => x.Hash == hash).SingleOrDefaultAsync();
 
         public async Task<IEnumerable<Guid>> GetUsersByCommentHash(IEnumerable<string> hashList, ICollection<Guid> skipUserId)
-            => await _context.Comments
+            => await Entities
                 .Where(x => hashList.Contains(x.Hash) && !skipUserId.Contains(x.UserId))
                 .Select(x => x.UserId)
                 .ToListAsync();

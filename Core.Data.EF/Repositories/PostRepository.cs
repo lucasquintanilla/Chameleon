@@ -16,7 +16,7 @@ namespace Core.Data.EF.Repositories
         public PostRepository(VoxedContext context) : base(context) { }
 
         public override async Task<Post> GetById(Guid id)
-            => await _context.Posts
+            => await Entities
                 .Include(x => x.Media)
                 .Include(x => x.Category)
                 .Include(x => x.Category.Media)
@@ -29,7 +29,7 @@ namespace Core.Data.EF.Repositories
 
         public async Task<IEnumerable<Post>> GetByFilterAsync(PostFilter filter)
         {
-            var query = _context.Posts.AsNoTracking();
+            var query = Entities.AsNoTracking();
 
             query = query.Where(x => x.State == PostState.Active)
                        .Include(x => x.Media)
@@ -99,7 +99,7 @@ namespace Core.Data.EF.Repositories
         }
 
         private async Task<Post> GetLastPostBump(IEnumerable<Guid> skipIds)
-         => await _context.Posts
+         => await Entities
             .Where(x => skipIds.Contains(x.Id))
             .OrderBy(x => x.LastActivityOn)
             .AsNoTracking()

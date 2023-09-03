@@ -102,7 +102,7 @@
                     }
                 }
 
-                <div class="voxBar">
+                <div class="voxBar" id="PostActions">
                     @if (SignInManager.IsSignedIn(User))
                     {
                         <div class="actions">
@@ -145,6 +145,7 @@
 
                         @if (User.IsInRole(nameof(Core.Entities.RoleType.Administrator)) || User.IsInRole(nameof(Core.Entities.RoleType.Moderator)))
                         {
+                            <a href="/api/venom/@Model.Id">Reportar</a>
                             <span class="commentTag pointer" data-delete data-contenttype="1" data-contentid="@Model.Id"><i class="fas fa-times" data-parent></i></span>
                         }
                     </div>
@@ -408,7 +409,8 @@
                                             var userId = Guid.Parse(UserManager.GetUserId(User));
 
                                             @if (userId == Model.UserId 
-                                                || User.IsInRole(nameof(Core.Entities.RoleType.Administrator)) || User.IsInRole(nameof(Core.Entities.RoleType.Moderator)))
+                                                || User.IsInRole(nameof(Core.Entities.RoleType.Administrator)) 
+                                                || User.IsInRole(nameof(Core.Entities.RoleType.Moderator)))
                                             {
                                                 <span class="commentTag pointer" data-delete data-contenttype="0" data-contentid="@comment.ID"><i class="fas fa-times" data-parent></i></span>
                                             }

@@ -8,9 +8,10 @@ using System.Threading.Tasks;
 
 namespace Core.Data.EF.Repositories
 {
-    public class Repository<T> : IRepository<T> where T : class
+    public abstract class Repository<T> : IRepository<T> where T : class
     {
         protected readonly VoxedContext _context;
+        protected DbSet<T> Entities => _context.Set<T>();
 
         public Repository(VoxedContext context)
         {
@@ -19,37 +20,37 @@ namespace Core.Data.EF.Repositories
 
         public virtual async Task Add(T entity)
         {
-            await _context.Set<T>().AddAsync(entity);
+            await Entities.AddAsync(entity);
         }
 
         public virtual async Task AddRange(IEnumerable<T> entities)
         {
-            await _context.Set<T>().AddRangeAsync(entities);
+            await Entities.AddRangeAsync(entities);
         }
 
         public virtual async Task<IEnumerable<T>> Find(Expression<Func<T, bool>> expression)
         {
-            return await _context.Set<T>().Where(expression).ToListAsync();
+            return await Entities.Where(expression).ToListAsync();
         }
 
         public virtual async Task<IEnumerable<T>> GetAll()
         {
-            return await _context.Set<T>().ToListAsync();
+            return await Entities.ToListAsync();
         }
 
         public virtual async Task<T> GetById(int id)
         {
-            return await _context.Set<T>().FindAsync(id);
+            return await Entities.FindAsync(id);
         }
 
         public virtual async Task<T> GetById(Guid id)
         {
-            return await _context.Set<T>().FindAsync(id);
+            return await Entities.FindAsync(id);
         }
 
         public virtual async Task Remove(T entity)
         {
-            await Task.Run(() => _context.Set<T>().Remove(entity));
+            await Task.Run(() => Entities.Remove(entity));
         }
 
         public virtual async Task RemoveRange(IEnumerable<T> entities)

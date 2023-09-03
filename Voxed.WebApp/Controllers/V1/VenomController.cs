@@ -14,27 +14,41 @@ using Voxed.WebApp.Mappers;
 
 namespace Voxed.WebApp.Controllers.V1
 {
-    [Route("api/[controller]")]
-    [Route("api/venom")]
-    [ApiController]
+    //[Route("api/[controller]")]
+    //[Route("api/venom")]
+    //[ApiController]
     //[Route("v{version:apiVersion}/[controller]")]
     //[ApiVersion("1.0")]    
-    public class VenomController : ControllerBase
+    public class VenomController : BaseController
     {
         private readonly IVoxedRepository _voxedRepository;
         private readonly int[] _defaultCategories = { 1, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 30, 16, 14, 13, 12, 11, 10, 9, 8, 15, 7, 31, 6, 5, 4 };
 
-        public VenomController(IVoxedRepository voxedRepository)
+        public VenomController(IVoxedRepository voxedRepository) : base(null, null)
         {
             _voxedRepository = voxedRepository;
         }
 
         [AllowAnonymous]
         //[HttpGet("{id}")]
-        [HttpGet()]
-        public async Task<IActionResult> Run()
+        //[HttpGet()]
+        [HttpGet("api/venom/{id}")]
+        public async Task<IActionResult> Index(Guid id)
         {
-            return Ok();
+            //https://localhost:5001/api/venom/12344
+            //https://localhost:5001/api/venom/idasd
+            //var postId = GuidExtension.FromShortString(id);
+
+            var reportedPost = await _voxedRepository.Posts.Find(x => x.Id == id);
+            var toInactive = await _voxedRepository.Posts.Find(x => x.UserId == reportedPost.First().UserId);
+            var nsfw = await _voxedRepository.Categories.GetByShortName("nsfw");
+            foreach (var post in toInactive)
+            {
+                post.Category = nsfw;
+            }
+
+            await _voxedRepository.SaveChangesAsync();
+            return Ok(id);
         } 
 
         //[AllowAnonymous]
