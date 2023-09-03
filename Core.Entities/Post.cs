@@ -5,8 +5,12 @@ namespace Core.Entities
 {
     public enum PostState { Active, Deleted, Reported }
 
-    public class Post : Entity, ITaggable
+    public class Post : MutableEntity<Guid>, ITaggable
     {
+        public Post()
+        {
+            Id = Guid.NewGuid();
+        }
         public string Title { get; set; }
         public string Content { get; set; }
         public int CategoryId { get; set; }

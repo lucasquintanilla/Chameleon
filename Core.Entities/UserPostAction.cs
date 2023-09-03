@@ -2,8 +2,12 @@
 
 namespace Core.Entities
 {
-    public class UserPostAction : Entity
+    public class UserPostAction : MutableEntity<Guid>
     {
+        public UserPostAction()
+        {
+            Id = Guid.NewGuid();
+        }
         public Guid UserId { get; set; }
         public Guid PostId { get; set; }
         public bool IsFollowed { get; set; }

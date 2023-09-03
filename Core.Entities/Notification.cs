@@ -4,8 +4,13 @@ namespace Core.Entities
 {
     public enum NotificationType { New, Reply }
 
-    public class Notification : Entity
+    public class Notification : MutableEntity<Guid>
     {
+        public Notification()
+        {
+            Id = Guid.NewGuid();
+        }
+
         public Guid UserId { get; set; }
         public Guid PostId { get; set; }
         public Guid CommentId { get; set; }
