@@ -62,7 +62,7 @@
             <div class="pollOptionPercent" id="cancelVoteComment">X</div>
         </div>
         <textarea name="content" class="commentTextarea" id="commentTextarea" maxlength="3000"
-                  placeholder="Publica un comentario"></textarea>
+                  placeholder="@Model.Placeholder"></textarea>
         <div class="commentBoxButtons">
             <div class="attachs" id="commentAttachs">
                 <div class="attachButton tooltip-bottom"
@@ -92,7 +92,7 @@
                 
                
 
-                <span>Comentar</span>
+                <span>@Model.SubmitButton</span>
             </button>
         </div>
     </form>

@@ -42,10 +42,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\img\home\vox_home.webp" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Core.Data.EF.MySql\Core.Data.EF.MySql.csproj" />
     <ProjectReference Include="..\Core.Data.EF.PostgreSql\Core.Data.EF.PostgreSql.csproj" />
     <ProjectReference Include="..\Core.Data.EF.Sqlite\Core.Data.EF.Sqlite.csproj" />
@@ -65,6 +61,13 @@
     <Content Update="wwwroot\js\bundle20.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\img\avatars\" />
+    <Folder Include="wwwroot\img\gifs\" />
+    <Folder Include="wwwroot\img\home\" />
+    <Folder Include="wwwroot\media\" />
   </ItemGroup>
 
 

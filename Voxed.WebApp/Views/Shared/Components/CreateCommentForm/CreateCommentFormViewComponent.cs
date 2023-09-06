@@ -5,9 +5,11 @@ using Voxed.WebApp.Models;
 
 namespace Voxed.WebApp.Views.Shared.Components.CommentForm
 {
-    public class CommentFormViewComponent : ViewComponent
+    public class CreateCommentFormViewComponent : ViewComponent
     {
-        public CommentFormViewComponent()
+        public static string Name = "CreateCommentForm";        
+
+        public CreateCommentFormViewComponent()
         {
         }
 

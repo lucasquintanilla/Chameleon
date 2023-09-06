@@ -17,5 +17,8 @@ namespace Voxed.WebApp.Models
         [MaxFileSize(10 * 1024 * 1024)]
         [AllowedExtensions(new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" }, ErrorMessage = "Formato de archivo no soportado.")]
         public IFormFile File { get; set; }
+
+        public string Placeholder => "Publica un comentario";
+        public string SubmitButton => "Comentar";
     }
 }

@@ -6,6 +6,7 @@
 @using Voxed.WebApp.Extensions
 @using Voxed.WebApp.Services
 @using Voxed.WebApp.ViewModels
+@using Voxed.WebApp.Views.Shared.Components.CommentForm;
 @using Voxed.WebApp.Views.Shared.Components.VoxDetails;
 
 @inject SignInManager<Core.Entities.User> SignInManager
@@ -162,7 +163,7 @@
         </section>
         <section class="voxCommentList">
             
-            @await Component.InvokeAsync("CommentForm", new { voxID = Model.Id, userID = Model.UserId })
+            @await Component.InvokeAsync(CreateCommentFormViewComponent.Name, new { voxID = Model.Id, userID = Model.UserId })
 
             <div class="sendMessage hide">
                 <div data-modal="sendMessage">Enviar mensaje global</div>
