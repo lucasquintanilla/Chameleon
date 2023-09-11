@@ -6,7 +6,16 @@
 @inject SignInManager<Core.Entities.User> SignInManager
 @inject UserManager<Core.Entities.User> UserManager
 
-<ul class="menu unselect" id="navbarMenu">
+@{
+
+    bool isHome = false;
+    if (@ViewData["Title"] is "Home")
+    {
+        isHome = true;
+    }
+}
+
+<ul class="menu unselect @(isHome ? "" : "hide")" id="navbarMenu">
 
     @*ICONO TOTAL USERS CONECTADOS*@
 @*    <li class="menuIcon tooltip-bottom mobile" data-tooltip="Dispositivos online">

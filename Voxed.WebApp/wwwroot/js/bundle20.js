@@ -26836,7 +26836,7 @@
                 //if (!t.suscriptions().includes(n.niche)) return !1;
                 let a = document.querySelector("#voxLoadMore"),
                     r = a.dataset.voxs,
-                    i = "0" == r ? "Cargar 1 nuevo vox" : `Cargar ${Number(r) + 1} nuevos voxs`;
+                    i = "0" == r ? "Mostrar 1 nuevo post" : `Cargar ${Number(r) + 1} nuevos posts`;
                 a.innerHTML = i, a.dataset.voxs = "" + (Number(a.dataset.voxs) + 1), a.classList.remove("disabled");
                 let o = document.querySelectorAll("[data-sticky]").length + 1;
                 c(e.vox(n)).insertAfter(`#voxList .vox:nth-child(${o})`)

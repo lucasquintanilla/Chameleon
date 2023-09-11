@@ -35,11 +35,15 @@ html {
     --main-bg-color-dark: #000;
     --main-nav-color-dark: #000;
     --main-search-bg-color-dark: #303134;
-    --main-border-color-dark: white;
+    --main-border-color-dark: #2c2c2c;
     --main-menu-icon-hover-color-dark: rgba(232,234,237,.08);
-    --main-container-color-dark: #36373a;
-    --main-input-bg-color-dark: #303134;
-    --main-button-secondary-bg-color-dark: #303134;
+    --main-container-color-dark: #000;
+    /*--main-container-color-dark: #36373a;*/
+    /*--main-input-bg-color-dark: #303134;*/
+    --main-input-bg-color-dark: #000;
+    /*--main-button-secondary-bg-color-dark: #303134;*/
+    --main-button-secondary-bg-color-dark: #000;
+    --main-tag-secondary-bg-color-dark: #303134;
 }
 
 .replyLabel {
@@ -1215,8 +1219,8 @@ textarea.commentTextarea {
     width: 100%;
     height: 90px;
     /*max-height:90px;*/
-    padding: .5rem;
-    border: 0px solid #e6e6e6;
+    padding: 1rem;
+    border: 1px solid #e6e6e6;
     margin: 0 0 1rem;
     font-family: inherit;
     font-size: 1rem;
@@ -1226,6 +1230,7 @@ textarea.commentTextarea {
     border-radius: 15px;
     -webkit-appearance: none;
     -moz-appearance: none;
+    resize:none;
 }
 
 .commentBoxButtons {
@@ -1316,13 +1321,14 @@ figure.commentAttach {
     margin: 0;
     margin-right: 16px;
     max-width: 50%;
-    padding: 8px;
+    /*padding: 8px;*/
     border-radius: 4px;
-    border: 1px solid #dedede;
+    /*border: 1px solid #dedede;*/
     display: flex;
     flex-wrap: wrap;
     align-items: flex-start;
     background: white;
+    margin-top:15px;
 }
 
 .commentData {
@@ -1385,7 +1391,7 @@ span.author {
 .commentAttach img {
     width: 100%;
     height: 100%;
-    border-radius: 4px;
+    border-radius: 20px;
 }
 
 .commentContent {
@@ -2325,6 +2331,7 @@ select.commentSendToken {
         width: 100%;
         bottom: 0;
         z-index:9;
+        /*display:flex;*/
     }
 
     header.voxBody h1 {
@@ -3331,7 +3338,7 @@ ul {
 }
 
 .hide {
-    display: none;
+    display: none !important;
 }
 
 /* Fonts */
@@ -3413,6 +3420,7 @@ ul {
         border-radius: 16px;
         border: 0px solid #c1c1c1;
         outline: none;
+        font-family: sans-serif;
 
     }
 
@@ -3463,7 +3471,7 @@ textarea.newVoxContent {
     -webkit-appearance: none;
     /* border: 1px solid transparent; */
     padding: .85em 1em;
-    font-size: .9rem;
+    /*font-size: .9rem;*/
     background-color: var(--main-bg-color);
     border: 1px solid #15425a;
     /* border-bottom: 3px solid #15425a; */
@@ -3626,14 +3634,31 @@ select {
 
 @media only screen and (max-width: 600px) {
 
+    .attachs{
+        flex-wrap:nowrap;
+    }
+
+    .display-flex{
+        display:flex;
+    }
+
+    .display-block {
+        display: block;
+    }
+    textarea.commentTextarea {
+        height: 44px;
+        margin: 0;
+        padding:0.6rem;
+        overflow:hidden;
+    }
+
     .createVox {
         /*display: flex;*/
         /*bottom: 0 !important;*/
         left: 0%;
         transform: translate(0%, 0%);
         min-width: 420px;
-        z-index:10;
-        
+        z-index: 10;
     }
 
     .modalBox {
@@ -4146,7 +4171,7 @@ h5 {
     }
 
     .darkmode .commentTag {
-        background: var(--main-button-secondary-bg-color-dark)
+        background: var(--main-tag-secondary-bg-color-dark)
     }
 
     .darkmode .categoryTitle {
@@ -4226,8 +4251,8 @@ h5 {
     }
 
     .darkmode .commentAttach {
-        border-color: #1d2a34;
-        background: #18222a;
+        /*border-color: var(--main-border-color-dark);*/
+        background: var(--main-bg-color-dark);
     }
 
     .darkmode .voxAttach {
@@ -4284,6 +4309,7 @@ h5 {
 
         .darkmode .modalBox textarea {
             background: var(--main-input-bg-color-dark);
+            /*background: var(--main-bg-color-dark);*/
             border-color: var(--main-border-color-dark);
             color: #f1f3f4;
         }
@@ -4291,12 +4317,14 @@ h5 {
 
         .darkmode .modalBox select {
             background: var(--main-input-bg-color-dark);
+            /*background: var(--main-bg-color-dark);*/
             border-color: var(--main-border-color-dark);
             color: #f1f3f4;
         }
 
         .darkmode .modalBox .selectAttach div {
             background: var(--main-input-bg-color-dark);
+            background: var(--main-bg-color-dark);
             border-color: var(--main-border-color-dark);
             color: #f1f3f4;
         }

@@ -10,3 +10,7 @@ Make sure the cloud icon is orange (turned on).
 Go to the Crypto tab in CloudFlare and make sure it is set to Flexible. Doing so will have all requests to any example.com domain go through CloudFlare which will use CloudFlare's SSL, but then CloudFlare will route that request to your elasticbeanstalk.com in either HTTP or HTTPS.
 Make sure your Parse Server URL is now set to https://parse.example.com/parse (as defined in your CNAME). This will make your Ajax request look like: https://parse.example.com/parse/users instead of the previous URL.
 If you can setup SSL certificates on your instance, you can configure CloudFlare to provide you with Origin Certificates that you can install on your instance (see Crypto tab, under Origin Certificates). Those certificates are there to secure the connection between CloudFlare and the origin server, in your case ElasticBeanstalk. If you do this, then you should still follow the steps above, but instead of selecting Flexible on SSL, use Full.
+
+## Icons
+
+https://fontawesome.com/v5/search
