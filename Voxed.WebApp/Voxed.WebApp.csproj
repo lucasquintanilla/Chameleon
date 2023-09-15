@@ -6,18 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove=".platform\**" />
     <Compile Remove="Logs\**" />
     <Compile Remove="Properties\PublishProfiles\**" />
-    <Content Remove=".platform\**" />
     <Content Remove="Logs\**" />
     <Content Remove="Properties\PublishProfiles\**" />
-    <EmbeddedResource Remove=".platform\**" />
     <EmbeddedResource Remove="Logs\**" />
     <EmbeddedResource Remove="Properties\PublishProfiles\**" />
-    <EntityDeploy Remove=".platform\**" />
     <EntityDeploy Remove="Properties\PublishProfiles\**" />
-    <None Remove=".platform\**" />
     <None Remove="Logs\**" />
     <None Remove="Properties\PublishProfiles\**" />
     <_WebToolingArtifacts Remove="Properties\PublishProfiles\**" />
@@ -68,6 +63,12 @@
     <Folder Include="wwwroot\img\gifs\" />
     <Folder Include="wwwroot\img\home\" />
     <Folder Include="wwwroot\media\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include=".platform\nginx\conf.d\proxy.conf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 

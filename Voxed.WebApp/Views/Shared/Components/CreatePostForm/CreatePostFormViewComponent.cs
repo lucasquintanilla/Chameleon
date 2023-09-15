@@ -12,8 +12,7 @@ namespace Voxed.WebApp.Views.Shared.Components.VoxForm
         private readonly IVoxedRepository voxedRepository;
         public static string Name = "CreatePostForm";
         public CreatePostFormViewComponent(
-                IVoxedRepository voxedRepository
-            )
+            IVoxedRepository voxedRepository)
         {
             this.voxedRepository = voxedRepository;
         }
