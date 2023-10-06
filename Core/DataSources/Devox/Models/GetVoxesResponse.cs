@@ -103,7 +103,7 @@ namespace Core.DataSources.Devox.Models
     public class Vox
     {
         [JsonProperty("_id")]
-        public string Id { get; set; }
+        public string? Id { get; set; }
 
         [JsonProperty("title")]
         public string Title { get; set; }

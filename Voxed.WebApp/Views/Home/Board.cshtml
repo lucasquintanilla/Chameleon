@@ -21,6 +21,12 @@
             </div>*@
         @*</div>*@
 
+        <div class="chip">
+            <a href="/hub">
+                <div class="chip-content">Devox</div>
+            </a>
+        </div>
+
         @foreach (var category in Model.Categories.OrderBy(x=>x.ShortName != Model.Page).ThenBy(x=>x.Name))
         {
             <div class="chip">

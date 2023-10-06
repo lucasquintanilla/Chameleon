@@ -66,6 +66,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include=".platform\00_myconf.config" />
     <None Include=".platform\nginx\conf.d\proxy.conf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -14,7 +14,7 @@ namespace Core.DataSources.Devox.Helpers
                 return vox.Url;
             }
 
-            return $"https://devox.uno/backgrounds/low-res_{vox.Filename}.jpeg";
+            return $"https://{Constants.Domain}/backgrounds/low-res_{vox.Filename}.jpeg";
         }
     }
 }

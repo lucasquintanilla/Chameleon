@@ -205,6 +205,13 @@ public class VoxController : BaseController
         return response;
     }
 
+    [HttpGet]
+    [Route("posts/create")]
+    public async Task<IActionResult> CreatePost()
+    {
+        return View();
+    }
+
 
     [HttpPost]
     [Route("anon/vox")]
@@ -296,11 +303,11 @@ public class VoxController : BaseController
                 PollTwo = string.Empty,
                 Id = vox.Id,
                 Slug = "devox",
-                VoxId = vox.Id.ToString(),
+                VoxId = vox.Id?.ToString(),
                 //New = vox.CreatedOn.IsNew(),
                 ThumbnailUrl = DevoxHelpers.GetThumbnailUrl(vox),
                 Category = vox.Category.ToString(),
-                Href = "https://devox.uno/vox/" + vox.Filename
+                Href = "https://devox.me/v/" + vox.Filename
             });
 
             return new LoadMoreResponse(devoxPosts.ToList());

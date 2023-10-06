@@ -14,3 +14,14 @@ If you can setup SSL certificates on your instance, you can configure CloudFlare
 ## Icons
 
 https://fontawesome.com/v5/search
+
+
+## Visual Studio Debbugin JavaScript
+
+Debug client-side script
+
+Visual Studio provides client-side debugging support only for Chrome and Microsoft Edge (Chromium). In some scenarios, the debugger automatically hits breakpoints in JavaScript and TypeScript codes and embedded scripts on HTML files.
+
+    For debugging client-side script in ASP.NET apps, choose Tools > Options > Debugging, and then select Enable JavaScript Debugging for ASP.NET (Chrome, Edge, and IE).
+
+    For more detailed information, see the blog post Debug JavaScript in Microsoft Edge and this post for Google Chrome. For debugging TypeScript in ASP.NET Core, see Create an ASP.NET Core app with TypeScript.

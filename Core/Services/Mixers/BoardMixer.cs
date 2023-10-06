@@ -82,7 +82,7 @@ namespace Core.Services.Mixers
             }
             catch (Exception e)
             {
-                //Console.WriteLine(e.ToString());
+                _logger.LogWarning(e.ToString());
                 return Enumerable.Empty<MixItem>();
             }
         }
@@ -91,7 +91,20 @@ namespace Core.Services.Mixers
         {
             try
             {
-                var posts = await _devoxDataSource.GetVoxes();
+                IEnumerable<DataSources.Devox.Models.Vox> posts;
+                try
+                {
+                    
+                    posts = await _devoxDataSource.GetVoxesTest();
+                    //posts = await _devoxDataSource.GetVoxes();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.ToString());
+
+                    posts = await _devoxDataSource.GetVoxesTest();
+                }
+                
                 return posts.Select(post => new MixItem()
                 {
                     Hash = post.Id,
@@ -106,17 +119,18 @@ namespace Core.Services.Mixers
                     PollTwo = string.Empty,
                     Id = post.Id,
                     Slug = "devox",
-                    VoxId = post.Id.ToString(),
+                    VoxId = post.Id?.ToString(),
                     //New = vox.Date,
                     ThumbnailUrl = DevoxHelpers.GetThumbnailUrl(post),
                     Category = post.Category.ToString(),
-                    Href = "https://devox.uno/vox/" + post.Filename,
+                    Href = $"https://{Core.DataSources.Devox.Constants.Domain}/v/" + post.Filename,
                     LastActivityOn = post.LastUpdate
                 }).ToList();
             }
             catch (Exception e)
             {
                 //Console.WriteLine(e.ToString());
+                _logger.LogError(e.ToString());
                 return Enumerable.Empty<MixItem>();
             }
         }

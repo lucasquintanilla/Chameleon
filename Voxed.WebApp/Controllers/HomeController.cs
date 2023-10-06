@@ -81,7 +81,7 @@ public class HomeController : Controller
 
         var board = new BoardViewModel()
         {
-            Voxs = mix.Items.OrderByDescending(x => x.LastActivityOn).Select(_mapper.Map),
+            Voxs = mix.Items.OrderByDescending(x => x.LastActivityOn).Select(_mapper.Map).ToArray(),
             Title = "Hub",
             Page = "category-hub",
             Categories = _categories

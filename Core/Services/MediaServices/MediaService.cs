@@ -50,6 +50,8 @@ public class MediaService : IMediaService
             CreateMediaFileExtension.Jpeg => await SaveImageFromFile(request.File),
             CreateMediaFileExtension.Png => await SaveImageFromFile(request.File),
             CreateMediaFileExtension.WebP => await SaveImageFromFile(request.File),
+            CreateMediaFileExtension.WebM => await SaveVideoFromFile(request.File),
+            CreateMediaFileExtension.Mp4 => await SaveVideoFromFile(request.File),
             _ => throw new NotImplementedException("Invalid file extension"),
         };
     }
@@ -61,7 +63,6 @@ public class MediaService : IMediaService
         var original = new StorageObject()
         {
             Key = Guid.NewGuid() + file.GetFileExtension(),
-            //Content = await _imageService.Compress(file.OpenReadStream()),
             Content = file.OpenReadStream(),
             ContentType = file.ContentType
         };
@@ -71,6 +72,27 @@ public class MediaService : IMediaService
         {
             Url = $"/{_config.BaseDirectory}/{original.Key}",
             Type = MediaType.Image,
+            Key = original.Key,
+            ContentType = original.ContentType,
+        };
+    }
+
+    private async Task<Media> SaveVideoFromFile(IFormFile file)
+    {
+        if (file == null) return null;
+
+        var original = new StorageObject()
+        {
+            Key = Guid.NewGuid() + file.GetFileExtension(),
+            Content = file.OpenReadStream(),
+            ContentType = file.ContentType
+        };
+        await _storageService.Save(original);
+
+        return new Media
+        {
+            Url = $"/{_config.BaseDirectory}/{original.Key}",
+            Type = MediaType.Video,
             Key = original.Key,
             ContentType = original.ContentType,
         };

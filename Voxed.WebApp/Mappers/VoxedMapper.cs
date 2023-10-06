@@ -44,9 +44,9 @@ public class VoxedMapper : IMapper
             //CreatedAt = vox.CreatedOn.ToString(),
             PollOne = string.Empty,
             PollTwo = string.Empty,
-            Id = vox.Id.ToString(),
+            Id = vox.Id?.ToString(),
             Slug = vox.Slug,
-            VoxId = vox.Id.ToString(),
+            VoxId = vox.Id?.ToString(),
             //New = vox.CreatedOn.IsNew(),
             ThumbnailUrl = vox.ThumbnailUrl,
             Category = vox.Category,
@@ -54,28 +54,27 @@ public class VoxedMapper : IMapper
         };
     }
 
-    public VoxResponse Map(Post vox)
+    public VoxResponse Map(Post post)
     {
         return new VoxResponse()
         {
-            Hash = vox.Id.ToShortString(),
+            Hash = post.Id.ToShortString(),
             Status = true,
-            Niche = vox.CategoryId.ToString(),
-            Title = vox.Title,
-            Comments = vox.Comments.Count.ToString(),
+            Niche = post.CategoryId.ToString(),
+            Title = post.Title,
+            Comments = post.Comments.Count.ToString(),
             Extension = string.Empty,
-            Sticky = vox.IsSticky ? "1" : "0",
-            CreatedAt = vox.CreatedOn.ToString(),
+            Sticky = post.IsSticky ? "1" : "0",
+            CreatedAt = post.CreatedOn.ToString(),
             PollOne = string.Empty,
             PollTwo = string.Empty,
-            Id = vox.Id.ToString(),
-            Slug = vox.Category.ShortName.ToUpper(),
-            VoxId = vox.Id.ToString(),
-            New = vox.CreatedOn.IsNew(),
-            //ThumbnailUrl = vox.Media?.Url + ImageParameter.FormatWebP,
-            ThumbnailUrl = $"/{MediaEndpoint}/{vox.Media?.Key}" + ImageParameter.Quality40,
-            Category = vox.Category.Name,
-            Href = "/vox/" + vox.Id.ToShortString(),
+            Id = post.Id.ToString(),
+            Slug = post.Category.ShortName.ToUpper(),
+            VoxId = post.Id.ToString(),
+            New = post.CreatedOn.IsNew(),
+            ThumbnailUrl = $"{MediaEndpoint}/{post.Media?.Key}" + ImageParameter.Quality40,
+            Category = post.Category.Name,
+            Href = "/vox/" + post.Id.ToShortString(),
         };
     }
 
@@ -101,10 +100,8 @@ public class VoxedMapper : IMapper
 
             Media = new MediaViewModel()
             {
-                //ThumbnailUrl = vox.Media.Url + ImageParameter.Quality40,
-                ThumbnailUrl = $"/{MediaEndpoint}/{vox.Media.Key}" + ImageParameter.Quality40,
-                //Url = vox.Media.Url + ImageParameter.Quality40,
-                Url = $"/{MediaEndpoint}/{vox.Media.Key}" + ImageParameter.Quality40,
+                ThumbnailUrl = $"{MediaEndpoint}/{vox.Media.Key}" + ImageParameter.Quality40,
+                Url = $"{MediaEndpoint}/{vox.Media.Key}",
                 MediaType = (ViewModels.MediaType)(int)vox.Media.Type,
                 ExtensionData = vox.Media?.Url.Split('=')[(vox.Media?.Url.Split('=').Length - 1).Value],
                 ExternalUrl = vox.Media?.ExternalUrl
@@ -122,16 +119,14 @@ public class VoxedMapper : IMapper
                 IsOp = c.UserId == vox.UserId,
                 AvatarColor = c.Style.ToString().ToLower(),
                 AvatarText = UserTypeDictionary.GetDescription(c.Owner.UserType).ToUpper(),
-                //AvatarText = (c.UserId == vox.UserId ? "OP" : UserTypeDictionary.GetDescription(c.Owner.UserType).ToUpper()),
                 Media = c.Media == null ? null : new MediaViewModel()
                 {
                     //Url = c.Media?.Url,
-                    Url = $"/{MediaEndpoint}/{c.Media?.Key}" + ImageParameter.Quality40,
-                    MediaType = (ViewModels.MediaType)(int)c.Media?.Type,
-                    ExtensionData = c.Media?.Url.Split('=')[(vox.Media?.Url.Split('=').Length - 1).Value],
-                    //ThumbnailUrl = c.Media?.Url + ImageParameter.Quality40,
-                    ThumbnailUrl = $"/{MediaEndpoint}/{c.Media?.Key}" + ImageParameter.Quality40,
-                    ExternalUrl = c.Media?.ExternalUrl,
+                    Url = $"{MediaEndpoint}/{c.Media.Key}" + ImageParameter.Quality40,
+                    MediaType = (ViewModels.MediaType)(int)c.Media.Type,
+                    ExtensionData = c.Media.Url.Split('=')[(vox.Media?.Url.Split('=').Length - 1).Value],
+                    ThumbnailUrl = $"{MediaEndpoint}/{c.Media.Key}" + ImageParameter.Quality40,
+                    ExternalUrl = c.Media.ExternalUrl,
                 },
                 IsSticky = c.IsSticky,
                 CreatedOn = c.CreatedOn,
@@ -160,7 +155,7 @@ public class VoxedMapper : IMapper
                 ContentHash = notification.Comment.Hash,
                 Id = notification.Id.ToString(),
                 //ThumbnailUrl = notification.Post.Media?.Url + Core.Constants.ImageParameter.FormatWebP
-                ThumbnailUrl = $"/{MediaEndpoint}/{notification.Post.Media?.Key}" + ImageParameter.FormatWebP,
+                ThumbnailUrl = $"{MediaEndpoint}/{notification.Post.Media?.Key}" + ImageParameter.FormatWebP,
             }
         };
     }
