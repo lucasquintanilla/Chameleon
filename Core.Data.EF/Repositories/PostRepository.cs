@@ -93,9 +93,9 @@ namespace Core.Data.EF.Repositories
                        .Skip(0)
                        .Take(36);
 
-            var result = query.ToList();
+            var result = await query.ToListAsync();
 
-            return await Task.FromResult(result);
+            return result;
         }
 
         private async Task<Post> GetLastPostBump(IEnumerable<Guid> skipIds)

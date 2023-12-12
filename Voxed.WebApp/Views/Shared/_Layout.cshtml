@@ -20,9 +20,9 @@
     @*<title>@ViewData["NotificationsCount"] @Configuration["ApplicationName"] | @ViewData["Title"]</title>*@
     <title>@ViewData["NotificationsCount"] @Configuration["ApplicationName"]</title>
     <meta name="theme-color" content="#2C3E50" />
-    <link rel="stylesheet" href="~/css/style47.min.css" />
+    <link rel="stylesheet" href="~/css/style49.min.css" />
     <meta name="description"
-          content="Plataforma social orientada al anonimato, donde se puede compartir casi cualquier tipo de contenido de forma inmediata.">
+          content="Libertad de expresion">
 
     <link rel="stylesheet"
           href="https://use.fontawesome.com/releases/v5.11.2/css/all.css"
@@ -32,7 +32,7 @@
     <link rel="stylesheet" src="https://unpkg.com/css-tooltip" />
     @*<link rel="shortcut icon" href="/favicon.ico">*@
     <link rel="shortcut icon" href="/favicon-new.ico">
-    <link rel="manifest" href="/manifest.json">
+    @*<link rel="manifest" href="/manifest.json">*@
 </head>
 <body class="noSelect">
     @await Component.InvokeAsync(NavViewComponent.Name)
@@ -703,7 +703,9 @@
         gtag('config', 'G-EVXRV5V095');
     </script>
 
-    <script>
+    @*BEGIN PWA JS*@
+
+    @*<script>
         window.addEventListener('load', () => {
             registerSW();
         });
@@ -721,9 +723,9 @@
                 }
             }
         }
-    </script>
+    </script>*@
 
-    <script>
+   @* <script>
         // Initialize deferredPrompt for use later to show browser install prompt.
         let deferredPrompt;
 
@@ -737,6 +739,17 @@
             // Optionally, send analytics event that PWA install promo was shown.
             console.log(`'beforeinstallprompt' event was fired.`);
         });
-    </script>
+    </script>*@
+    @*<script>
+        window.addEventListener("visibilitychange", function () {
+            console.log("Visibility changed");
+            if (document.visibilityState === "visible") {
+                console.log("APP resumed");
+                window.location.reload();
+            }
+        });
+    </script>*@
+
+    @*ENDS PWA JS*@
 </body>
 </html>
