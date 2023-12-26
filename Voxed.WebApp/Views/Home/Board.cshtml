@@ -27,14 +27,14 @@
             </a>
         </div>
 
-        @foreach (var category in Model.Categories.OrderBy(x=>x.ShortName != Model.Page).ThenBy(x=>x.Name))
+        @*@foreach (var category in Model.Categories.OrderBy(x=>x.ShortName != Model.Page).ThenBy(x=>x.Name))
         {
             <div class="chip">
                 <a href="/@category.ShortName">
                     <div class="chip-content">@category.Name</div>
                 </a>
             </div>
-        }
+        }*@
     </div>
 
     <div class="loadNewVox disabled unselect" data-voxs="0" id="voxLoadMore"></div>

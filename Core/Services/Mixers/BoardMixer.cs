@@ -1,5 +1,6 @@
 ﻿using Core.DataSources.Devox;
 using Core.DataSources.Devox.Helpers;
+using Core.DataSources.Devox.Models;
 using Core.DataSources.Ufftopia;
 using Core.Services.Mixers.Models;
 using Microsoft.Extensions.Logging;
@@ -20,6 +21,8 @@ namespace Core.Services.Mixers
         private readonly IDevoxDataSource _devoxDataSource;
         private readonly IUfftopiaDataSource _ufftopiaDataSource;
         private readonly ILogger<BoardMixer> _logger;
+        private List<DevoxPost> _devoxPosts = new();
+        private IEnumerable<KeyValuePair<string, DevoxPost>> _devoxPostsDictionary;
 
         public BoardMixer(IUfftopiaDataSource ufftopiaDataSource,
             IDevoxDataSource devoxDataSource, ILogger<BoardMixer> logger)
@@ -91,21 +94,14 @@ namespace Core.Services.Mixers
         {
             try
             {
-                IEnumerable<DataSources.Devox.Models.Vox> posts;
-                try
+                if (!_devoxPosts.Any() || _devoxPosts.Any(post => (DateTime.Now - post.LastUpdate) > TimeSpan.FromMinutes(5)))
                 {
-                    
-                    posts = await _devoxDataSource.GetVoxesTest();
-                    //posts = await _devoxDataSource.GetVoxes();
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.ToString());
-
-                    posts = await _devoxDataSource.GetVoxesTest();
+                    var posts = await _devoxDataSource.GetPosts();
+                    _devoxPostsDictionary = _devoxPostsDictionary.Union(posts.ToDictionary(x => x.Id));
+                    _devoxPosts.AddRange(posts);
                 }
                 
-                return posts.Select(post => new MixItem()
+                return _devoxPosts.Select(post => new MixItem()
                 {
                     Hash = post.Id,
                     //Status = true,
@@ -129,7 +125,6 @@ namespace Core.Services.Mixers
             }
             catch (Exception e)
             {
-                //Console.WriteLine(e.ToString());
                 _logger.LogError(e.ToString());
                 return Enumerable.Empty<MixItem>();
             }
