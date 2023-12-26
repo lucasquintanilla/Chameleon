@@ -98,6 +98,7 @@ namespace Core.Services.Mixers
                 {
                     var posts = await _devoxDataSource.GetPosts();
                     _devoxPostsDictionary = _devoxPostsDictionary.Union(posts.ToDictionary(x => x.Id));
+                    _devoxPostsDictionary.Where(x=>x.Value.LastUpdate.Day == 4).Take(5).ToList();
                     _devoxPosts.AddRange(posts);
                 }
                 
