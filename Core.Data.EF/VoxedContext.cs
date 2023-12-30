@@ -13,6 +13,7 @@ namespace Core.Data.EF
         public VoxedContext(DbContextOptions<VoxedContext> options) : base(options) { }
 
         public DbSet<Post> Posts { get; set; }
+        //public DbSet<ExternalPost> ExternalPosts { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Media> Media { get; set; }

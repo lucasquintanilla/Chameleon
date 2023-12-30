@@ -18,8 +18,8 @@ using Voxed.WebApp.ViewModels;
 
 namespace Voxed.WebApp.Controllers;
 
-[AllowAnonymous]
-//[Authorize]
+//[AllowAnonymous]
+[Authorize]
 public class HomeController : Controller
 {
     private readonly IVoxedRepository _voxedRepository;

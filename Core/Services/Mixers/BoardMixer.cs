@@ -24,8 +24,10 @@ namespace Core.Services.Mixers
         private List<DevoxPost> _devoxPosts = new();
         private IEnumerable<KeyValuePair<string, DevoxPost>> _devoxPostsDictionary;
 
-        public BoardMixer(IUfftopiaDataSource ufftopiaDataSource,
-            IDevoxDataSource devoxDataSource, ILogger<BoardMixer> logger)
+        public BoardMixer(
+            IUfftopiaDataSource ufftopiaDataSource,
+            IDevoxDataSource devoxDataSource, 
+            ILogger<BoardMixer> logger)
         {
             _ufftopiaDataSource = ufftopiaDataSource;
             _devoxDataSource = devoxDataSource;
