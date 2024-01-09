@@ -19,9 +19,12 @@ using Core.Services.Avatar;
 using Core.Services.TextFormatter;
 using Voxed.WebApp.Constants;
 using Core.Extensions;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace Voxed.WebApp.Controllers;
 
+[Authorize]
 public class CommentController : BaseController
 {
     private readonly ILogger<CommentController> _logger;

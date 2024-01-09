@@ -28,9 +28,13 @@ using Core.Services;
 using System.Diagnostics;
 using Microsoft.Extensions.Hosting;
 using System.IO;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace Voxed.WebApp.Controllers;
 
+//[Authorize(Roles = "Administrator")]
+[Authorize]
 public class VoxController : BaseController
 {
     private readonly ILogger<VoxController> _logger;

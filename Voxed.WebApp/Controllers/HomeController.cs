@@ -19,6 +19,8 @@ using Voxed.WebApp.ViewModels;
 namespace Voxed.WebApp.Controllers;
 
 //[AllowAnonymous]
+//[Authorize(Roles = nameof(RoleType.Administrator))]
+//[Authorize(Roles = "Administrator")]
 [Authorize]
 public class HomeController : Controller
 {
@@ -84,6 +86,30 @@ public class HomeController : Controller
             Voxs = mix.Items.OrderByDescending(x => x.LastActivityOn).Select(_mapper.Map).ToArray(),
             Title = "Hub",
             Page = "category-hub",
+            Categories = _categories
+        };
+        return View("board", board);
+    }
+
+    [HttpGet("infinite")]
+    [Authorize(Roles = "Administrator")]
+    public async Task<IActionResult> Infinite()
+    {
+        var filter = new PostFilter()
+        {
+            UserId = User.GetUserId(),
+            //Categories = (await GetUserCategorySubscriptions()).ToList(),
+            IncludeHidden = false,
+            HiddenWords = GetUserHiddenWords()
+        };
+
+        var posts = await _voxedRepository.Posts.GetByFilterAsync(filter);
+
+        var board = new BoardViewModel()
+        {
+            Voxs = _mapper.Map(posts),
+            Title = "Home",
+            Page = "home",
             Categories = _categories
         };
         return View("board", board);
