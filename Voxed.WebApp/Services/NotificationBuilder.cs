@@ -22,14 +22,14 @@ namespace Voxed.WebApp.Services
         private Post _post;
         private Comment _comment;
         private List<Notification> _notifications = new List<Notification>();
-        private IBlogRepository _voxedRepository;
+        private IBlogRepository _blogRepository;
         private ITextFormatterService _formateadorService;
 
         public NotificationBuilder(
             IBlogRepository voxedRepository,
             ITextFormatterService formatter)
         {
-            _voxedRepository = voxedRepository;
+            _blogRepository = voxedRepository;
             _formateadorService = formatter;
         }
 
@@ -69,7 +69,7 @@ namespace Voxed.WebApp.Services
 
             if (!hashList.Any()) return this;
 
-            var usersId = _voxedRepository.Comments.GetUsersByCommentHash(hashList, new Guid[] { _comment.UserId }).GetAwaiter().GetResult();
+            var usersId = _blogRepository.Comments.GetUsersByCommentHash(hashList, new Guid[] { _comment.UserId }).GetAwaiter().GetResult();
 
             if (!usersId.Any()) return this;
 
@@ -90,7 +90,7 @@ namespace Voxed.WebApp.Services
 
         public INotificationBuilder AddVoxSusbcriberNotifications()
         {
-            var voxSubscriberUserIds = _voxedRepository.UserPostActions
+            var voxSubscriberUserIds = _blogRepository.UserPostActions
                 .GetPostSubscriberUserIds(_post.Id, ignoreUserIds: new List<Guid>() { _comment.UserId, _post.UserId })
                 .GetAwaiter()
                 .GetResult();
@@ -111,8 +111,8 @@ namespace Voxed.WebApp.Services
 
         public List<Notification> Build()
         {
-            _voxedRepository.Notifications.AddRange(_notifications).GetAwaiter().GetResult();
-            _voxedRepository.SaveChangesAsync().GetAwaiter().GetResult();
+            _blogRepository.Notifications.AddRange(_notifications).GetAwaiter().GetResult();
+            _blogRepository.SaveChangesAsync().GetAwaiter().GetResult();
             return _notifications;
         }
     }

@@ -24,7 +24,7 @@ public interface INotificationService
 
 public class NotificationService : INotificationService
 {
-    private readonly IBlogRepository _voxedRepository;
+    private readonly IBlogRepository _blogRepository;
     private readonly IHubContext<VoxedHub, INotificationHub> _notificationHub;
     private readonly ITextFormatterService _textFormatter;
     private readonly IMapper _mapper;
@@ -37,7 +37,7 @@ public class NotificationService : INotificationService
         IMapper mapper,
         INotificationSender notificationSender)
     {
-        _voxedRepository = voxedRepository;
+        _blogRepository = voxedRepository;
         _notificationHub = notificationHub;
         _textFormatter = textFormatter;
         _mapper = mapper;
@@ -46,7 +46,7 @@ public class NotificationService : INotificationService
 
     public async Task NotifyPostCreated(Guid voxId)
     {
-        var vox = await _voxedRepository.Posts.GetById(voxId); // Ver si se puede remover
+        var vox = await _blogRepository.Posts.GetById(voxId); // Ver si se puede remover
 
         if (!Categories.HiddenCategories.Contains(vox.CategoryId))
         {
@@ -57,8 +57,8 @@ public class NotificationService : INotificationService
 
     public async Task ManageNotifications(Comment comment)
     {
-        var vox = await _voxedRepository.Posts.GetById(comment.PostId);
-        var notifications = new NotificationBuilder(_voxedRepository, _textFormatter)
+        var vox = await _blogRepository.Posts.GetById(comment.PostId);
+        var notifications = new NotificationBuilder(_blogRepository, _textFormatter)
                 .WithPost(vox)
                 .WithComment(comment)
                 .AddReplies()
@@ -76,7 +76,7 @@ public class NotificationService : INotificationService
 
     public async Task NotifyCommentCreated(Comment comment, CreateCommentRequest request)
     {
-        var vox = await _voxedRepository.Posts.GetById(comment.PostId);
+        var vox = await _blogRepository.Posts.GetById(comment.PostId);
         if (Categories.HiddenCategories.Contains(vox.CategoryId)) return;
 
         var commentUpdate = new CommentLiveUpdate()

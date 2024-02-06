@@ -13,7 +13,7 @@ namespace Voxed.WebApp.Views.Shared.Components.NotificationNavList
 {
     public class NotificationNavListViewComponent : ViewComponent
     {
-        private readonly IBlogRepository _voxedRepository;
+        private readonly IBlogRepository _blogRepository;
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
 
@@ -21,7 +21,7 @@ namespace Voxed.WebApp.Views.Shared.Components.NotificationNavList
             UserManager<User> userManager,
             IMapper mapper)
         {
-            _voxedRepository = voxedRepository;
+            _blogRepository = voxedRepository;
             _userManager = userManager;
             _mapper = mapper;
         }
@@ -34,7 +34,7 @@ namespace Voxed.WebApp.Views.Shared.Components.NotificationNavList
                 return View(new List<UserNotification>());
             }
 
-            var notifications = await _voxedRepository.Notifications.GetByUserId(userId.Value);
+            var notifications = await _blogRepository.Notifications.GetByUserId(userId.Value);
 
             if (notifications.Any())
             {

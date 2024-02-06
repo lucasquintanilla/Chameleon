@@ -16,14 +16,14 @@ namespace Voxed.WebApp.Controllers;
 public class AdminController : Controller
 {
     private readonly ILogger<AdminController> _logger;
-    private readonly IBlogRepository _voxedRepository;
+    private readonly IBlogRepository _blogRepository;
 
     public AdminController(
         IBlogRepository voxedRepository,
         ILogger<AdminController> logger)
     {
         _logger = logger;
-        _voxedRepository = voxedRepository;
+        _blogRepository = voxedRepository;
     }
 
     public IActionResult Index()
@@ -40,7 +40,7 @@ public class AdminController : Controller
             {
                 case ContentType.Comment:
 
-                    var comment = await _voxedRepository.Comments.GetById(new Guid(request.ContentId));
+                    var comment = await _blogRepository.Comments.GetById(new Guid(request.ContentId));
                     if (comment == null) NotFound();
                     comment.State = CommentState.Deleted;
                     await UpdateVoxLastBump(comment);
@@ -48,7 +48,7 @@ public class AdminController : Controller
 
                 case ContentType.Vox:
 
-                    var vox = await _voxedRepository.Posts.GetById(new Guid(request.ContentId));
+                    var vox = await _blogRepository.Posts.GetById(new Guid(request.ContentId));
                     if (vox == null) NotFound();
                     vox.State = PostState.Deleted;
                     break;
@@ -57,7 +57,7 @@ public class AdminController : Controller
                     break;
             }
 
-            await _voxedRepository.SaveChangesAsync();
+            await _blogRepository.SaveChangesAsync();
             return new DeleteResponse() { Value = "OK" };
         }
         catch (Exception e)
@@ -70,7 +70,7 @@ public class AdminController : Controller
 
     private async Task UpdateVoxLastBump(Comment comment)
     {
-        var vox = await _voxedRepository.Posts.GetById(comment.PostId);
+        var vox = await _blogRepository.Posts.GetById(comment.PostId);
         if (vox == null) return;
 
         var lastBump = vox.Comments
