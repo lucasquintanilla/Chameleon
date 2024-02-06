@@ -19,11 +19,11 @@ public class AdminController : Controller
     private readonly IBlogRepository _blogRepository;
 
     public AdminController(
-        IBlogRepository voxedRepository,
+        IBlogRepository blogRepository,
         ILogger<AdminController> logger)
     {
         _logger = logger;
-        _blogRepository = voxedRepository;
+        _blogRepository = blogRepository;
     }
 
     public IActionResult Index()

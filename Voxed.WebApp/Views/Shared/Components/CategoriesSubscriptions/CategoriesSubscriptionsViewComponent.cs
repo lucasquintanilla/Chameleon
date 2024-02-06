@@ -12,9 +12,9 @@ namespace Voxed.WebApp.Views.Shared.Components.CategoriesSubscriptions
         private static IEnumerable<Category> _categories;
 
         public CategoriesSubscriptionsViewComponent(
-            IBlogRepository voxedRepository)
+            IBlogRepository blogRepository)
         {
-            _blogRepository = voxedRepository;
+            _blogRepository = blogRepository;
         }
 
         public async Task<IViewComponentResult> InvokeAsync()

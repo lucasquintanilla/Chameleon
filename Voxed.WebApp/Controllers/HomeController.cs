@@ -30,16 +30,16 @@ public class HomeController : Controller
     private readonly IEnumerable<Category> _categories = Enumerable.Empty<Category>();
 
     public HomeController(
-        IBlogRepository voxedRepository,
+        IBlogRepository blogRepository,
         IMixer boardMixer,
         IMapper mapper)
     {
-        _blogRepository = voxedRepository;
+        _blogRepository = blogRepository;
         _boardMixer = boardMixer;
         _mapper = mapper;
         if (!_categories.Any())
         {
-            _categories = voxedRepository.Categories.GetAll().GetAwaiter().GetResult();
+            _categories = blogRepository.Categories.GetAll().GetAwaiter().GetResult();
         }
     }
 

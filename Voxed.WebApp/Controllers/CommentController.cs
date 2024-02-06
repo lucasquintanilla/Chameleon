@@ -41,7 +41,7 @@ public class CommentController : BaseController
         INotificationService notificationService,
         ITextFormatterService textFormatter,
         IMediaService mediaService,
-        IBlogRepository voxedRepository,
+        IBlogRepository blogRepository,
         UserManager<User> userManager,
         SignInManager<User> signInManager,
         IHttpContextAccessor accessor,
@@ -50,7 +50,7 @@ public class CommentController : BaseController
     {
         _textFormatter = textFormatter;
         _mediaService = mediaService;
-        _blogRepository = voxedRepository;
+        _blogRepository = blogRepository;
         _userManager = userManager;
         _logger = logger;
         _signInManager = signInManager;

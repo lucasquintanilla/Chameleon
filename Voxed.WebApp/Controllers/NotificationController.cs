@@ -20,11 +20,11 @@ public class NotificationController : BaseController
 
     public NotificationController(
         UserManager<User> userManager,
-        IBlogRepository voxedRepository,
+        IBlogRepository blogRepository,
         IHubContext<VoxedHub, INotificationHub> notificationHub,
         IHttpContextAccessor accessor) : base(accessor, userManager)
     {
-        _blogRepository = voxedRepository;
+        _blogRepository = blogRepository;
         _notificationHub = notificationHub;
     }
 

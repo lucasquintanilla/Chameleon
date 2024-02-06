@@ -50,7 +50,7 @@ public class VoxController : BaseController
 
     public VoxController(
         ILogger<VoxController> logger,
-        IBlogRepository voxedRepository,
+        IBlogRepository blogRepository,
         UserManager<User> userManager,
         SignInManager<User> signInManager,
         IHttpContextAccessor accessor,
@@ -63,7 +63,7 @@ public class VoxController : BaseController
         IMapper mapper)
         : base(accessor, userManager)
     {
-        _blogRepository = voxedRepository;
+        _blogRepository = blogRepository;
         _signInManager = signInManager;
         _postService = postService;
         _logger = logger;

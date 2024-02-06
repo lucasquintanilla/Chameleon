@@ -26,10 +26,10 @@ namespace Voxed.WebApp.Services
         private ITextFormatterService _formateadorService;
 
         public NotificationBuilder(
-            IBlogRepository voxedRepository,
+            IBlogRepository blogRepository,
             ITextFormatterService formatter)
         {
-            _blogRepository = voxedRepository;
+            _blogRepository = blogRepository;
             _formateadorService = formatter;
         }
 

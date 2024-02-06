@@ -31,13 +31,13 @@ public class NotificationService : INotificationService
     private readonly INotificationSender _notificationSender;
 
     public NotificationService(
-        IBlogRepository voxedRepository,
+        IBlogRepository blogRepository,
         IHubContext<VoxedHub, INotificationHub> notificationHub,
         ITextFormatterService textFormatter,
         IMapper mapper,
         INotificationSender notificationSender)
     {
-        _blogRepository = voxedRepository;
+        _blogRepository = blogRepository;
         _notificationHub = notificationHub;
         _textFormatter = textFormatter;
         _mapper = mapper;
