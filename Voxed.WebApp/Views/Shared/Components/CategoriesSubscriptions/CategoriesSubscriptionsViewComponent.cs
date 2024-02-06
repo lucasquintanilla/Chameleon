@@ -8,11 +8,11 @@ namespace Voxed.WebApp.Views.Shared.Components.CategoriesSubscriptions
 {
     public class CategoriesSubscriptionsViewComponent : ViewComponent
     {
-        private readonly IVoxedRepository _voxedRepository;
+        private readonly IBlogRepository _voxedRepository;
         private static IEnumerable<Category> _categories;
 
         public CategoriesSubscriptionsViewComponent(
-            IVoxedRepository voxedRepository)
+            IBlogRepository voxedRepository)
         {
             _voxedRepository = voxedRepository;
         }

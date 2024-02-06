@@ -16,10 +16,10 @@ namespace Voxed.WebApp.Controllers;
 public class AdminController : Controller
 {
     private readonly ILogger<AdminController> _logger;
-    private readonly IVoxedRepository _voxedRepository;
+    private readonly IBlogRepository _voxedRepository;
 
     public AdminController(
-        IVoxedRepository voxedRepository,
+        IBlogRepository voxedRepository,
         ILogger<AdminController> logger)
     {
         _logger = logger;

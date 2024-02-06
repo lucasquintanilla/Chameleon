@@ -24,13 +24,13 @@ namespace Voxed.WebApp.Controllers;
 [Authorize]
 public class HomeController : Controller
 {
-    private readonly IVoxedRepository _voxedRepository;
+    private readonly IBlogRepository _voxedRepository;
     private readonly IMixer _boardMixer;
     private readonly IMapper _mapper;
     private readonly IEnumerable<Category> _categories = Enumerable.Empty<Category>();
 
     public HomeController(
-        IVoxedRepository voxedRepository,
+        IBlogRepository voxedRepository,
         IMixer boardMixer,
         IMapper mapper)
     {

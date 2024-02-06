@@ -21,13 +21,13 @@ namespace Core.Services.Posts
     {
         private readonly ILogger<PostService> _logger;
         private readonly IMediaService _mediaService;
-        private readonly IVoxedRepository _voxedRepository;
+        private readonly IBlogRepository _voxedRepository;
         private readonly ITextFormatterService _textFormatter;
 
         public PostService(
             ILogger<PostService> logger,
             IMediaService mediaService,
-            IVoxedRepository voxedRepository,
+            IBlogRepository voxedRepository,
             ITextFormatterService textFormatter)
         {
             _logger = logger;

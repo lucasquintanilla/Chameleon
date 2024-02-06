@@ -38,7 +38,7 @@ namespace Voxed.WebApp.Controllers;
 public class VoxController : BaseController
 {
     private readonly ILogger<VoxController> _logger;
-    private readonly IVoxedRepository _voxedRepository;
+    private readonly IBlogRepository _voxedRepository;
     private readonly SignInManager<User> _signInManager;
     private readonly IPostService _postService;
     private readonly IUserVoxActionService _userVoxActionService;
@@ -50,7 +50,7 @@ public class VoxController : BaseController
 
     public VoxController(
         ILogger<VoxController> logger,
-        IVoxedRepository voxedRepository,
+        IBlogRepository voxedRepository,
         UserManager<User> userManager,
         SignInManager<User> signInManager,
         IHttpContextAccessor accessor,

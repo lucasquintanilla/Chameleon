@@ -9,10 +9,10 @@ namespace Voxed.WebApp.Views.Shared.Components.VoxForm
 {
     public class CreatePostFormViewComponent : ViewComponent
     {
-        private readonly IVoxedRepository voxedRepository;
+        private readonly IBlogRepository voxedRepository;
         public static string Name = "CreatePostForm";
         public CreatePostFormViewComponent(
-            IVoxedRepository voxedRepository)
+            IBlogRepository voxedRepository)
         {
             this.voxedRepository = voxedRepository;
         }

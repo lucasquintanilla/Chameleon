@@ -13,11 +13,11 @@ namespace Voxed.WebApp.Views.Shared.Components.NotificationNavList
 {
     public class NotificationNavListViewComponent : ViewComponent
     {
-        private readonly IVoxedRepository _voxedRepository;
+        private readonly IBlogRepository _voxedRepository;
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
 
-        public NotificationNavListViewComponent(IVoxedRepository voxedRepository,
+        public NotificationNavListViewComponent(IBlogRepository voxedRepository,
             UserManager<User> userManager,
             IMapper mapper)
         {

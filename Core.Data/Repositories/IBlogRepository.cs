@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Core.Data.Repositories
 {
-    public interface IVoxedRepository : IDisposable
+    public interface IBlogRepository : IDisposable
     {
         IPostRepository Posts { get; }
         ICategoryRepository Categories { get; }

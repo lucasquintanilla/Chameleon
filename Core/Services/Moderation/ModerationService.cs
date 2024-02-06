@@ -16,12 +16,12 @@ namespace Voxed.WebApp.Services.Moderation
     public class ModerationService : IModerationService
     {
         private readonly ILogger<ModerationService> _logger;
-        private readonly IVoxedRepository _voxedRepository;
+        private readonly IBlogRepository _voxedRepository;
         private readonly ITelegramService _telegramService;
 
         public ModerationService(
             ILogger<ModerationService> logger,
-            IVoxedRepository voxedRepository,
+            IBlogRepository voxedRepository,
             ITelegramService telegramService)
         {
             _logger = logger;

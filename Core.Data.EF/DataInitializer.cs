@@ -9,11 +9,11 @@ namespace Core.Data.EF
 {
     public class DataInitializer
     {
-        private readonly VoxedContext _context;
+        private readonly BlogContext _context;
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
 
-        public DataInitializer(VoxedContext context,
+        public DataInitializer(BlogContext context,
             UserManager<User> userManager,
             RoleManager<Role> roleManager)
         {

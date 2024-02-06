@@ -10,7 +10,7 @@ namespace Core.Data.EF.Repositories
 {
     public class CommentRepository : Repository<Comment>, ICommentRepository
     {
-        public CommentRepository(VoxedContext context) : base(context) { }
+        public CommentRepository(BlogContext context) : base(context) { }
 
         public override async Task<IEnumerable<Comment>> GetAll()
             => await Entities

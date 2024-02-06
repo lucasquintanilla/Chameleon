@@ -30,7 +30,7 @@ public class CommentController : BaseController
     private readonly ILogger<CommentController> _logger;
     private readonly ITextFormatterService _textFormatter;
     private readonly IMediaService _mediaService;
-    private readonly IVoxedRepository _voxedRepository;
+    private readonly IBlogRepository _voxedRepository;
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
     private readonly INotificationService _notificationService;
@@ -41,7 +41,7 @@ public class CommentController : BaseController
         INotificationService notificationService,
         ITextFormatterService textFormatter,
         IMediaService mediaService,
-        IVoxedRepository voxedRepository,
+        IBlogRepository voxedRepository,
         UserManager<User> userManager,
         SignInManager<User> signInManager,
         IHttpContextAccessor accessor,

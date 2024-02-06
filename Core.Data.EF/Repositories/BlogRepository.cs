@@ -4,11 +4,11 @@ using System.Threading.Tasks;
 
 namespace Core.Data.EF.Repositories
 {
-    public class VoxedRepository : IVoxedRepository
+    public class BlogRepository : IBlogRepository
     {
-        private readonly VoxedContext _context;
+        private readonly BlogContext _context;
 
-        public VoxedRepository(VoxedContext context)
+        public BlogRepository(BlogContext context)
         {
             //context.Database.Log = Console.Write; // .NET6 feature
             _context = context;

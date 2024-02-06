@@ -22,11 +22,11 @@ namespace Voxed.WebApp.Services
         private Post _post;
         private Comment _comment;
         private List<Notification> _notifications = new List<Notification>();
-        private IVoxedRepository _voxedRepository;
+        private IBlogRepository _voxedRepository;
         private ITextFormatterService _formateadorService;
 
         public NotificationBuilder(
-            IVoxedRepository voxedRepository,
+            IBlogRepository voxedRepository,
             ITextFormatterService formatter)
         {
             _voxedRepository = voxedRepository;

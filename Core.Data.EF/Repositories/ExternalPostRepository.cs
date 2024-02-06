@@ -5,6 +5,6 @@ namespace Core.Data.EF.Repositories
 {
     public class ExternalPostRepository : Repository<Tag>, IExternalPostRepository
     {
-        public ExternalPostRepository(VoxedContext context) : base(context) { }
+        public ExternalPostRepository(BlogContext context) : base(context) { }
     }
 }

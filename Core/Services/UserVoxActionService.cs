@@ -15,9 +15,9 @@ namespace Core.Services
     public class UserVoxActionService : IUserVoxActionService
     {
         private readonly ILogger<UserVoxActionService> _logger;
-        private readonly IVoxedRepository _voxedRepository;
+        private readonly IBlogRepository _voxedRepository;
 
-        public UserVoxActionService(ILogger<UserVoxActionService> logger, IVoxedRepository voxedRepository)
+        public UserVoxActionService(ILogger<UserVoxActionService> logger, IBlogRepository voxedRepository)
         {
             _logger = logger;
             _voxedRepository = voxedRepository;

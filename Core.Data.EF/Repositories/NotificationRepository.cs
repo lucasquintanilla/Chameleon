@@ -10,7 +10,7 @@ namespace Core.Data.EF.Repositories
 {
     public class NotificationRepository : Repository<Notification>, INotificationRepository
     {
-        public NotificationRepository(VoxedContext context) : base(context) { }
+        public NotificationRepository(BlogContext context) : base(context) { }
 
         public async Task<IEnumerable<Notification>> GetByUserId(Guid userId)
         {

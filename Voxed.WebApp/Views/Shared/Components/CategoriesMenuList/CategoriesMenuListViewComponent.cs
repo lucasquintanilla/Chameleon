@@ -8,11 +8,11 @@ namespace Voxed.WebApp.Views.Shared.Components.CategoriesMenuList
 {
     public class CategoriesMenuListViewComponent : ViewComponent
     {
-        private readonly IVoxedRepository _voxedRepository;
+        private readonly IBlogRepository _voxedRepository;
         private static IEnumerable<Category> _categories;
 
         public CategoriesMenuListViewComponent(
-            IVoxedRepository voxedRepository)
+            IBlogRepository voxedRepository)
         {
             _voxedRepository = voxedRepository;
         }

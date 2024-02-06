@@ -42,7 +42,7 @@ public static class DependencyContainer
         Console.WriteLine("RDS Connection: " + DatabaseHelpers.GetRDSConnectionString(configuration));
 
         var provider = configuration.GetValue<DatabaseProvider>("DatabaseProvider");
-        services.AddDbContext<VoxedContext>(
+        services.AddDbContext<BlogContext>(
             options => _ = provider switch
             {
                 DatabaseProvider.Sqlite => options
@@ -69,7 +69,7 @@ public static class DependencyContainer
 
     public static void RegisterRepositories(this IServiceCollection services)
     {
-        services.AddTransient<IVoxedRepository, VoxedRepository>();
+        services.AddTransient<IBlogRepository, BlogRepository>();
     }
 
     public static void RegisterLogger(this IServiceCollection services)
@@ -87,7 +87,7 @@ public static class DependencyContainer
         services.AddDefaultIdentity<User>(options =>
                 options.SignIn.RequireConfirmedAccount = true)
             .AddRoles<Role>()
-            .AddEntityFrameworkStores<VoxedContext>()
+            .AddEntityFrameworkStores<BlogContext>()
             .AddErrorDescriber<SpanishIdentityErrorDescriber>();
 
         services
