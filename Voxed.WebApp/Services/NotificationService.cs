@@ -25,14 +25,14 @@ public interface INotificationService
 public class NotificationService : INotificationService
 {
     private readonly IBlogRepository _blogRepository;
-    private readonly IHubContext<VoxedHub, INotificationHub> _notificationHub;
+    private readonly IHubContext<NotificationHub, INotificationHub> _notificationHub;
     private readonly ITextFormatterService _textFormatter;
     private readonly IMapper _mapper;
     private readonly INotificationSender _notificationSender;
 
     public NotificationService(
         IBlogRepository blogRepository,
-        IHubContext<VoxedHub, INotificationHub> notificationHub,
+        IHubContext<NotificationHub, INotificationHub> notificationHub,
         ITextFormatterService textFormatter,
         IMapper mapper,
         INotificationSender notificationSender)

@@ -16,12 +16,12 @@ namespace Voxed.WebApp.Controllers;
 public class NotificationController : BaseController
 {
     private readonly IBlogRepository _blogRepository;
-    private readonly IHubContext<VoxedHub, INotificationHub> _notificationHub;
+    private readonly IHubContext<NotificationHub, INotificationHub> _notificationHub;
 
     public NotificationController(
         UserManager<User> userManager,
         IBlogRepository blogRepository,
-        IHubContext<VoxedHub, INotificationHub> notificationHub,
+        IHubContext<NotificationHub, INotificationHub> notificationHub,
         IHttpContextAccessor accessor) : base(accessor, userManager)
     {
         _blogRepository = blogRepository;

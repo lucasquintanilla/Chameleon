@@ -59,7 +59,7 @@ app.UseEndpoints(endpoints =>
     endpoints.MapRazorPages();
     //endpoints.MapBlazorHub();
 
-    endpoints.MapHub<VoxedHub>("/hubs/notifications");
+    endpoints.MapHub<NotificationHub>("/hubs/notifications");
 });
 
 app.Run();

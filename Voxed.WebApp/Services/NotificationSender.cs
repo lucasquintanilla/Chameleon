@@ -18,7 +18,7 @@ namespace Voxed.WebApp.Services
     }
     public class NotificationSender : INotificationSender
     {
-        private IHubContext<VoxedHub, INotificationHub> _notificationHub;
+        private IHubContext<NotificationHub, INotificationHub> _notificationHub;
         private List<Notification> _notifications = new List<Notification>();
         private Post _vox;
         private Comment _comment;
@@ -26,7 +26,7 @@ namespace Voxed.WebApp.Services
 
         public NotificationSender(
             IMapper mapper, 
-            IHubContext<VoxedHub, INotificationHub> notificationHub)
+            IHubContext<NotificationHub, INotificationHub> notificationHub)
         {
             _mapper = mapper;
             _notificationHub = notificationHub;

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Voxed.WebApp.Hubs
 {
-    public class VoxedHub : Hub<INotificationHub>
+    public class NotificationHub : Hub<INotificationHub>
     {
         private static HashSet<string> _usersOnline = new();
 
