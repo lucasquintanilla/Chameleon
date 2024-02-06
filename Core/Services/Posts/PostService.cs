@@ -7,14 +7,13 @@ using Core.Services.Posts.Models;
 using Core.Services.TextFormatter;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 
 namespace Core.Services.Posts
 {
     public interface IPostService
     {
-        Task<Post> CreatePost(CreatePostRequest request);
+        Task<CreatePostResponse> CreatePost(CreatePostRequest request);
         Task<IEnumerable<Post>> GetByFilter(PostFilter filter);
     }
 
@@ -37,7 +36,26 @@ namespace Core.Services.Posts
             _textFormatter = textFormatter;
         }
 
-        public async Task<Post> CreatePost(CreatePostRequest request)
+        public async Task<CreatePostResponse> CreatePost(CreatePostRequest request)
+        {
+            var post = new CreatePostResponse()
+            {
+                State = PostState.Active,
+                UserId = request.UserId,
+                Title = request.Title,
+                Content = _textFormatter.Format(request.Content),
+                CategoryId = request.CategoryId,
+                MediaId = (await CreateMedia(request)).Id,
+                IpAddress = request.IpAddress,
+                UserAgent = request.UserAgent
+            };
+
+            await _voxedRepository.Posts.Add(post);
+            await _voxedRepository.SaveChangesAsync();
+            return post;
+        }
+
+        private async Task<Media> CreateMedia(CreatePostRequest request)
         {
             var mediaRequest = new CreateMediaRequest()
             {
@@ -48,25 +66,9 @@ namespace Core.Services.Posts
 
             var media = await _mediaService.CreateMedia(mediaRequest);
             await _voxedRepository.Media.Add(media);
-
-            var post = new Post()
-            {
-                State = PostState.Active,
-                UserId = request.UserId,
-                Title = request.Title,
-                Content = _textFormatter.Format(request.Content),
-                CategoryId = request.CategoryId,
-                MediaId = media.Id,
-                IpAddress = request.IpAddress,
-                UserAgent = request.UserAgent
-            };
-
-            await _voxedRepository.Posts.Add(post);
-            await _voxedRepository.SaveChangesAsync();
-            return post;
+            return media;
         }
 
-       
         public async Task<IEnumerable<Post>> GetByFilter(PostFilter filter) =>
             await _voxedRepository.Posts.GetByFilterAsync(filter);
     }

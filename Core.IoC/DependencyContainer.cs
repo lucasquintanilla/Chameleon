@@ -138,7 +138,7 @@ public static class DependencyContainer
 
         services.AddSingleton<IUfftopiaDataSource, UfftopiaDataSource>();
         services.AddSingleton<IDevoxDataSource, DevoxDataSource>();
-        services.AddSingleton<IMixer, BoardMixer>();
+        services.AddScoped<IMixer, BoardMixer>();
 
     }
 

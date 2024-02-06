@@ -292,26 +292,45 @@ public class VoxController : BaseController
     {
         if (request.Page == "category-hub")
         {
-            var devox = await _devoxDataSource.GetMoreVoxes(request.Ignore.Count());
-            var devoxPosts = devox.Select(vox => new VoxResponse()
+            var devox = await _devoxDataSource.GetPosts(request.Ignore.Count());
+            var devoxPosts = devox.Select(post => new VoxResponse()
             {
-                Hash = vox.Id,
-                Status = true,
-                Niche = vox.Category.ToString(),
-                Title = vox.Title,
-                Comments = vox.CommentsCount.ToString(),
+                //Hash = post.Id,
+                //Status = true,
+                //Niche = post.Category.ToString(),
+                //Title = post.Title,
+                //Comments = post.CommentsCount.ToString(),
+                //Extension = string.Empty,
+                ////Sticky = vox.IsSticky ? "1" : "0",
+                ////CreatedAt = vox.CreatedOn.ToString(),
+                //PollOne = string.Empty,
+                //PollTwo = string.Empty,
+                //Id = post.Id,
+                //Slug = "devox",
+                //VoxId = post.Id?.ToString(),
+                ////New = vox.CreatedOn.IsNew(),
+                //ThumbnailUrl = DevoxHelpers.GetThumbnailUrl(post),
+                //Category = post.Category.ToString(),
+                //Href = "https://devox.me/v/" + post.Filename
+
+                Hash = post.Id ?? post.Filename,
+                //Status = true,
+                Niche = post.Category.ToString(),
+                Title = post.Title,
+                Comments = post.CommentsCount.ToString(),
                 Extension = string.Empty,
                 //Sticky = vox.IsSticky ? "1" : "0",
                 //CreatedAt = vox.CreatedOn.ToString(),
                 PollOne = string.Empty,
                 PollTwo = string.Empty,
-                Id = vox.Id,
-                Slug = "devox",
-                VoxId = vox.Id?.ToString(),
-                //New = vox.CreatedOn.IsNew(),
-                ThumbnailUrl = DevoxHelpers.GetThumbnailUrl(vox),
-                Category = vox.Category.ToString(),
-                Href = "https://devox.me/v/" + vox.Filename
+                Id = post.Id ?? post.Filename,
+                Slug = Core.DataSources.Devox.Constants.Domain,
+                VoxId = post.Id?.ToString() ?? post.Filename,
+                //New = vox.Date,
+                ThumbnailUrl = DevoxHelpers.GetThumbnailUrl(post),
+                Category = post.Category.ToString(),
+                Href = $"{Core.DataSources.Devox.Constants.VoxEnpoint}{post.Filename}",
+                //LastActivityOn = post.LastUpdate
             });
 
             return new LoadMoreResponse(devoxPosts.ToList());
