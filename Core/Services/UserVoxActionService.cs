@@ -15,12 +15,14 @@ namespace Core.Services
     public class UserVoxActionService : IUserVoxActionService
     {
         private readonly ILogger<UserVoxActionService> _logger;
-        private readonly IBlogRepository _voxedRepository;
+        private readonly IBlogRepository _blogRepository;
 
-        public UserVoxActionService(ILogger<UserVoxActionService> logger, IBlogRepository voxedRepository)
+        public UserVoxActionService(
+            ILogger<UserVoxActionService> logger, 
+            IBlogRepository blogRepository)
         {
             _logger = logger;
-            _voxedRepository = voxedRepository;
+            _blogRepository = blogRepository;
         }
 
         public async Task<UserPostAction> GetUserVoxActions(Guid voxId, Guid? userId)
@@ -29,7 +31,7 @@ namespace Core.Services
 
             if (userId == null) return userVoxAction;
 
-            var actions = await _voxedRepository.UserPostActions.GetByUserIdPostId(userId.Value, voxId);
+            var actions = await _blogRepository.UserPostActions.GetByUserIdPostId(userId.Value, voxId);
             if (actions == null) return userVoxAction;
 
             return actions;
@@ -38,7 +40,7 @@ namespace Core.Services
         public async Task<string> ManageUserVoxAction(Guid userId, Guid voxId, string actionId)
         {
             string actionResult;
-            var userVoxAction = await _voxedRepository.UserPostActions.GetByUserIdPostId(userId, voxId);
+            var userVoxAction = await _blogRepository.UserPostActions.GetByUserIdPostId(userId, voxId);
             if (userVoxAction == null)
             {
                 userVoxAction = new UserPostAction()
@@ -48,14 +50,14 @@ namespace Core.Services
                 };
 
                 actionResult = SetAction(userVoxAction, actionId);
-                await _voxedRepository.UserPostActions.Add(userVoxAction);
+                await _blogRepository.UserPostActions.Add(userVoxAction);
             }
             else
             {
                 actionResult = SetAction(userVoxAction, actionId);
             }
 
-            await _voxedRepository.SaveChangesAsync();
+            await _blogRepository.SaveChangesAsync();
             return actionResult;
         }
 

@@ -21,18 +21,18 @@ namespace Core.Services.Posts
     {
         private readonly ILogger<PostService> _logger;
         private readonly IMediaService _mediaService;
-        private readonly IBlogRepository _voxedRepository;
+        private readonly IBlogRepository _blogRepository;
         private readonly ITextFormatterService _textFormatter;
 
         public PostService(
             ILogger<PostService> logger,
             IMediaService mediaService,
-            IBlogRepository voxedRepository,
+            IBlogRepository blogRepository,
             ITextFormatterService textFormatter)
         {
             _logger = logger;
             _mediaService = mediaService;
-            _voxedRepository = voxedRepository;
+            _blogRepository = blogRepository;
             _textFormatter = textFormatter;
         }
 
@@ -50,8 +50,8 @@ namespace Core.Services.Posts
                 UserAgent = request.UserAgent
             };
 
-            await _voxedRepository.Posts.Add(post);
-            await _voxedRepository.SaveChangesAsync();
+            await _blogRepository.Posts.Add(post);
+            await _blogRepository.SaveChangesAsync();
             return post;
         }
 
@@ -65,11 +65,11 @@ namespace Core.Services.Posts
             };
 
             var media = await _mediaService.CreateMedia(mediaRequest);
-            await _voxedRepository.Media.Add(media);
+            await _blogRepository.Media.Add(media);
             return media;
         }
 
         public async Task<IEnumerable<Post>> GetByFilter(PostFilter filter) =>
-            await _voxedRepository.Posts.GetByFilterAsync(filter);
+            await _blogRepository.Posts.GetByFilterAsync(filter);
     }
 }

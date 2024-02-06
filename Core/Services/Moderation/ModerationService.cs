@@ -16,16 +16,16 @@ namespace Voxed.WebApp.Services.Moderation
     public class ModerationService : IModerationService
     {
         private readonly ILogger<ModerationService> _logger;
-        private readonly IBlogRepository _voxedRepository;
+        private readonly IBlogRepository _blogRepository;
         private readonly ITelegramService _telegramService;
 
         public ModerationService(
             ILogger<ModerationService> logger,
-            IBlogRepository voxedRepository,
+            IBlogRepository blogRepository,
             ITelegramService telegramService)
         {
             _logger = logger;
-            _voxedRepository = voxedRepository;
+            _blogRepository = blogRepository;
             _telegramService = telegramService;
         }
 
@@ -36,7 +36,7 @@ namespace Voxed.WebApp.Services.Moderation
             switch (request.ContentType)
             {
                 case 0:
-                    var comment = await _voxedRepository.Comments.GetByHash(request.ContentId);
+                    var comment = await _blogRepository.Comments.GetByHash(request.ContentId);
                     message = $"NUEVA DENUNCIA \n Reason: {request.Reason}. \n https://voxed.club/vox/{comment.PostId.ToShortString()}#{comment.Hash}";
                     break;
 
