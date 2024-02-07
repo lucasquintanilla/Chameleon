@@ -22,7 +22,7 @@ public class MediaService : IMediaService
 {
     private readonly MediaServiceOptions _config;
     private readonly IYoutubeService _youtubeService;
-    private readonly IStorage _storageService;
+    private readonly IStorage<StorageObject> _storageService;
     private readonly IImageService _imageService;
 
     public string Location => _config.BaseDirectory;    
@@ -30,7 +30,7 @@ public class MediaService : IMediaService
     public MediaService(
         IYoutubeService youtubeService,
         IOptions<MediaServiceOptions> options,
-        IStorage storageService,
+        IStorage<StorageObject> storageService,
         IImageService imageService)
     {
         _config = options.Value;
