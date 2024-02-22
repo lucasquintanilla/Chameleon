@@ -38,7 +38,7 @@ namespace Voxed.WebApp.Controllers;
 public class VoxController : BaseController
 {
     private readonly ILogger<VoxController> _logger;
-    private readonly IVoxedRepository _voxedRepository;
+    private readonly IBlogRepository _blogRepository;
     private readonly SignInManager<User> _signInManager;
     private readonly IPostService _postService;
     private readonly IUserVoxActionService _userVoxActionService;
@@ -50,7 +50,7 @@ public class VoxController : BaseController
 
     public VoxController(
         ILogger<VoxController> logger,
-        IVoxedRepository voxedRepository,
+        IBlogRepository blogRepository,
         UserManager<User> userManager,
         SignInManager<User> signInManager,
         IHttpContextAccessor accessor,
@@ -63,7 +63,7 @@ public class VoxController : BaseController
         IMapper mapper)
         : base(accessor, userManager)
     {
-        _voxedRepository = voxedRepository;
+        _blogRepository = blogRepository;
         _signInManager = signInManager;
         _postService = postService;
         _logger = logger;
@@ -81,7 +81,7 @@ public class VoxController : BaseController
         if (id == null) return BadRequest();
         var voxId = GuidExtension.FromShortString(id);
 
-        var vox = await _voxedRepository.Posts.GetById(voxId);
+        var vox = await _blogRepository.Posts.GetById(voxId);
         if (vox == null || vox.State == PostState.Deleted) return NotFound();
 
         var userId = User.GetUserId();
@@ -90,7 +90,7 @@ public class VoxController : BaseController
         var filter = new PostFilter();
         filter.Categories.Add(vox.CategoryId);
         filter.IgnorePostIds = new List<Guid>() { vox.Id };
-        var morePosts = await _voxedRepository.Posts.GetByFilterAsync(filter);
+        var morePosts = await _blogRepository.Posts.GetByFilterAsync(filter);
         var posts = _mapper.Map(morePosts);
 
         return View(_mapper.Map(vox, actions, posts));

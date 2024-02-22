@@ -8,9 +8,9 @@ using System.Linq;
 
 namespace Core.Data.EF
 {
-    public class VoxedContext : IdentityDbContext<User, Role, Guid>
+    public class BlogContext : IdentityDbContext<User, Role, Guid>
     {
-        public VoxedContext(DbContextOptions<VoxedContext> options) : base(options) { }
+        public BlogContext(DbContextOptions<BlogContext> options) : base(options) { }
 
         public DbSet<Post> Posts { get; set; }
         //public DbSet<ExternalPost> ExternalPosts { get; set; }

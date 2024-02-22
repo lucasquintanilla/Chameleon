@@ -17,6 +17,7 @@ using Core.Services.Posts;
 using Core.Services.Storage;
 using Core.Services.Storage.Cloud;
 using Core.Services.Storage.Local;
+using Core.Services.Storage.Models;
 using Core.Services.Telegram;
 using Core.Services.TextFormatter;
 using Core.Services.Youtube;
@@ -42,7 +43,7 @@ public static class DependencyContainer
         Console.WriteLine("RDS Connection: " + DatabaseHelpers.GetRDSConnectionString(configuration));
 
         var provider = configuration.GetValue<DatabaseProvider>("DatabaseProvider");
-        services.AddDbContext<VoxedContext>(
+        services.AddDbContext<BlogContext>(
             options => _ = provider switch
             {
                 DatabaseProvider.Sqlite => options
@@ -69,7 +70,7 @@ public static class DependencyContainer
 
     public static void RegisterRepositories(this IServiceCollection services)
     {
-        services.AddTransient<IVoxedRepository, VoxedRepository>();
+        services.AddTransient<IBlogRepository, BlogRepository>();
     }
 
     public static void RegisterLogger(this IServiceCollection services)
@@ -87,7 +88,7 @@ public static class DependencyContainer
         services.AddDefaultIdentity<User>(options =>
                 options.SignIn.RequireConfirmedAccount = true)
             .AddRoles<Role>()
-            .AddEntityFrameworkStores<VoxedContext>()
+            .AddEntityFrameworkStores<BlogContext>()
             .AddErrorDescriber<SpanishIdentityErrorDescriber>();
 
         services
@@ -196,11 +197,11 @@ public static class DependencyContainer
         {
             case StorageProvider.Local:
                 services.Configure<LocalStorageOptions>(configuration.GetSection(LocalStorageOptions.SectionName));
-                services.AddSingleton<IStorage, LocalStorage>();
+                services.AddSingleton<IStorage<StorageObject>, LocalStorage>();
                 break;
             case StorageProvider.Cloud:
                 services.Configure<S3StorageOptions>(configuration.GetSection(S3StorageOptions.SectionName));
-                services.AddSingleton<IStorage, S3Storage>();
+                services.AddSingleton<IStorage<StorageObject>, S3Storage>();
                 break;
             default:
                 throw new Exception($"Unsupported storage provider: {provider}");

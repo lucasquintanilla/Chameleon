@@ -24,22 +24,22 @@ namespace Voxed.WebApp.Controllers;
 [Authorize]
 public class HomeController : Controller
 {
-    private readonly IVoxedRepository _voxedRepository;
+    private readonly IBlogRepository _blogRepository;
     private readonly IMixer _boardMixer;
     private readonly IMapper _mapper;
     private readonly IEnumerable<Category> _categories = Enumerable.Empty<Category>();
 
     public HomeController(
-        IVoxedRepository voxedRepository,
+        IBlogRepository blogRepository,
         IMixer boardMixer,
         IMapper mapper)
     {
-        _voxedRepository = voxedRepository;
+        _blogRepository = blogRepository;
         _boardMixer = boardMixer;
         _mapper = mapper;
         if (!_categories.Any())
         {
-            _categories = voxedRepository.Categories.GetAll().GetAwaiter().GetResult();
+            _categories = blogRepository.Categories.GetAll().GetAwaiter().GetResult();
         }
     }
 
@@ -64,7 +64,7 @@ public class HomeController : Controller
             HiddenWords = GetUserHiddenWords()
         };
 
-        var posts = await _voxedRepository.Posts.GetByFilterAsync(filter);
+        var posts = await _blogRepository.Posts.GetByFilterAsync(filter);
 
         var board = new BoardViewModel()
         {
@@ -103,7 +103,7 @@ public class HomeController : Controller
             HiddenWords = GetUserHiddenWords()
         };
 
-        var posts = await _voxedRepository.Posts.GetByFilterAsync(filter);
+        var posts = await _blogRepository.Posts.GetByFilterAsync(filter);
 
         var board = new BoardViewModel()
         {
@@ -126,7 +126,7 @@ public class HomeController : Controller
             IncludeFavorites = true
         };
 
-        var voxs = await _voxedRepository.Posts.GetByFilterAsync(filter);
+        var voxs = await _blogRepository.Posts.GetByFilterAsync(filter);
 
         var board = new BoardViewModel()
         {
@@ -150,7 +150,7 @@ public class HomeController : Controller
             IncludeHidden = true
         };
 
-        var voxs = await _voxedRepository.Posts.GetByFilterAsync(filter);
+        var voxs = await _blogRepository.Posts.GetByFilterAsync(filter);
 
         var board = new BoardViewModel()
         {
@@ -168,13 +168,13 @@ public class HomeController : Controller
     {
         if (shortName == null) return BadRequest();
 
-        var category = await _voxedRepository.Categories.GetByShortName(shortName);
+        var category = await _blogRepository.Categories.GetByShortName(shortName);
 
         if (category == null) return NotFound();
 
         var filter = new PostFilter() { Categories = new List<int>() { category.Id } };
 
-        var voxs = await _voxedRepository.Posts.GetByFilterAsync(filter);
+        var voxs = await _blogRepository.Posts.GetByFilterAsync(filter);
         var board = new BoardViewModel()
         {
             Voxs = _mapper.Map(voxs),
@@ -193,7 +193,7 @@ public class HomeController : Controller
 
         var filter = new PostFilter() { SearchText = searchText };
 
-        var voxs = await _voxedRepository.Posts.GetByFilterAsync(filter);
+        var voxs = await _blogRepository.Posts.GetByFilterAsync(filter);
 
         var board = new BoardViewModel()
         {

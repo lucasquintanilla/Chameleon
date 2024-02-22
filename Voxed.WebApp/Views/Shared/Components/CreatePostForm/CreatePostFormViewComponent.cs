@@ -9,12 +9,12 @@ namespace Voxed.WebApp.Views.Shared.Components.VoxForm
 {
     public class CreatePostFormViewComponent : ViewComponent
     {
-        private readonly IVoxedRepository voxedRepository;
+        private readonly IBlogRepository blogRepository;
         public static string Name = "CreatePostForm";
         public CreatePostFormViewComponent(
-            IVoxedRepository voxedRepository)
+            IBlogRepository blogRepository)
         {
-            this.voxedRepository = voxedRepository;
+            this.blogRepository = blogRepository;
         }
 
         public async Task<IViewComponentResult> InvokeAsync()
@@ -23,7 +23,7 @@ namespace Voxed.WebApp.Views.Shared.Components.VoxForm
             //var form = new VoxFormViewModel();
             var form = new CreateVoxRequest();
 
-            //var categories = await voxedRepository.Categories.GetAll();
+            //var categories = await blogRepository.Categories.GetAll();
 
             //form.Categories = categories
             //    .Select(x => new SelectListItem { Value = x.ID.ToString(), Text = x.Name }).ToList();

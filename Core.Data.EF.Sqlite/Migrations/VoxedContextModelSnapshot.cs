@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Core.Data.EF.Sqlite.Migrations
 {
-    [DbContext(typeof(VoxedContext))]
+    [DbContext(typeof(BlogContext))]
     partial class VoxedContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

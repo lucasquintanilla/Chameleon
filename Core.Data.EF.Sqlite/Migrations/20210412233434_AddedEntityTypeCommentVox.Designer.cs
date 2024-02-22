@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Core.Data.EF.Sqlite.Migrations
 {
-    [DbContext(typeof(VoxedContext))]
+    [DbContext(typeof(BlogContext))]
     [Migration("20210412233434_AddedEntityTypeCommentVox")]
     partial class AddedEntityTypeCommentVox
     {

@@ -13,7 +13,7 @@ namespace Core.Data.EF.Repositories
 {
     public class PostRepository : Repository<Post>, IPostRepository
     {
-        public PostRepository(VoxedContext context) : base(context) { }
+        public PostRepository(BlogContext context) : base(context) { }
 
         public override async Task<Post> GetById(Guid id)
             => await Entities

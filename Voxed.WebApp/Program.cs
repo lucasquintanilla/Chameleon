@@ -17,7 +17,7 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    var context = services.GetRequiredService<VoxedContext>();
+    var context = services.GetRequiredService<BlogContext>();
     var userManager = services.GetRequiredService<UserManager<User>>();
     var roleManager = services.GetRequiredService<RoleManager<Role>>();
     new DataInitializer(context, userManager, roleManager).Initialize().GetAwaiter().GetResult();
@@ -59,7 +59,7 @@ app.UseEndpoints(endpoints =>
     endpoints.MapRazorPages();
     //endpoints.MapBlazorHub();
 
-    endpoints.MapHub<VoxedHub>("/hubs/notifications");
+    endpoints.MapHub<NotificationHub>("/hubs/notifications");
 });
 
 app.Run();

@@ -10,7 +10,7 @@ namespace Core.Data.EF.Repositories
 {
     public class UserPostActionRepository : Repository<UserPostAction>, IUserPostActionRepository
     {
-        public UserPostActionRepository(VoxedContext context) : base(context) { }
+        public UserPostActionRepository(BlogContext context) : base(context) { }
 
         public async Task<UserPostAction> GetByUserIdPostId(Guid userId, Guid voxId)
             => await Entities

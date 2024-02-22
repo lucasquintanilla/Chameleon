@@ -5,6 +5,6 @@ namespace Core.Data.EF.Repositories
 {
     public class TagRepository : Repository<Tag>, ITagRepository
     {
-        public TagRepository(VoxedContext context) : base(context) { }
+        public TagRepository(BlogContext context) : base(context) { }
     }
 }

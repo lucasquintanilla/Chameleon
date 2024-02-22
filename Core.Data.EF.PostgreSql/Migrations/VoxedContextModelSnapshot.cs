@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Core.Data.EF.PostgreSql.Migrations
 {
-    [DbContext(typeof(VoxedContext))]
+    [DbContext(typeof(BlogContext))]
     partial class VoxedContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

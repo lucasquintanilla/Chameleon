@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Core.Data.EF.Sqlite.Migrations
 {
-    [DbContext(typeof(VoxedContext))]
+    [DbContext(typeof(BlogContext))]
     [Migration("20230806020743_RemoveMediaThumbnailUrl")]
     partial class RemoveMediaThumbnailUrl
     {

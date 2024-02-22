@@ -9,7 +9,7 @@ namespace Core.Data.EF.Repositories
 {
     public class CategoryRepository : Repository<Category>, ICategoryRepository
     {
-        public CategoryRepository(VoxedContext context) : base(context) { }
+        public CategoryRepository(BlogContext context) : base(context) { }
 
         public async Task<bool> Exists(int id)
         {

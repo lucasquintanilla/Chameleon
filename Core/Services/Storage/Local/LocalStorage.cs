@@ -5,13 +5,15 @@ using System.Threading.Tasks;
 
 namespace Core.Services.Storage.Local
 {
-    public class LocalStorage : IStorage
+    public class LocalStorage : IStorage<StorageObject>
     {
         private readonly LocalStorageOptions _options;
+        public string BaseDirectory { get; }
 
         public LocalStorage(IOptions<LocalStorageOptions> options)
         {
             _options = options.Value;
+            BaseDirectory = _options.BaseDirectory;
         }
 
         public async Task Save(StorageObject obj)

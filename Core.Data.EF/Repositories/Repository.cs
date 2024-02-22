@@ -10,10 +10,10 @@ namespace Core.Data.EF.Repositories;
 
 public abstract class Repository<T> : IRepository<T> where T : class
 {
-    protected readonly VoxedContext _context;
+    protected readonly BlogContext _context;
     protected DbSet<T> Entities => _context.Set<T>();
 
-    public Repository(VoxedContext context)
+    public Repository(BlogContext context)
     {
         _context = context;
     }

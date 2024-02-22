@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Core.Data.EF.Sqlite.Migrations
 {
-    [DbContext(typeof(VoxedContext))]
+    [DbContext(typeof(BlogContext))]
     [Migration("20210511220147_add_token_property_users")]
     partial class add_token_property_users
     {
