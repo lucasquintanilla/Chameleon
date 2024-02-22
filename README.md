@@ -1,5 +1,7 @@
 # Chameleon
 
+Data Collector + Tags + Channels + Post + Human
+
 Proyecto free, cross-platform y open-source
 
 ## Tech Stack :hammer_and_wrench:
