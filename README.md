@@ -16,7 +16,7 @@ Proyecto free, cross-platform y open-source
 
 - Instalar Visual Studio + .NET 6 SDK
 - Clonar repositorio ejecutando comando git clone
-> git clone https://github.com/.../Voxed.git
+> git clone https://github.com/lucasquintanilla/Chameleon.git
 - Abrir archivo Chameleon.sln con Visual Studio
 - Ejectuar Voxed.WebApp desde Visual Studio
 
