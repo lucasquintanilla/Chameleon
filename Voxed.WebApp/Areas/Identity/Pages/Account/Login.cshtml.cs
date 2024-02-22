@@ -49,10 +49,14 @@ namespace Voxed.WebApp.Areas.Identity.Pages.Account
 
             [Required]
             //[EmailAddress]
+            //[Display(Name = "Usuario")]
+
+            [Display(Prompt = "Username")]
             public string UserName { get; set; }
 
             [Required]
             [DataType(DataType.Password)]
+            [Display(Prompt = "Password")]
             public string Password { get; set; }
 
             [Display(Name = "Remember me?")]

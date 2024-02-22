@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -15,10 +16,39 @@ namespace Core.DataSources.Ufftopia
 
     public class UfftopiaDataSource : IUfftopiaDataSource
     {
-        private readonly HttpClient httpClient = new(new HttpClientHandler());
+        private readonly HttpClient _httpClient;
+
+        public UfftopiaDataSource()
+        {
+            var proxy = new WebProxy
+            {
+                //Address = new Uri($"http://189.240.60.17:9090"),
+                //Address = new Uri($"http://35.209.198.222:80"),
+                Address = new Uri($"http://181.209.78.76:999"),
+                BypassProxyOnLocal = false,
+                UseDefaultCredentials = false,
+
+                // Proxy credentials
+                //Credentials = new NetworkCredential(
+                //userName: "YOUR_API_KEY",
+                //password: "render_js=False&premium_proxy=True")
+            };
+
+            var httpClientHandler = new HttpClientHandler
+            {
+                Proxy = proxy,
+            };
+
+            // Disable SSL verification
+            httpClientHandler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+            httpClientHandler.DefaultProxyCredentials = CredentialCache.DefaultCredentials;
+
+            _httpClient = new HttpClient(handler: httpClientHandler, disposeHandler: true);
+        }
 
         public async Task<IEnumerable<LoadMoreResponse>> Fetch()
         {
+
             //var handler = new HttpClientHandler();
 
             // If you are using .NET Core 3.0+ you can replace `~DecompressionMethods.None` to `DecompressionMethods.All`
@@ -43,14 +73,15 @@ namespace Core.DataSources.Ufftopia
             request.Headers.TryAddWithoutValidation("sec-fetch-site", "same-origin");
             request.Headers.TryAddWithoutValidation("user-agent", "Mozilla/5.0 (Linux; Android 12; SM-G998B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Mobile Safari/537.36");
 
-            var response = await httpClient.SendAsync(request);
+            var response = await _httpClient.SendAsync(request);
 
-            if (!response.IsSuccessStatusCode)
-                return Enumerable.Empty<LoadMoreResponse>();
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine(await response.Content.ReadAsStringAsync());
+                return JsonConvert.DeserializeObject<IEnumerable<LoadMoreResponse>>(await response.Content.ReadAsStringAsync());
+            }
 
-            //Console.WriteLine(await response.Content.ReadAsStringAsync());
-
-            return JsonConvert.DeserializeObject<IEnumerable<LoadMoreResponse>>(await response.Content.ReadAsStringAsync());
+            return Enumerable.Empty<LoadMoreResponse>();
         }
     }
 }

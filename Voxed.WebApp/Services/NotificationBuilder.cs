@@ -7,41 +7,53 @@ using System.Linq;
 
 namespace Voxed.WebApp.Services
 {
-    public class NotificationBuilder
+    public interface INotificationBuilder
     {
-        private Post _vox;
+        INotificationBuilder WithPost(Post post);
+        INotificationBuilder WithComment(Comment comment);
+        INotificationBuilder AddOPNotification();
+        INotificationBuilder AddReplies();
+        INotificationBuilder AddVoxSusbcriberNotifications();
+        List<Notification> Build();
+    }
+
+    public class NotificationBuilder : INotificationBuilder
+    {
+        private Post _post;
         private Comment _comment;
         private List<Notification> _notifications = new List<Notification>();
-        private IVoxedRepository _voxedRepository;
+        private IBlogRepository _blogRepository;
         private ITextFormatterService _formateadorService;
 
-        public NotificationBuilder UseRepository(IVoxedRepository voxedRepository)
+        public NotificationBuilder(
+            IBlogRepository blogRepository,
+            ITextFormatterService formatter)
         {
-            _voxedRepository = voxedRepository;
+            _blogRepository = blogRepository;
+            _formateadorService = formatter;
+        }
+
+        public INotificationBuilder WithPost(Post vox)
+        {
+            _post = vox;
             return this;
         }
 
-        public NotificationBuilder WithVox(Post vox)
-        {
-            _vox = vox;
-            return this;
-        }
-
-        public NotificationBuilder WithComment(Comment comment)
+        public INotificationBuilder WithComment(Comment comment)
         {
             _comment = comment;
             return this;
         }
 
-        public NotificationBuilder AddOPNotification()
+        public INotificationBuilder AddOPNotification()
         {
-            if (_comment.UserId != _vox.UserId)
+            if (_comment.UserId != _post.UserId)
             {
                 var notification = new Notification()
                 {
                     CommentId = _comment.Id,
                     PostId = _comment.PostId,
-                    UserId = _vox.UserId,
+                    UserId = _post.UserId,
                     Type = NotificationType.New,
                 };
 
@@ -51,19 +63,13 @@ namespace Voxed.WebApp.Services
             return this;
         }
 
-        public NotificationBuilder UseFormatter(ITextFormatterService formatter)
-        {
-            _formateadorService = formatter;
-            return this;
-
-        }
-        public NotificationBuilder AddReplies()
+        public INotificationBuilder AddReplies()
         {
             var hashList = _formateadorService.GetRepliedHash(_comment.Content);
 
             if (!hashList.Any()) return this;
 
-            var usersId = _voxedRepository.Comments.GetUsersByCommentHash(hashList, new Guid[] { _comment.UserId }).GetAwaiter().GetResult();
+            var usersId = _blogRepository.Comments.GetUsersByCommentHash(hashList, new Guid[] { _comment.UserId }).GetAwaiter().GetResult();
 
             if (!usersId.Any()) return this;
 
@@ -82,10 +88,10 @@ namespace Voxed.WebApp.Services
             return this;
         }
 
-        public NotificationBuilder AddVoxSusbcriberNotifications()
+        public INotificationBuilder AddVoxSusbcriberNotifications()
         {
-            var voxSubscriberUserIds = _voxedRepository.UserPostActions
-                .GetPostSubscriberUserIds(_vox.Id, ignoreUserIds: new List<Guid>() { _comment.UserId, _vox.UserId })
+            var voxSubscriberUserIds = _blogRepository.UserPostActions
+                .GetPostSubscriberUserIds(_post.Id, ignoreUserIds: new List<Guid>() { _comment.UserId, _post.UserId })
                 .GetAwaiter()
                 .GetResult();
 
@@ -93,7 +99,7 @@ namespace Voxed.WebApp.Services
                   .Select(userId => new Notification()
                   {
                       CommentId = _comment.Id,
-                      PostId = _vox.Id,
+                      PostId = _post.Id,
                       UserId = userId,
                       Type = NotificationType.New,
                   })
@@ -103,10 +109,10 @@ namespace Voxed.WebApp.Services
             return this;
         }
 
-        public List<Notification> Save()
+        public List<Notification> Build()
         {
-            _voxedRepository.Notifications.AddRange(_notifications).GetAwaiter().GetResult();
-            _voxedRepository.SaveChangesAsync().GetAwaiter().GetResult();
+            _blogRepository.Notifications.AddRange(_notifications).GetAwaiter().GetResult();
+            _blogRepository.SaveChangesAsync().GetAwaiter().GetResult();
             return _notifications;
         }
     }

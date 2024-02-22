@@ -6,9 +6,9 @@ namespace Voxed.WebApp.Models
 {
     public class CreateVoxRequest : AttachmentRequest
     {
-        [Required(ErrorMessage = "Debe ingresar un titulo")]
-        [StringLength(120, ErrorMessage = "El titulo no puede superar los {1} caracteres.")]
-        public string Title { get; set; }
+        //[Required(ErrorMessage = "Debe ingresar un titulo")]
+        //[StringLength(120, ErrorMessage = "El titulo no puede superar los {1} caracteres.")]
+        //public string Title { get; set; }
 
         [Required(ErrorMessage = "Debe ingresar un contenido")]
         [StringLength(5000, ErrorMessage = "El contenido no puede superar los {1} caracteres.")]

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
+using System.Collections.Generic;
 
 namespace Core.Services.Posts.Models
 {
@@ -14,5 +15,6 @@ namespace Core.Services.Posts.Models
         public string Extension { get; set; }
         public string ExtensionData { get; set; }
         public IFormFile File { get; set; }
+        public Dictionary<string, string> Details { get; set; }
     }
 }

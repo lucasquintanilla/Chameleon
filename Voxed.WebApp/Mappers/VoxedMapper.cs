@@ -1,19 +1,36 @@
-﻿using Core.Entities;
+﻿using Core.Constants;
+using Core.Entities;
 using Core.Extensions;
+using Core.Services.MediaServices;
 using Core.Services.Mixers.Models;
 using Core.Shared;
 using System.Collections.Generic;
 using System.Linq;
 using Voxed.WebApp.Extensions;
+using Voxed.WebApp.Hubs;
 using Voxed.WebApp.Models;
 using Voxed.WebApp.ViewModels;
-using Core.Constants;
 
 namespace Voxed.WebApp.Mappers;
 
-public static class VoxedMapper
+public interface IMapper
 {
-    public static VoxResponse Map(MixItem vox)
+    VoxResponse Map(MixItem vox);
+    VoxResponse Map(Post vox);
+    VoxDetailViewModel Map(Post vox, UserPostAction actions, IEnumerable<IBoardPostViewModel> posts = null);
+    IEnumerable<VoxResponse> Map(IEnumerable<Post> voxs);
+    UserNotification Map(Notification notification);
+}
+
+public class VoxedMapper : IMapper
+{
+    private readonly string MediaEndpoint;
+
+    public VoxedMapper(IMediaService mediaService)
+    {
+        MediaEndpoint = mediaService.Location;
+    }
+    public VoxResponse Map(MixItem vox)
     {
         return new VoxResponse()
         {
@@ -27,9 +44,9 @@ public static class VoxedMapper
             //CreatedAt = vox.CreatedOn.ToString(),
             PollOne = string.Empty,
             PollTwo = string.Empty,
-            Id = vox.Id.ToString(),
+            Id = vox.Id?.ToString(),
             Slug = vox.Slug,
-            VoxId = vox.Id.ToString(),
+            VoxId = vox.Id?.ToString(),
             //New = vox.CreatedOn.IsNew(),
             ThumbnailUrl = vox.ThumbnailUrl,
             Category = vox.Category,
@@ -37,32 +54,31 @@ public static class VoxedMapper
         };
     }
 
-    public static VoxResponse Map(Post vox)
+    public VoxResponse Map(Post post)
     {
         return new VoxResponse()
         {
-            Hash = vox.Id.ToShortString(),
+            Hash = post.Id.ToShortString(),
             Status = true,
-            Niche = vox.CategoryId.ToString(),
-            Title = vox.Title,
-            Comments = vox.Comments.Count.ToString(),
+            Niche = post.CategoryId.ToString(),
+            Title = post.Title,
+            Comments = post.Comments.Count.ToString(),
             Extension = string.Empty,
-            Sticky = vox.IsSticky ? "1" : "0",
-            CreatedAt = vox.CreatedOn.ToString(),
+            Sticky = post.IsSticky ? "1" : "0",
+            CreatedAt = post.CreatedOn.ToString(),
             PollOne = string.Empty,
             PollTwo = string.Empty,
-            Id = vox.Id.ToString(),
-            Slug = vox.Category.ShortName.ToUpper(),
-            VoxId = vox.Id.ToString(),
-            New = vox.CreatedOn.IsNew(),
-            //ThumbnailUrl = vox.Media?.ThumbnailUrl,
-            ThumbnailUrl = vox.Media?.Url + ImageParameter.FormatWebP,
-            Category = vox.Category.Name,
-            Href = "/vox/"+ vox.Id.ToShortString(),
+            Id = post.Id.ToString(),
+            Slug = post.Category.ShortName.ToUpper(),
+            VoxId = post.Id.ToString(),
+            New = post.CreatedOn.IsNew(),
+            ThumbnailUrl = $"{MediaEndpoint}/{post.Media?.Key}" + ImageParameter.Quality40,
+            Category = post.Category.Name,
+            Href = "/vox/" + post.Id.ToShortString(),
         };
     }
 
-    public static VoxDetailViewModel Map(Post vox, UserPostAction actions, IEnumerable<IBoardPostViewModel> posts = null)
+    public VoxDetailViewModel Map(Post vox, UserPostAction actions, IEnumerable<IBoardPostViewModel> posts = null)
     {
         return new VoxDetailViewModel()
         {
@@ -75,7 +91,7 @@ public static class VoxedMapper
             CommentTag = UserTypeDictionary.GetDescription(vox.Owner.UserType).ToLower(),
             CategoryName = vox.Category.Name,
             CategoryShortName = vox.Category.ShortName,
-            CategoryThumbnailUrl = vox.Category.Media.ThumbnailUrl,
+            CategoryThumbnailUrl = vox.Category.Media.Url,
             CommentsAttachmentCount = vox.Comments.Where(x => x.Media != null).Count(),
             CommentsCount = vox.Comments.Count,
             UserName = vox.Owner.UserName,
@@ -84,10 +100,11 @@ public static class VoxedMapper
 
             Media = new MediaViewModel()
             {
-                ThumbnailUrl = vox.Media.Url + ImageParameter.Quality40,
-                Url = vox.Media.Url + ImageParameter.Quality40,
+                ThumbnailUrl = $"{MediaEndpoint}/{vox.Media.Key}" + ImageParameter.Quality40,
+                Url = $"{MediaEndpoint}/{vox.Media.Key}",
                 MediaType = (ViewModels.MediaType)(int)vox.Media.Type,
-                ExtensionData = vox.Media?.Url.Split('=')[(vox.Media?.Url.Split('=').Length - 1).Value]
+                ExtensionData = vox.Media?.Url.Split('=')[(vox.Media?.Url.Split('=').Length - 1).Value],
+                ExternalUrl = vox.Media?.ExternalUrl
             },
 
             IsFavorite = actions.IsFavorite,
@@ -102,18 +119,19 @@ public static class VoxedMapper
                 IsOp = c.UserId == vox.UserId,
                 AvatarColor = c.Style.ToString().ToLower(),
                 AvatarText = UserTypeDictionary.GetDescription(c.Owner.UserType).ToUpper(),
-                //AvatarText = (c.UserId == vox.UserId ? "OP" : UserTypeDictionary.GetDescription(c.Owner.UserType).ToUpper()),
                 Media = c.Media == null ? null : new MediaViewModel()
                 {
-                    Url = c.Media?.Url,
-                    MediaType = (ViewModels.MediaType)(int)c.Media?.Type,
-                    ExtensionData = c.Media?.Url.Split('=')[(vox.Media?.Url.Split('=').Length - 1).Value],
-                    ThumbnailUrl = c.Media?.Url + ImageParameter.Quality40,
+                    //Url = c.Media?.Url,
+                    Url = $"{MediaEndpoint}/{c.Media.Key}" + ImageParameter.Quality40,
+                    MediaType = (ViewModels.MediaType)(int)c.Media.Type,
+                    ExtensionData = c.Media.Url.Split('=')[(vox.Media?.Url.Split('=').Length - 1).Value],
+                    ThumbnailUrl = $"{MediaEndpoint}/{c.Media.Key}" + ImageParameter.Quality40,
+                    ExternalUrl = c.Media.ExternalUrl,
                 },
                 IsSticky = c.IsSticky,
                 CreatedOn = c.CreatedOn,
                 Style = c.Style.ToString().ToLower(),
-                Author = c.Owner.UserType == Core.Entities.UserType.Administrator ? c.Owner?.UserName  : "Anonimo",
+                Author = c.Owner.UserType == Core.Entities.UserType.Administrator ? c.Owner?.UserName : "Anonimo",
                 Tag = UserTypeDictionary.GetDescription(c.Owner.UserType).ToLower(),
                 IsAdmin = c.Owner.UserType == Core.Entities.UserType.Administrator
             }),
@@ -121,5 +139,34 @@ public static class VoxedMapper
         };
     }
 
-    public static IEnumerable<VoxResponse> Map(IEnumerable<Post> voxs) => voxs.Select(Map);
+    public IEnumerable<VoxResponse> Map(IEnumerable<Post> voxs) => voxs.Select(Map);
+
+    public UserNotification Map(Notification notification)
+    {
+        return new UserNotification
+        {
+            Type = notification.Type.ToString().ToLowerInvariant(),
+            Content = new NotificationContent()
+            {
+                VoxHash = notification.Post.Id.ToShortString(),
+                NotificationBold = GetTitleNotification(notification.Type),
+                NotificationText = notification.Post.Title,
+                Count = "1",
+                ContentHash = notification.Comment.Hash,
+                Id = notification.Id.ToString(),
+                //ThumbnailUrl = notification.Post.Media?.Url + Core.Constants.ImageParameter.FormatWebP
+                ThumbnailUrl = $"{MediaEndpoint}/{notification.Post.Media?.Key}" + ImageParameter.FormatWebP,
+            }
+        };
+    }
+
+    private string GetTitleNotification(NotificationType notificationType)
+    {
+        return notificationType switch
+        {
+            NotificationType.New => "Nuevo comentario",
+            NotificationType.Reply => "Nueva respuesta",
+            _ => "Nueva notificacion",
+        };
+    }
 }

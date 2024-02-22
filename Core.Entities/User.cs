@@ -5,7 +5,12 @@ namespace Core.Entities
 {
     public enum UserType { Anonymous, Administrator, Moderator, Account, AnonymousAccount, Developer }
 
-    public class User : IdentityUser<Guid>
+    public interface IUser
+    {
+
+    }
+
+    public class User : IdentityUser<Guid>, IUser
     {
         public DateTimeOffset CreatedOn { get; set; } = DateTimeOffset.Now;
         public UserType UserType { get; set; }

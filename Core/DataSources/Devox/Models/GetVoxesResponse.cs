@@ -31,7 +31,7 @@ namespace Core.DataSources.Devox.Models
         public List<Sticky> Sticky { get; set; }
 
         [JsonProperty("voxes")]
-        public List<Vox> Voxes { get; set; }
+        public List<DevoxPost> Voxes { get; set; }
     }
 
     public class Sticky
@@ -100,10 +100,10 @@ namespace Core.DataSources.Devox.Models
         public bool Blur { get; set; }
     }
 
-    public class Vox
+    public class DevoxPost
     {
         [JsonProperty("_id")]
-        public string Id { get; set; }
+        public string? Id { get; set; }
 
         [JsonProperty("title")]
         public string Title { get; set; }

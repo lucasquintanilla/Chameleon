@@ -15,16 +15,16 @@ namespace Voxed.WebApp.Controllers;
 [Route("notification")]
 public class NotificationController : BaseController
 {
-    private readonly IVoxedRepository _voxedRepository;
-    private readonly IHubContext<VoxedHub, INotificationHub> _notificationHub;
+    private readonly IBlogRepository _blogRepository;
+    private readonly IHubContext<NotificationHub, INotificationHub> _notificationHub;
 
     public NotificationController(
         UserManager<User> userManager,
-        IVoxedRepository voxedRepository,
-        IHubContext<VoxedHub, INotificationHub> notificationHub,
+        IBlogRepository blogRepository,
+        IHubContext<NotificationHub, INotificationHub> notificationHub,
         IHttpContextAccessor accessor) : base(accessor, userManager)
     {
-        _voxedRepository = voxedRepository;
+        _blogRepository = blogRepository;
         _notificationHub = notificationHub;
     }
 
@@ -33,7 +33,7 @@ public class NotificationController : BaseController
     {
         if (id == Guid.Empty) return BadRequest();
 
-        var notification = await _voxedRepository.Notifications.GetById(id);
+        var notification = await _blogRepository.Notifications.GetById(id);
         if (notification == null) { return Redirect($"/"); }
 
         var userId = User.GetUserId();
@@ -46,8 +46,8 @@ public class NotificationController : BaseController
             .User(notification.UserId.ToString())
             .RemoveNotification(new RemoveNotificationModel() { Id = notification.Id.ToString() });
 
-        await _voxedRepository.Notifications.Remove(notification);
-        await _voxedRepository.SaveChangesAsync();
+        await _blogRepository.Notifications.Remove(notification);
+        await _blogRepository.SaveChangesAsync();
 
         return Redirect($"~/vox/{voxHash}#{commentHash}");
     }
@@ -58,10 +58,10 @@ public class NotificationController : BaseController
         var userId = User.GetUserId();
         if (userId == null) return BadRequest();
 
-        var notifications = await _voxedRepository.Notifications.GetByUserId(userId.Value);
+        var notifications = await _blogRepository.Notifications.GetByUserId(userId.Value);
 
-        await _voxedRepository.Notifications.RemoveRange(notifications);
-        await _voxedRepository.SaveChangesAsync();
+        await _blogRepository.Notifications.RemoveRange(notifications);
+        await _blogRepository.SaveChangesAsync();
 
         var returnUrl = Request.Headers["Referer"].ToString();
 

@@ -14,34 +14,48 @@ using Voxed.WebApp.Mappers;
 
 namespace Voxed.WebApp.Controllers.V1
 {
-    [Route("api/[controller]")]
-    [Route("api/venom")]
-    [ApiController]
+    //[Route("api/[controller]")]
+    //[Route("api/venom")]
+    //[ApiController]
     //[Route("v{version:apiVersion}/[controller]")]
     //[ApiVersion("1.0")]    
-    public class VenomController : ControllerBase
+    public class VenomController : BaseController
     {
-        private readonly IVoxedRepository _voxedRepository;
+        private readonly IBlogRepository _blogRepository;
         private readonly int[] _defaultCategories = { 1, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 30, 16, 14, 13, 12, 11, 10, 9, 8, 15, 7, 31, 6, 5, 4 };
 
-        public VenomController(IVoxedRepository voxedRepository)
+        public VenomController(IBlogRepository blogRepository) : base(null, null)
         {
-            _voxedRepository = voxedRepository;
+            _blogRepository = blogRepository;
         }
 
         [AllowAnonymous]
         //[HttpGet("{id}")]
-        [HttpGet()]
-        public async Task<IActionResult> Run()
+        //[HttpGet()]
+        [HttpGet("api/venom/{id}")]
+        public async Task<IActionResult> Index(Guid id)
         {
-            return Ok();
+            //https://localhost:5001/api/venom/12344
+            //https://localhost:5001/api/venom/idasd
+            //var postId = GuidExtension.FromShortString(id);
+
+            var reportedPost = await _blogRepository.Posts.Find(x => x.Id == id);
+            var toInactive = await _blogRepository.Posts.Find(x => x.UserId == reportedPost.First().UserId);
+            var nsfw = await _blogRepository.Categories.GetByShortName("nsfw");
+            foreach (var post in toInactive)
+            {
+                post.Category = nsfw;
+            }
+
+            await _blogRepository.SaveChangesAsync();
+            return Ok(id);
         } 
 
         //[AllowAnonymous]
         //[HttpGet("{id}")]
         //public async Task<ActionResult<ApiVoxResponse>> Get(Guid id)
         //{
-        //    var vox = await _voxedRepository.Posts.GetById(id);
+        //    var vox = await _blogRepository.Posts.GetById(id);
 
         //    if (vox == null || vox.State == PostState.Deleted) return NotFound();
 
@@ -52,7 +66,7 @@ namespace Voxed.WebApp.Controllers.V1
         //public async Task<IActionResult> GetLastest()
         //{
         //    var filter = new PostFilter() { Categories = _defaultCategories.ToList() };
-        //    var voxs = await _voxedRepository.Posts.GetByFilterAsync(filter);
+        //    var voxs = await _blogRepository.Posts.GetByFilterAsync(filter);
         //    return Ok(VoxedMapper.Map(voxs));
         //}
 

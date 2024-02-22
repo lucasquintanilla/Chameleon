@@ -8,21 +8,18 @@ namespace Voxed.WebApp.Views.Shared.Components.CategoriesSubscriptions
 {
     public class CategoriesSubscriptionsViewComponent : ViewComponent
     {
-        private readonly IVoxedRepository _voxedRepository;
+        private readonly IBlogRepository _blogRepository;
         private static IEnumerable<Category> _categories;
 
         public CategoriesSubscriptionsViewComponent(
-            IVoxedRepository voxedRepository)
+            IBlogRepository blogRepository)
         {
-            _voxedRepository = voxedRepository;
+            _blogRepository = blogRepository;
         }
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            if (_categories == null)
-            {
-                _categories = await _voxedRepository.Categories.GetAll();
-            }
+            _categories ??= await _blogRepository.Categories.GetAll();
 
             return View(_categories);
         }

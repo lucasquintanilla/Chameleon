@@ -11,18 +11,18 @@ namespace Voxed.WebApp.Views.Shared.Components.CategoriesDropdown
 {
     public class CategoriesDropdownViewComponent : ViewComponent
     {
-        private readonly IVoxedRepository _voxedRepository;
+        private readonly IBlogRepository _blogRepository;
         private static IEnumerable<Category> _categories;
 
         public CategoriesDropdownViewComponent(
-            IVoxedRepository voxedRepository)
+            IBlogRepository blogRepository)
         {
-            _voxedRepository = voxedRepository;
+            _blogRepository = blogRepository;
         }
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            _categories = _categories ?? await _voxedRepository.Categories.GetAll();
+            _categories = _categories ?? await _blogRepository.Categories.GetAll();
             return View(_categories);
         }
     }

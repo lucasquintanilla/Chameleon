@@ -15,19 +15,22 @@ namespace Core.Services.MediaServices;
 public interface IMediaService
 {
     Task<Media> CreateMedia(CreateMediaRequest request);
+    string Location { get; }
 }
 
 public class MediaService : IMediaService
 {
     private readonly MediaServiceOptions _config;
     private readonly IYoutubeService _youtubeService;
-    private readonly IStorage _storageService;
+    private readonly IStorage<StorageObject> _storageService;
     private readonly IImageService _imageService;
+
+    public string Location => _config.BaseDirectory;    
 
     public MediaService(
         IYoutubeService youtubeService,
         IOptions<MediaServiceOptions> options,
-        IStorage storageService,
+        IStorage<StorageObject> storageService,
         IImageService imageService)
     {
         _config = options.Value;
@@ -47,6 +50,8 @@ public class MediaService : IMediaService
             CreateMediaFileExtension.Jpeg => await SaveImageFromFile(request.File),
             CreateMediaFileExtension.Png => await SaveImageFromFile(request.File),
             CreateMediaFileExtension.WebP => await SaveImageFromFile(request.File),
+            CreateMediaFileExtension.WebM => await SaveVideoFromFile(request.File),
+            CreateMediaFileExtension.Mp4 => await SaveVideoFromFile(request.File),
             _ => throw new NotImplementedException("Invalid file extension"),
         };
     }
@@ -58,24 +63,36 @@ public class MediaService : IMediaService
         var original = new StorageObject()
         {
             Key = Guid.NewGuid() + file.GetFileExtension(),
-            Content = await _imageService.Compress(file.OpenReadStream()),
+            Content = file.OpenReadStream(),
             ContentType = file.ContentType
         };
         await _storageService.Save(original);
 
-        //var thumbnail = new StorageObject()
-        //{
-        //    Key = Guid.NewGuid() + "_thumb.jpeg",
-        //    Content = await _imageService.Compress(file.OpenReadStream()),
-        //    ContentType = file.ContentType
-        //};
-        //await _storageService.Save(thumbnail);
+        return new Media
+        {
+            Url = $"/{_config.BaseDirectory}/{original.Key}",
+            Type = MediaType.Image,
+            Key = original.Key,
+            ContentType = original.ContentType,
+        };
+    }
+
+    private async Task<Media> SaveVideoFromFile(IFormFile file)
+    {
+        if (file == null) return null;
+
+        var original = new StorageObject()
+        {
+            Key = Guid.NewGuid() + file.GetFileExtension(),
+            Content = file.OpenReadStream(),
+            ContentType = file.ContentType
+        };
+        await _storageService.Save(original);
 
         return new Media
         {
             Url = $"/{_config.BaseDirectory}/{original.Key}",
-            //ThumbnailUrl = $"/{_config.BaseDirectory}/{thumbnail.Key}",
-            Type = MediaType.Image,
+            Type = MediaType.Video,
             Key = original.Key,
             ContentType = original.ContentType,
         };
@@ -93,18 +110,9 @@ public class MediaService : IMediaService
         };
         await _storageService.Save(original);
 
-        //var thumbnail = new StorageObject()
-        //{
-        //    Key = Guid.NewGuid() + "_thumb.jpeg",
-        //    Content = await _imageService.Compress(file.OpenReadStream()),
-        //    ContentType = file.ContentType
-        //};
-        //await _storageService.Save(thumbnail);
-
         return new Media
         {
             Url = $"/{_config.BaseDirectory}/{original.Key}",
-            //ThumbnailUrl = $"/{_config.BaseDirectory}/{thumbnail.Key}",
             Type = MediaType.Image,
             Key = original.Key,
             ContentType = original.ContentType,
@@ -123,36 +131,26 @@ public class MediaService : IMediaService
 
         return new Media
         {
-            Url = $"https://www.youtube.com/watch?v={videoId}",
-            //ThumbnailUrl = $"/{_config.BaseDirectory}/{thumbnail.Key}",
+            Url = $"/{_config.BaseDirectory}/{thumbnail.Key}",
             Type = MediaType.YouTube,
-            ExternalUrl = $"https://www.youtube.com/watch?v={videoId}"
+            Key = thumbnail.Key,
+            ExternalUrl = videoId
         };
     }
 
     private async Task<Media> SaveFromBase64(string base64)
     {
-        var image = _imageService.GetStreamFromBase64(base64);
         var original = new StorageObject()
         {
             Key = Guid.NewGuid() + ".jpeg",
-            Content = image,
+            Content = _imageService.GetStreamFromBase64(base64),
             ContentType = "image/jpeg"
         };
         await _storageService.Save(original);
 
-        //var thumbnail = new StorageObject()
-        //{
-        //    Key = Guid.NewGuid() + "_thumb.jpeg",
-        //    Content = await _imageService.GenerateThumbnail(image),
-        //    ContentType = "image/jpeg"
-        //};
-        //await _storageService.Save(thumbnail);
-
         return new Media
         {
             Url = $"/{_config.BaseDirectory}/{original.Key}",
-            //ThumbnailUrl = $"/{_config.BaseDirectory}/{thumbnail.Key}",
             Type = MediaType.Image,
             Key = original.Key,
             ContentType = original.ContentType,

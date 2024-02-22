@@ -6,15 +6,18 @@ using System.Threading.Tasks;
 
 namespace Core.Services.Storage.Cloud;
 
-public class S3Storage : IStorage
+public class S3Storage : IStorage<StorageObject>
 {
     private readonly S3StorageOptions _options;
     private readonly IAmazonS3 _s3Client;
+
+    public string BaseDirectory { get; }
 
     public S3Storage(IOptions<S3StorageOptions> options, IAmazonS3 s3Client)
     {
         _options = options.Value;
         _s3Client = s3Client;
+        BaseDirectory = _options.BucketName;
     }
 
     public async Task Save(StorageObject obj)

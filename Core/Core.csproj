@@ -5,8 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Services\Background\**" />
+    <Compile Remove="Services\Notifications\**" />
     <Compile Remove="V1\**" />
+    <EmbeddedResource Remove="Services\Background\**" />
+    <EmbeddedResource Remove="Services\Notifications\**" />
     <EmbeddedResource Remove="V1\**" />
+    <None Remove="Services\Background\**" />
+    <None Remove="Services\Notifications\**" />
     <None Remove="V1\**" />
   </ItemGroup>
 
@@ -35,8 +41,6 @@
 
   <ItemGroup>
     <Folder Include="DataSources\Ufftopia\Models\" />
-    <Folder Include="Services\Background\" />
-    <Folder Include="Services\Notifications\" />
   </ItemGroup>
 
 </Project>

@@ -5,8 +5,13 @@ namespace Core.Entities
     public enum CommentState { Active, Deleted, Reported }
     public enum AvatarStyle { Black, Blue, Green, Multi, Red, White, Yellow } //invested
 
-    public class Comment : Entity
+    public class Comment : MutableEntity<Guid>
     {
+        public Comment()
+        {
+            Id = Guid.NewGuid();
+        }
+
         public string Hash { get; set; }
         public Guid PostId { get; set; }
         public Guid UserId { get; set; }

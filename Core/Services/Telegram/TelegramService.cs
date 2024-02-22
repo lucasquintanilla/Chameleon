@@ -27,6 +27,8 @@ namespace Core.Services.Telegram
         public TelegramService(IOptions<TelegramOptions> options)
         {
             _config = options.Value;
+            if (!_config.Enabled) return;
+
             _client = new TelegramBotClient(_config.Token);
 
             using var cts = new CancellationTokenSource();
