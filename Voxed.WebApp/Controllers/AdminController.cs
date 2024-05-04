@@ -1,5 +1,4 @@
-﻿using Core.Data.EF;
-using Core.Data.Repositories;
+﻿using Core.Data.Repositories;
 using Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

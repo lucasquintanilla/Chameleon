@@ -3664,8 +3664,26 @@ select {
     .modalBox {
         min-width: auto;
         width: calc(100%) !important;
+        top: 0%;
         /*height: calc(100%) !important;*/
     }
+    /*.modalBox {
+        display: flex;
+        display: none;
+        background: white;
+        z-index: 6;
+        border-radius: 4px;
+        position: fixed;
+        top: 30%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        min-width: 420px;
+        flex-wrap: wrap;
+        padding: 12px 0;
+        max-height: 92%;
+        overflow: scroll;
+        overflow: overlay;
+    }*/
 
     [data-tooltip][class*=tooltip-bottom]:before {
         display: none;

@@ -34,7 +34,7 @@ using System.Data;
 namespace Voxed.WebApp.Controllers;
 
 //[Authorize(Roles = "Administrator")]
-[Authorize]
+//[Authorize]
 public class VoxController : BaseController
 {
     private readonly ILogger<VoxController> _logger;
