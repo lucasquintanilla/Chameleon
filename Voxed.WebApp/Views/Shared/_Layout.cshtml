@@ -1,5 +1,7 @@
 ﻿<!DOCTYPE html>
 @using Microsoft.Extensions.Configuration
+@using Voxed.WebApp.Views.Shared.Components.Nav;
+@using Voxed.WebApp.Views.Shared.Components.VoxForm;
 @inject IConfiguration Configuration
 @{
     string result = "darkmode";
@@ -18,9 +20,9 @@
     @*<title>@ViewData["NotificationsCount"] @Configuration["ApplicationName"] | @ViewData["Title"]</title>*@
     <title>@ViewData["NotificationsCount"] @Configuration["ApplicationName"]</title>
     <meta name="theme-color" content="#2C3E50" />
-    <link rel="stylesheet" href="~/css/style39.min.css" />
+    <link rel="stylesheet" href="~/css/style50.min.css" />
     <meta name="description"
-          content="Voxed es una plataforma social orientada al anonimato, donde se puede compartir casi cualquier tipo de contenido de forma inmediata.">
+          content="Libertad de expresion">
 
     <link rel="stylesheet"
           href="https://use.fontawesome.com/releases/v5.11.2/css/all.css"
@@ -30,47 +32,15 @@
     <link rel="stylesheet" src="https://unpkg.com/css-tooltip" />
     @*<link rel="shortcut icon" href="/favicon.ico">*@
     <link rel="shortcut icon" href="/favicon-new.ico">
+    @*<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">*@
+    @*<link rel="manifest" href="/manifest.json">*@
 </head>
 <body class="noSelect">
-    <nav>
-        <div class="logo unselect">
-           @* @if (true)
-            {
-                <i class="fas fa-arrow-left" aria-hidden="true"></i>
-
-            }*@
-            <a href="/" class="navbarLogo">@Configuration["ApplicationName"].ToString().ToLower()</a>
-
-            @*@await Component.InvokeAsync("CategoriesMenuList")*@
-
-        </div>
-
-        @*<ul class="menu unselect" id="navbarMenu">
-            <li class="menuIcon tooltip-bottom mobile" data-tooltip="Buscar" data-togglesearch>
-            <i class="fas fa-search"></i>
-            </li>
-            <li class="menuIcon tooltip-bottom mobile closeSearch" data-tooltip="Cerrar" data-togglesearch>
-            <i class="fas fa-times"></i>
-            </li>
-            <li class="search">
-            <input type="text" id="searchInput" placeholder="Buscar...">
-            </li>
-            <partial name="_LoginPartial" />
-            <li class="menuIcon tooltip-bottom mobile" data-toggle="slideMenu" data-tooltip="Menu">
-            <i class="fas fa-bars"></i>
-            </li>
-            <li class="newVox" data-function="createVox">INICIAR VOX</li>
-            </ul>*@
-
-
-        @await Component.InvokeAsync("NotificationNavList")
-
-       
-       
-        <div class="alertBox"></div>
-    </nav>
-    <div class="bottonContextual hide" data-function="createVox"><i class="fas fa-plus"></i></div>
-    
+    @await Component.InvokeAsync(NavViewComponent.Name)
+    @if (@ViewData["Title"] is "Home")
+    {
+        <div class="bottonContextual " data-function="createVox"><i class="fas fa-feather-alt"></i></div>
+    }
 
     @RenderBody()
 
@@ -91,7 +61,7 @@
         </span>
     </div>
 
-    @await Component.InvokeAsync("VoxForm")
+    @await Component.InvokeAsync(CreatePostFormViewComponent.Name)
 
     @*<form class="modalBox createVox" id="NewVox" asp-controller="Vox" asp-action="Create" enctype="multipart/form-data">
 
@@ -556,17 +526,17 @@
                 <div class="optionText">Obtener membresia</div>
                 </li>
                 </a>*@
-            <li class="optionsTitle">Voxs</li>
+            <li class="optionsTitle">Posts</li>
             <li data-function="createVox">
                 <div class="optionIcon"><i class="fas fa-plus" aria-hidden="true"></i></div>
-                <div class="optionText">Iniciar vox</div>
+                <div class="optionText">Crear Post</div>
             </li>
             @if (User.Identity.IsAuthenticated)
             {
                 <a href="/favoritos">
                 <li>
-                    <div class="optionIcon"><i class="fas fa-star" aria-hidden="true"></i></div>
-                    <div class="optionText">Favoritos</div>
+                    <div class="optionIcon"><i class="fas fa-heart" aria-hidden="true"></i></div>
+                    <div class="optionText">Me gusta</div>
                 </li>
                 </a>
 
@@ -702,6 +672,8 @@
             </div>
         </div>
     </div>
+    @*<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>*@
+
 
     <script src="~/js/lazysizes.min.js"></script>
     <script src="~/js/ls.bgset.min.js"></script>
@@ -710,7 +682,7 @@
 
     <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
 
-    <script src="~/js/bundle19.js"></script>
+    <script src="~/js/bundle20.js"></script>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
@@ -733,5 +705,54 @@
 
         gtag('config', 'G-EVXRV5V095');
     </script>
+
+    @*BEGIN PWA JS*@
+
+    @*<script>
+        window.addEventListener('load', () => {
+            registerSW();
+        });
+
+        // Register the Service Worker
+        async function registerSW() {
+            if ('serviceWorker' in navigator) {
+                try {
+                    await navigator
+                        .serviceWorker
+                        .register('serviceworker.js');
+                }
+                catch (e) {
+                    console.log('SW registration failed');
+                }
+            }
+        }
+    </script>*@
+
+   @* <script>
+        // Initialize deferredPrompt for use later to show browser install prompt.
+        let deferredPrompt;
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent the mini-infobar from appearing on mobile
+            e.preventDefault();
+            // Stash the event so it can be triggered later.
+            deferredPrompt = e;
+            // Update UI notify the user they can install the PWA
+            showInstallPromotion();
+            // Optionally, send analytics event that PWA install promo was shown.
+            console.log(`'beforeinstallprompt' event was fired.`);
+        });
+    </script>*@
+    @*<script>
+        window.addEventListener("visibilitychange", function () {
+            console.log("Visibility changed");
+            if (document.visibilityState === "visible") {
+                console.log("APP resumed");
+                window.location.reload();
+            }
+        });
+    </script>*@
+
+    @*ENDS PWA JS*@
 </body>
 </html>

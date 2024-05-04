@@ -6,19 +6,28 @@
 @inject SignInManager<Core.Entities.User> SignInManager
 @inject UserManager<Core.Entities.User> UserManager
 
-<ul class="menu unselect" id="navbarMenu">
+@{
+
+    bool isHome = false;
+    if (@ViewData["Title"] is "Home")
+    {
+        isHome = true;
+    }
+}
+
+<ul class="menu unselect @(isHome ? "" : "hide")" id="navbarMenu">
 
     @*ICONO TOTAL USERS CONECTADOS*@
 @*    <li class="menuIcon tooltip-bottom mobile" data-tooltip="Dispositivos online">
         <i class="fas fa-laptop"></i>
         <div class="navOnlineDevicesCount">@VoxedHub.TotalUsersOnline.ToString()</div>
     </li>*@
-    <a href="/hub">
+@*    <a href="/hub">
     <li class="menuIcon tooltip-bottom mobile" data-tooltip="Hub">
         
         <i class="fas fa-compass"></i>
     </li>
-    </a>
+    </a>*@
     <li class="menuIcon tooltip-bottom mobile" data-tooltip="Buscar" data-togglesearch>
         <i class="fas fa-search"></i>
     </li>
@@ -36,7 +45,7 @@
 
     @if (SignInManager.IsSignedIn(User))
     {
-        @*<li class="menuIcon tooltip-bottom mobile" data-tooltip="Notificaciones" data-toggle="notificationsList">
+        <li class="menuIcon tooltip-bottom mobile" data-tooltip="Notificaciones" data-toggle="notificationsList">
             <i class="fas fa-bell"></i>
             @if (@Model.Any())
             {
@@ -46,9 +55,10 @@
             {
                 <i class="menuIconCount hide" id="notificationsCount">0</i>
             }
-        </li>*@
+        </li>
 
-       @* <li class="menuIcon tooltip-bottom mobile" data-toggle="profileData">
+        
+         <li class="menuIcon tooltip-bottom mobile" data-toggle="profileData">
             <i class="fas fa-user"></i>
         </li>
 
@@ -66,17 +76,17 @@
     }
     else
     {
-        <li class="menuIcon tooltip-bottom mobile" data-event="click,button,NAVBAR_LOGIN" data-function="registerModal" data-tooltip="Membresia">
+        @*<li class="menuIcon tooltip-bottom mobile" data-event="click,button,NAVBAR_LOGIN" data-function="registerModal" data-tooltip="Membresia">
             <i class="fas fa-user"></i>
-        </li>
+        </li>*@
     }
-    @*<li class="menuIcon tooltip-bottom mobile" data-toggle="slideMenu" data-tooltip="Menu">
+    <li class="menuIcon tooltip-bottom mobile" data-toggle="slideMenu" data-tooltip="Menu">
         <i class="fas fa-bars"></i>
-    </li>*@
-    
-    <li class="menuIcon tooltip-bottom mobile createPost" data-function="createVox">
-        <i class="fas fa-plus"></i>
     </li>
+    
+    @*<li class="menuIcon tooltip-bottom mobile createPost" data-function="createVox">
+        <i class="fas fa-plus"></i>
+    </li>*@
     @*<li class="newVox" data-function="createVox"><i class="fas fa-plus"></i></li>*@
 </ul>
 

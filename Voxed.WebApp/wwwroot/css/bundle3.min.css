@@ -1482,6 +1482,10 @@ a.deleted.vox {
     display: none;
 }
 
+.buttonPress.loading #CreateCommentSubmitButton {
+    display: none !important;
+}
+
 .buttonPress.loading {
     opacity: 0.5;
 }

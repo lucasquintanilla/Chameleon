@@ -1,0 +1,15 @@
+DELETE FROM public."Posts" CASCADE 
+
+INSERT INTO public."Categories"(
+	"Id", "Name", "ShortName", "Nsfw", "MediaId")
+	VALUES (38, 'Bijas', 'bij', true, 'fae9fe4f-5df9-44ff-8c27-566cfccf17b3');
+
+SELECT * FROM public."Posts" p
+-- WHERE p."Title" = 'bijona'
+WHERE p."UserId" = '24237646-9929-4579-b67c-31d6364995be'
+
+
+UPDATE public."Posts"
+SET "CategoryId" = 38
+-- WHERE p."Title" = 'bijona'
+WHERE "UserId" = '24237646-9929-4579-b67c-31d6364995be'

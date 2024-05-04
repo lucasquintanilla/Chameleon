@@ -13,10 +13,10 @@ namespace Core.Data.EF.Repositories
 {
     public class PostRepository : Repository<Post>, IPostRepository
     {
-        public PostRepository(VoxedContext context) : base(context) { }
+        public PostRepository(BlogContext context) : base(context) { }
 
         public override async Task<Post> GetById(Guid id)
-            => await _context.Posts
+            => await Entities
                 .Include(x => x.Media)
                 .Include(x => x.Category)
                 .Include(x => x.Category.Media)
@@ -29,7 +29,7 @@ namespace Core.Data.EF.Repositories
 
         public async Task<IEnumerable<Post>> GetByFilterAsync(PostFilter filter)
         {
-            var query = _context.Posts.AsNoTracking();
+            var query = Entities.AsNoTracking();
 
             query = query.Where(x => x.State == PostState.Active)
                        .Include(x => x.Media)
@@ -65,6 +65,10 @@ namespace Core.Data.EF.Repositories
             {
                 query = query.Where(x => filter.Categories.Contains(x.CategoryId));
             }
+            else
+            {
+                query = query.Where(x => x.Category.Nsfw == false);
+            }
 
             if (!string.IsNullOrEmpty(filter.SearchText))
             {
@@ -89,13 +93,13 @@ namespace Core.Data.EF.Repositories
                        .Skip(0)
                        .Take(36);
 
-            var result = query.ToList();
+            var result = await query.ToListAsync();
 
-            return await Task.FromResult(result);
+            return result;
         }
 
         private async Task<Post> GetLastPostBump(IEnumerable<Guid> skipIds)
-         => await _context.Posts
+         => await Entities
             .Where(x => skipIds.Contains(x.Id))
             .OrderBy(x => x.LastActivityOn)
             .AsNoTracking()

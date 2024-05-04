@@ -6,15 +6,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove=".platform\**" />
     <Compile Remove="Logs\**" />
-    <Content Remove=".platform\**" />
+    <Compile Remove="Properties\PublishProfiles\**" />
     <Content Remove="Logs\**" />
-    <EmbeddedResource Remove=".platform\**" />
+    <Content Remove="Properties\PublishProfiles\**" />
     <EmbeddedResource Remove="Logs\**" />
-    <EntityDeploy Remove=".platform\**" />
-    <None Remove=".platform\**" />
+    <EmbeddedResource Remove="Properties\PublishProfiles\**" />
+    <EntityDeploy Remove="Properties\PublishProfiles\**" />
     <None Remove="Logs\**" />
+    <None Remove="Properties\PublishProfiles\**" />
+    <_WebToolingArtifacts Remove="Properties\PublishProfiles\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,10 +37,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\img\home\vox_home.webp" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Core.Data.EF.MySql\Core.Data.EF.MySql.csproj" />
     <ProjectReference Include="..\Core.Data.EF.PostgreSql\Core.Data.EF.PostgreSql.csproj" />
     <ProjectReference Include="..\Core.Data.EF.Sqlite\Core.Data.EF.Sqlite.csproj" />
@@ -56,13 +53,23 @@
     <Content Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="wwwroot\js\bundle19.js">
+    <Content Update="wwwroot\js\bundle20.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Properties\PublishProfiles\" />
+    <Folder Include="wwwroot\img\avatars\" />
+    <Folder Include="wwwroot\img\gifs\" />
+    <Folder Include="wwwroot\img\home\" />
+    <Folder Include="wwwroot\media\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include=".platform\00_myconf.config" />
+    <None Include=".platform\nginx\conf.d\proxy.conf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 

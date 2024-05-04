@@ -9,11 +9,12 @@ namespace Voxed.WebApp.Views.Shared.Components.VoxDetails
 {
     public class VoxDetailsViewComponent : ViewComponent
     {
-        private readonly IVoxedRepository voxedRepository;
+        private readonly IBlogRepository blogRepository;
+        public static string Name = "VoxDetails";
 
-        public VoxDetailsViewComponent(IVoxedRepository voxedRepository)
+        public VoxDetailsViewComponent(IBlogRepository blogRepository)
         {
-            this.voxedRepository = voxedRepository;
+            this.blogRepository = blogRepository;
         }
 
         public async Task<IViewComponentResult> InvokeAsync(IEnumerable<IBoardPostViewModel> voxs)

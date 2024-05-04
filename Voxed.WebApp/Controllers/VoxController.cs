@@ -25,13 +25,20 @@ using Voxed.WebApp.Services.Moderation;
 using Voxed.WebApp.ViewModels;
 using Core.Extensions;
 using Core.Services;
+using System.Diagnostics;
+using Microsoft.Extensions.Hosting;
+using System.IO;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace Voxed.WebApp.Controllers;
 
+//[Authorize(Roles = "Administrator")]
+//[Authorize]
 public class VoxController : BaseController
 {
     private readonly ILogger<VoxController> _logger;
-    private readonly IVoxedRepository _voxedRepository;
+    private readonly IBlogRepository _blogRepository;
     private readonly SignInManager<User> _signInManager;
     private readonly IPostService _postService;
     private readonly IUserVoxActionService _userVoxActionService;
@@ -39,10 +46,11 @@ public class VoxController : BaseController
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly IMixer _boardMixer;
     private readonly IDevoxDataSource _devoxDataSource;
+    private readonly IMapper _mapper;
 
     public VoxController(
         ILogger<VoxController> logger,
-        IVoxedRepository voxedRepository,
+        IBlogRepository blogRepository,
         UserManager<User> userManager,
         SignInManager<User> signInManager,
         IHttpContextAccessor accessor,
@@ -51,10 +59,11 @@ public class VoxController : BaseController
         IModerationService moderationService,
         IServiceScopeFactory scopeFactory,
         IMixer boardMixer,
-        IDevoxDataSource devoxDataSource)
+        IDevoxDataSource devoxDataSource,
+        IMapper mapper)
         : base(accessor, userManager)
     {
-        _voxedRepository = voxedRepository;
+        _blogRepository = blogRepository;
         _signInManager = signInManager;
         _postService = postService;
         _logger = logger;
@@ -63,6 +72,7 @@ public class VoxController : BaseController
         _scopeFactory = scopeFactory;
         _boardMixer = boardMixer;
         _devoxDataSource = devoxDataSource;
+        _mapper = mapper;
     }
 
     [HttpGet("vox/{id}")]
@@ -71,7 +81,7 @@ public class VoxController : BaseController
         if (id == null) return BadRequest();
         var voxId = GuidExtension.FromShortString(id);
 
-        var vox = await _voxedRepository.Posts.GetById(voxId);
+        var vox = await _blogRepository.Posts.GetById(voxId);
         if (vox == null || vox.State == PostState.Deleted) return NotFound();
 
         var userId = User.GetUserId();
@@ -80,10 +90,10 @@ public class VoxController : BaseController
         var filter = new PostFilter();
         filter.Categories.Add(vox.CategoryId);
         filter.IgnorePostIds = new List<Guid>() { vox.Id };
-        var morePosts = await _voxedRepository.Posts.GetByFilterAsync(filter);
-        var posts = VoxedMapper.Map(morePosts);
+        var morePosts = await _blogRepository.Posts.GetByFilterAsync(filter);
+        var posts = _mapper.Map(morePosts);
 
-        return View(VoxedMapper.Map(vox, actions, posts));
+        return View(_mapper.Map(vox, actions, posts));
     }
 
     [HttpPost("account/message")]
@@ -199,13 +209,25 @@ public class VoxController : BaseController
         return response;
     }
 
+    [HttpGet]
+    [Route("posts/create")]
+    public async Task<IActionResult> CreatePost()
+    {
+        return View();
+    }
+
 
     [HttpPost]
     [Route("anon/vox")]
     public async Task<CreateVoxResponse> Create(CreateVoxRequest request)
     {
+        var stopwatch = new Stopwatch();
+        stopwatch.Start();
+
         try
         {
+            _logger.LogWarning(JsonConvert.SerializeObject(request));
+
             if (ModelState.IsValid is false)
                 return CreateVoxResponse.Failure(ModelState.GetErrorMessage());
 
@@ -224,7 +246,7 @@ public class VoxController : BaseController
                 UserId = userId.Value,
                 IpAddress = UserIpAddress,
                 UserAgent = UserAgent,
-                Title = request.Title,
+                Title = GetTitleFromContent(request.Content),
                 Content = request.Content,
                 CategoryId = request.Niche,
                 Extension = voxedAttachment.Extension,
@@ -236,6 +258,10 @@ public class VoxController : BaseController
 
             _ = Task.Run(() => NotifyPostCreated(post.Id));
 
+            stopwatch.Stop();
+
+            _logger.LogWarning($"Post created: {post.Title} after {stopwatch.Elapsed.TotalMilliseconds} milliseconds");
+
             return CreateVoxResponse.Success(post.Id);
         }
         catch (NotImplementedException e)
@@ -246,35 +272,65 @@ public class VoxController : BaseController
         {
             _logger.LogError(e.Message);
             _logger.LogError(e.StackTrace);
+
+            stopwatch.Stop();
+            _logger.LogWarning($"Post creation failed: {request.Content} after {stopwatch.Elapsed.Seconds} seconds");
             return CreateVoxResponse.Failure("Error inesperado");
         }
     }
+
+    private string GetTitleFromContent(string content)
+    {
+        using var reader = new StringReader(content);
+        string title = reader.ReadLine();
+        return title;
+    }
+
 
     [HttpPost("vox/list")]
     public async Task<LoadMoreResponse> LoadMore([FromForm] LoadMoreRequest request)
     {
         if (request.Page == "category-hub")
         {
-            var devox = await _devoxDataSource.GetMoreVoxes(request.Ignore.Count());
-            var devoxPosts = devox.Select(vox => new VoxResponse()
+            var devox = await _devoxDataSource.GetPosts(request.Ignore.Count());
+            var devoxPosts = devox.Select(post => new VoxResponse()
             {
-                Hash = vox.Id,
-                Status = true,
-                Niche = vox.Category.ToString(),
-                Title = vox.Title,
-                Comments = vox.CommentsCount.ToString(),
+                //Hash = post.Id,
+                //Status = true,
+                //Niche = post.Category.ToString(),
+                //Title = post.Title,
+                //Comments = post.CommentsCount.ToString(),
+                //Extension = string.Empty,
+                ////Sticky = vox.IsSticky ? "1" : "0",
+                ////CreatedAt = vox.CreatedOn.ToString(),
+                //PollOne = string.Empty,
+                //PollTwo = string.Empty,
+                //Id = post.Id,
+                //Slug = "devox",
+                //VoxId = post.Id?.ToString(),
+                ////New = vox.CreatedOn.IsNew(),
+                //ThumbnailUrl = DevoxHelpers.GetThumbnailUrl(post),
+                //Category = post.Category.ToString(),
+                //Href = "https://devox.me/v/" + post.Filename
+
+                Hash = post.Id ?? post.Filename,
+                //Status = true,
+                Niche = post.Category.ToString(),
+                Title = post.Title,
+                Comments = post.CommentsCount.ToString(),
                 Extension = string.Empty,
                 //Sticky = vox.IsSticky ? "1" : "0",
                 //CreatedAt = vox.CreatedOn.ToString(),
                 PollOne = string.Empty,
                 PollTwo = string.Empty,
-                Id = vox.Id,
-                Slug = "devox",
-                VoxId = vox.Id.ToString(),
-                //New = vox.CreatedOn.IsNew(),
-                ThumbnailUrl = DevoxHelpers.GetThumbnailUrl(vox),
-                Category = vox.Category.ToString(),
-                Href = "https://devox.uno/vox/" + vox.Filename
+                Id = post.Id ?? post.Filename,
+                Slug = Core.DataSources.Devox.Constants.Domain,
+                VoxId = post.Id?.ToString() ?? post.Filename,
+                //New = vox.Date,
+                ThumbnailUrl = DevoxHelpers.GetThumbnailUrl(post),
+                Category = post.Category.ToString(),
+                Href = $"{Core.DataSources.Devox.Constants.VoxEnpoint}{post.Filename}",
+                //LastActivityOn = post.LastUpdate
             });
 
             return new LoadMoreResponse(devoxPosts.ToList());
@@ -290,7 +346,7 @@ public class VoxController : BaseController
         {
             UserId = User.GetUserId(),
             IgnorePostIds = skipIdList,
-            Categories = (GetSubscriptionCategories(request)).ToList()
+            //Categories = (GetSubscriptionCategories(request)).ToList()
         };
 
         var posts = await _postService.GetByFilter(filter);
@@ -301,13 +357,13 @@ public class VoxController : BaseController
             {
                 UserId = User.GetUserId(),
                 IgnorePostIds = Enumerable.Empty<Guid>(),
-                Categories = (GetSubscriptionCategories(request)).ToList()
+                //Categories = (GetSubscriptionCategories(request)).ToList()
             };
 
             posts = await _postService.GetByFilter(filter);
         }
 
-        return new LoadMoreResponse(VoxedMapper.Map(posts));
+        return new LoadMoreResponse(_mapper.Map(posts));
        
     }
     

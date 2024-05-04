@@ -17,10 +17,12 @@ using Core.Services.Posts;
 using Core.Services.Storage;
 using Core.Services.Storage.Cloud;
 using Core.Services.Storage.Local;
+using Core.Services.Storage.Models;
 using Core.Services.Telegram;
 using Core.Services.TextFormatter;
 using Core.Services.Youtube;
 using Core.Shared;
+using Core.Utilities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -38,10 +40,10 @@ public static class DependencyContainer
 {
     public static void RegisterInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
-        //Console.WriteLine("RDS Connection: " + DatabaseHelpers.GetRDSConnectionString(configuration));
+        Console.WriteLine("RDS Connection: " + DatabaseHelpers.GetRDSConnectionString(configuration));
 
         var provider = configuration.GetValue<DatabaseProvider>("DatabaseProvider");
-        services.AddDbContext<VoxedContext>(
+        services.AddDbContext<BlogContext>(
             options => _ = provider switch
             {
                 DatabaseProvider.Sqlite => options
@@ -54,8 +56,12 @@ public static class DependencyContainer
                     ServerVersion.AutoDetect(configuration.GetConnectionString(nameof(DatabaseProvider.MySql))),
                     x => x.MigrationsAssembly(typeof(MySqlVoxedContext).Assembly.GetName().Name)),
 
+                //DatabaseProvider.PostgreSql => options
+                //.UseNpgsql(configuration.GetConnectionString(nameof(DatabaseProvider.PostgreSql)),
+                //    x => x.MigrationsAssembly(typeof(PostgreSqlVoxedContext).Assembly.GetName().Name)),
+                
                 DatabaseProvider.PostgreSql => options
-                .UseNpgsql(configuration.GetConnectionString(nameof(DatabaseProvider.PostgreSql)),
+                .UseNpgsql(DatabaseHelpers.GetRDSConnectionString(configuration),
                     x => x.MigrationsAssembly(typeof(PostgreSqlVoxedContext).Assembly.GetName().Name)),
 
                 _ => throw new Exception($"Unsupported database provider: {provider}")
@@ -64,7 +70,7 @@ public static class DependencyContainer
 
     public static void RegisterRepositories(this IServiceCollection services)
     {
-        services.AddTransient<IVoxedRepository, VoxedRepository>();
+        services.AddTransient<IBlogRepository, BlogRepository>();
     }
 
     public static void RegisterLogger(this IServiceCollection services)
@@ -82,7 +88,7 @@ public static class DependencyContainer
         services.AddDefaultIdentity<User>(options =>
                 options.SignIn.RequireConfirmedAccount = true)
             .AddRoles<Role>()
-            .AddEntityFrameworkStores<VoxedContext>()
+            .AddEntityFrameworkStores<BlogContext>()
             .AddErrorDescriber<SpanishIdentityErrorDescriber>();
 
         services
@@ -133,13 +139,13 @@ public static class DependencyContainer
 
         services.AddSingleton<IUfftopiaDataSource, UfftopiaDataSource>();
         services.AddSingleton<IDevoxDataSource, DevoxDataSource>();
-        services.AddSingleton<IMixer, BoardMixer>();
+        services.AddScoped<IMixer, BoardMixer>();
+
     }
 
     public static void RegisterStorageImageProvider(this IServiceCollection services, IConfiguration configuration)
     {
         var provider = configuration.GetValue<StorageProvider>("StorageProvider");
-        //var imageProvider = configuration.GetValue<StorageImageProviderOptions>(StorageImageProviderOptions.SectionName);
         switch (provider)
         {
             case StorageProvider.Local:
@@ -155,10 +161,6 @@ public static class DependencyContainer
                 {
                     options.S3Buckets.Add(new AWSS3BucketClientOptions
                     {
-                        //BucketName = imageProvider.BucketName,
-                        //AccessKey = imageProvider.AccessKey,
-                        //AccessSecret = imageProvider.AccessSecret,
-                        //Region = imageProvider.Region,
                         BucketName = configuration["StorageImageProvider:BucketName"],
                         AccessKey = configuration["StorageImageProvider:AccessKey"],
                         AccessSecret = configuration["StorageImageProvider:AccessSecret"],
@@ -175,7 +177,7 @@ public static class DependencyContainer
                     options.Region = configuration["StorageImageProvider:Region"];
 
                     // Optionally create the cache bucket on startup if not already created.
-                    AWSS3StorageCache.CreateIfNotExists(options, S3CannedACL.Private);
+                    //AWSS3StorageCache.CreateIfNotExists(options, S3CannedACL.Private);
                 })
                 .SetCache<AWSS3StorageCache>();
                 break;
@@ -195,11 +197,11 @@ public static class DependencyContainer
         {
             case StorageProvider.Local:
                 services.Configure<LocalStorageOptions>(configuration.GetSection(LocalStorageOptions.SectionName));
-                services.AddSingleton<IStorage, LocalStorage>();
+                services.AddSingleton<IStorage<StorageObject>, LocalStorage>();
                 break;
             case StorageProvider.Cloud:
                 services.Configure<S3StorageOptions>(configuration.GetSection(S3StorageOptions.SectionName));
-                services.AddSingleton<IStorage, S3Storage>();
+                services.AddSingleton<IStorage<StorageObject>, S3Storage>();
                 break;
             default:
                 throw new Exception($"Unsupported storage provider: {provider}");

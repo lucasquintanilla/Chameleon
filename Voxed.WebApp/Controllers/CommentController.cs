@@ -19,15 +19,18 @@ using Core.Services.Avatar;
 using Core.Services.TextFormatter;
 using Voxed.WebApp.Constants;
 using Core.Extensions;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace Voxed.WebApp.Controllers;
 
+//[Authorize]
 public class CommentController : BaseController
 {
     private readonly ILogger<CommentController> _logger;
     private readonly ITextFormatterService _textFormatter;
     private readonly IMediaService _mediaService;
-    private readonly IVoxedRepository _voxedRepository;
+    private readonly IBlogRepository _blogRepository;
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
     private readonly INotificationService _notificationService;
@@ -38,7 +41,7 @@ public class CommentController : BaseController
         INotificationService notificationService,
         ITextFormatterService textFormatter,
         IMediaService mediaService,
-        IVoxedRepository voxedRepository,
+        IBlogRepository blogRepository,
         UserManager<User> userManager,
         SignInManager<User> signInManager,
         IHttpContextAccessor accessor,
@@ -47,7 +50,7 @@ public class CommentController : BaseController
     {
         _textFormatter = textFormatter;
         _mediaService = mediaService;
-        _voxedRepository = voxedRepository;
+        _blogRepository = blogRepository;
         _userManager = userManager;
         _logger = logger;
         _signInManager = signInManager;
@@ -93,13 +96,13 @@ public class CommentController : BaseController
 
         try
         {
-            var comment = await _voxedRepository.Comments.GetById(request.ContentId);
+            var comment = await _blogRepository.Comments.GetById(request.ContentId);
             if (comment == null) NotFound(response);
 
             comment.IsSticky = true;
             response.Id = request.ContentId;
 
-            await _voxedRepository.SaveChangesAsync();
+            await _blogRepository.SaveChangesAsync();
         }
         catch (Exception e)
         {
@@ -140,15 +143,15 @@ public class CommentController : BaseController
             Media = request.HasAttachment() ? await CreateMediaFromRequest(request) : null,
         };
 
-        await _voxedRepository.Comments.Add(comment);
+        await _blogRepository.Comments.Add(comment);
 
         if (!ContainsHide(comment.Content))
         {
-            var vox = await _voxedRepository.Posts.GetById(comment.PostId);
+            var vox = await _blogRepository.Posts.GetById(comment.PostId);
             vox.LastActivityOn = DateTimeOffset.Now;
         }
 
-        await _voxedRepository.SaveChangesAsync();
+        await _blogRepository.SaveChangesAsync();
         return comment;
     }
 

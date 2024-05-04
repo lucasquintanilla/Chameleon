@@ -4,7 +4,7 @@ namespace Core.DataSources.Devox.Helpers
 {
     public static class DevoxHelpers
     {
-        public static string GetThumbnailUrl(Vox vox)
+        public static string GetThumbnailUrl(DevoxPost vox)
         {
             if (vox.IsURL)
             {
@@ -14,7 +14,8 @@ namespace Core.DataSources.Devox.Helpers
                 return vox.Url;
             }
 
-            return $"https://devox.uno/backgrounds/low-res_{vox.Filename}.jpeg";
+            //return $"https://{Constants.Domain}/backgrounds/low-res_{vox.Filename}.jpeg";
+            return $"{Constants.CdnUrl}/file/backgr/low-res_{vox.Filename}.jpeg";
         }
     }
 }

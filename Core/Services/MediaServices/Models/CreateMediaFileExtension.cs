@@ -9,5 +9,7 @@
         public const string Base64 = "base64";
         public const string Gif = "gif";
         public const string WebP = "webp";
+        public const string WebM = "webm";
+        public const string Mp4 = "mp4";
     }
 }

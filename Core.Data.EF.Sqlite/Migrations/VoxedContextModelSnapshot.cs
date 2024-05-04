@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Core.Data.EF.Sqlite.Migrations
 {
-    [DbContext(typeof(VoxedContext))]
+    [DbContext(typeof(BlogContext))]
     partial class VoxedContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -129,10 +129,6 @@ namespace Core.Data.EF.Sqlite.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ThumbnailKey")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ThumbnailUrl")
-                        .IsUnicode(true)
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Type")

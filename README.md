@@ -1,6 +1,14 @@
 # Chameleon
 
+Data Collector + Tags + Channels + Post + Human
+
 Proyecto free, cross-platform y open-source
+
+## Quick Start :rocket:
+
+- [Download](https://github.com/lucasquintanilla/Chameleon/archive/refs/heads/master.zip)
+- Open Chamaleon.sln
+- Run Voxed.WebApp
 
 ## Tech Stack :hammer_and_wrench:
 
@@ -10,20 +18,14 @@ Proyecto free, cross-platform y open-source
 - SignalR
 - AWS
 
-## Instalacion :rocket:
-
-- Instalar Visual Studio + .NET 6 SDK
-- Clonar repositorio ejecutando comando git clone
-> git clone https://github.com/.../Voxed.git
-- Abrir archivo Chameleon.sln con Visual Studio
-- Ejectuar Voxed.WebApp desde Visual Studio
-
 ## Requisitos previos :clipboard:
 
 ### Software requerido
 
 - [Visual Studio 2022 Community](https://visualstudio.microsoft.com/downloads/)
+- [.NET 6 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
 - [Git](https://git-scm.com/download/win)
+
 
 ### Software opcional
 
@@ -139,4 +141,9 @@ Cambios base de datos a traves de EF migrations
 2. Ejecutar comando migracion 
 
 > add-migration NombreDeMigracion
+
+Example: 
+
+Default Project: Core.Data.EF.Sqlite
+Command: EntityFrameworkCore\Add-Migration RemoveMediaThumbnailUrl
 

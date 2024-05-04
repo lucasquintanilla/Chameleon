@@ -24,56 +24,59 @@ public interface INotificationService
 
 public class NotificationService : INotificationService
 {
-    private readonly IVoxedRepository _voxedRepository;
-    private readonly IHubContext<VoxedHub, INotificationHub> _notificationHub;
+    private readonly IBlogRepository _blogRepository;
+    private readonly IHubContext<NotificationHub, INotificationHub> _notificationHub;
     private readonly ITextFormatterService _textFormatter;
+    private readonly IMapper _mapper;
+    private readonly INotificationSender _notificationSender;
 
     public NotificationService(
-        IVoxedRepository voxedRepository,
-        IHubContext<VoxedHub, INotificationHub> notificationHub,
-        ITextFormatterService textFormatter)
+        IBlogRepository blogRepository,
+        IHubContext<NotificationHub, INotificationHub> notificationHub,
+        ITextFormatterService textFormatter,
+        IMapper mapper,
+        INotificationSender notificationSender)
     {
-        _voxedRepository = voxedRepository;
+        _blogRepository = blogRepository;
         _notificationHub = notificationHub;
         _textFormatter = textFormatter;
+        _mapper = mapper;
+        _notificationSender = notificationSender;
     }
 
     public async Task NotifyPostCreated(Guid voxId)
     {
-        var vox = await _voxedRepository.Posts.GetById(voxId); // Ver si se puede remover
+        var vox = await _blogRepository.Posts.GetById(voxId); // Ver si se puede remover
 
         if (!Categories.HiddenCategories.Contains(vox.CategoryId))
         {
-            var voxToHub = VoxedMapper.Map(vox);
+            var voxToHub = _mapper.Map(vox);
             await _notificationHub.Clients.All.Vox(voxToHub);
         }
     }
 
     public async Task ManageNotifications(Comment comment)
     {
-        var vox = await _voxedRepository.Posts.GetById(comment.PostId);
-        var notifications = new NotificationBuilder()
-                .WithVox(vox)
+        var vox = await _blogRepository.Posts.GetById(comment.PostId);
+        var notifications = new NotificationBuilder(_blogRepository, _textFormatter)
+                .WithPost(vox)
                 .WithComment(comment)
-                .UseRepository(_voxedRepository)
-                .UseFormatter(_textFormatter)
                 .AddReplies()
                 .AddOPNotification()
                 .AddVoxSusbcriberNotifications()
-                .Save();
+                .Build();
 
-        var sender = new NotificationSender()
+        var sender = _notificationSender
             .WithVox(vox)
             .WithComment(comment)
-            .WithNotifications(notifications)
-            .UseHub(_notificationHub);
+            .WithNotifications(notifications);
 
         await Task.Run(() => sender.Notify());
     }
 
     public async Task NotifyCommentCreated(Comment comment, CreateCommentRequest request)
     {
-        var vox = await _voxedRepository.Posts.GetById(comment.PostId);
+        var vox = await _blogRepository.Posts.GetById(comment.PostId);
         if (Categories.HiddenCategories.Contains(vox.CategoryId)) return;
 
         var commentUpdate = new CommentLiveUpdate()
@@ -96,7 +99,7 @@ public class NotificationService : INotificationService
 
             //Media
             MediaUrl = comment.Media?.Url,
-            MediaThumbnailUrl = comment.Media?.ThumbnailUrl,
+            MediaThumbnailUrl = comment.Media?.Url,
             Extension = request.GetVoxedAttachment()?.Extension == VoxedAttachmentFileExtension.Base64 ? Core.Utilities.UrlUtility.GetFileExtensionFromUrl(comment.Media?.Url) : request.GetVoxedAttachment()?.Extension,
             ExtensionData = request.GetVoxedAttachment()?.ExtensionData,
             Via = request.GetVoxedAttachment()?.Extension == VoxedAttachmentFileExtension.Youtube ? comment.Media?.Url : null,

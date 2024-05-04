@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Core.Entities;
+using System.Collections.Generic;
 using Voxed.WebApp.Models;
 
 namespace Voxed.WebApp.ViewModels
@@ -8,5 +9,7 @@ namespace Voxed.WebApp.ViewModels
         public IEnumerable<IBoardPostViewModel> Voxs { get; set; }
         public string Page { get; set; }
         public string Title { get; set; }
+
+        public IEnumerable<Category> Categories { get; set; }
     }
 }
